@@ -1,0 +1,855 @@
+{
+  "id": "renforts",
+  "nom": "Renforts",
+  "edition": 2,
+  "total": 24,
+  "totalAvecSecretes": 32,
+  "_note": "Mini-extension, environ un mois après le lancement, avec son propre booster. Même modèle que Lancement.",
+  "personnages": [
+    {
+      "id": "ren-per-001",
+      "nom": "Killua Zoldyck",
+      "serie": "Hunter x Hunter",
+      "rang": "S",
+      "element": "foudre",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Zap",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Tonnerre",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-002",
+      "nom": "Gon Freecss",
+      "serie": "Hunter x Hunter",
+      "rang": "A",
+      "element": "terre",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Poing de granit",
+          "cout": 1,
+          "degats": 40,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Séisme",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "ren-per-003",
+      "nom": "Momo Ayase",
+      "serie": "Dandadan",
+      "rang": "A",
+      "element": "lumiere",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Bénédiction",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "soin",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Soleil levant",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "soin",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-004",
+      "nom": "Kafka Hibino",
+      "serie": "Kaiju No. 8",
+      "rang": "A",
+      "element": "feu",
+      "pv": 140,
+      "attaques": [
+        {
+          "nom": "Flammèche",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "brulure"
+          }
+        },
+        {
+          "nom": "Pilier de flammes",
+          "cout": 3,
+          "degats": 100,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "ren-per-005",
+      "nom": "Anya Forger",
+      "serie": "Spy x Family",
+      "rang": "A",
+      "element": "neutre",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Coup de bluff",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Combo",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "ren-per-006",
+      "nom": "Hisoka Morow",
+      "serie": "Hunter x Hunter",
+      "rang": "B",
+      "element": "tenebres",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Ténèbre",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Danse macabre",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-007",
+      "nom": "Kurapika",
+      "serie": "Hunter x Hunter",
+      "rang": "B",
+      "element": "feu",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Bond incandescent",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Éruption",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "ren-per-008",
+      "nom": "Ken Takakura (Okarun)",
+      "serie": "Dandadan",
+      "rang": "B",
+      "element": "vent",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Coup de vent",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Vent coupant",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "ren-per-009",
+      "nom": "Loid Forger",
+      "serie": "Spy x Family",
+      "rang": "B",
+      "element": "glace",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Givre",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "ralentissement"
+          }
+        },
+        {
+          "nom": "Prison de glace",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "gel"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-010",
+      "nom": "Yor Forger",
+      "serie": "Spy x Family",
+      "rang": "B",
+      "element": "vent",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Lame d'air",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Ciel déchiré",
+          "cout": 3,
+          "degats": 130,
+          "effet": {
+            "type": "charge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-011",
+      "nom": "Yoichi Isagi",
+      "serie": "Blue Lock",
+      "rang": "B",
+      "element": "eau",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Jet d'eau",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Cascade céleste",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "soin",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-012",
+      "nom": "Mina Ashiro",
+      "serie": "Kaiju No. 8",
+      "rang": "B",
+      "element": "foudre",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Décharge",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Éclair divin",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-013",
+      "nom": "Leorio Paradinight",
+      "serie": "Hunter x Hunter",
+      "rang": "C",
+      "element": "neutre",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Coup de poing",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Volonté inébranlable",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-014",
+      "nom": "Turbo Granny",
+      "serie": "Dandadan",
+      "rang": "C",
+      "element": "tenebres",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Morsure",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Brume maudite",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "malediction"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-015",
+      "nom": "Seiko Ayase",
+      "serie": "Dandadan",
+      "rang": "C",
+      "element": "lumiere",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Aube",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Lame céleste",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-016",
+      "nom": "Aira Shiratori",
+      "serie": "Dandadan",
+      "rang": "C",
+      "element": "lumiere",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Prisme",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Jugement céleste",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-017",
+      "nom": "Jin Enjoji (Jiji)",
+      "serie": "Dandadan",
+      "rang": "C",
+      "element": "terre",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Garde de pierre",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Écrasement",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "ren-per-018",
+      "nom": "Reno Ichikawa",
+      "serie": "Kaiju No. 8",
+      "rang": "C",
+      "element": "glace",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Grésil",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Hiver éternel",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "gel"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-019",
+      "nom": "Kikoru Shinomiya",
+      "serie": "Kaiju No. 8",
+      "rang": "C",
+      "element": "foudre",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Arc électrique",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Lame d'orage",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "ren-per-020",
+      "nom": "Soshiro Hoshina",
+      "serie": "Kaiju No. 8",
+      "rang": "C",
+      "element": "vent",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Souffle",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        },
+        {
+          "nom": "Lames du vent",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "ren-per-021",
+      "nom": "Bond Forger",
+      "serie": "Spy x Family",
+      "rang": "C",
+      "element": "neutre",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Garde haute",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Contre-attaque",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-022",
+      "nom": "Franky Franklin",
+      "serie": "Spy x Family",
+      "rang": "C",
+      "element": "neutre",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Plaquage",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Coup ultime",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "ren-per-023",
+      "nom": "Meguru Bachira",
+      "serie": "Blue Lock",
+      "rang": "C",
+      "element": "eau",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Lame liquide",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Tourbillon",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "ralentissement"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ren-per-024",
+      "nom": "Seishiro Nagi",
+      "serie": "Blue Lock",
+      "rang": "C",
+      "element": "glace",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Neige fine",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Miroir de glace",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 20
+          }
+        }
+      ]
+    }
+  ],
+  "cartes": [
+    {
+      "id": "ren-001",
+      "numero": 1,
+      "personnage": "ren-per-001",
+      "finition": "holo-integrale",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-002",
+      "numero": 2,
+      "personnage": "ren-per-002",
+      "finition": "holo",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-003",
+      "numero": 3,
+      "personnage": "ren-per-003",
+      "finition": "holo",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-004",
+      "numero": 4,
+      "personnage": "ren-per-004",
+      "finition": "holo",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-005",
+      "numero": 5,
+      "personnage": "ren-per-005",
+      "finition": "holo",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-006",
+      "numero": 6,
+      "personnage": "ren-per-006",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-007",
+      "numero": 7,
+      "personnage": "ren-per-007",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-008",
+      "numero": 8,
+      "personnage": "ren-per-008",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-009",
+      "numero": 9,
+      "personnage": "ren-per-009",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-010",
+      "numero": 10,
+      "personnage": "ren-per-010",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-011",
+      "numero": 11,
+      "personnage": "ren-per-011",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-012",
+      "numero": 12,
+      "personnage": "ren-per-012",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-013",
+      "numero": 13,
+      "personnage": "ren-per-013",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-014",
+      "numero": 14,
+      "personnage": "ren-per-014",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-015",
+      "numero": 15,
+      "personnage": "ren-per-015",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-016",
+      "numero": 16,
+      "personnage": "ren-per-016",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-017",
+      "numero": 17,
+      "personnage": "ren-per-017",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-018",
+      "numero": 18,
+      "personnage": "ren-per-018",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-019",
+      "numero": 19,
+      "personnage": "ren-per-019",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-020",
+      "numero": 20,
+      "personnage": "ren-per-020",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-021",
+      "numero": 21,
+      "personnage": "ren-per-021",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-022",
+      "numero": 22,
+      "personnage": "ren-per-022",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-023",
+      "numero": 23,
+      "personnage": "ren-per-023",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-024",
+      "numero": 24,
+      "personnage": "ren-per-024",
+      "finition": "commune",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "ren-025",
+      "numero": 25,
+      "personnage": "ren-per-006",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "ren-026",
+      "numero": 26,
+      "personnage": "ren-per-010",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "ren-027",
+      "numero": 27,
+      "personnage": "ren-per-015",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "ren-028",
+      "numero": 28,
+      "personnage": "ren-per-020",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "ren-029",
+      "numero": 29,
+      "personnage": "ren-per-003",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "ren-030",
+      "numero": 30,
+      "personnage": "ren-per-005",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "ren-031",
+      "numero": 31,
+      "personnage": "ren-per-004",
+      "finition": "immersive",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "ren-032",
+      "numero": 32,
+      "personnage": "ren-per-001",
+      "finition": "couronne",
+      "secrete": true,
+      "images": {}
+    }
+  ]
+}

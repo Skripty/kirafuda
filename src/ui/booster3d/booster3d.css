@@ -1,0 +1,76 @@
+/* Booster 3D : scène commune (WebGL ou repli CSS). Taille : --b3d-largeur, posée par l'écran qui l'accueille.
+   Les gestes se mesurent sur .b3d-scene, qui ne tourne jamais. */
+.b3d-scene {
+  position: relative;
+  width: var(--b3d-largeur, min(340px, 80vw));
+  aspect-ratio: 3 / 4.4;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.b3d-scene.zone-coupe { cursor: ew-resize; }
+.b3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.b3d-ombre {
+  position: absolute; left: 50%; bottom: 4%; width: 56%; height: 7%;
+  transform: translateX(-50%); background: var(--booster3d-ombre); filter: blur(6px);
+  pointer-events: none; transition: opacity 0.4s;
+}
+.b3d-scene.ouvert .b3d-ombre { opacity: 0.3; }
+.b3d-zone-sachet { position: absolute; overflow: hidden; border-radius: 6% / 4%; pointer-events: none; }
+.b3d-scene.ouvert .b3d-zone-sachet { opacity: 0; transition: opacity 0.2s; }
+
+/* ---------- Repli CSS (docs/reference/booster-3d.html), sans inclinaison ---------- */
+.b3d-scene.css { display: grid; place-items: center; perspective: 1100px; }
+.b3d-flotte { width: 76%; aspect-ratio: 280 / 412; animation: b3d-flotte 5.5s ease-in-out infinite; transform-style: preserve-3d; pointer-events: none; }
+@keyframes b3d-flotte { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.b3d-incline { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
+.b3d-epaisseur { position: absolute; inset: 0; border-radius: 20px; background: var(--booster3d-epaisseur); transform: translateZ(-6px); }
+.b3d-face {
+  position: absolute; inset: 0; border-radius: 20px; overflow: hidden;
+  background:
+    radial-gradient(120% 70% at 50% 0%, color-mix(in srgb, var(--booster-accent, transparent) 24%, transparent) 0%, transparent 70%),
+    var(--booster-fond);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--carte-clair) 16%, transparent), inset 0 0 0 1px color-mix(in srgb, var(--carte-clair) 7%, transparent);
+}
+.b3d-dents { position: absolute; left: 0; right: 0; height: 7.5%; background: var(--booster-dentelure); box-shadow: inset 0 0 0 100vmax color-mix(in srgb, var(--booster-accent, transparent) 10%, transparent); }
+.b3d-dents.haut { top: 0; border-bottom: 1px solid var(--bordure-forte); }
+.b3d-dents.bas { bottom: 0; border-top: 1px solid var(--bordure-forte); }
+.b3d-pointilles { position: absolute; left: 5%; right: 5%; top: 11%; border-top: 1.5px dashed color-mix(in srgb, var(--carte-clair) 22%, transparent); }
+.b3d-ligne-coupe {
+  position: absolute; left: 5%; top: 11%; height: 2px; margin-top: -1px; width: 90%;
+  transform: scaleX(var(--coupe, 0)); transform-origin: left center;
+  background: var(--booster3d-coupe); box-shadow: 0 0 12px var(--booster3d-lueur-coupe);
+}
+.b3d-fleche {
+  position: absolute; top: 11%; left: 5%; width: 14px; height: 14px; margin-top: -7px; border-radius: 50%;
+  background: var(--texte); box-shadow: 0 0 0 4px color-mix(in srgb, var(--texte) 15%, transparent);
+  animation: b3d-glisse 1.8s ease-in-out infinite;
+}
+@keyframes b3d-glisse { 0% { transform: translateX(0); opacity: 0; } 15% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateX(min(220px, 58vw)); opacity: 0; } }
+.b3d-scene:not(.dechirable) .b3d-fleche, .coupe-en-cours .b3d-fleche, .ouvert .b3d-fleche { display: none; }
+.b3d-embleme { position: absolute; left: 50%; top: 42%; width: 36%; transform: translate(-50%, -50%); }
+.b3d-texte { position: absolute; left: 0; right: 0; bottom: 15%; text-align: center; }
+.b3d-texte b { display: block; font-size: clamp(14px, 4.6vw, 19px); font-weight: 600; letter-spacing: 0.04em; color: color-mix(in srgb, var(--booster-accent, var(--texte)) 40%, var(--texte)); }
+.b3d-texte span { font-size: 12px; color: var(--texte-secondaire); }
+.b3d-film { position: absolute; inset: 0; background: var(--booster3d-film); background-size: 300% 300%; background-position: 50% 50%; mix-blend-mode: screen; }
+
+/* Ouverture */
+.b3d-morceau {
+  position: absolute; left: 0; right: 0; top: 0; height: 11%; border-radius: 20px 20px 0 0; overflow: hidden;
+  opacity: 0; pointer-events: none; background: var(--booster-fond);
+}
+.b3d-morceau::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 68%; background: var(--booster-dentelure); }
+.ouvert .b3d-morceau { animation: b3d-envol 0.75s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; }
+@keyframes b3d-envol { 0% { opacity: 1; transform: translate3d(0, 0, 2px) rotate(0); } 100% { opacity: 0; transform: translate3d(55%, -160%, 30px) rotate(16deg); } }
+.ouvert .b3d-dents.haut, .ouvert .b3d-pointilles, .ouvert .b3d-ligne-coupe { visibility: hidden; }
+.ouvert .b3d-face { clip-path: inset(11% 0 0 0 round 0 0 20px 20px); }
+.ouvert .b3d-epaisseur { clip-path: inset(11% 0 0 0); }
+.b3d-flotte.ouvert { animation: none; }
+.ouvert .b3d-incline { transition: transform 0.8s cubic-bezier(0.4, 0, 0.6, 1) 0.35s, opacity 0.35s ease 0.75s; transform: translateY(85%); opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .b3d-flotte, .b3d-fleche { animation: none; }
+  .ouvert .b3d-incline, .ouvert .b3d-morceau { transition: none; animation: none; }
+  .b3d-ombre, .b3d-scene.ouvert .b3d-zone-sachet { transition: none; }
+}

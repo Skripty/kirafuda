@@ -1,0 +1,4260 @@
+{
+  "id": "lancement",
+  "nom": "Lancement",
+  "edition": 1,
+  "total": 100,
+  "totalAvecSecretes": 140,
+  "_note": "Une carte = un personnage dans une rareté fixe (système TCG Pocket). Les PV et attaques sont ceux du personnage, identiques sur toutes ses cartes.",
+  "personnages": [
+    {
+      "id": "per-001",
+      "nom": "Monkey D. Luffy",
+      "serie": "One Piece",
+      "rang": "S",
+      "element": "lumiere",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Lance sacrée",
+          "cout": 1,
+          "degats": 40,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Nova",
+          "cout": 3,
+          "degats": 130,
+          "effet": {
+            "type": "charge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-002",
+      "nom": "Roronoa Zoro",
+      "serie": "One Piece",
+      "rang": "A",
+      "element": "vent",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Bourrasque",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Tempête de lames",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-003",
+      "nom": "Nico Robin",
+      "serie": "One Piece",
+      "rang": "B",
+      "element": "terre",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Secousse",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Faille",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-004",
+      "nom": "Naruto Uzumaki",
+      "serie": "Naruto",
+      "rang": "A",
+      "element": "vent",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Sifflement",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Tempête de lames",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-005",
+      "nom": "Sasuke Uchiha",
+      "serie": "Naruto",
+      "rang": "A",
+      "element": "foudre",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Crépitement",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        },
+        {
+          "nom": "Lame d'orage",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-006",
+      "nom": "Itachi Uchiha",
+      "serie": "Naruto",
+      "rang": "S",
+      "element": "tenebres",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Voile noir",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "esquive"
+          }
+        },
+        {
+          "nom": "Étreinte des ombres",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "malediction"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-007",
+      "nom": "Satoru Gojo",
+      "serie": "Jujutsu Kaisen",
+      "rang": "S",
+      "element": "lumiere",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Clarté",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Rayon solaire",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-008",
+      "nom": "Yuji Itadori",
+      "serie": "Jujutsu Kaisen",
+      "rang": "A",
+      "element": "foudre",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Statique",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Choc paralysant",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "paralysie"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-009",
+      "nom": "Megumi Fushiguro",
+      "serie": "Jujutsu Kaisen",
+      "rang": "A",
+      "element": "tenebres",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Griffe d'ombre",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Lune noire",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-010",
+      "nom": "Nobara Kugisaki",
+      "serie": "Jujutsu Kaisen",
+      "rang": "B",
+      "element": "terre",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Poussière",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Météorite",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-011",
+      "nom": "Ryomen Sukuna",
+      "serie": "Jujutsu Kaisen",
+      "rang": "A",
+      "element": "tenebres",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Sombre présage",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "malediction"
+          }
+        },
+        {
+          "nom": "Pacte maudit",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "soin",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-012",
+      "nom": "Suguru Geto",
+      "serie": "Jujutsu Kaisen",
+      "rang": "B",
+      "element": "tenebres",
+      "pv": 60,
+      "attaques": [
+        {
+          "nom": "Murmure",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "malediction"
+          }
+        },
+        {
+          "nom": "Pacte maudit",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "soin",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-013",
+      "nom": "Yuta Okkotsu",
+      "serie": "Jujutsu Kaisen",
+      "rang": "B",
+      "element": "lumiere",
+      "pv": 60,
+      "attaques": [
+        {
+          "nom": "Halo",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Nova",
+          "cout": 3,
+          "degats": 130,
+          "effet": {
+            "type": "charge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-014",
+      "nom": "Toji Fushiguro",
+      "serie": "Jujutsu Kaisen",
+      "rang": "B",
+      "element": "neutre",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Pas de côté",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "esquive"
+          }
+        },
+        {
+          "nom": "Plan parfait",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-015",
+      "nom": "Maki Zenin",
+      "serie": "Jujutsu Kaisen",
+      "rang": "B",
+      "element": "vent",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Tourbillon court",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Cyclone",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-016",
+      "nom": "Kento Nanami",
+      "serie": "Jujutsu Kaisen",
+      "rang": "B",
+      "element": "neutre",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Coup de pied",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Charge téméraire",
+          "cout": 2,
+          "degats": 70,
+          "effet": {
+            "type": "recul",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-017",
+      "nom": "Denji",
+      "serie": "Chainsaw Man",
+      "rang": "A",
+      "element": "feu",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Poing de braise",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Envol du phénix",
+          "cout": 3,
+          "degats": 90,
+          "effet": {
+            "type": "soin",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-018",
+      "nom": "Makima",
+      "serie": "Chainsaw Man",
+      "rang": "A",
+      "element": "tenebres",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Lame sombre",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Pacte maudit",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "soin",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-019",
+      "nom": "Power",
+      "serie": "Chainsaw Man",
+      "rang": "A",
+      "element": "tenebres",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Griffe d'ombre",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Néant",
+          "cout": 3,
+          "degats": 130,
+          "effet": {
+            "type": "charge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-020",
+      "nom": "Aki Hayakawa",
+      "serie": "Chainsaw Man",
+      "rang": "B",
+      "element": "glace",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Pointe gelée",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Tempête de cristal",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-021",
+      "nom": "Reze",
+      "serie": "Chainsaw Man",
+      "rang": "B",
+      "element": "feu",
+      "pv": 150,
+      "attaques": [
+        {
+          "nom": "Étincelle",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "brulure"
+          }
+        },
+        {
+          "nom": "Fournaise infernale",
+          "cout": 3,
+          "degats": 110,
+          "effet": {
+            "type": "brulure"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-022",
+      "nom": "Himeno",
+      "serie": "Chainsaw Man",
+      "rang": "C",
+      "element": "vent",
+      "pv": 60,
+      "attaques": [
+        {
+          "nom": "Pas léger",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "esquive"
+          }
+        },
+        {
+          "nom": "Ouragan",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-023",
+      "nom": "Quanxi",
+      "serie": "Chainsaw Man",
+      "rang": "C",
+      "element": "foudre",
+      "pv": 60,
+      "attaques": [
+        {
+          "nom": "Crépitement",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        },
+        {
+          "nom": "Foudre en chaîne",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-024",
+      "nom": "Asa Mitaka",
+      "serie": "Chainsaw Man",
+      "rang": "C",
+      "element": "neutre",
+      "pv": 160,
+      "attaques": [
+        {
+          "nom": "Frappe rapide",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Plan parfait",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-025",
+      "nom": "Eren Yeager",
+      "serie": "L'Attaque des Titans",
+      "rang": "A",
+      "element": "terre",
+      "pv": 140,
+      "attaques": [
+        {
+          "nom": "Poussière",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Montagne vivante",
+          "cout": 3,
+          "degats": 90,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-026",
+      "nom": "Mikasa Ackerman",
+      "serie": "L'Attaque des Titans",
+      "rang": "A",
+      "element": "vent",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Brise",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "esquive"
+          }
+        },
+        {
+          "nom": "Tornade",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-027",
+      "nom": "Levi Ackerman",
+      "serie": "L'Attaque des Titans",
+      "rang": "S",
+      "element": "vent",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Pas léger",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "esquive"
+          }
+        },
+        {
+          "nom": "Tornade",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-028",
+      "nom": "Armin Arlert",
+      "serie": "L'Attaque des Titans",
+      "rang": "B",
+      "element": "feu",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Cendres vives",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Envol du phénix",
+          "cout": 3,
+          "degats": 90,
+          "effet": {
+            "type": "soin",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-029",
+      "nom": "Erwin Smith",
+      "serie": "L'Attaque des Titans",
+      "rang": "B",
+      "element": "lumiere",
+      "pv": 140,
+      "attaques": [
+        {
+          "nom": "Rayon",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Aurore",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-030",
+      "nom": "Annie Leonhart",
+      "serie": "L'Attaque des Titans",
+      "rang": "B",
+      "element": "glace",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Cristal",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Zéro absolu",
+          "cout": 3,
+          "degats": 130,
+          "effet": {
+            "type": "charge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-031",
+      "nom": "Reiner Braun",
+      "serie": "L'Attaque des Titans",
+      "rang": "C",
+      "element": "terre",
+      "pv": 150,
+      "attaques": [
+        {
+          "nom": "Poussière",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Pic rocheux",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-032",
+      "nom": "Historia Reiss",
+      "serie": "L'Attaque des Titans",
+      "rang": "C",
+      "element": "lumiere",
+      "pv": 150,
+      "attaques": [
+        {
+          "nom": "Halo",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Purification",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "soin",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-033",
+      "nom": "Tanjiro Kamado",
+      "serie": "Demon Slayer",
+      "rang": "A",
+      "element": "eau",
+      "pv": 160,
+      "attaques": [
+        {
+          "nom": "Goutte perçante",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Dragon des eaux",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "ralentissement"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-034",
+      "nom": "Nezuko Kamado",
+      "serie": "Demon Slayer",
+      "rang": "A",
+      "element": "feu",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Coup ardent",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Embrasement total",
+          "cout": 3,
+          "degats": 130,
+          "effet": {
+            "type": "charge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-035",
+      "nom": "Zenitsu Agatsuma",
+      "serie": "Demon Slayer",
+      "rang": "B",
+      "element": "foudre",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Coup éclair",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Jugement de l'orage",
+          "cout": 3,
+          "degats": 110,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-036",
+      "nom": "Inosuke Hashibira",
+      "serie": "Demon Slayer",
+      "rang": "B",
+      "element": "terre",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Poussière",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Pic rocheux",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-037",
+      "nom": "Giyu Tomioka",
+      "serie": "Demon Slayer",
+      "rang": "B",
+      "element": "eau",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Bruine",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "soin",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Danse des flots",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "soin",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-038",
+      "nom": "Shinobu Kocho",
+      "serie": "Demon Slayer",
+      "rang": "B",
+      "element": "vent",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Souffle",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        },
+        {
+          "nom": "Danse aérienne",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "esquive"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-039",
+      "nom": "Muzan Kibutsuji",
+      "serie": "Demon Slayer",
+      "rang": "B",
+      "element": "tenebres",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Voile noir",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "esquive"
+          }
+        },
+        {
+          "nom": "Domaine des ombres",
+          "cout": 3,
+          "degats": 110,
+          "effet": {
+            "type": "malediction"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-040",
+      "nom": "Kyojuro Rengoku",
+      "serie": "Demon Slayer",
+      "rang": "A",
+      "element": "feu",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Cendres vives",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Fournaise infernale",
+          "cout": 3,
+          "degats": 110,
+          "effet": {
+            "type": "brulure"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-041",
+      "nom": "Sung Jin-Woo",
+      "serie": "Solo Leveling",
+      "rang": "S",
+      "element": "tenebres",
+      "pv": 160,
+      "attaques": [
+        {
+          "nom": "Ombre furtive",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Pacte maudit",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "soin",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-042",
+      "nom": "Cha Hae-In",
+      "serie": "Solo Leveling",
+      "rang": "B",
+      "element": "lumiere",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Éclat",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Sanctuaire",
+          "cout": 3,
+          "degats": 90,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-043",
+      "nom": "Igris",
+      "serie": "Solo Leveling",
+      "rang": "B",
+      "element": "feu",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Morsure de feu",
+          "cout": 1,
+          "degats": 40,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Fournaise",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-044",
+      "nom": "Beru",
+      "serie": "Solo Leveling",
+      "rang": "B",
+      "element": "vent",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Plume tranchante",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Ouragan",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-045",
+      "nom": "Thomas Andre",
+      "serie": "Solo Leveling",
+      "rang": "C",
+      "element": "terre",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Jet de pierre",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Montagne vivante",
+          "cout": 3,
+          "degats": 90,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-046",
+      "nom": "Go Gun-Hee",
+      "serie": "Solo Leveling",
+      "rang": "C",
+      "element": "foudre",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Éclair bref",
+          "cout": 1,
+          "degats": 40,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Foudre en chaîne",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-047",
+      "nom": "Ashborn",
+      "serie": "Solo Leveling",
+      "rang": "C",
+      "element": "tenebres",
+      "pv": 160,
+      "attaques": [
+        {
+          "nom": "Ombre furtive",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Éclipse",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-048",
+      "nom": "Bellion",
+      "serie": "Solo Leveling",
+      "rang": "C",
+      "element": "glace",
+      "pv": 150,
+      "attaques": [
+        {
+          "nom": "Morsure du froid",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Blizzard",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "ralentissement"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-049",
+      "nom": "Frieren",
+      "serie": "Frieren",
+      "rang": "A",
+      "element": "glace",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Lance de givre",
+          "cout": 1,
+          "degats": 40,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Tempête de cristal",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-050",
+      "nom": "Fern",
+      "serie": "Frieren",
+      "rang": "B",
+      "element": "vent",
+      "pv": 150,
+      "attaques": [
+        {
+          "nom": "Bourrasque",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Mille vents",
+          "cout": 3,
+          "degats": 110,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-051",
+      "nom": "Stark",
+      "serie": "Frieren",
+      "rang": "C",
+      "element": "terre",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Jet de pierre",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Faille",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-052",
+      "nom": "Himmel",
+      "serie": "Frieren",
+      "rang": "B",
+      "element": "lumiere",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Lueur",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "soin",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Ailes de lumière",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-053",
+      "nom": "Übel",
+      "serie": "Frieren",
+      "rang": "C",
+      "element": "vent",
+      "pv": 150,
+      "attaques": [
+        {
+          "nom": "Rafale",
+          "cout": 1,
+          "degats": 40,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Tempête de lames",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-054",
+      "nom": "Serie",
+      "serie": "Frieren",
+      "rang": "C",
+      "element": "lumiere",
+      "pv": 140,
+      "attaques": [
+        {
+          "nom": "Flèche de lumière",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Aurore",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-055",
+      "nom": "Denken",
+      "serie": "Frieren",
+      "rang": "C",
+      "element": "feu",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Lame rougeoyante",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Lame solaire",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-056",
+      "nom": "Shigeo Kageyama (Mob)",
+      "serie": "Mob Psycho 100",
+      "rang": "B",
+      "element": "lumiere",
+      "pv": 60,
+      "attaques": [
+        {
+          "nom": "Éclat",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Purification",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "soin",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-057",
+      "nom": "Reigen Arataka",
+      "serie": "Mob Psycho 100",
+      "rang": "B",
+      "element": "neutre",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Coup de pied",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Esprit d'équipe",
+          "cout": 3,
+          "degats": 90,
+          "effet": {
+            "type": "soin",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-058",
+      "nom": "Dimple",
+      "serie": "Mob Psycho 100",
+      "rang": "C",
+      "element": "tenebres",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Maléfice",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "malediction"
+          }
+        },
+        {
+          "nom": "Lune noire",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-059",
+      "nom": "Teruki Hanazawa",
+      "serie": "Mob Psycho 100",
+      "rang": "C",
+      "element": "foudre",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Étincelle vive",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        },
+        {
+          "nom": "Charge électrique",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-060",
+      "nom": "Ritsu Kageyama",
+      "serie": "Mob Psycho 100",
+      "rang": "C",
+      "element": "glace",
+      "pv": 160,
+      "attaques": [
+        {
+          "nom": "Lance de givre",
+          "cout": 1,
+          "degats": 40,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Sanctuaire gelé",
+          "cout": 3,
+          "degats": 90,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-061",
+      "nom": "Toichiro Suzuki",
+      "serie": "Mob Psycho 100",
+      "rang": "C",
+      "element": "terre",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Peau de pierre",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Météorite",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-062",
+      "nom": "Thorfinn",
+      "serie": "Vinland Saga",
+      "rang": "B",
+      "element": "vent",
+      "pv": 60,
+      "attaques": [
+        {
+          "nom": "Tourbillon court",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Tempête de lames",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-063",
+      "nom": "Askeladd",
+      "serie": "Vinland Saga",
+      "rang": "B",
+      "element": "neutre",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Coup de pied",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Plan parfait",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-064",
+      "nom": "Canute",
+      "serie": "Vinland Saga",
+      "rang": "C",
+      "element": "glace",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Cristal",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Zéro absolu",
+          "cout": 3,
+          "degats": 130,
+          "effet": {
+            "type": "charge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-065",
+      "nom": "Thorkell",
+      "serie": "Vinland Saga",
+      "rang": "C",
+      "element": "terre",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Éboulis",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Mur de roche",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-066",
+      "nom": "Einar",
+      "serie": "Vinland Saga",
+      "rang": "C",
+      "element": "neutre",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Coup de pied",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Coup décisif",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-067",
+      "nom": "Thors",
+      "serie": "Vinland Saga",
+      "rang": "C",
+      "element": "eau",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Goutte perçante",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Déluge",
+          "cout": 3,
+          "degats": 130,
+          "effet": {
+            "type": "charge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-068",
+      "nom": "Twenty-Fifth Bam",
+      "serie": "Tower of God",
+      "rang": "B",
+      "element": "eau",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Goutte perçante",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Abysse",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-069",
+      "nom": "Khun Aguero Agnis",
+      "serie": "Tower of God",
+      "rang": "C",
+      "element": "glace",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Lance de givre",
+          "cout": 1,
+          "degats": 40,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Avalanche",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-070",
+      "nom": "Rak Wraithraiser",
+      "serie": "Tower of God",
+      "rang": "C",
+      "element": "foudre",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Éclair bref",
+          "cout": 1,
+          "degats": 40,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Tempête électrique",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "paralysie"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-071",
+      "nom": "Rachel",
+      "serie": "Tower of God",
+      "rang": "C",
+      "element": "neutre",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Feinte",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        },
+        {
+          "nom": "Coup ultime",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-072",
+      "nom": "Endorsi Jahad",
+      "serie": "Tower of God",
+      "rang": "C",
+      "element": "eau",
+      "pv": 110,
+      "attaques": [
+        {
+          "nom": "Bruine",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "soin",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Marée montante",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-073",
+      "nom": "Urek Mazino",
+      "serie": "Tower of God",
+      "rang": "C",
+      "element": "lumiere",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Lueur",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "soin",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Égide",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-074",
+      "nom": "Yuri Jahad",
+      "serie": "Tower of God",
+      "rang": "C",
+      "element": "feu",
+      "pv": 60,
+      "attaques": [
+        {
+          "nom": "Coup ardent",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Éruption",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-075",
+      "nom": "Kim Dokja",
+      "serie": "Omniscient Reader's Viewpoint",
+      "rang": "B",
+      "element": "neutre",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Pas de côté",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "esquive"
+          }
+        },
+        {
+          "nom": "Coup ultime",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-076",
+      "nom": "Yoo Joonghyuk",
+      "serie": "Omniscient Reader's Viewpoint",
+      "rang": "C",
+      "element": "feu",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Étincelle",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "brulure"
+          }
+        },
+        {
+          "nom": "Météore ardent",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-077",
+      "nom": "Han Sooyoung",
+      "serie": "Omniscient Reader's Viewpoint",
+      "rang": "C",
+      "element": "vent",
+      "pv": 70,
+      "attaques": [
+        {
+          "nom": "Tourbillon court",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Œil du cyclone",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "esquive"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-078",
+      "nom": "Jung Heewon",
+      "serie": "Omniscient Reader's Viewpoint",
+      "rang": "C",
+      "element": "lumiere",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Clarté",
+          "cout": 1,
+          "degats": 20,
+          "effet": null
+        },
+        {
+          "nom": "Sanctuaire",
+          "cout": 3,
+          "degats": 90,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-079",
+      "nom": "Lee Hyunsung",
+      "serie": "Omniscient Reader's Viewpoint",
+      "rang": "C",
+      "element": "terre",
+      "pv": 150,
+      "attaques": [
+        {
+          "nom": "Coup de roc",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Météorite",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-080",
+      "nom": "Shin Yoosung",
+      "serie": "Omniscient Reader's Viewpoint",
+      "rang": "C",
+      "element": "eau",
+      "pv": 160,
+      "attaques": [
+        {
+          "nom": "Vaguelette",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Danse des flots",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "soin",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-081",
+      "nom": "Secretive Plotter",
+      "serie": "Omniscient Reader's Viewpoint",
+      "rang": "C",
+      "element": "tenebres",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Murmure",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "malediction"
+          }
+        },
+        {
+          "nom": "Roi des ombres",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-082",
+      "nom": "Taro Sakamoto",
+      "serie": "Sakamoto Days",
+      "rang": "B",
+      "element": "neutre",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Coup de tête",
+          "cout": 1,
+          "degats": 40,
+          "effet": {
+            "type": "recul",
+            "valeur": 10
+          }
+        },
+        {
+          "nom": "Coup de grâce",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-083",
+      "nom": "Shin Asakura",
+      "serie": "Sakamoto Days",
+      "rang": "C",
+      "element": "foudre",
+      "pv": 60,
+      "attaques": [
+        {
+          "nom": "Volt",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Mille éclairs",
+          "cout": 3,
+          "degats": 130,
+          "effet": {
+            "type": "charge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-084",
+      "nom": "Lu Shaotang",
+      "serie": "Sakamoto Days",
+      "rang": "C",
+      "element": "feu",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Coup ardent",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Envol du phénix",
+          "cout": 3,
+          "degats": 90,
+          "effet": {
+            "type": "soin",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-085",
+      "nom": "Nagumo",
+      "serie": "Sakamoto Days",
+      "rang": "C",
+      "element": "tenebres",
+      "pv": 140,
+      "attaques": [
+        {
+          "nom": "Maléfice",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "malediction"
+          }
+        },
+        {
+          "nom": "Éclipse",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-086",
+      "nom": "Osaragi",
+      "serie": "Sakamoto Days",
+      "rang": "C",
+      "element": "glace",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Patinage",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Lames de cristal",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-087",
+      "nom": "Gaku",
+      "serie": "Sakamoto Days",
+      "rang": "C",
+      "element": "foudre",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Étincelle vive",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        },
+        {
+          "nom": "Dragon de foudre",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-088",
+      "nom": "Caiman",
+      "serie": "Dorohedoro",
+      "rang": "B",
+      "element": "terre",
+      "pv": 140,
+      "attaques": [
+        {
+          "nom": "Charge lourde",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Pic rocheux",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-089",
+      "nom": "Nikaido",
+      "serie": "Dorohedoro",
+      "rang": "C",
+      "element": "lumiere",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Halo",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Égide",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "bouclier",
+            "valeur": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-090",
+      "nom": "En",
+      "serie": "Dorohedoro",
+      "rang": "C",
+      "element": "tenebres",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Maléfice",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "malediction"
+          }
+        },
+        {
+          "nom": "Abîme",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-091",
+      "nom": "Shin",
+      "serie": "Dorohedoro",
+      "rang": "C",
+      "element": "feu",
+      "pv": 130,
+      "attaques": [
+        {
+          "nom": "Souffle chaud",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "brulure"
+          }
+        },
+        {
+          "nom": "Brasier",
+          "cout": 2,
+          "degats": 50,
+          "effet": {
+            "type": "brulure"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-092",
+      "nom": "Noi",
+      "serie": "Dorohedoro",
+      "rang": "C",
+      "element": "glace",
+      "pv": 150,
+      "attaques": [
+        {
+          "nom": "Souffle froid",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "ralentissement"
+          }
+        },
+        {
+          "nom": "Rafale glaciale",
+          "cout": 2,
+          "degats": 60,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-093",
+      "nom": "Ebisu",
+      "serie": "Dorohedoro",
+      "rang": "C",
+      "element": "neutre",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Feinte",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        },
+        {
+          "nom": "Plan parfait",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "perce-bouclier"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-094",
+      "nom": "Yu",
+      "serie": "The Boxer",
+      "rang": "C",
+      "element": "glace",
+      "pv": 150,
+      "attaques": [
+        {
+          "nom": "Pointe gelée",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Tempête de cristal",
+          "cout": 3,
+          "degats": 110,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-095",
+      "nom": "K",
+      "serie": "The Boxer",
+      "rang": "C",
+      "element": "neutre",
+      "pv": 80,
+      "attaques": [
+        {
+          "nom": "Pas de côté",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "esquive"
+          }
+        },
+        {
+          "nom": "Dernier recours",
+          "cout": 3,
+          "degats": 130,
+          "effet": {
+            "type": "charge"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-096",
+      "nom": "Aaron Tide",
+      "serie": "The Boxer",
+      "rang": "C",
+      "element": "foudre",
+      "pv": 140,
+      "attaques": [
+        {
+          "nom": "Volt",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Lame d'orage",
+          "cout": 2,
+          "degats": 70,
+          "effet": null
+        }
+      ]
+    },
+    {
+      "id": "per-097",
+      "nom": "J",
+      "serie": "The Boxer",
+      "rang": "C",
+      "element": "feu",
+      "pv": 120,
+      "attaques": [
+        {
+          "nom": "Lame rougeoyante",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Vague de flammes",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "brulure"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-098",
+      "nom": "Jean-Pierre Manuel",
+      "serie": "The Boxer",
+      "rang": "C",
+      "element": "terre",
+      "pv": 100,
+      "attaques": [
+        {
+          "nom": "Racine",
+          "cout": 1,
+          "degats": 20,
+          "effet": {
+            "type": "ralentissement"
+          }
+        },
+        {
+          "nom": "Météorite",
+          "cout": 3,
+          "degats": 120,
+          "effet": {
+            "type": "recul",
+            "valeur": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-099",
+      "nom": "Ryu Baeksan",
+      "serie": "The Boxer",
+      "rang": "C",
+      "element": "eau",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Ressac",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Dragon des eaux",
+          "cout": 3,
+          "degats": 100,
+          "effet": {
+            "type": "ralentissement"
+          }
+        }
+      ]
+    },
+    {
+      "id": "per-100",
+      "nom": "Viktor Grigoryevich",
+      "serie": "The Boxer",
+      "rang": "C",
+      "element": "eau",
+      "pv": 90,
+      "attaques": [
+        {
+          "nom": "Ressac",
+          "cout": 1,
+          "degats": 30,
+          "effet": null
+        },
+        {
+          "nom": "Danse des flots",
+          "cout": 2,
+          "degats": 60,
+          "effet": {
+            "type": "soin",
+            "valeur": 20
+          }
+        }
+      ]
+    }
+  ],
+  "cartes": [
+    {
+      "id": "lan-001",
+      "numero": 1,
+      "personnage": "per-001",
+      "finition": "holo-integrale",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-002",
+      "numero": 2,
+      "personnage": "per-002",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 6
+        }
+      }
+    },
+    {
+      "id": "lan-003",
+      "numero": 3,
+      "personnage": "per-003",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 20
+        }
+      }
+    },
+    {
+      "id": "lan-004",
+      "numero": 4,
+      "personnage": "per-004",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-005",
+      "numero": 5,
+      "personnage": "per-005",
+      "finition": "holo",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "lan-006",
+      "numero": 6,
+      "personnage": "per-006",
+      "finition": "holo-integrale",
+      "secrete": false,
+      "images": {}
+    },
+    {
+      "id": "lan-007",
+      "numero": 7,
+      "personnage": "per-007",
+      "finition": "holo-integrale",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 10
+        }
+      }
+    },
+    {
+      "id": "lan-008",
+      "numero": 8,
+      "personnage": "per-008",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 36
+        }
+      }
+    },
+    {
+      "id": "lan-009",
+      "numero": 9,
+      "personnage": "per-009",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 34
+        }
+      }
+    },
+    {
+      "id": "lan-010",
+      "numero": 10,
+      "personnage": "per-010",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 20
+        }
+      }
+    },
+    {
+      "id": "lan-011",
+      "numero": 11,
+      "personnage": "per-011",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 16
+        }
+      }
+    },
+    {
+      "id": "lan-012",
+      "numero": 12,
+      "personnage": "per-012",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 22
+        }
+      }
+    },
+    {
+      "id": "lan-013",
+      "numero": 13,
+      "personnage": "per-013",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "lan-014",
+      "numero": 14,
+      "personnage": "per-014",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 8
+        }
+      }
+    },
+    {
+      "id": "lan-015",
+      "numero": 15,
+      "personnage": "per-015",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 26
+        }
+      }
+    },
+    {
+      "id": "lan-016",
+      "numero": 16,
+      "personnage": "per-016",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 17
+        }
+      }
+    },
+    {
+      "id": "lan-017",
+      "numero": 17,
+      "personnage": "per-017",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 25
+        }
+      }
+    },
+    {
+      "id": "lan-018",
+      "numero": 18,
+      "personnage": "per-018",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 27
+        }
+      }
+    },
+    {
+      "id": "lan-019",
+      "numero": 19,
+      "personnage": "per-019",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 24
+        }
+      }
+    },
+    {
+      "id": "lan-020",
+      "numero": 20,
+      "personnage": "per-020",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 17
+        }
+      }
+    },
+    {
+      "id": "lan-021",
+      "numero": 21,
+      "personnage": "per-021",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 25
+        }
+      }
+    },
+    {
+      "id": "lan-022",
+      "numero": 22,
+      "personnage": "per-022",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 21
+        }
+      }
+    },
+    {
+      "id": "lan-023",
+      "numero": 23,
+      "personnage": "per-023",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": "lan-024",
+      "numero": 24,
+      "personnage": "per-024",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 14
+        }
+      }
+    },
+    {
+      "id": "lan-025",
+      "numero": 25,
+      "personnage": "per-025",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 67
+        }
+      }
+    },
+    {
+      "id": "lan-026",
+      "numero": 26,
+      "personnage": "per-026",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 23
+        }
+      }
+    },
+    {
+      "id": "lan-027",
+      "numero": 27,
+      "personnage": "per-027",
+      "finition": "holo-integrale",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 42
+        }
+      }
+    },
+    {
+      "id": "lan-028",
+      "numero": 28,
+      "personnage": "per-028",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 54
+        }
+      }
+    },
+    {
+      "id": "lan-029",
+      "numero": 29,
+      "personnage": "per-029",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 14
+        }
+      }
+    },
+    {
+      "id": "lan-030",
+      "numero": 30,
+      "personnage": "per-030",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 23
+        }
+      }
+    },
+    {
+      "id": "lan-031",
+      "numero": 31,
+      "personnage": "per-031",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 12
+        }
+      }
+    },
+    {
+      "id": "lan-032",
+      "numero": 32,
+      "personnage": "per-032",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 121,
+          "x": 50,
+          "y": 31
+        }
+      }
+    },
+    {
+      "id": "lan-033",
+      "numero": 33,
+      "personnage": "per-033",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 11
+        }
+      }
+    },
+    {
+      "id": "lan-034",
+      "numero": 34,
+      "personnage": "per-034",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 20
+        }
+      }
+    },
+    {
+      "id": "lan-035",
+      "numero": 35,
+      "personnage": "per-035",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 29
+        }
+      }
+    },
+    {
+      "id": "lan-036",
+      "numero": 36,
+      "personnage": "per-036",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 22
+        }
+      }
+    },
+    {
+      "id": "lan-037",
+      "numero": 37,
+      "personnage": "per-037",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 17
+        }
+      }
+    },
+    {
+      "id": "lan-038",
+      "numero": 38,
+      "personnage": "per-038",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 18
+        }
+      }
+    },
+    {
+      "id": "lan-039",
+      "numero": 39,
+      "personnage": "per-039",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 35
+        }
+      }
+    },
+    {
+      "id": "lan-040",
+      "numero": 40,
+      "personnage": "per-040",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 20
+        }
+      }
+    },
+    {
+      "id": "lan-041",
+      "numero": 41,
+      "personnage": "per-041",
+      "finition": "holo-integrale",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 29
+        }
+      }
+    },
+    {
+      "id": "lan-042",
+      "numero": 42,
+      "personnage": "per-042",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 18
+        }
+      }
+    },
+    {
+      "id": "lan-043",
+      "numero": 43,
+      "personnage": "per-043",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 18
+        }
+      }
+    },
+    {
+      "id": "lan-044",
+      "numero": 44,
+      "personnage": "per-044",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 5
+        }
+      }
+    },
+    {
+      "id": "lan-045",
+      "numero": 45,
+      "personnage": "per-045",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 25
+        }
+      }
+    },
+    {
+      "id": "lan-046",
+      "numero": 46,
+      "personnage": "per-046",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 100,
+          "x": 50,
+          "y": 25
+        }
+      }
+    },
+    {
+      "id": "lan-047",
+      "numero": 47,
+      "personnage": "per-047",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 104,
+          "x": 50,
+          "y": 13
+        }
+      }
+    },
+    {
+      "id": "lan-048",
+      "numero": 48,
+      "personnage": "per-048",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 2
+        }
+      }
+    },
+    {
+      "id": "lan-049",
+      "numero": 49,
+      "personnage": "per-049",
+      "finition": "holo",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 18
+        }
+      }
+    },
+    {
+      "id": "lan-050",
+      "numero": 50,
+      "personnage": "per-050",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 21
+        }
+      }
+    },
+    {
+      "id": "lan-051",
+      "numero": 51,
+      "personnage": "per-051",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 104,
+          "x": 50,
+          "y": 16
+        }
+      }
+    },
+    {
+      "id": "lan-052",
+      "numero": 52,
+      "personnage": "per-052",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 55
+        }
+      }
+    },
+    {
+      "id": "lan-053",
+      "numero": 53,
+      "personnage": "per-053",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 21
+        }
+      }
+    },
+    {
+      "id": "lan-054",
+      "numero": 54,
+      "personnage": "per-054",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 106,
+          "x": 50,
+          "y": 21
+        }
+      }
+    },
+    {
+      "id": "lan-055",
+      "numero": 55,
+      "personnage": "per-055",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 104,
+          "x": 50,
+          "y": 15
+        }
+      }
+    },
+    {
+      "id": "lan-056",
+      "numero": 56,
+      "personnage": "per-056",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 27
+        }
+      }
+    },
+    {
+      "id": "lan-057",
+      "numero": 57,
+      "personnage": "per-057",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 35
+        }
+      }
+    },
+    {
+      "id": "lan-058",
+      "numero": 58,
+      "personnage": "per-058",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 106,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-059",
+      "numero": 59,
+      "personnage": "per-059",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 104,
+          "x": 50,
+          "y": 38
+        }
+      }
+    },
+    {
+      "id": "lan-060",
+      "numero": 60,
+      "personnage": "per-060",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 108,
+          "x": 50,
+          "y": 34
+        }
+      }
+    },
+    {
+      "id": "lan-061",
+      "numero": 61,
+      "personnage": "per-061",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 22
+        }
+      }
+    },
+    {
+      "id": "lan-062",
+      "numero": 62,
+      "personnage": "per-062",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 104,
+          "x": 50,
+          "y": 18
+        }
+      }
+    },
+    {
+      "id": "lan-063",
+      "numero": 63,
+      "personnage": "per-063",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 15
+        }
+      }
+    },
+    {
+      "id": "lan-064",
+      "numero": 64,
+      "personnage": "per-064",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 4
+        }
+      }
+    },
+    {
+      "id": "lan-065",
+      "numero": 65,
+      "personnage": "per-065",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 11
+        }
+      }
+    },
+    {
+      "id": "lan-066",
+      "numero": 66,
+      "personnage": "per-066",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 19
+        }
+      }
+    },
+    {
+      "id": "lan-067",
+      "numero": 67,
+      "personnage": "per-067",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 1
+        }
+      }
+    },
+    {
+      "id": "lan-068",
+      "numero": 68,
+      "personnage": "per-068",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 64
+        }
+      }
+    },
+    {
+      "id": "lan-069",
+      "numero": 69,
+      "personnage": "per-069",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 24
+        }
+      }
+    },
+    {
+      "id": "lan-070",
+      "numero": 70,
+      "personnage": "per-070",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 10
+        }
+      }
+    },
+    {
+      "id": "lan-071",
+      "numero": 71,
+      "personnage": "per-071",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 57
+        }
+      }
+    },
+    {
+      "id": "lan-072",
+      "numero": 72,
+      "personnage": "per-072",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 96,
+          "x": 50,
+          "y": 22
+        }
+      }
+    },
+    {
+      "id": "lan-073",
+      "numero": 73,
+      "personnage": "per-073",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 9
+        }
+      }
+    },
+    {
+      "id": "lan-074",
+      "numero": 74,
+      "personnage": "per-074",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 28
+        }
+      }
+    },
+    {
+      "id": "lan-075",
+      "numero": 75,
+      "personnage": "per-075",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 46
+        }
+      }
+    },
+    {
+      "id": "lan-076",
+      "numero": 76,
+      "personnage": "per-076",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 11
+        }
+      }
+    },
+    {
+      "id": "lan-077",
+      "numero": 77,
+      "personnage": "per-077",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 20
+        }
+      }
+    },
+    {
+      "id": "lan-078",
+      "numero": 78,
+      "personnage": "per-078",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 17
+        }
+      }
+    },
+    {
+      "id": "lan-079",
+      "numero": 79,
+      "personnage": "per-079",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 31
+        }
+      }
+    },
+    {
+      "id": "lan-080",
+      "numero": 80,
+      "personnage": "per-080",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 12
+        }
+      }
+    },
+    {
+      "id": "lan-081",
+      "numero": 81,
+      "personnage": "per-081",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 11
+        }
+      }
+    },
+    {
+      "id": "lan-082",
+      "numero": 82,
+      "personnage": "per-082",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 10
+        }
+      }
+    },
+    {
+      "id": "lan-083",
+      "numero": 83,
+      "personnage": "per-083",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 9
+        }
+      }
+    },
+    {
+      "id": "lan-084",
+      "numero": 84,
+      "personnage": "per-084",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 17
+        }
+      }
+    },
+    {
+      "id": "lan-085",
+      "numero": 85,
+      "personnage": "per-085",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 18
+        }
+      }
+    },
+    {
+      "id": "lan-086",
+      "numero": 86,
+      "personnage": "per-086",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 26
+        }
+      }
+    },
+    {
+      "id": "lan-087",
+      "numero": 87,
+      "personnage": "per-087",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 2
+        }
+      }
+    },
+    {
+      "id": "lan-088",
+      "numero": 88,
+      "personnage": "per-088",
+      "finition": "peu-commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 6
+        }
+      }
+    },
+    {
+      "id": "lan-089",
+      "numero": 89,
+      "personnage": "per-089",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 25
+        }
+      }
+    },
+    {
+      "id": "lan-090",
+      "numero": 90,
+      "personnage": "per-090",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 26
+        }
+      }
+    },
+    {
+      "id": "lan-091",
+      "numero": 91,
+      "personnage": "per-091",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 46
+        }
+      }
+    },
+    {
+      "id": "lan-092",
+      "numero": 92,
+      "personnage": "per-092",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 15
+        }
+      }
+    },
+    {
+      "id": "lan-093",
+      "numero": 93,
+      "personnage": "per-093",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 46
+        }
+      }
+    },
+    {
+      "id": "lan-094",
+      "numero": 94,
+      "personnage": "per-094",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 21
+        }
+      }
+    },
+    {
+      "id": "lan-095",
+      "numero": 95,
+      "personnage": "per-095",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 5
+        }
+      }
+    },
+    {
+      "id": "lan-096",
+      "numero": 96,
+      "personnage": "per-096",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 4
+        }
+      }
+    },
+    {
+      "id": "lan-097",
+      "numero": 97,
+      "personnage": "per-097",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-098",
+      "numero": 98,
+      "personnage": "per-098",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 49
+        }
+      }
+    },
+    {
+      "id": "lan-099",
+      "numero": 99,
+      "personnage": "per-099",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-100",
+      "numero": 100,
+      "personnage": "per-100",
+      "finition": "commune",
+      "secrete": false,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 54
+        }
+      }
+    },
+    {
+      "id": "lan-101",
+      "numero": 101,
+      "personnage": "per-002",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-102",
+      "numero": 102,
+      "personnage": "per-003",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-103",
+      "numero": 103,
+      "personnage": "per-004",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-104",
+      "numero": 104,
+      "personnage": "per-008",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-105",
+      "numero": 105,
+      "personnage": "per-014",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-106",
+      "numero": 106,
+      "personnage": "per-017",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-107",
+      "numero": 107,
+      "personnage": "per-021",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-108",
+      "numero": 108,
+      "personnage": "per-022",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-109",
+      "numero": 109,
+      "personnage": "per-026",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-110",
+      "numero": 110,
+      "personnage": "per-032",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-111",
+      "numero": 111,
+      "personnage": "per-033",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-112",
+      "numero": 112,
+      "personnage": "per-038",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-113",
+      "numero": 113,
+      "personnage": "per-047",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-114",
+      "numero": 114,
+      "personnage": "per-050",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 110,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-115",
+      "numero": 115,
+      "personnage": "per-053",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 104,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-116",
+      "numero": 116,
+      "personnage": "per-057",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 104,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-117",
+      "numero": 117,
+      "personnage": "per-062",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-118",
+      "numero": 118,
+      "personnage": "per-064",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 104,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-119",
+      "numero": 119,
+      "personnage": "per-069",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-120",
+      "numero": 120,
+      "personnage": "per-075",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-121",
+      "numero": 121,
+      "personnage": "per-076",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-122",
+      "numero": 122,
+      "personnage": "per-085",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-123",
+      "numero": 123,
+      "personnage": "per-089",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-124",
+      "numero": 124,
+      "personnage": "per-094",
+      "finition": "pleine",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-125",
+      "numero": 125,
+      "personnage": "per-001",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
+    },
+    {
+      "id": "lan-126",
+      "numero": 126,
+      "personnage": "per-006",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-127",
+      "numero": 127,
+      "personnage": "per-007",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-128",
+      "numero": 128,
+      "personnage": "per-011",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-129",
+      "numero": 129,
+      "personnage": "per-018",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-130",
+      "numero": 130,
+      "personnage": "per-025",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-131",
+      "numero": 131,
+      "personnage": "per-027",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-132",
+      "numero": 132,
+      "personnage": "per-040",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-133",
+      "numero": 133,
+      "personnage": "per-041",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-134",
+      "numero": 134,
+      "personnage": "per-049",
+      "finition": "alternative",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-135",
+      "numero": 135,
+      "personnage": "per-001",
+      "finition": "immersive",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-136",
+      "numero": 136,
+      "personnage": "per-007",
+      "finition": "immersive",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-137",
+      "numero": 137,
+      "personnage": "per-041",
+      "finition": "immersive",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-138",
+      "numero": 138,
+      "personnage": "per-006",
+      "finition": "couronne",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-139",
+      "numero": 139,
+      "personnage": "per-007",
+      "finition": "couronne",
+      "secrete": true,
+      "images": {}
+    },
+    {
+      "id": "lan-140",
+      "numero": 140,
+      "personnage": "per-027",
+      "finition": "couronne",
+      "secrete": true,
+      "images": {}
+    }
+  ]
+}

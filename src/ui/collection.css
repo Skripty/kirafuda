@@ -1,0 +1,112 @@
+.col {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.col button,
+.col select,
+.col-retour {
+  font: inherit;
+  color: var(--texte);
+  background: var(--surface);
+  border: 1px solid var(--texte-secondaire);
+  border-radius: var(--rayon);
+  padding: 8px 14px;
+  min-width: 0;
+}
+.col button { cursor: pointer; }
+.col button:focus-visible,
+.col select:focus-visible,
+.col-retour:focus-visible { outline: 2px solid var(--texte); outline-offset: 2px; }
+
+.col-entete { display: flex; align-items: center; gap: 16px; }
+.col-retour { text-decoration: none; }
+.col-entete h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+
+.col-completion p { margin: 0 0 6px; font-variant-numeric: tabular-nums; }
+.col-barre { height: 8px; border-radius: 999px; background: var(--surface); overflow: hidden; }
+.col-barre span { display: block; height: 100%; background: var(--texte); transform-origin: left center; }
+
+.col-filtres { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; align-items: end; }
+.col-filtre { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.col-filtre span { font-size: 0.8rem; color: var(--texte-secondaire); }
+.col-filtre select { width: 100%; }
+.col-resume { margin: 0; color: var(--texte-secondaire); font-size: 0.9rem; }
+
+.col-grille {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  /* Au moins 3 colonnes sur téléphone, cartes de 140 px au plus large sur ordinateur. */
+  grid-template-columns: repeat(auto-fill, minmax(min(140px, calc((100% - 20px) / 3)), 1fr));
+  gap: 14px 10px;
+}
+.col-grille li { min-width: 0; }
+
+.col .col-tuile {
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--rayon);
+}
+.col-tuile .carte { pointer-events: none; }
+.col-tuile-legende { font-size: 0.8rem; color: var(--texte-secondaire); }
+.col-tuile-cote { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 6px; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+.col-tuile-cote span:last-child { color: var(--texte-secondaire); }
+.col-tuile-cote.hausse span:last-child { color: var(--texte); font-weight: 600; }
+.col-inspection-cote { margin: 0; text-align: center; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+
+/* Carte manquante : silhouette et numéro seulement. */
+.col-manquante {
+  position: relative;
+  aspect-ratio: 5 / 7;
+  border-radius: 5%;
+  border: 1px dashed var(--texte-secondaire);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  opacity: 0.55;
+}
+.col-manquante svg { width: 70%; fill: var(--surface); }
+.col-manquante.secrete { border-style: dotted; }
+.col-manquante-rarete { position: absolute; top: calc(8% + 1.3em); left: 0; right: 0; text-align: center; font-size: 0.75rem; color: var(--texte-secondaire); }
+.col .col-finition:disabled { opacity: 0.55; cursor: default; }
+.col-manquante-numero {
+  position: absolute;
+  top: 8%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--texte-secondaire);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Inspection ---------- */
+.col-inspection {
+  width: min(420px, calc(100vw - 24px));
+  max-height: calc(100dvh - 24px);
+  padding: 16px;
+  border: 1px solid var(--texte-secondaire);
+  border-radius: var(--rayon);
+  background: var(--fond);
+  color: var(--texte);
+}
+.col-inspection::backdrop { background: color-mix(in srgb, var(--graphite) 85%, transparent); }
+.col-inspection-contenu { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.col-inspection-haut { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.col-inspection-haut h2 { margin: 0; font-size: 1.15rem; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.col-inspection-infos { margin: 0; text-align: center; color: var(--texte-secondaire); font-size: 0.9rem; }
+.col-finitions { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.col .col-finition { display: flex; gap: 8px; align-items: baseline; font-size: 0.85rem; padding: 6px 12px; }
+.col .col-finition[aria-pressed='true'] { background: var(--texte); color: var(--fond); border-color: var(--texte); }

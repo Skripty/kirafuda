@@ -1,0 +1,11 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`rng à graine > suite figée : la graine 2026 donne toujours les mêmes valeurs 1`] = `
+[
+  52412,
+  69908,
+  57510,
+  31325,
+  16937,
+]
+`;

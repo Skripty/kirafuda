@@ -1,0 +1,28 @@
+.sauvegarde {
+  width: min(420px, 100%);
+  margin: 8px auto 0;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: var(--rayon);
+  text-align: left;
+  color: var(--texte);
+}
+.sauvegarde h2 { margin: 0 0 4px; font-size: 1rem; font-weight: 600; }
+.sauvegarde p { margin: 0; }
+.sauvegarde-resume { color: var(--texte-secondaire); font-size: 0.9rem; }
+.sauvegarde-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.sauvegarde button {
+  font: inherit;
+  color: var(--texte);
+  background: var(--fond);
+  border: 1px solid var(--texte-secondaire);
+  border-radius: var(--rayon);
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.sauvegarde button:focus-visible { outline: 2px solid var(--texte); outline-offset: 2px; }
+.sauvegarde-message:empty { display: none; }
+.sauvegarde-message { margin-top: 12px; font-size: 0.9rem; }
+.sauvegarde-message ul { margin: 8px 0 0; padding-left: 20px; color: var(--texte-secondaire); overflow-wrap: anywhere; }
+.sauvegarde-message.erreur { padding-left: 10px; border-left: 3px solid var(--texte); }
+.sauvegarde-message.ok { color: var(--texte-secondaire); }

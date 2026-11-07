@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Cartes de base</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 1440px; height: 760px; box-sizing: border-box; padding: 56px 72px; background: radial-gradient(60% 60% at 50% 55%, rgba(108,203,255,0.05) 0%, transparent 70%), #121316; color: #F2F2F0; font-family: Poppins, system-ui, sans-serif; display: flex; flex-direction: column; gap: 40px;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+    <div>
+      <div style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #8B8F98;">Cartes de base</div>
+      <h1 style="margin: 6px 0 0; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">Quatre raretés, une même famille</h1>
+    </div>
+    <p style="margin: 0; max-width: 460px; font-size: 14px; line-height: 1.6; color: #B4B7BE;">Fond sombre teinté par l'élément, filigrane de l'élément, nom et PV en gros, coûts en pastilles. Plus la carte est rare, plus le cadre et la lumière montent.</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; align-items: start;">
+    <sc-for list="{{cartes}}" as="c" hint-placeholder-count="4">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 22px;">
+        <dc-import name="Carte" personnage="{{c.p}}" rarete="{{c.r}}" numero="{{c.n}}" echelle="{{taille}}" hint-size="300px,420px"></dc-import>
+        <div style="width: 300px;">
+          <div style="display: flex; align-items: baseline; gap: 10px;"><span style="font-size: 15px; letter-spacing: 1px;">{{c.s}}</span><span style="font-size: 16px; font-weight: 600;">{{c.titre}}</span></div>
+          <p style="margin: 6px 0 0; font-size: 13px; line-height: 1.55; color: #8B8F98;">{{c.texte}}</p>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":760}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      taille: 1.2,
+      cartes: [
+        { s: '♦', titre: 'Commune', r: 'commune', n: '022/100', texte: 'Cadre graphite. Fond teinté par l’élément, filigrane discret.',
+          p: { nom: 'Himeno', serie: 'Chainsaw Man', rang: 'C', element: 'vent', pv: 60, attaques: [{ nom: 'Pas léger', cout: 1, degats: 20, effet: 'Esquive' }, { nom: 'Ouragan', cout: 3, degats: 120, effet: 'Recul 30' }] } },
+        { s: '♦♦', titre: 'Peu commune', r: 'peu-commune', n: '037/100', texte: 'Cadre acier plus clair, filet intérieur à la couleur de l’élément.',
+          p: { nom: 'Giyu Tomioka', serie: 'Demon Slayer', rang: 'B', element: 'eau', pv: 110, attaques: [{ nom: 'Bruine', cout: 1, degats: 20, effet: 'Soin 10' }, { nom: 'Danse des flots', cout: 2, degats: 60, effet: 'Soin 20' }] } },
+        { s: '♦♦♦', titre: 'Holo', r: 'holo', n: '017/100', texte: 'Film holographique animé sur l’illustration (il suit la souris en jeu).',
+          p: { nom: 'Denji', serie: 'Chainsaw Man', rang: 'A', element: 'feu', pv: 120, attaques: [{ nom: 'Poing de braise', cout: 1, degats: 30, effet: '' }, { nom: 'Envol du phénix', cout: 3, degats: 90, effet: 'Soin 20' }] } },
+        { s: '♦♦♦♦', titre: 'Holo intégrale', r: 'holo-integrale', n: '041/100', texte: 'Cadre argenté et film holographique sur toute la carte.',
+          p: { nom: 'Sung Jin-Woo', serie: 'Solo Leveling', rang: 'S', element: 'tenebres', pv: 160, attaques: [{ nom: 'Ombre furtive', cout: 1, degats: 30, effet: '' }, { nom: 'Pacte maudit', cout: 3, degats: 100, effet: 'Soin 30' }] } }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

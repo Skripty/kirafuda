@@ -1,0 +1,27 @@
+# Dépendances et build
+node_modules/
+dist/
+*.tsbuildinfo
+.vite/
+
+# Copies de sauvegarde faites par la page d’admin avant chaque écriture du JSON
+sauvegardes-admin/
+
+# Originaux des images, gardés par npm run images avant réduction
+originaux-images/
+
+# Secrets et réglages locaux
+.env
+.env.*
+!.env.example
+*.local
+
+# Journaux
+*.log
+npm-debug.log*
+
+# Systèmes et éditeurs
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/

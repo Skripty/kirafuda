@@ -1,0 +1,61 @@
+{
+  "id": "booster-lancement",
+  "extension": "lancement",
+  "nom": "Booster Lancement",
+  "cartesParBooster": 5,
+  "cout": {
+    "ressource": "sceaux",
+    "quantite": 1
+  },
+  "pointsParOuverture": 5,
+  "tauxExceptionnel": 50,
+  "emplacements": [
+    {
+      "emplacements": [
+        1,
+        2,
+        3
+      ],
+      "finitions": {
+        "commune": 100000
+      }
+    },
+    {
+      "emplacements": [
+        4
+      ],
+      "finitions": {
+        "peu-commune": 90000,
+        "holo": 5000,
+        "holo-integrale": 1666,
+        "pleine": 2572,
+        "alternative": 500,
+        "immersive": 222,
+        "couronne": 40
+      }
+    },
+    {
+      "emplacements": [
+        5
+      ],
+      "finitions": {
+        "peu-commune": 60000,
+        "holo": 20000,
+        "holo-integrale": 6664,
+        "pleine": 10288,
+        "alternative": 2000,
+        "immersive": 888,
+        "couronne": 160
+      }
+    }
+  ],
+  "tableExceptionnelle": {
+    "finitions": {
+      "pleine": 55000,
+      "alternative": 30000,
+      "immersive": 12000,
+      "couronne": 3000
+    }
+  },
+  "_note": "Poids entiers sur 100000. Chaque emplacement tire une finition (rareté), puis une carte de cette rareté à poids égaux. Emplacements 4 et 5 = taux de Pokémon TCG Pocket."
+}

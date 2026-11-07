@@ -1,0 +1,65 @@
+/* Écrans Probabilités et Historique. */
+.infos {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.infos button,
+.infos select,
+.infos-retour {
+  font: inherit;
+  color: var(--texte);
+  background: var(--surface);
+  border: 1px solid var(--texte-secondaire);
+  border-radius: var(--rayon);
+  padding: 8px 14px;
+  min-width: 0;
+}
+.infos button { cursor: pointer; }
+.infos button:focus-visible,
+.infos select:focus-visible,
+.infos-retour:focus-visible { outline: 2px solid var(--texte); outline-offset: 2px; }
+.infos-entete { display: flex; align-items: center; gap: 16px; }
+.infos-entete h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+.infos-retour { text-decoration: none; }
+.infos-intro { margin: 0; color: var(--texte-secondaire); font-size: 0.88rem; }
+
+.infos-bloc { padding: 14px 16px; background: var(--surface); border-radius: var(--rayon); display: grid; gap: 10px; }
+.infos-bloc h2 { margin: 0; font-size: 1.05rem; font-weight: 600; }
+.infos-bloc p { margin: 0; }
+
+.infos-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
+.infos-table caption { text-align: left; font-weight: 600; font-size: 0.85rem; color: var(--texte-secondaire); padding-bottom: 4px; }
+.infos-table th,
+.infos-table td { padding: 6px 4px; border-bottom: 1px solid color-mix(in srgb, var(--gris-acier) 30%, transparent); text-align: left; }
+.infos-table thead th { font-size: 0.78rem; font-weight: 500; color: var(--texte-secondaire); }
+.infos-table tbody th { font-weight: 500; }
+.infos-table .nombre { text-align: right; white-space: nowrap; }
+
+.infos-champ { display: flex; flex-direction: column; gap: 4px; }
+.infos-champ span { font-size: 0.8rem; color: var(--texte-secondaire); }
+.infos-champ select { width: 100%; }
+
+.infos-historique { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.infos-ouverture { padding: 12px 14px; background: var(--surface); border-radius: var(--rayon); display: grid; gap: 8px; }
+.infos-ouverture-haut { display: flex; flex-direction: column; gap: 2px; }
+.infos-ouverture-haut strong { font-weight: 600; font-size: 0.92rem; }
+.infos-ouverture-haut span { font-size: 0.82rem; color: var(--texte-secondaire); }
+.infos-cartes { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 0.86rem; }
+.infos-cartes li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0 10px;
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+.infos-cartes li span:first-child { overflow-wrap: anywhere; }
+.infos-finition { grid-column: 1; font-size: 0.8rem; color: var(--texte-secondaire); }
+.infos-cartes li strong { grid-column: 2; grid-row: 1 / 3; align-self: center; }
+.infos-surligne { outline: 1px solid var(--texte); }
+.infos-non-revelee { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.88rem; }
+.infos-non-revelee p { margin: 0; color: var(--texte-secondaire); flex: 1 1 200px; }
+.infos-plus { align-self: center; }

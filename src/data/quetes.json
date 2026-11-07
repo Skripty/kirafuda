@@ -1,0 +1,57 @@
+{
+  "_note": "Réglages des quêtes et des sceaux (voir docs/GDD-resume.md, section Économie). Les compteurs sont alimentés par les événements du jeu. Tous les chiffres sont à équilibrer ici.",
+  "connexion": { "sceauxParJour": 2, "plafondStock": 10 },
+  "quetesDuJour": {
+    "nombreParJour": 3,
+    "recompenseToutesFaites": { "sceaux": 1 },
+    "reserve": [
+      { "id": "ouvrir-2", "texte": "Ouvre 2 boosters", "evenement": "booster-ouvert", "objectif": 2 },
+      { "id": "ouvrir-3", "texte": "Ouvre 3 boosters", "evenement": "booster-ouvert", "objectif": 3 },
+      { "id": "rarete-pc", "texte": "Obtiens une carte ♦♦ ou plus", "evenement": "carte-obtenue", "filtre": { "rareteMin": "peu-commune" }, "objectif": 1 },
+      { "id": "rarete-holo", "texte": "Obtiens une carte ♦♦♦ ou plus", "evenement": "carte-obtenue", "filtre": { "rareteMin": "holo" }, "objectif": 1 },
+      { "id": "nouvelle", "texte": "Obtiens une carte que tu n'avais pas", "evenement": "carte-obtenue", "filtre": { "nouvelle": true }, "objectif": 1 },
+      { "id": "element-du-jour", "texte": "Obtiens 2 cartes de l'élément du jour", "evenement": "carte-obtenue", "filtre": { "element": "du-jour" }, "objectif": 2 },
+      { "id": "serie-du-jour", "texte": "Obtiens une carte de la série du jour", "evenement": "carte-obtenue", "filtre": { "serie": "du-jour" }, "objectif": 1 },
+      { "id": "inspecter-3", "texte": "Inspecte 3 cartes dans ta collection", "evenement": "carte-inspectee", "objectif": 3 },
+      { "id": "cote", "texte": "Consulte la cote de la semaine", "evenement": "cote-consultee", "objectif": 1 },
+      { "id": "revendre", "texte": "Revends un doublon", "evenement": "doublon-revendu", "objectif": 1 },
+      { "id": "probabilites", "texte": "Consulte les probabilités d'un booster", "evenement": "probabilites-consultees", "objectif": 1 }
+    ],
+    "_tirage": "3 quêtes différentes par jour, tirées avec la graine de la date (AAAA-MM-JJ), les mêmes pour tous. Élément et série du jour tirés avec la même graine parmi ceux des extensions sorties. Au plus une quête « ouvrir » par jour."
+  },
+  "tableGarantie": {
+    "_note": "Booster garanti (tout premier booster, jour 7 du calendrier) : rareté de la 5e carte. Poids entiers sur 100 000 ; ★ ou plus uniquement.",
+    "finitions": { "pleine": 100000 }
+  },
+  "calendrierBienvenue": {
+    "_note": "Avance d'une case par jour joué (pas par jour calendaire). Le booster garanti contient une carte ★ ou plus en 5e position.",
+    "jours": [
+      { "jour": 1, "sceaux": 4, "boosterGaranti": true },
+      { "jour": 2, "sceaux": 3 },
+      { "jour": 3, "sceaux": 3 },
+      { "jour": 4, "sceaux": 2 },
+      { "jour": 5, "sceaux": 2 },
+      { "jour": 6, "sceaux": 2 },
+      { "jour": 7, "sceaux": 4, "boosterGaranti": true }
+    ]
+  },
+  "quetesDebutant": [
+    { "id": "premier-booster", "texte": "Ouvre ton premier booster", "evenement": "booster-ouvert", "objectif": 1, "sceaux": 2 },
+    { "id": "trente-boosters", "texte": "Ouvre 30 boosters", "evenement": "booster-ouvert", "objectif": 30, "sceaux": 2 },
+    { "id": "inspecter", "texte": "Inspecte une carte dans ta collection", "evenement": "carte-inspectee", "objectif": 1, "sceaux": 1 },
+    { "id": "boutique", "texte": "Échange des points contre une carte en boutique", "evenement": "achat-boutique", "objectif": 1, "sceaux": 1 },
+    { "id": "cartes-25", "texte": "Possède 25 cartes différentes", "evenement": "collection", "objectif": 25, "sceaux": 1 },
+    { "id": "cartes-75", "texte": "Possède 75 cartes différentes", "evenement": "collection", "objectif": 75, "sceaux": 2 },
+    { "id": "serie", "texte": "Complète toutes les cartes de base d'une série", "evenement": "serie-complete", "objectif": 1, "sceaux": 2 },
+    { "id": "trois-drafts", "texte": "Joue 3 drafts", "evenement": "draft-joue", "objectif": 3, "sceaux": 2 }
+  ],
+  "hebdomadaire": {
+    "_note": "Semaine du lundi au dimanche (heure locale).",
+    "participationDraft": { "sceaux": 2 },
+    "queteSemaine": { "id": "ouvrir-15", "texte": "Ouvre 15 boosters cette semaine", "evenement": "booster-ouvert", "objectif": 15, "sceaux": 1 }
+  },
+  "calendrierLancementExtension": {
+    "_note": "Pour une nouvelle extension, les 7 jours suivant sa sortie (tâche 20).",
+    "jours": [2, 2, 1, 1, 1, 1, 2]
+  }
+}

@@ -1,0 +1,403 @@
+<title>Atelier des cartes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout : liste des personnages | fiche et images par finition | aperçu collant de la carte */
+:root{
+  --bg:#f3f2f6; --panel:#ffffff; --ink:#1c1b23; --muted:#67657a; --line:#dcdae4; --soft:#ecebf2;
+  --accent:#5a3fd6; --accent-ink:#ffffff; --ok:#1d8457; --warn:#a86300; --danger:#bd3326; --stage:#e4e2ec;
+  --f-ui:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace; --f-card:"Barlow Condensed","Arial Narrow",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#131218; --panel:#1b1a22; --ink:#ecebf4; --muted:#a19fb3; --line:#302e3b; --soft:#24232d;
+  --accent:#a593ff; --accent-ink:#131218; --ok:#4cc38a; --warn:#f0a43a; --danger:#ff6f61; --stage:#0d0c12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#131218; --panel:#1b1a22; --ink:#ecebf4; --muted:#a19fb3; --line:#302e3b; --soft:#24232d;
+  --accent:#a593ff; --accent-ink:#131218; --ok:#4cc38a; --warn:#f0a43a; --danger:#ff6f61; --stage:#0d0c12; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:14px/1.5 var(--f-ui);padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{margin:0;font-weight:600;text-wrap:balance}
+h1{font-size:22px;letter-spacing:-.01em}
+h2{font-size:15px}
+.lbl{font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 12px}
+button:hover{border-color:var(--muted)}
+button:focus-visible,input:focus-visible,select:focus-visible,.drop:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500}
+button.danger{color:var(--danger)}
+button[disabled]{opacity:.5;cursor:default}
+input,select{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:7px 10px;min-width:0}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;max-width:1440px;margin:0 auto 16px}
+.top p{margin:0;color:var(--muted)}
+.status{margin-left:auto;font:500 12px var(--f-mono);padding:4px 10px;border-radius:99px;background:var(--soft)}
+.status.dirty{color:var(--warn)}.status.ok{color:var(--ok)}
+.banner{max-width:1440px;margin:0 auto 16px;padding:10px 14px;border:1px solid var(--warn);border-radius:10px;color:var(--warn);background:var(--panel)}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr) 320px;gap:16px;max-width:1440px;margin:0 auto;align-items:start}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;min-width:0}
+.list{display:flex;flex-direction:column;gap:10px}
+.list ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;max-height:60vh;overflow:auto}
+.list li button{width:100%;text-align:left;border:none;background:none;padding:8px;border-radius:8px;display:grid;grid-template-columns:1fr auto;gap:2px 8px}
+.list li button:hover{background:var(--soft)}
+.list li button[aria-current="true"]{background:var(--soft);box-shadow:inset 3px 0 0 var(--accent);border-radius:0 8px 8px 0}
+.list .n{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list .s{grid-column:1;color:var(--muted);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dots{grid-column:2;grid-row:1/3;display:flex;gap:3px;align-items:center}
+.dots i{width:7px;height:7px;border-radius:50%;border:1px solid var(--muted);display:block}
+.dots i.on{background:var(--accent);border-color:var(--accent)}
+.tag{font:500 10.5px var(--f-mono);color:var(--warn);text-transform:uppercase;letter-spacing:.05em}
+.empty{color:var(--muted);padding:12px 4px;font-size:13px}
+.editor{display:flex;flex-direction:column;gap:18px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row .grow{flex:1}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 12px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.atk{display:grid;grid-template-columns:minmax(0,1fr) 80px 80px;gap:8px}
+.inline{padding:10px 12px;border-radius:10px;background:var(--soft);display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.err{color:var(--danger);font-size:13px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.tile{border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;cursor:pointer;background:var(--panel)}
+.tile[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.tile .th{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.tile .sym{font:600 13px var(--f-mono);color:var(--accent)}
+.tile .hint{font-size:12px;color:var(--muted);margin:0}
+.st{font:500 11px var(--f-mono)}.st.own{color:var(--ok)}.st.fb{color:var(--muted)}.st.miss{color:var(--warn)}
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}
+.drop{position:relative;aspect-ratio:3/4;border:1px dashed var(--muted);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;font-size:12px;color:var(--muted);overflow:hidden;background:var(--bg);max-width:100%}
+.drop.has{border-style:solid;border-color:var(--line)}
+.drop.active{border-color:var(--accent);border-style:solid;box-shadow:0 0 0 1px var(--accent)}
+.drop.over{border-color:var(--accent);background:var(--soft)}
+.drop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.drop .cap{position:absolute;left:0;right:0;bottom:0;padding:3px 4px;background:#000a;color:#fff;font:500 10.5px var(--f-mono)}
+.drop .x{position:absolute;top:4px;right:4px;padding:1px 6px;font-size:11px;background:#000b;color:#fff;border:none;border-radius:6px}
+.drop .busy{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--panel);color:var(--ink)}
+.preview{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);display:flex;flex-direction:column;gap:12px}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.seg button{padding:6px 4px;font-size:12px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.stage{background:var(--stage);border-radius:12px;padding:18px 0;display:flex;justify-content:center;perspective:900px;touch-action:none}
+.ctl{display:flex;flex-direction:column;gap:8px}
+.ctl label{display:grid;grid-template-columns:70px minmax(0,1fr) 44px;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.ctl output{font:500 12px var(--f-mono);text-align:right;color:var(--ink);font-variant-numeric:tabular-nums}
+.ctl input[type=range]{padding:0;border:none;background:none}
+.note{font-size:12.5px;color:var(--muted);margin:0}
+@media (max-width:1100px){.layout{grid-template-columns:220px minmax(0,1fr)}.preview{grid-column:1/-1;position:static}}
+@media (max-width:720px){.layout{grid-template-columns:minmax(0,1fr)}.list ul{max-height:none}}
+
+/* ---------- La carte (objet physique, mêmes couleurs dans les deux thèmes) ---------- */
+.tc{--x:0;--mx:50%;position:relative;width:260px;max-width:100%;aspect-ratio:5/7;border-radius:13px;overflow:hidden;background:#f4efe1;border:7px solid #d8cd98;transform:rotateY(calc(var(--x) * 8deg));transition:transform .15s;font-family:var(--f-card);color:#2a2410;user-select:none}
+.tc .art{position:absolute;left:9px;right:9px;top:38px;height:43%;overflow:hidden;border:2px solid #8a7d4a;background:#6e7fa8}
+.tc .layer{position:absolute;inset:0}
+.tc .layer.bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tc .layer.chr img.perso{position:absolute;transform:translateX(-50%);max-width:none;width:auto}
+.tc .hdr{position:absolute;left:9px;right:9px;top:8px;height:26px;display:flex;align-items:center;gap:6px;z-index:3}
+.tc .nm{flex:1;font-size:19px;font-weight:700;line-height:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tc .hp{font-size:13px;font-weight:600}
+.tc .af{width:24px;height:24px;border-radius:50%;background:var(--aff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;box-shadow:inset 0 0 0 2px #ffffff55}
+.tc .txt{position:absolute;left:9px;right:9px;bottom:8px;top:calc(43% + 46px);display:flex;flex-direction:column;gap:5px;z-index:3;font-size:14px}
+.tc .ser{font-size:12.5px;font-style:italic;opacity:.75;font-family:var(--f-ui)}
+.tc .ak{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid #00000022}
+.tc .ak b{flex:1;font-weight:600;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tc .ak .dg{font-weight:700;font-size:17px}
+.tc .cost{display:flex;gap:2px}.tc .cost i{width:10px;height:10px;border-radius:50%;background:var(--aff);display:block}
+.tc .ftr{margin-top:auto;display:flex;justify-content:space-between;font-size:12.5px;opacity:.8}
+.tc .holo,.tc .foil{position:absolute;inset:0;pointer-events:none;opacity:0;mix-blend-mode:color-dodge;background:repeating-linear-gradient(115deg,#ff3c8a40 0%,#ffd23c40 8%,#3cffb040 16%,#3c8aff40 24%,#c23cff40 32%,#ff3c8a40 40%);background-size:200% 200%;background-position:var(--mx) 50%;z-index:2}
+.tc .foil{background:repeating-linear-gradient(60deg,#ffffff00 0 6px,#ffffff30 6px 7px),repeating-linear-gradient(115deg,#ff3c8a33 0%,#ffd23c33 10%,#3cffb033 20%,#3c8aff33 30%,#ff3c8a33 40%);background-size:auto,200% 200%;background-position:0 0,var(--mx) 50%;z-index:4}
+.tc.f-holo .holo{opacity:1}.tc.f-holo{border-color:#cfc6e8}
+.tc.full .art{left:0;right:0;top:0;height:100%;border:none}
+.tc.full .hdr{background:#0b0b1480;color:#fff;padding:0 8px;border-radius:8px;left:6px;right:6px;top:6px}
+.tc.full .txt{top:auto;height:44%;background:#0b0b14b8;color:#fff;padding:8px;border-radius:8px;left:6px;right:6px;bottom:6px}
+.tc.full .ak{border-color:#ffffff30}
+.tc.f-pleine .foil,.tc.f-immersive .foil{opacity:1}
+.tc.f-pleine{border-color:#c9c4e8}.tc.f-alt{border-color:#9fd3f0}.tc.f-immersive{border-color:#ffb3e0}
+.tc.f-immersive .layer.bg{transform:translateX(calc(var(--x) * -10px)) scale(1.06)}
+.tc.f-immersive .layer.chr{transform:translateX(calc(var(--x) * 12px))}
+.tc.f-immersive .foil{animation:fo 5s linear infinite}
+@keyframes fo{to{background-position:0 0,200% 50%}}
+.tc.f-couronne{border-color:#e6c25a;background:#2a2410}
+.tc.f-couronne .art{filter:sepia(1) saturate(2.4) hue-rotate(-10deg) brightness(1.05)}
+.tc.f-couronne .txt,.tc.f-couronne .hdr{background:#2a2410d0;color:#ffe08a}
+.tc.f-couronne .foil{opacity:1;filter:sepia(1) saturate(3)}
+.tc canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+.scene{position:absolute;inset:0;background:repeating-conic-gradient(from 0deg at 50% 60%,#ffffff2e 0 3deg,#ffffff00 3deg 9deg),radial-gradient(circle,#ffffff30 1px,transparent 1.4px) 0 0/6px 6px,radial-gradient(circle at 50% 60%,#ffffffcc,var(--aff) 55%,#1a1530)}
+.ph{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center}
+.ph svg{height:88%}
+.ph span{position:absolute;top:8px;left:0;right:0;text-align:center;font:500 11px var(--f-mono);color:#ffffffd9}
+@media (prefers-reduced-motion:reduce){.tc,.tc .layer{transition:none!important;transform:none!important}.tc .foil{animation:none!important}}
+</style>
+
+<header class="top">
+  <div>
+    <h1>Atelier des cartes</h1>
+    <p>Ajoute les images de chaque personnage, finition par finition, et vérifie le rendu en direct.</p>
+  </div>
+  <span class="status" id="status" role="status">Chargement…</span>
+</header>
+<div class="banner" id="banner" hidden></div>
+
+<main class="layout">
+  <aside class="panel list" aria-label="Personnages">
+    <div class="row"><h2 class="grow">Personnages</h2><span class="lbl" id="count"></span></div>
+    <input id="search" type="search" placeholder="Rechercher un nom ou une série" aria-label="Rechercher">
+    <button id="new" class="primary">Nouveau personnage</button>
+    <ul id="list"></ul>
+  </aside>
+
+  <section class="panel editor" id="editor" aria-label="Fiche du personnage"></section>
+
+  <aside class="panel preview" aria-label="Aperçu">
+    <div class="row"><h2 class="grow">Aperçu</h2><span class="lbl">bouge la souris sur la carte</span></div>
+    <div class="seg" id="seg"></div>
+    <div class="stage" id="stage"></div>
+    <p class="note" id="pnote"></p>
+    <div class="ctl" id="ctl"></div>
+  </aside>
+</main>
+
+<script>
+const FIN=[
+ {k:'commune',n:'Commune',s:'♦',slots:['image'],hint:"Portrait recadré dans la fenêtre, environ 40 % de la carte. Sert aussi de peu commune (♦♦)."},
+ {k:'holo',n:'Rare holo',s:'♦♦♦',slots:['image'],hint:"Vide : reprend l'image commune avec le film holographique."},
+ {k:'pleine',n:'Pleine illustration',s:'★',slots:['image'],hint:"Image haute et nette qui couvre toute la carte (1000 px de haut ou plus)."},
+ {k:'alt',n:'Illustration alternative',s:'★★',slots:['perso','fond'],hint:"Personnage détouré (PNG transparent) posé sur un fond. Fond vide : scène générée."},
+ {k:'immersive',n:'Immersive animée',s:'★★★',slots:['perso','fond'],hint:"Mêmes calques que l'alternative, avec profondeur, film animé et particules."},
+ {k:'couronne',n:'Couronne',s:'♛',slots:['image'],hint:"Vide : reprend la pleine illustration, passée en doré."}];
+const FB=Object.fromEntries(FIN.map(f=>[f.k,f]));
+const SLOTN={image:'Image',perso:'Personnage détouré',fond:'Fond'};
+const AFF={feu:{n:'Feu',g:'Fe',c:'#de4f24'},eau:{n:'Eau',g:'Ea',c:'#2a78d6'},glace:{n:'Glace',g:'Gl',c:'#4fb8d3'},foudre:{n:'Foudre',g:'Fo',c:'#9454dc'},vent:{n:'Vent',g:'Ve',c:'#33b58e'},terre:{n:'Terre',g:'Te',c:'#a26b2e'},lumiere:{n:'Lumière',g:'Lu',c:'#d6a41a'},tenebres:{n:'Ténèbres',g:'Té',c:'#3e3358'},neutre:{n:'Neutre',g:'Ne',c:'#8a8579'}};
+const WEAK={feu:'eau',eau:'foudre',foudre:'terre',terre:'vent',vent:'glace',glace:'feu',lumiere:'tenebres',tenebres:'lumiere',neutre:null};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone=o=>JSON.parse(JSON.stringify(o));
+
+let db=null,assets=null,user=null,canWrite=true,mode='loading';
+let chars=[],selId=null,draft=null,dirty=false,fin='commune',activeSlot='image',filter='';
+let pendingSwitch=null,confirmDel=false,formErr='',busySlot=null;
+const localURL={};
+
+function blank(){return{nom:'',serie:'',numero:'',pv:100,affinite:'neutre',attaques:[{nom:'',cout:1,degats:30},{nom:'',cout:2,degats:70}],finitions:{},exemple:false}}
+function srcOf(s){if(!s)return null;if(s.local)return s.local;if(s.id)return '/_blob/'+s.id;return null}
+function own(c,fk,slot){return c.finitions?.[fk]?.[slot]||null}
+function resolve(c,fk,slot){
+  const o=own(c,fk,slot);if(srcOf(o))return{src:srcOf(o),s:o,from:null};
+  const chain={holo:[['commune','image']],pleine:[['commune','image']],couronne:[['pleine','image'],['commune','image']],
+    alt:slot==='perso'?[['pleine','image'],['commune','image']]:[],immersive:slot==='perso'?[['alt','perso'],['pleine','image'],['commune','image']]:[['alt','fond']]}[fk]||[];
+  for(const[k,sl]of chain){const t=own(c,k,sl);if(srcOf(t))return{src:srcOf(t),s:t,from:k}}
+  return{src:null,s:null,from:null};
+}
+function ownCount(c){return FIN.filter(f=>srcOf(own(c,f.k,f.slots[0]))).length}
+
+/* ---------- Carte ---------- */
+function imgTag(r){const z=r.s.z??100,x=r.s.x??50,y=r.s.y??50;return `<img src="${esc(r.src)}" alt="" draggable="false" style="object-position:${x}% ${y}%;transform:scale(${z/100});transform-origin:${x}% ${y}%">`}
+function persoTag(r){const z=r.s.z??100,x=r.s.x??50,y=r.s.y??50;return `<img class="perso" src="${esc(r.src)}" alt="" draggable="false" style="height:${(78*z/100).toFixed(1)}%;left:${x}%;bottom:${(50-y).toFixed(1)}%">`}
+function placeholder(){return `<div class="ph"><span>Pas encore d'image</span><svg viewBox="0 0 100 110"><path d="M16 110 Q20 76 50 72 Q80 76 84 110Z" fill="#00000055"/><circle cx="50" cy="50" r="20" fill="#00000055"/></svg></div>`}
+function cardHTML(c,fk){
+  const f=FB[fk],a=AFF[c.affinite]||AFF.neutre,w=AFF[WEAK[c.affinite]];
+  const full=['pleine','alt','immersive','couronne'].includes(fk);
+  let art;
+  if(fk==='alt'||fk==='immersive'){const fd=resolve(c,fk,'fond'),pr=resolve(c,fk,'perso');
+    art=`<div class="layer bg">${fd.src?imgTag(fd):'<div class="scene"></div>'}</div><div class="layer chr">${pr.src?persoTag(pr):placeholder()}</div>`}
+  else{const r=resolve(c,fk,'image');art=`<div class="layer bg">${r.src?imgTag(r):'<div class="scene"></div>'+placeholder()}</div>`}
+  const atk=(c.attaques||[]).filter(x=>x.nom||x.degats).map(x=>`<div class="ak"><span class="cost">${'<i></i>'.repeat(Math.max(0,Math.min(4,+x.cout||0)))}</span><b>${esc(x.nom||'Attaque')}</b><span class="dg">${esc(x.degats||'')}</span></div>`).join('');
+  return `<div class="tc ${full?'full ':''}f-${fk}" id="card" style="--aff:${a.c}">
+    <div class="art">${art}<div class="holo"></div></div>
+    <div class="hdr"><span class="nm">${esc(c.nom||'Nom du personnage')}</span><span class="hp">PV ${esc(c.pv||'')}</span><span class="af" title="${esc(a.n)}">${esc(a.g)}</span></div>
+    <div class="txt"><span class="ser">${esc(c.serie||'Série d’origine')}</span>${atk}
+      <div class="ftr"><span>Faiblesse : ${esc(w?w.n:'—')}</span><span>${esc(c.numero||'000/000')} ${f.s}</span></div></div>
+    <div class="foil"></div><canvas id="fx"></canvas></div>`;
+}
+
+/* ---------- Rendu ---------- */
+function setStatus(){
+  const s=$('status');
+  if(mode==='loading'){s.textContent='Chargement…';s.className='status';return}
+  if(!canWrite){s.textContent='Lecture seule';s.className='status';return}
+  if(dirty){s.textContent='Modifications non enregistrées';s.className='status dirty'}
+  else{s.textContent=mode==='local'?'Aperçu local':'Tout est enregistré';s.className='status ok'}
+}
+function renderList(){
+  const ul=$('list'),q=filter.trim().toLowerCase();
+  const items=chars.filter(c=>!q||(c.nom+' '+c.serie).toLowerCase().includes(q)).sort((a,b)=>String(a.nom).localeCompare(b.nom,'fr'));
+  $('count').textContent=chars.length?chars.length+' fiche'+(chars.length>1?'s':''):'';
+  if(mode==='loading'){ul.innerHTML='<li class="empty">Chargement du catalogue…</li>';return}
+  if(!chars.length){ul.innerHTML='<li class="empty">Aucun personnage pour l’instant. Crée la première fiche, puis dépose son image commune.</li>';return}
+  if(!items.length){ul.innerHTML='<li class="empty">Aucun résultat.</li>';return}
+  ul.innerHTML=items.map(c=>`<li><button data-id="${esc(c.id)}" aria-current="${c.id===selId}"><span class="n">${esc(c.nom||'Sans nom')}${c.exemple?' <span class="tag">exemple</span>':''}</span><span class="s">${esc(c.serie||'—')} · ${ownCount(c)}/6 images</span><span class="dots">${FIN.map(f=>`<i class="${srcOf(own(c,f.k,f.slots[0]))?'on':''}" title="${esc(f.n)}"></i>`).join('')}</span></button></li>`).join('');
+}
+function renderEditor(){
+  const el=$('editor');
+  if(!draft){el.innerHTML=`<div class="empty"><h2>Choisis un personnage</h2><p>Sélectionne une fiche à gauche ou crée un nouveau personnage pour commencer.</p></div>`;return}
+  const d=draft,ro=canWrite?'':'disabled';
+  const affOpts=sel=>Object.entries(AFF).map(([k,v])=>`<option value="${k}" ${k===sel?'selected':''}>${v.n}</option>`).join('');
+  el.innerHTML=`
+  ${pendingSwitch?`<div class="inline"><span class="grow">Cette fiche a des modifications non enregistrées.</span><button data-act="save-switch" class="primary">Enregistrer et continuer</button><button data-act="discard-switch">Abandonner</button><button data-act="stay">Rester ici</button></div>`:''}
+  <div class="row"><h2 class="grow">${esc(d.nom||'Nouveau personnage')}</h2>
+    ${canWrite?`<button data-act="save" class="primary" ${dirty?'':'disabled'}>Enregistrer</button>${selId?`<button data-act="del" class="danger">Supprimer</button>`:''}`:''}</div>
+  ${confirmDel?`<div class="inline"><span class="grow">Supprimer « ${esc(d.nom||'Sans nom')} » ? La fiche disparaît du catalogue.</span><button data-act="del-yes" class="danger">Supprimer définitivement</button><button data-act="del-no">Annuler</button></div>`:''}
+  ${formErr?`<p class="err" role="alert">${esc(formErr)}</p>`:''}
+  <div class="form">
+    <label class="field"><span class="lbl">Nom</span><input id="f-nom" data-k="nom" value="${esc(d.nom)}" placeholder="Nom du personnage" ${ro}></label>
+    <label class="field"><span class="lbl">Série</span><input id="f-serie" data-k="serie" value="${esc(d.serie)}" placeholder="Titre de l'anime" ${ro}></label>
+    <label class="field"><span class="lbl">Numéro</span><input id="f-numero" data-k="numero" value="${esc(d.numero)}" placeholder="034/120" ${ro}></label>
+    <label class="field"><span class="lbl">PV</span><input id="f-pv" data-k="pv" type="number" min="10" max="400" step="10" value="${esc(d.pv)}" ${ro}></label>
+    <label class="field"><span class="lbl">Élément</span><select id="f-aff" data-k="affinite" ${ro}>${affOpts(d.affinite)}</select></label>
+    <div class="field"><span class="lbl">Faiblesse (automatique)</span><input id="f-faib" value="${esc(AFF[WEAK[d.affinite]]?.n||'Aucune')}" disabled aria-label="Faiblesse"></div>
+  </div>
+  <div class="field"><span class="lbl">Attaques (nom · coût · dégâts)</span>
+    ${[0,1].map(i=>`<div class="atk"><input id="a${i}-n" data-a="${i}" data-f="nom" value="${esc(d.attaques[i]?.nom)}" placeholder="Attaque ${i+1}" aria-label="Nom de l'attaque ${i+1}" ${ro}><input id="a${i}-c" data-a="${i}" data-f="cout" type="number" min="0" max="4" value="${esc(d.attaques[i]?.cout)}" aria-label="Coût" ${ro}><input id="a${i}-d" data-a="${i}" data-f="degats" type="number" min="0" max="300" step="10" value="${esc(d.attaques[i]?.degats)}" aria-label="Dégâts" ${ro}></div>`).join('')}
+  </div>
+  <div class="row"><h2 class="grow">Images par finition</h2><span class="lbl">glisser-déposer · clic · Ctrl+V</span></div>
+  <div class="tiles" id="tiles"></div>`;
+  renderTiles();
+}
+function renderTiles(){
+  const t=$('tiles');if(!t||!draft)return;
+  t.innerHTML=FIN.map(f=>{
+    const main=resolve(draft,f.k,f.slots[0]),has=!!srcOf(own(draft,f.k,f.slots[0]));
+    const st=has?'<span class="st own">image propre</span>':main.from?`<span class="st fb">reprend ${esc(FB[main.from].n)}</span>`:(f.k==='commune'?'<span class="st miss">manquante</span>':'<span class="st fb">aucune image</span>');
+    const slots=f.slots.map(sl=>{const s=own(draft,f.k,sl),src=srcOf(s),act=fin===f.k&&activeSlot===sl,busy=busySlot===f.k+'/'+sl;
+      return `<div class="drop ${src?'has':''} ${act?'active':''}" tabindex="0" role="button" aria-label="${esc(SLOTN[sl])} pour ${esc(f.n)}" data-fin="${f.k}" data-slot="${sl}">
+        ${src?`<img src="${esc(src)}" alt=""><span class="cap">${esc(SLOTN[sl])}</span>${canWrite?`<button class="x" data-rm="${f.k}/${sl}" aria-label="Retirer">Retirer</button>`:''}`:`<span>${esc(SLOTN[sl])}</span><span>${canWrite?'Déposer ou cliquer':'Aucune'}</span>`}
+        ${busy?'<span class="busy">Envoi…</span>':''}</div>`}).join('');
+    return `<div class="tile" data-tile="${f.k}" aria-pressed="${fin===f.k}"><div class="th"><strong>${esc(f.n)}</strong><span class="sym">${f.s}</span></div>${st}<p class="hint">${esc(f.hint)}</p><div class="slots">${slots}</div></div>`}).join('');
+}
+function renderSeg(){$('seg').innerHTML=FIN.map(f=>`<button data-fin="${f.k}" aria-pressed="${fin===f.k}" title="${esc(f.n)}">${f.s} ${esc(f.n.split(' ')[0])}</button>`).join('')}
+function renderPreview(){
+  const c=draft||blank();$('stage').innerHTML=cardHTML(c,fin);
+  const f=FB[fin],notes=[];
+  for(const sl of f.slots){const r=resolve(c,fin,sl);if(r.from)notes.push(`${SLOTN[sl]} reprise de « ${FB[r.from].n} ».`);else if(!r.src&&sl!=='fond')notes.push(`${SLOTN[sl]} manquante.`);else if(!r.src&&sl==='fond')notes.push('Fond généré automatiquement.')}
+  $('pnote').textContent=notes.join(' ')||'Toutes les images de cette finition sont propres à la carte.';
+  renderCtl();startFx();
+}
+function renderCtl(){
+  const el=$('ctl'),f=FB[fin];if(!f.slots.includes(activeSlot))activeSlot=f.slots[0];
+  const s=draft&&own(draft,fin,activeSlot);
+  if(!draft||!srcOf(s)){el.innerHTML=`<p class="note">${draft?`Ajoute une image « ${esc(SLOTN[activeSlot])} » à cette finition pour la cadrer.`:''}</p>`;return}
+  const z=s.z??100,x=s.x??50,y=s.y??50,dis=canWrite?'':'disabled';
+  el.innerHTML=`<span class="lbl">Cadrage · ${esc(SLOTN[activeSlot])}</span>
+   <label>Zoom<input id="c-z" type="range" min="50" max="300" step="1" value="${z}" data-c="z" ${dis}><output id="o-z">${z} %</output></label>
+   <label>Horizontal<input id="c-x" type="range" min="0" max="100" step="1" value="${x}" data-c="x" ${dis}><output id="o-x">${x} %</output></label>
+   <label>Vertical<input id="c-y" type="range" min="0" max="100" step="1" value="${y}" data-c="y" ${dis}><output id="o-y">${y} %</output></label>
+   ${canWrite?'<button data-act="reset-frame">Réinitialiser le cadrage</button>':''}`;
+}
+function renderAll(){setStatus();renderList();renderEditor();renderSeg();renderPreview()}
+function markDirty(){if(!dirty){dirty=true;setStatus();const b=document.querySelector('[data-act="save"]');if(b)b.disabled=false}}
+
+/* ---------- Particules (immersive) ---------- */
+let fxRun=0;
+function startFx(){
+  const run=++fxRun,cv=$('fx');if(!cv||fin!=='immersive'||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const ctx=cv.getContext('2d');cv.width=cv.clientWidth*2;cv.height=cv.clientHeight*2;
+  const P=Array.from({length:28},()=>({x:Math.random(),y:Math.random(),v:.001+Math.random()*.003,s:1+Math.random()*2.5,p:Math.random()*6}));
+  (function t(){if(run!==fxRun||!cv.isConnected)return;ctx.clearRect(0,0,cv.width,cv.height);
+    for(const q of P){q.y-=q.v;q.p+=.05;if(q.y<0){q.y=1;q.x=Math.random()}ctx.fillStyle='rgba(255,232,205,'+((Math.sin(q.p)+1)/2).toFixed(2)+')';ctx.beginPath();ctx.arc(q.x*cv.width,q.y*cv.height,q.s,0,6.283);ctx.fill()}
+    requestAnimationFrame(t)})();
+}
+
+/* ---------- Actions ---------- */
+function select(id){
+  if(dirty&&id!==selId){pendingSwitch=id;renderEditor();return}
+  selId=id;const c=chars.find(x=>x.id===id);draft=c?clone(c):null;if(draft){draft.attaques=draft.attaques||blank().attaques;draft.finitions=draft.finitions||{}}
+  dirty=false;pendingSwitch=null;confirmDel=false;formErr='';activeSlot=FB[fin].slots[0];renderAll();
+}
+function newChar(){
+  if(dirty){pendingSwitch='__new';renderEditor();return}
+  selId=null;draft=blank();dirty=true;confirmDel=false;formErr='';fin='commune';activeSlot='image';renderAll();
+  $('f-nom')?.focus();
+}
+function stripLocal(c){const o=clone(c);delete o.id;for(const f of Object.values(o.finitions||{}))for(const k of Object.keys(f)){if(f[k]&&f[k].local&&!f[k].id)delete f[k];else if(f[k])delete f[k].local}o.maj=new Date().toISOString();o.exemple=false;return o}
+async function save(){
+  if(!draft)return false;
+  if(!String(draft.nom).trim()){formErr='Donne un nom au personnage avant d’enregistrer.';renderEditor();$('f-nom')?.focus();return false}
+  formErr='';
+  if(mode==='local'){
+    if(!selId){draft.id='loc-'+Date.now();selId=draft.id;chars.push(clone(draft))}else{const i=chars.findIndex(c=>c.id===selId);chars[i]=clone(draft)}
+    draft.exemple=false;dirty=false;renderAll();return true}
+  try{
+    const col=db.collection('personnages'),ref=selId?col.doc(selId):col.doc();
+    await ref.set(stripLocal(draft));selId=ref.id;draft.id=ref.id;draft.exemple=false;dirty=false;renderAll();return true
+  }catch(e){formErr=e?.code==='quota_exceeded'?'Le catalogue est plein : supprime des fiches inutilisées avant d’en créer de nouvelles.':'L’enregistrement a échoué. Vérifie ta connexion et réessaie.';renderEditor();return false}
+}
+async function upload(fk,slot,file){
+  if(!file||!draft||!canWrite)return;
+  if(!/^image\/(png|jpeg|webp|gif)$/.test(file.type)){formErr='Format non pris en charge : utilise un PNG, JPEG, WebP ou GIF.';renderEditor();return}
+  formErr='';fin=fk;activeSlot=slot;busySlot=fk+'/'+slot;renderSeg();renderTiles();
+  let entry;
+  try{
+    if(assets){const r=await assets.upload(file);entry={id:r.id}}
+    else{const u=URL.createObjectURL(file);entry={local:u}}
+  }catch(e){busySlot=null;formErr=e?.code==='too_large'?'Image trop lourde : 20 Mo maximum.':e?.code==='quota_or_state'?'Plus de place pour les images. Supprime des images inutilisées.':'L’envoi de l’image a échoué. Réessaie.';renderEditor();return}
+  busySlot=null;draft.finitions[fk]=draft.finitions[fk]||{};
+  const prev=draft.finitions[fk][slot]||{};draft.finitions[fk][slot]={...entry,z:prev.z??100,x:prev.x??50,y:prev.y??(slot==='perso'?50:50)};
+  markDirty();renderTiles();renderSeg();renderPreview();
+}
+function pickFile(fk,slot){const i=document.createElement('input');i.type='file';i.accept='image/png,image/jpeg,image/webp,image/gif';i.onchange=()=>upload(fk,slot,i.files[0]);i.click()}
+
+document.addEventListener('click',async e=>{
+  const t=e.target;
+  const li=t.closest('#list button[data-id]');if(li){select(li.dataset.id);return}
+  const rm=t.closest('[data-rm]');if(rm){e.stopPropagation();const[fk,sl]=rm.dataset.rm.split('/');delete draft.finitions[fk][sl];markDirty();renderTiles();renderPreview();return}
+  const dp=t.closest('.drop');if(dp){const fk=dp.dataset.fin,sl=dp.dataset.slot;const had=srcOf(own(draft,fk,sl));fin=fk;activeSlot=sl;renderSeg();renderTiles();renderPreview();if(!had&&canWrite)pickFile(fk,sl);return}
+  const tl=t.closest('[data-tile]');if(tl){fin=tl.dataset.tile;activeSlot=FB[fin].slots[0];renderSeg();renderTiles();renderPreview();return}
+  const sg=t.closest('#seg button');if(sg){fin=sg.dataset.fin;activeSlot=FB[fin].slots[0];renderSeg();renderTiles();renderPreview();return}
+  const a=t.closest('[data-act]');if(!a)return;
+  switch(a.dataset.act){
+    case'save':await save();break;
+    case'del':confirmDel=true;renderEditor();break;
+    case'del-no':confirmDel=false;renderEditor();break;
+    case'del-yes':
+      if(mode==='local')chars=chars.filter(c=>c.id!==selId);
+      else{try{await db.collection('personnages').doc(selId).delete()}catch{formErr='La suppression a échoué. Réessaie.';renderEditor();return}}
+      selId=null;draft=null;dirty=false;confirmDel=false;renderAll();break;
+    case'save-switch':{const target=pendingSwitch;pendingSwitch=null;if(await save()){target==='__new'?newChar():select(target)}break}
+    case'discard-switch':{const target=pendingSwitch;dirty=false;pendingSwitch=null;target==='__new'?newChar():select(target);break}
+    case'stay':pendingSwitch=null;renderEditor();break;
+    case'reset-frame':{const s=own(draft,fin,activeSlot);if(s){s.z=100;s.x=50;s.y=50;markDirty();renderCtl();renderPreview()}break}
+  }
+});
+$('new').onclick=newChar;
+$('search').oninput=e=>{filter=e.target.value;renderList()};
+document.addEventListener('input',e=>{
+  const t=e.target;if(!draft)return;
+  if(t.dataset.k){draft[t.dataset.k]=t.type==='number'?(t.value===''?'':+t.value):t.value;markDirty();renderPreview();
+    if(t.dataset.k==='affinite'&&$('f-faib'))$('f-faib').value=AFF[WEAK[t.value]]?.n||'Aucune';
+    if(t.dataset.k==='nom'){const h=document.querySelector('#editor h2');if(h)h.textContent=t.value||'Nouveau personnage'}return}
+  if(t.dataset.a){const i=+t.dataset.a;draft.attaques[i]=draft.attaques[i]||{};draft.attaques[i][t.dataset.f]=t.type==='number'?(t.value===''?'':+t.value):t.value;markDirty();renderPreview();return}
+  if(t.dataset.c){const s=own(draft,fin,activeSlot);if(!s)return;s[t.dataset.c]=+t.value;$('o-'+t.dataset.c).textContent=t.value+' %';markDirty();
+    const keep=[...document.querySelectorAll('#ctl input')].map(x=>x.id);$('stage').innerHTML=cardHTML(draft,fin);startFx();}
+});
+document.addEventListener('keydown',e=>{const d=e.target.closest?.('.drop');if(d&&(e.key==='Enter'||e.key===' ')){e.preventDefault();d.click()}});
+document.addEventListener('dragover',e=>{const d=e.target.closest?.('.drop');if(d&&canWrite){e.preventDefault();d.classList.add('over')}});
+document.addEventListener('dragleave',e=>{const d=e.target.closest?.('.drop');if(d)d.classList.remove('over')});
+document.addEventListener('drop',e=>{const d=e.target.closest?.('.drop');if(!d)return;e.preventDefault();d.classList.remove('over');const f=e.dataTransfer.files[0];if(f)upload(d.dataset.fin,d.dataset.slot,f)});
+document.addEventListener('paste',e=>{if(!draft||!canWrite||e.target.closest?.('input'))return;const f=[...(e.clipboardData?.files||[])][0];if(f){e.preventDefault();upload(fin,activeSlot,f)}});
+const stage=$('stage');
+stage.addEventListener('pointermove',e=>{const c=$('card');if(!c)return;const r=c.getBoundingClientRect();const x=Math.min(Math.max((e.clientX-r.left)/r.width,0),1);c.style.setProperty('--x',((x-.5)*2).toFixed(2));c.style.setProperty('--mx',(x*100).toFixed(1)+'%')});
+stage.addEventListener('pointerleave',()=>{const c=$('card');if(c){c.style.setProperty('--x','0');c.style.setProperty('--mx','50%')}});
+
+/* ---------- Démarrage ---------- */
+function startLocal(msg){
+  mode='local';canWrite=true;const b=$('banner');b.hidden=false;b.textContent=msg;
+  chars=[{...blank(),id:'loc-exemple',nom:'Exemple : Kaïto',serie:'Série d’exemple',numero:'001/120',exemple:true,attaques:[{nom:'Frappe éclair',cout:1,degats:30},{nom:'Volonté du héros',cout:2,degats:70}]}];
+  selId='loc-exemple';draft=clone(chars[0]);renderAll();
+}
+renderAll();
+(async()=>{
+  const c=window.claude;
+  if(!c?.use){startLocal('Mode aperçu : rien n’est enregistré ici. Ouvre la page publiée pour garder tes fiches et tes images.');return}
+  [db,assets,user]=await Promise.all([c.use('db'),c.use('assets'),c.use('user')]);
+  if(!db){startLocal('Le catalogue partagé est indisponible sur cette vue : tu peux tester l’aperçu, mais rien ne sera enregistré.');return}
+  mode='db';
+  const w=user?await user.can('data.write'):null;canWrite=w!==false&&!!assets;
+  if(!assets){const b=$('banner');b.hidden=false;b.textContent='Seules les personnes qui peuvent modifier cette page peuvent ajouter des images. Tu vois le catalogue en lecture seule.'}
+  let first=true;const timer=setTimeout(()=>{if(first){const b=$('banner');b.hidden=false;b.textContent='Le catalogue ne répond pas encore. Les fiches s’afficheront dès qu’il sera joignable.'}},10000);
+  db.collection('personnages').onSnapshot(snap=>{
+    if(!snap.metadata.fromCache){clearTimeout(timer);if(first&&$('banner').textContent.startsWith('Le catalogue ne répond'))$('banner').hidden=true}
+    chars=snap.docs.map(d=>({...d.data(),id:d.id}));
+    if(first){first=false;mode='db';if(chars.length&&!selId){const ex=chars[0];selId=ex.id;draft=clone(ex);draft.attaques=draft.attaques||blank().attaques;draft.finitions=draft.finitions||{}}renderAll();return}
+    if(selId&&!dirty){const c2=chars.find(x=>x.id===selId);if(c2){draft=clone(c2);draft.finitions=draft.finitions||{};renderAll();return}}
+    renderList();
+  },err=>{clearTimeout(timer);const b=$('banner');b.hidden=false;b.textContent='Le catalogue est inaccessible pour le moment. Recharge la page plus tard.';mode='db';renderAll()});
+})();
+</script>

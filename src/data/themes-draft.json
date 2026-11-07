@@ -1,0 +1,20 @@
+{
+  "_note": "Thèmes du draft hebdomadaire. Tirage : sac mélangé avec la graine du cycle (chaque thème éligible revient une fois avant qu'un autre ne se répète, jamais deux semaines de suite). Un thème n'est éligible que si au moins 15 % des personnages du draft de la semaine le respectent (critères par carte) ; les critères d'équipe sont toujours éligibles. Critères par carte : elements, series, effets (liste) ; pv-min, degats-forte-min (valeur). Critères d'équipe (sur les 5 cartes gardées) : rang-max, elements-differents-min, paires-serie-min (valeur).",
+  "themes": [
+    { "id": "orage-de-feu", "nom": "Orage de feu", "description": "Cartes Feu ou Foudre.", "critere": { "type": "elements", "valeurs": ["feu", "foudre"] } },
+    { "id": "grand-froid", "nom": "Grand froid", "description": "Cartes Eau ou Glace.", "critere": { "type": "elements", "valeurs": ["eau", "glace"] } },
+    { "id": "terre-et-ciel", "nom": "Terre et ciel", "description": "Cartes Vent ou Terre.", "critere": { "type": "elements", "valeurs": ["vent", "terre"] } },
+    { "id": "clair-obscur", "nom": "Clair-obscur", "description": "Cartes Lumière ou Ténèbres.", "critere": { "type": "elements", "valeurs": ["lumiere", "tenebres"] } },
+    { "id": "colosses", "nom": "Colosses", "description": "Cartes de 130 PV ou plus.", "critere": { "type": "pv-min", "valeur": 130 } },
+    { "id": "frappe-lourde", "nom": "Frappe lourde", "description": "Attaque forte de 120 dégâts ou plus.", "critere": { "type": "degats-forte-min", "valeur": 120 } },
+    { "id": "soutien", "nom": "Soutien", "description": "Une attaque avec Soin ou Bouclier.", "critere": { "type": "effets", "valeurs": ["soin", "bouclier"] } },
+    { "id": "controle", "nom": "Contrôle", "description": "Une attaque avec Brûlure, Gel, Paralysie, Ralentissement, Recul ou Malédiction.", "critere": { "type": "effets", "valeurs": ["brulure", "gel", "paralysie", "ralentissement", "recul", "malediction"] } },
+    { "id": "grands-shonen", "nom": "Grands shōnen", "description": "One Piece, Naruto, Jujutsu Kaisen, Demon Slayer, Chainsaw Man ou Hunter x Hunter.", "critere": { "type": "series", "valeurs": ["One Piece", "Naruto", "Jujutsu Kaisen", "Demon Slayer", "Chainsaw Man", "Hunter x Hunter"] } },
+    { "id": "webtoons", "nom": "Webtoons", "description": "Solo Leveling, Tower of God, Omniscient Reader's Viewpoint ou The Boxer.", "critere": { "type": "series", "valeurs": ["Solo Leveling", "Tower of God", "Omniscient Reader's Viewpoint", "The Boxer"] } },
+    { "id": "recits-sombres", "nom": "Récits sombres", "description": "L'Attaque des Titans, Vinland Saga, Dorohedoro ou Frieren.", "critere": { "type": "series", "valeurs": ["L'Attaque des Titans", "Vinland Saga", "Dorohedoro", "Frieren"] } },
+    { "id": "esprits-libres", "nom": "Esprits libres", "description": "Mob Psycho 100, Sakamoto Days, Dandadan, Spy x Family ou Kaiju No. 8.", "critere": { "type": "series", "valeurs": ["Mob Psycho 100", "Sakamoto Days", "Dandadan", "Spy x Family", "Kaiju No. 8"] } },
+    { "id": "sans-tete-affiche", "nom": "Sans tête d'affiche", "description": "Équipe sans personnage de rang A ou S.", "critere": { "type": "rang-max", "valeur": "B" } },
+    { "id": "arc-en-ciel", "nom": "Arc-en-ciel", "description": "5 éléments différents dans l'équipe.", "critere": { "type": "elements-differents-min", "valeur": 5 } },
+    { "id": "duos", "nom": "Duos", "description": "Au moins 2 paires de personnages de la même série.", "critere": { "type": "paires-serie-min", "valeur": 2 } }
+  ]
+}

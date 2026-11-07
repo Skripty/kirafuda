@@ -1,0 +1,15 @@
+{
+  "_note": "Extensions du jeu. Une extension a un seul booster et se compose de vagues, dans l'ordre de sortie. Une vague rejoint le booster à sa date « disponibleLe » (AAAA-MM-JJ, heure locale) ; ses cartes gardent leurs ids. Numérotation affichée recalculée sur les vagues sorties : cartes de base d'abord (vague après vague), puis cartes secrètes par rareté. Chaque vague après la première a un calendrier de sortie (quetes.json, calendrierLancementExtension).",
+  "extensions": [
+    {
+      "id": "lancement",
+      "nom": "Lancement",
+      "edition": 1,
+      "booster": "booster-lancement.json",
+      "vagues": [
+        { "id": "lancement", "nom": "Lancement", "fichier": "extension-lancement.json", "disponibleLe": "2026-11-01" },
+        { "id": "renforts", "nom": "Renforts", "fichier": "extension-renforts.json", "disponibleLe": "2026-11-06" }
+      ]
+    }
+  ]
+}

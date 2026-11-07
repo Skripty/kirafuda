@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booster 3D (WebGL) · référence</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Référence pour src/ui : booster en vraie 3D, en WebGL pur (aucune dépendance).
+   - Le sachet est un maillage bombé (avant + arrière), sertissages en relief en haut et en bas.
+   - Éclairage : diffus + spéculaire + reflet d'environnement + film irisé limité par un masque (le K surtout).
+   - Gestes mesurés sur .scene ; tiers haut = déchirure ; le reste = inclinaison. */
+:root{--graphite:#121316;--acier:#8B8F98;--blanc:#F2F2F0}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(60% 50% at 50% 40%,rgba(108,203,255,.07),transparent 70%),var(--graphite);color:var(--blanc);font-family:Poppins,system-ui,sans-serif;display:grid;place-items:center;overflow:hidden}
+.page{display:flex;flex-direction:column;align-items:center;gap:20px;padding:16px}
+.scene{position:relative;width:min(360px,80vw);aspect-ratio:3/4.4;touch-action:none;user-select:none;-webkit-user-select:none}
+.scene.zone-coupe{cursor:ew-resize}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ombre{position:absolute;left:50%;bottom:4%;width:56%;height:7%;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(0,0,0,.65),transparent);filter:blur(6px);transition:opacity .4s}
+.ouvert .ombre{opacity:.3}
+.cartes{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.carte{position:absolute;width:52%;aspect-ratio:5/7;border-radius:14px;background:linear-gradient(160deg,#2a2c31,#16171b);box-shadow:0 20px 40px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.08);opacity:0;transform:translateY(30%)}
+.ouvert .carte{animation:sortie .7s cubic-bezier(.2,.8,.25,1) forwards}
+.carte:nth-child(1){animation-delay:.55s}.carte:nth-child(2){animation-delay:.62s}.carte:nth-child(3){animation-delay:.69s}.carte:nth-child(4){animation-delay:.76s}.carte:nth-child(5){animation-delay:.83s}
+@keyframes sortie{to{opacity:1;transform:translateY(calc(-4% * var(--i))) rotate(calc((var(--i) - 2) * 1.2deg))}}
+.aide{font-size:13px;color:var(--acier);margin:0;min-height:20px;text-align:center}
+.boutons{display:flex;gap:10px}
+button{font:inherit;font-size:14px;font-weight:600;height:46px;padding:0 22px;border-radius:14px;border:1px solid #3a3d44;background:#1c1d21;color:var(--blanc);cursor:pointer}
+button.principal{background:var(--blanc);color:var(--graphite);border:none}
+.erreur{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--acier);font-size:14px}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="scene" id="scene" role="img" aria-label="Booster Lancement">
+    <div class="ombre" aria-hidden="true"></div>
+    <canvas id="gl" aria-hidden="true"></canvas>
+    <div class="cartes" aria-hidden="true"><div class="carte" style="--i:0"></div><div class="carte" style="--i:1"></div><div class="carte" style="--i:2"></div><div class="carte" style="--i:3"></div><div class="carte" style="--i:4"></div></div>
+  </div>
+  <p class="aide" id="aide">Glisse le long des pointillés pour ouvrir</p>
+  <div class="boutons">
+    <button class="principal" id="ouvrir" type="button">Ouvrir</button>
+    <button id="reset" type="button">Recommencer</button>
+  </div>
+</div>
+
+<script>
+(async () => {
+  // ---------- Réglages ----------
+  const W = 2.8, H = 5.0;           // taille du sachet (unités 3D)
+  const BOMBE = 0.15;               // épaisseur au centre
+  const SERTI = 0.058;               // hauteur des sertissages (fraction de H)
+  const COUPE = 0.095;               // ligne de déchirure, depuis le haut (fraction de H)
+  const MAX_Y = 0.30, MAX_X = 0.16; // inclinaison max (radians)
+  const RAIDEUR = 0.05, AMORTI = 0.84; // ressort plus doux
+  const FONDU = 0.035;                   // vitesse d'entrée/sortie de l'influence du curseur (par image)
+  const ZONE_COUPE = 0.30, SEUIL = 0.75;
+  const ACCENT = ['#FF5FC8', '#6CCBFF', '#A9F26A']; // dégradé holo du K
+
+  const scene = document.getElementById('scene');
+  const canvas = document.getElementById('gl');
+  const aide = document.getElementById('aide');
+  const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const gl = canvas.getContext('webgl', { antialias: true, alpha: true, premultipliedAlpha: true });
+  if (!gl) { scene.insertAdjacentHTML('beforeend', '<div class="erreur">WebGL indisponible</div>'); return; }
+
+  // ---------- Textures (dessinées en 2D) ----------
+  try { await document.fonts.load('700 64px Poppins'); await document.fonts.load('400 34px Poppins'); } catch (e) {}
+  const TW = 1024, TH = Math.round(1024 * H / W);
+  const K_PATHS = { tige: 'M60 32h89.6v448H60zM172 256h100.8L452 480H351.2z', branche: 'M172 256 351.2 32H452L272.8 256z' };
+  function dessinerK(ctx, cx, cy, largeur, couleurTige, couleurBranche) {
+    ctx.save(); const s = largeur / 512; ctx.translate(cx - 256 * s, cy - 256 * s); ctx.scale(s, s);
+    ctx.fillStyle = couleurTige; ctx.fill(new Path2D(K_PATHS.tige));
+    ctx.fillStyle = couleurBranche; ctx.fill(new Path2D(K_PATHS.branche));
+    ctx.restore();
+  }
+  function sertis(ctx, y, h, clair, sombre) {
+    ctx.fillStyle = sombre; ctx.fillRect(0, y, TW, h);
+    ctx.fillStyle = clair; for (let x = 0; x < TW; x += 12) ctx.fillRect(x, y, 4, h);
+  }
+  // Face avant
+  const cAvant = document.createElement('canvas'); cAvant.width = TW; cAvant.height = TH;
+  { const c = cAvant.getContext('2d');
+    const g = c.createLinearGradient(0, 0, TW * .6, TH); g.addColorStop(0, '#3b3e46'); g.addColorStop(.52, '#1c1d21'); g.addColorStop(1, '#27292e');
+    c.fillStyle = g; c.fillRect(0, 0, TW, TH);
+    sertis(c, 0, TH * SERTI, '#4b4e56', '#2a2c31'); sertis(c, TH * (1 - SERTI), TH * SERTI, '#4b4e56', '#2a2c31');
+    c.strokeStyle = 'rgba(255,255,255,.28)'; c.lineWidth = 4; c.setLineDash([18, 12]);
+    c.beginPath(); c.moveTo(TW * .05, TH * COUPE); c.lineTo(TW * .95, TH * COUPE); c.stroke(); c.setLineDash([]);
+    const gk = c.createLinearGradient(TW * .45, TH * .42, TW * .66, TH * .30); ACCENT.forEach((a, i) => gk.addColorStop(i / 2, a));
+    dessinerK(c, TW / 2, TH * .42, TW * .36, '#F2F2F0', gk);
+    c.textAlign = 'center'; c.fillStyle = '#F2F2F0'; c.font = '700 66px Poppins, sans-serif'; c.fillText('Lancement · 01', TW / 2, TH * .76);
+    c.fillStyle = '#8B8F98'; c.font = '400 36px Poppins, sans-serif'; c.fillText('5 cartes', TW / 2, TH * .76 + 56);
+  }
+  // Masque du film irisé (rouge = intensité)
+  const cMasque = document.createElement('canvas'); cMasque.width = TW; cMasque.height = TH;
+  { const c = cMasque.getContext('2d');
+    c.fillStyle = 'rgb(18,0,0)'; c.fillRect(0, 0, TW, TH);
+    c.fillStyle = 'rgb(45,0,0)'; c.fillRect(0, 0, TW, TH * SERTI); c.fillRect(0, TH * (1 - SERTI), TW, TH * SERTI);
+    dessinerK(c, TW / 2, TH * .42, TW * .36, 'rgb(110,0,0)', 'rgb(255,0,0)');
+  }
+  // Face arrière : soudure verticale au centre
+  const cArriere = document.createElement('canvas'); cArriere.width = TW; cArriere.height = TH;
+  { const c = cArriere.getContext('2d');
+    const g = c.createLinearGradient(0, 0, TW, TH); g.addColorStop(0, '#26282d'); g.addColorStop(1, '#17181b');
+    c.fillStyle = g; c.fillRect(0, 0, TW, TH);
+    sertis(c, 0, TH * SERTI, '#44474f', '#26282d'); sertis(c, TH * (1 - SERTI), TH * SERTI, '#44474f', '#26282d');
+    c.fillStyle = '#2f3137'; c.fillRect(TW * .46, TH * SERTI, TW * .08, TH * (1 - 2 * SERTI));
+    c.fillStyle = 'rgba(255,255,255,.05)'; for (let y = TH * SERTI; y < TH * (1 - SERTI); y += 10) c.fillRect(TW * .46, y, TW * .08, 3);
+    c.textAlign = 'center'; c.fillStyle = '#8B8F98'; c.font = '600 34px Poppins, sans-serif'; c.fillText('KIRAFUDA', TW * .25, TH * .5);
+  }
+  const cNoir = document.createElement('canvas'); cNoir.width = 2; cNoir.height = 2;
+  { const c = cNoir.getContext('2d'); c.fillStyle = '#000'; c.fillRect(0, 0, 2, 2); }
+
+  function texture(src) {
+    const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
+    const pot = (src.width & (src.width - 1)) === 0 && (src.height & (src.height - 1)) === 0;
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    return t;
+  }
+  const texAvant = texture(cAvant), texMasque = texture(cMasque), texArriere = texture(cArriere), texNoir = texture(cNoir);
+
+  // ---------- Géométrie du sachet ----------
+  const lisse = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  function hauteur(u, v) {
+    const ax = Math.abs(2 * u - 1);
+    const fx = Math.sqrt(Math.max(0, 1 - Math.pow(ax, 4)));           // bords arrondis
+    const fy = lisse(SERTI, SERTI + .1, v) * lisse(SERTI, SERTI + .1, 1 - v);
+    let z = BOMBE * fx * fy;
+    if (v < SERTI || v > 1 - SERTI) z += .012 * (.5 + .5 * Math.sin(u * W * 52)); // stries des sertissages
+    return z + .006;
+  }
+  function surface(v0, v1, avant) {
+    const NX = 64, NY = Math.max(4, Math.round(96 * (v1 - v0)));
+    const pos = [], nor = [], uv = [], idx = [];
+    const e = 1e-3;
+    for (let j = 0; j <= NY; j++) for (let i = 0; i <= NX; i++) {
+      const u = i / NX, v = v0 + (v1 - v0) * j / NY;
+      const z = hauteur(u, v);
+      const dx = (hauteur(Math.min(1, u + e), v) - hauteur(Math.max(0, u - e), v)) / (2 * e * W);
+      const dy = (hauteur(u, Math.min(1, v + e)) - hauteur(u, Math.max(0, v - e))) / (2 * e * H);
+      const s = avant ? 1 : -1;
+      pos.push((u - .5) * W, (v - .5) * H, s * z);
+      let n = [-dx * s, -dy * s, s]; const l = Math.hypot(...n); nor.push(n[0] / l, n[1] / l, n[2] / l);
+      uv.push(avant ? u : 1 - u, 1 - v);
+    }
+    for (let j = 0; j < NY; j++) for (let i = 0; i < NX; i++) {
+      const a = j * (NX + 1) + i, b = a + 1, c = a + NX + 1, d = c + 1;
+      if (avant) idx.push(a, b, d, a, d, c); else idx.push(a, d, b, a, c, d);
+    }
+    const buf = (data, type = gl.ARRAY_BUFFER) => { const b = gl.createBuffer(); gl.bindBuffer(type, b); gl.bufferData(type, data, gl.STATIC_DRAW); return b; };
+    return { pos: buf(new Float32Array(pos)), nor: buf(new Float32Array(nor)), uv: buf(new Float32Array(uv)), idx: buf(new Uint16Array(idx), gl.ELEMENT_ARRAY_BUFFER), n: idx.length };
+  }
+  const vCoupe = 1 - COUPE;
+  const corps = [surface(0, vCoupe, true), surface(0, vCoupe, false)];
+  const haut = [surface(vCoupe, 1, true), surface(vCoupe, 1, false)];
+
+  // ---------- Shaders ----------
+  const VS = `
+    attribute vec3 aPos; attribute vec3 aNor; attribute vec2 aUv;
+    uniform mat4 uModel, uVue, uProj;
+    varying vec3 vN, vP; varying vec2 vUv;
+    void main(){ vec4 p = uModel * vec4(aPos,1.); vP = p.xyz; vN = mat3(uModel[0].xyz, uModel[1].xyz, uModel[2].xyz) * aNor; vUv = aUv; gl_Position = uProj * uVue * p; }`;
+  const FS = `
+    precision highp float;
+    uniform sampler2D uTex, uMasque; uniform vec3 uCam; uniform float uCoupe, uAvant;
+    varying vec3 vN, vP; varying vec2 vUv;
+    void main(){
+      vec3 N = normalize(vN); vec3 V = normalize(uCam - vP);
+      if (!gl_FrontFacing) N = -N;
+      vec3 base = pow(texture2D(uTex, vUv).rgb, vec3(2.2));
+      float m = texture2D(uMasque, vUv).r;
+      vec3 L1 = normalize(vec3(-.5,.8,.9)), L2 = normalize(vec3(.8,-.3,.6));
+      float dif = max(dot(N,L1),0.)*.8 + max(dot(N,L2),0.)*.25;
+      float spec = pow(max(dot(N,normalize(L1+V)),0.),80.)*.9 + pow(max(dot(N,normalize(L2+V)),0.),40.)*.2;
+      vec3 R = reflect(-V,N);
+      float bande = exp(-pow((R.x*1.3 + R.y*.7)*2.4, 2.));
+      vec3 env = vec3(.02) + vec3(.42,.45,.52)*bande;
+      float teinte = dot(N,V)*1.6 + R.x*1.3 + R.y*.6 + vUv.y*.5;
+      vec3 irise = .5 + .5*cos(6.2832*(teinte + vec3(0.,.33,.67)));
+      vec3 col = base*(.18 + dif*.75) + env*.12 + vec3(spec)*.4 + m*irise*(.03 + .5*bande);
+      if (uAvant > .5) {
+        float along = (vUv.x - .05)/.9;
+        if (abs(vUv.y - ${COUPE.toFixed(3)}) < .003 && along >= 0. && along <= uCoupe) {
+          col = mix(col, (.5 + .5*cos(6.2832*(along + vec3(0.,.33,.67))))*1.5, .9);
+        }
+      }
+      col = col/(col + .75)*1.5;
+      gl_FragColor = vec4(pow(col, vec3(1./2.2)), 1.);
+    }`;
+  function prog(vs, fs) {
+    const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; };
+    const p = gl.createProgram(); gl.attachShader(p, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(p);
+    if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p)); return p;
+  }
+  const P = prog(VS, FS); gl.useProgram(P);
+  const A = { pos: gl.getAttribLocation(P, 'aPos'), nor: gl.getAttribLocation(P, 'aNor'), uv: gl.getAttribLocation(P, 'aUv') };
+  const U = n => gl.getUniformLocation(P, n);
+  const u = { model: U('uModel'), vue: U('uVue'), proj: U('uProj'), tex: U('uTex'), masque: U('uMasque'), cam: U('uCam'), coupe: U('uCoupe'), avant: U('uAvant') };
+  gl.uniform1i(u.tex, 0); gl.uniform1i(u.masque, 1);
+  gl.enable(gl.DEPTH_TEST);
+
+  // ---------- Matrices (colonnes) ----------
+  const ident = () => [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+  const mul = (a, b) => { const o = new Array(16).fill(0); for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) for (let k = 0; k < 4; k++) o[c*4+r] += a[k*4+r] * b[c*4+k]; return o; };
+  const trans = (x, y, z) => [1,0,0,0, 0,1,0,0, 0,0,1,0, x,y,z,1];
+  const rotX = a => { const c = Math.cos(a), s = Math.sin(a); return [1,0,0,0, 0,c,s,0, 0,-s,c,0, 0,0,0,1]; };
+  const rotY = a => { const c = Math.cos(a), s = Math.sin(a); return [c,0,-s,0, 0,1,0,0, s,0,c,0, 0,0,0,1]; };
+  const rotZ = a => { const c = Math.cos(a), s = Math.sin(a); return [c,s,0,0, -s,c,0,0, 0,0,1,0, 0,0,0,1]; };
+  const persp = (fov, asp, n, f) => { const t = 1 / Math.tan(fov / 2); return [t/asp,0,0,0, 0,t,0,0, 0,0,(f+n)/(n-f),-1, 0,0,2*f*n/(n-f),0]; };
+  const CAM = [0, 0, 12.4];
+
+  function dessiner(s, model, tex, masque, avant) {
+    gl.uniformMatrix4fv(u.model, false, new Float32Array(model));
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, masque);
+    gl.uniform1f(u.avant, avant ? 1 : 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, s.pos); gl.enableVertexAttribArray(A.pos); gl.vertexAttribPointer(A.pos, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, s.nor); gl.enableVertexAttribArray(A.nor); gl.vertexAttribPointer(A.nor, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, s.uv); gl.enableVertexAttribArray(A.uv); gl.vertexAttribPointer(A.uv, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, s.idx); gl.drawElements(gl.TRIANGLES, s.n, gl.UNSIGNED_SHORT, 0);
+  }
+
+  function taille() {
+    const r = canvas.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  taille(); addEventListener('resize', taille);
+
+  // ---------- Gestes ----------
+  let cible = { x: 0, y: 0 }, pos = { x: 0, y: 0 }, vit = { x: 0, y: 0 };
+  let influence = 0; // 0 = balancement au repos, 1 = suit le curseur ; passe de l'un à l'autre en douceur
+  let survol = false, geste = null, coupe = 0, ouvert = false, tOuvert = 0;
+  const rect = () => scene.getBoundingClientRect();
+  const norm = e => { const r = rect(); return { nx: (e.clientX - r.left) / r.width, ny: (e.clientY - r.top) / r.height }; };
+  const zoneCoupe = e => norm(e).ny < ZONE_COUPE;
+  const viser = e => { const { nx, ny } = norm(e); cible.y = Math.max(-1, Math.min(1, nx * 2 - 1)) * MAX_Y; cible.x = Math.max(-1, Math.min(1, ny * 2 - 1)) * MAX_X; };
+
+  scene.addEventListener('pointerdown', e => {
+    if (ouvert) return; scene.setPointerCapture(e.pointerId);
+    if (zoneCoupe(e)) { geste = { mode: 'couper', x0: e.clientX }; }
+    else { geste = { mode: 'incliner' }; if (!reduit) viser(e); }
+  });
+  scene.addEventListener('pointermove', e => {
+    if (ouvert) return;
+    if (!geste) { scene.classList.toggle('zone-coupe', zoneCoupe(e)); if (e.pointerType === 'mouse' && !reduit) { survol = true; viser(e); } return; }
+    if (geste.mode === 'couper') { coupe = Math.max(coupe, Math.min(1, Math.abs(e.clientX - geste.x0) / (rect().width * .7))); if (coupe >= 1) fin(); }
+    else if (!reduit) viser(e);
+  });
+  function fin() {
+    if (!geste) return; const m = geste.mode; geste = null;
+    if (m === 'couper') { if (coupe >= SEUIL) ouvrir(); else { coupe = 0; aide.textContent = 'Encore un peu : glisse jusqu’au bout des pointillés'; } }
+  }
+  scene.addEventListener('pointerup', fin); scene.addEventListener('pointercancel', fin);
+  scene.addEventListener('pointerleave', () => { survol = false; });
+  function ouvrir() { if (ouvert) return; ouvert = true; coupe = 1; tOuvert = performance.now(); scene.classList.add('ouvert'); scene.classList.remove('zone-coupe'); aide.textContent = ''; }
+  document.getElementById('ouvrir').onclick = ouvrir;
+  document.getElementById('reset').onclick = () => { ouvert = false; coupe = 0; scene.classList.remove('ouvert'); pos = { x: 0, y: 0 }; vit = { x: 0, y: 0 }; cible = { x: 0, y: 0 }; aide.textContent = 'Glisse le long des pointillés pour ouvrir'; };
+
+  // ---------- Boucle ----------
+  const ease = t => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
+  function boucle(t) {
+    const suit = !ouvert && !reduit && (geste ? geste.mode === 'incliner' : survol);
+    influence += ((suit ? 1 : 0) - influence) * FONDU;
+    const repos = reduit || ouvert ? 0 : Math.sin(t / 1700) * .07;
+    let cx = cible.x * influence, cy = cible.y * influence + repos * (1 - influence);
+    vit.x = (vit.x + (cx - pos.x) * RAIDEUR) * AMORTI; vit.y = (vit.y + (cy - pos.y) * RAIDEUR) * AMORTI;
+    pos.x += vit.x; pos.y += vit.y;
+    const flotte = reduit || ouvert ? 0 : Math.sin(t / 875) * .08;
+
+    const k = ouvert ? (t - tOuvert) / 1000 : 0;
+    const descente = ease((k - .35) / .8) * 6.5;          // le corps descend
+    const envol = ease(k / .7);                            // le haut s'envole
+    const base = mul(trans(0, flotte - descente, 0), mul(rotY(pos.y), rotX(pos.x)));
+    const pivotY = (vCoupe - .5) * H;
+    const local = mul(trans(W * .5, pivotY, 0), mul(trans(envol * 1.6, envol * 2.6, envol * .8), mul(rotZ(-envol * .7), trans(-W * .5, -pivotY, 0))));
+    const modelHaut = mul(mul(trans(0, flotte, 0), mul(rotY(pos.y), rotX(pos.x))), local);
+
+    gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.uniformMatrix4fv(u.proj, false, new Float32Array(persp(28 * Math.PI / 180, canvas.width / canvas.height, .1, 50)));
+    gl.uniformMatrix4fv(u.vue, false, new Float32Array(trans(-CAM[0], -CAM[1], -CAM[2])));
+    gl.uniform3fv(u.cam, CAM); gl.uniform1f(u.coupe, coupe);
+    if (descente < 6.4) { dessiner(corps[0], base, texAvant, texMasque, true); dessiner(corps[1], base, texArriere, texNoir, false); }
+    if (envol < 1 || !ouvert) { dessiner(haut[0], modelHaut, texAvant, texMasque, true); dessiner(haut[1], modelHaut, texArriere, texNoir, false); }
+    requestAnimationFrame(boucle);
+  }
+  requestAnimationFrame(boucle);
+})();
+</script>
+</body>
+</html>

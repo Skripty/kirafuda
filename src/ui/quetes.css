@@ -1,0 +1,43 @@
+/* Quêtes et calendrier de bienvenue (même style que la refonte). */
+.q-ligne { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--bordure-douce); }
+.q-ligne:last-of-type { border-bottom: none; }
+.q-ligne-haut { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+.q-texte { min-width: 0; }
+.q-gain { flex: none; color: var(--texte-clair); font-weight: 600; }
+.q-ligne.faite .q-texte { color: var(--texte-doux); }
+.q-ligne-bas { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 28px; }
+.q-reclamer {
+  font: inherit; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+  border: none; background: var(--texte); color: var(--fond);
+}
+.q-reclamer:disabled { background: var(--bordure); color: var(--texte-secondaire); cursor: not-allowed; }
+.q-reclamer:focus-visible { outline: 2px solid var(--texte); outline-offset: 2px; }
+.q-reclamee { font-size: 12px; color: var(--texte-secondaire); }
+.q-bonus {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--bordure); font-size: 13px; color: var(--texte-clair);
+}
+
+/* Calendrier : 7 cases */
+.q-calendrier { list-style: none; margin: 4px 0 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.q-case {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 8px 0; border-radius: 10px; border: 1px solid var(--bordure); background: var(--surface-pastille);
+  font-size: 12px; color: var(--texte-secondaire);
+}
+.q-case strong { font-size: 14px; color: var(--texte); }
+.q-case-jour { font-size: 10px; }
+.q-case.obtenue { background: var(--bordure); color: var(--texte-doux); }
+.q-case.obtenue strong { color: var(--texte-doux); }
+.q-case.aujourdhui { border-color: var(--texte); box-shadow: 0 0 0 1px var(--texte); }
+.q-case-garanti { position: absolute; top: 2px; right: 4px; font-size: 10px; color: var(--texte); }
+
+/* Écran « Quêtes » */
+.q-ecran { max-width: 1100px; margin: 0 auto; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px)); }
+.q-entete { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
+.q-entete h1 { margin: 0; font-size: 1.4rem; font-weight: 600; }
+.q-retour { padding: 8px 14px; border-radius: var(--rayon); border: 1px solid var(--texte-secondaire); color: var(--texte); text-decoration: none; }
+.q-retour:focus-visible { outline: 2px solid var(--texte); outline-offset: 2px; }
+.q-ecran .acc-annonce { padding: 8px 0; margin: 0; }
+.q-grille { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 16px; align-items: start; margin-top: 8px; }
+.q-colonne { display: flex; flex-direction: column; gap: 16px; min-width: 0; }

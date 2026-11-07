@@ -1,0 +1,217 @@
+/* Rendu d'une carte, repris de docs/reference/atelier-des-cartes.html.
+   Toutes les mesures sont en --u (1/260 de la largeur de la carte) : la carte garde ses
+   proportions à toutes les tailles. Animations : transform et opacity uniquement. */
+
+.carte {
+  container-type: inline-size;
+  width: var(--carte-largeur, 260px);
+  max-width: 100%;
+  touch-action: pan-y;
+  --x: 0; /* position du pointeur, de -1 (gauche) à 1 (droite) */
+}
+
+.carte-corps {
+  --u: calc(100cqw / 260);
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  border-radius: calc(13 * var(--u));
+  overflow: hidden;
+  background: var(--carte-papier);
+  border: calc(7 * var(--u)) solid var(--carte-bord);
+  color: var(--carte-encre);
+  font-family: var(--police-carte);
+  font-size: calc(14 * var(--u));
+  line-height: 1.2;
+  user-select: none;
+  transform: perspective(900px) rotateY(calc(var(--x) * var(--carte-pivot, 8deg)));
+  transition: transform 0.15s;
+}
+
+/* ---------- Fenêtre d'illustration (~43 % de la carte) ---------- */
+.carte-art {
+  position: absolute;
+  left: calc(9 * var(--u));
+  right: calc(9 * var(--u));
+  top: calc(38 * var(--u));
+  height: 43%;
+  overflow: hidden;
+  border: calc(2 * var(--u)) solid var(--carte-cadre);
+  background: var(--carte-fenetre);
+}
+.carte-calque { position: absolute; inset: 0; }
+.carte-calque img.couvre {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+
+/* Scène aux couleurs de l'élément, visible derrière le visuel de remplacement quand l'image manque. */
+.carte-scene {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 60%, color-mix(in srgb, var(--carte-clair) 18%, transparent) 0 3deg, transparent 3deg 9deg),
+    radial-gradient(circle, color-mix(in srgb, var(--carte-clair) 19%, transparent) 1px, transparent 1.4px) 0 0 / calc(6 * var(--u)) calc(6 * var(--u)),
+    radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--carte-clair) 80%, transparent), var(--aff) 55%, var(--carte-scene-fond));
+}
+
+/* Visuel de remplacement quand aucune image n'existe. */
+.carte-remplacement {
+  position: absolute; inset: 0;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.carte-remplacement svg { height: 88%; fill: var(--carte-ombre); }
+.carte-remplacement span {
+  position: absolute; top: calc(8 * var(--u)); left: 0; right: 0;
+  text-align: center; font-family: var(--police); font-size: calc(11 * var(--u));
+  color: color-mix(in srgb, var(--carte-clair) 85%, transparent);
+}
+
+/* ---------- Textes ---------- */
+.carte-entete {
+  position: absolute;
+  left: calc(9 * var(--u)); right: calc(9 * var(--u)); top: calc(8 * var(--u));
+  height: calc(26 * var(--u));
+  display: flex; align-items: center; gap: calc(6 * var(--u));
+  z-index: 3;
+}
+.carte-nom {
+  flex: 1; font-size: calc(19 * var(--u)); font-weight: 700; line-height: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.carte-pv { font-size: calc(13 * var(--u)); font-weight: 600; }
+.carte-element {
+  width: calc(24 * var(--u)); height: calc(24 * var(--u)); border-radius: 50%;
+  background: var(--aff); color: var(--carte-clair);
+  display: flex; align-items: center; justify-content: center;
+  font-size: calc(12 * var(--u)); font-weight: 700;
+  box-shadow: inset 0 0 0 calc(2 * var(--u)) color-mix(in srgb, var(--carte-clair) 33%, transparent);
+}
+
+.carte-texte {
+  position: absolute;
+  left: calc(9 * var(--u)); right: calc(9 * var(--u)); bottom: calc(8 * var(--u));
+  top: calc(43% + 46 * var(--u));
+  display: flex; flex-direction: column; gap: calc(4 * var(--u));
+  z-index: 3;
+}
+.carte-serie {
+  font-family: var(--police); font-size: calc(11.5 * var(--u)); font-style: italic; opacity: 0.75;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.carte-attaque {
+  display: flex; align-items: center; gap: calc(6 * var(--u));
+  padding: calc(2 * var(--u)) 0;
+  border-bottom: 1px solid var(--carte-trait);
+}
+.carte-cout { display: flex; gap: calc(2 * var(--u)); }
+.carte-cout i {
+  display: block; width: calc(10 * var(--u)); height: calc(10 * var(--u));
+  border-radius: 50%; background: var(--aff);
+}
+.carte-attaque-nom { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.carte-attaque-nom b {
+  font-weight: 600; font-size: calc(16 * var(--u));
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.carte-attaque-nom small { font-size: calc(11.5 * var(--u)); opacity: 0.75; }
+.carte-degats { font-weight: 700; font-size: calc(17 * var(--u)); }
+.carte-pied {
+  margin-top: auto;
+  display: flex; justify-content: space-between; gap: calc(6 * var(--u));
+  font-size: calc(12.5 * var(--u)); opacity: 0.85; white-space: nowrap;
+}
+
+/* ---------- Films irisés (déplacés par transform, jamais par background-position) ---------- */
+.carte-film {
+  position: absolute; top: 0; bottom: 0; left: -100%; width: 300%;
+  pointer-events: none; opacity: 0; mix-blend-mode: color-dodge;
+  transform: translateX(calc(var(--x) * -16%));
+}
+.carte-film::before { content: ''; position: absolute; inset: 0; }
+.carte-film.holo { z-index: 2; }
+.carte-film.holo::before { background: var(--carte-film-holo); }
+.carte-film.foil { z-index: 4; }
+.carte-film.foil::before { background: var(--carte-film-foil); }
+
+/* ---------- Finitions ---------- */
+.carte.f-holo .carte-corps { border-color: var(--carte-bord-holo); }
+.carte.f-holo .carte-film.holo { opacity: 1; }
+
+/* Holo intégrale : mise en page fenêtre, cadre argenté, film holo sur toute la carte
+   (fond, cadre et illustration), sous les textes pour qu'ils restent lisibles.
+   La couche déborde de la largeur du cadre : la carte ne rogne donc pas son contenu ici. */
+.carte.f-holo-integrale .carte-corps {
+  overflow: visible;
+  border-color: var(--carte-bord-integrale);
+  background: var(--carte-papier-integrale);
+}
+.carte.f-holo-integrale .carte-film.holo { opacity: 1; }
+.carte.f-holo-integrale .carte-film.foil { display: none; }
+.carte-integrale {
+  position: absolute;
+  inset: calc(-7 * var(--u)); /* recouvre aussi le cadre */
+  border-radius: calc(13 * var(--u));
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+.carte-integrale .carte-film { opacity: 1; mix-blend-mode: color-dodge; }
+.carte-integrale .carte-film::before { background: var(--carte-film-holo); }
+
+/* Pleine carte (★ et plus) : illustration sur toute la carte, textes sur panneaux translucides. */
+.carte.pleine-carte .carte-art { left: 0; right: 0; top: 0; height: 100%; border: none; }
+.carte.pleine-carte .carte-entete {
+  left: calc(6 * var(--u)); right: calc(6 * var(--u)); top: calc(6 * var(--u));
+  padding: 0 calc(8 * var(--u)); border-radius: calc(8 * var(--u));
+  background: var(--carte-panneau-haut); color: var(--carte-clair);
+}
+.carte.pleine-carte .carte-texte {
+  top: auto; height: 44%;
+  left: calc(6 * var(--u)); right: calc(6 * var(--u)); bottom: calc(6 * var(--u));
+  padding: calc(8 * var(--u)); border-radius: calc(8 * var(--u));
+  background: var(--carte-panneau); color: var(--carte-clair);
+}
+.carte.pleine-carte .carte-attaque { border-color: var(--carte-trait-clair); }
+.carte.pleine-carte .carte-cout i { box-shadow: 0 0 0 calc(1.5 * var(--u)) color-mix(in srgb, var(--carte-clair) 55%, transparent); }
+.carte.pleine-carte .carte-remplacement span { top: calc(40 * var(--u)); }
+
+.carte.f-pleine .carte-corps { border-color: var(--carte-bord-pleine); }
+.carte.f-alternative .carte-corps { border-color: var(--carte-bord-alternative); }
+.carte.f-immersive .carte-corps { border-color: var(--carte-bord-immersive); }
+.carte.f-pleine .carte-film.foil,
+.carte.f-immersive .carte-film.foil { opacity: 1; }
+
+/* Immersive : l'illustration glisse légèrement avec le pointeur (profondeur), film animé, particules. */
+.carte.f-immersive .carte-calque.fond { transform: translateX(calc(var(--x) * -10 * var(--u))) scale(1.06); }
+.carte.f-immersive .carte-film.foil::before { animation: carte-film 5s ease-in-out infinite alternate; }
+@keyframes carte-film {
+  from { transform: translateX(-12%); }
+  to { transform: translateX(12%); }
+}
+
+.carte-particules { position: absolute; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
+.carte-particule {
+  position: absolute; top: 100%; left: var(--px); width: 0; height: 100%;
+  animation: carte-monte var(--duree) linear var(--delai) infinite;
+}
+.carte-particule i {
+  position: absolute; top: 0; left: 0;
+  width: calc(var(--taille) * var(--u)); height: calc(var(--taille) * var(--u));
+  border-radius: 50%; background: var(--carte-particule);
+  animation: carte-scintille 1.6s ease-in-out var(--delai) infinite alternate;
+}
+@keyframes carte-monte { to { transform: translateY(-110%); } }
+@keyframes carte-scintille { from { opacity: 0; } to { opacity: 1; } }
+
+/* Couronne : toute la carte en monochrome doré. */
+.carte.f-couronne .carte-corps { border-color: var(--carte-or); background: var(--carte-or-fond); }
+.carte.f-couronne .carte-art { filter: sepia(1) saturate(2.4) hue-rotate(-10deg) brightness(1.05); }
+.carte.f-couronne .carte-entete,
+.carte.f-couronne .carte-texte { background: var(--carte-or-panneau); color: var(--carte-or-texte); }
+.carte.f-couronne .carte-film.foil { opacity: 1; filter: sepia(1) saturate(3); }
+
+@media (prefers-reduced-motion: reduce) {
+  .carte-corps, .carte-calque, .carte-film { transition: none !important; transform: none !important; }
+  .carte-film::before, .carte-particule, .carte-particule i { animation: none !important; }
+  .carte-particules { display: none; }
+}

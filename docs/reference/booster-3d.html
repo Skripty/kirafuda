@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Booster 3D · référence</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Référence pour src/ui : booster 3D (accueil + déchirure).
+   Règles qui évitent les bugs habituels :
+   1. Trois éléments imbriqués, un seul transform chacun : .flotte (animation CSS), .incline (JS), contenu statique.
+   2. Aucun overflow:hidden, filter ou opacity < 1 sur un élément en preserve-3d (ça aplatit la 3D).
+   3. TOUS les gestes se mesurent sur .scene, qui ne tourne pas : jamais de zone cliquable sur l'élément incliné
+      (le test de clic sur un élément tourné en 3D est peu fiable).
+   4. Le JS n'écrit que des variables CSS, dans une seule boucle requestAnimationFrame, avec un ressort.
+   5. user-select: none sur la scène, sinon glisser sélectionne le texte. */
+:root{
+  --graphite:#121316; --anthracite:#2A2C31; --acier:#8B8F98; --blanc:#F2F2F0;
+  --holo-1:#FF5FC8; --holo-2:#6CCBFF; --holo-3:#A9F26A;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(60% 50% at 50% 40%, rgba(108,203,255,.07), transparent 70%), var(--graphite);color:var(--blanc);font-family:Poppins,system-ui,sans-serif;display:grid;place-items:center;overflow:hidden}
+.page{display:flex;flex-direction:column;align-items:center;gap:22px;padding:16px}
+
+.scene{position:relative;width:min(360px,86vw);aspect-ratio:3/4.1;perspective:1100px;display:grid;place-items:center;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.scene.zone-coupe{cursor:ew-resize}
+
+/* 1. Flottement (CSS seul) */
+.flotte{width:76%;aspect-ratio:280/412;animation:flotte 5.5s ease-in-out infinite;transform-style:preserve-3d;pointer-events:none}
+@keyframes flotte{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* 2. Inclinaison (JS seul) */
+.incline{position:relative;width:100%;height:100%;transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg))}
+
+/* Épaisseur */
+.epaisseur{position:absolute;inset:0;border-radius:20px;background:#0b0c0e;transform:translateZ(-6px)}
+
+/* Face plate : tout le décor est imprimé dessus, K compris */
+.face{position:absolute;inset:0;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#3a3d45 0%,#1b1c20 52%,#25272c 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.07)}
+.dents{position:absolute;left:0;right:0;height:7.5%;background:repeating-linear-gradient(90deg,#41444c 0 2px,#26282d 2px 6px)}
+.dents.haut{top:0;border-bottom:1px solid #3f4249}
+.dents.bas{bottom:0;border-top:1px solid #3f4249}
+.pointilles{position:absolute;left:5%;right:5%;top:11%;border-top:1.5px dashed rgba(255,255,255,.22)}
+.ligne-coupe{position:absolute;left:5%;top:11%;height:2px;margin-top:-1px;width:calc(var(--coupe,0) * 90%);background:linear-gradient(90deg,var(--holo-1),var(--holo-2),var(--holo-3));box-shadow:0 0 12px rgba(108,203,255,.9)}
+.fleche{position:absolute;top:11%;left:5%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--blanc);box-shadow:0 0 0 4px rgba(242,242,240,.15);animation:glisse 1.8s ease-in-out infinite}
+@keyframes glisse{0%{transform:translateX(0);opacity:0}15%{opacity:1}80%{opacity:1}100%{transform:translateX(min(220px,58vw));opacity:0}}
+.coupe-en-cours .fleche,.ouvert .fleche{display:none}
+.embleme{position:absolute;left:50%;top:42%;width:36%;transform:translate(-50%,-50%)}
+.embleme svg{display:block;width:100%;height:auto;filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}
+.texte{position:absolute;left:0;right:0;bottom:15%;text-align:center}
+.texte b{display:block;font-size:clamp(15px,4.6vw,19px);font-weight:600;letter-spacing:.04em}
+.texte span{font-size:12px;color:var(--acier)}
+/* Film holo et reflet, au-dessus du décor */
+.film{position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,rgba(255,95,200,.12) 45%,rgba(108,203,255,.15) 50%,rgba(169,242,106,.12) 55%,transparent 62%);background-size:300% 300%;background-position:var(--fx,50%) 50%;mix-blend-mode:screen}
+.reflet{position:absolute;inset:0;background:radial-gradient(60% 45% at var(--gx,50%) var(--gy,30%),rgba(255,255,255,.22),transparent 70%);mix-blend-mode:soft-light;opacity:var(--go,.5)}
+
+/* Ombre au sol */
+.ombre{position:absolute;bottom:3%;left:50%;width:60%;height:7%;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(0,0,0,.6),transparent);filter:blur(6px);pointer-events:none}
+
+/* Ouverture */
+.morceau{position:absolute;left:0;right:0;top:0;height:11%;border-radius:20px 20px 0 0;overflow:hidden;opacity:0;pointer-events:none;background:linear-gradient(160deg,#3a3d45,#2a2c31)}
+.morceau::before{content:"";position:absolute;left:0;right:0;top:0;height:68%;background:repeating-linear-gradient(90deg,#41444c 0 2px,#26282d 2px 6px)}
+.ouvert .morceau{animation:envol .75s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes envol{0%{opacity:1;transform:translate3d(0,0,2px) rotate(0)}100%{opacity:0;transform:translate3d(55%,-160%,30px) rotate(16deg)}}
+.ouvert .dents.haut,.ouvert .pointilles,.ouvert .ligne-coupe{visibility:hidden}
+.ouvert .face{clip-path:inset(11% 0 0 0 round 0 0 20px 20px)}
+.ouvert .epaisseur{clip-path:inset(11% 0 0 0)}
+.ouvert .flotte{animation:none}
+.ouvert .incline{transition:transform .8s cubic-bezier(.4,0,.6,1) .35s,opacity .35s ease .75s;transform:translateY(85%)!important;opacity:0}
+.cartes{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.carte{position:absolute;width:56%;aspect-ratio:5/7;border-radius:14px;background:linear-gradient(160deg,#2a2c31,#16171b);box-shadow:0 20px 40px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.08);opacity:0;transform:translateY(30%)}
+.ouvert .carte{animation:sortie .7s cubic-bezier(.2,.8,.25,1) forwards}
+.carte:nth-child(1){animation-delay:.7s!important}.carte:nth-child(2){animation-delay:.77s!important}.carte:nth-child(3){animation-delay:.84s!important}.carte:nth-child(4){animation-delay:.91s!important}.carte:nth-child(5){animation-delay:.98s!important}
+@keyframes sortie{to{opacity:1;transform:translateY(calc(-4% * var(--i))) rotate(calc((var(--i) - 2) * 1.2deg))}}
+
+.aide{font-size:13px;color:var(--acier);margin:0;min-height:20px;text-align:center}
+.boutons{display:flex;gap:10px}
+button{font:inherit;font-size:14px;font-weight:600;height:46px;padding:0 22px;border-radius:14px;border:1px solid #3a3d44;background:#1c1d21;color:var(--blanc);cursor:pointer}
+button.principal{background:var(--blanc);color:var(--graphite);border:none}
+
+@media (prefers-reduced-motion: reduce){
+  .flotte,.fleche{animation:none}
+  .ouvert .incline{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="scene" id="scene" role="img" aria-label="Booster Lancement">
+    <div class="ombre" aria-hidden="true"></div>
+    <div class="flotte" aria-hidden="true">
+      <div class="incline" id="incline">
+        <div class="epaisseur"></div>
+        <div class="face">
+          <div class="dents haut"></div>
+          <div class="pointilles"></div>
+          <div class="ligne-coupe"></div>
+          <div class="fleche"></div>
+          <div class="embleme">
+            <svg viewBox="0 0 512 512"><defs><linearGradient id="k" gradientUnits="userSpaceOnUse" x1="172" y1="256" x2="452" y2="32"><stop offset="0" stop-color="#FF5FC8"/><stop offset=".5" stop-color="#6CCBFF"/><stop offset="1" stop-color="#A9F26A"/></linearGradient></defs><path d="M60 32h89.6v448H60zM172 256h100.8L452 480H351.2z" fill="#F2F2F0"/><path d="M172 256 351.2 32H452L272.8 256z" fill="url(#k)"/></svg>
+          </div>
+          <div class="texte"><b>Lancement · 01</b><span>5 cartes</span></div>
+          <div class="dents bas"></div>
+          <div class="film"></div>
+          <div class="reflet"></div>
+        </div>
+        <div class="morceau"></div>
+      </div>
+    </div>
+    <div class="cartes" aria-hidden="true">
+      <div class="carte" style="--i:0"></div><div class="carte" style="--i:1"></div><div class="carte" style="--i:2"></div><div class="carte" style="--i:3"></div><div class="carte" style="--i:4"></div>
+    </div>
+  </div>
+  <p class="aide" id="aide">Glisse le long des pointillés pour ouvrir</p>
+  <div class="boutons">
+    <button class="principal" id="ouvrir" type="button">Ouvrir</button>
+    <button id="reset" type="button">Recommencer</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const scene = document.getElementById('scene');
+  const incline = document.getElementById('incline');
+  const aide = document.getElementById('aide');
+  const reduit = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Réglages
+  const MAX_Y = 12, MAX_X = 6;          // inclinaison max (degrés)
+  const RAIDEUR = 0.08, AMORTI = 0.78;  // ressort
+  const ZONE_COUPE = 0.30;              // le tiers haut de la scène sert à déchirer
+  const SEUIL = 0.75;                   // déchirure validée à 75 %
+
+  let cible = { x: 0, y: 0 }, pos = { x: 0, y: 0 }, vit = { x: 0, y: 0 };
+  let survol = false, ouvert = false;
+  let geste = null; // { mode: 'incliner' | 'couper', x0, id }
+  let coupe = 0;
+
+  const rect = () => scene.getBoundingClientRect();     // la scène ne tourne jamais
+  const norm = e => { const r = rect(); return { nx: (e.clientX - r.left) / r.width, ny: (e.clientY - r.top) / r.height, r }; };
+  const dansZoneCoupe = e => norm(e).ny < ZONE_COUPE;
+
+  function viser(e) {
+    const { nx, ny } = norm(e);
+    cible.y = Math.max(-1, Math.min(1, nx * 2 - 1)) * MAX_Y;
+    cible.x = -Math.max(-1, Math.min(1, ny * 2 - 1)) * MAX_X;
+  }
+  function majCoupe(v) {
+    coupe = v;
+    incline.style.setProperty('--coupe', v.toFixed(3));
+  }
+
+  scene.addEventListener('pointerdown', e => {
+    if (ouvert) return;
+    scene.setPointerCapture(e.pointerId);
+    if (dansZoneCoupe(e)) {
+      geste = { mode: 'couper', x0: e.clientX };
+      scene.classList.add('coupe-en-cours');
+      cible.x = 0; cible.y = 0;
+    } else {
+      geste = { mode: 'incliner' };
+      if (!reduit) viser(e);
+    }
+  });
+
+  scene.addEventListener('pointermove', e => {
+    if (ouvert) return;
+    if (!geste) {
+      scene.classList.toggle('zone-coupe', dansZoneCoupe(e));
+      if (e.pointerType === 'mouse' && !reduit) { survol = true; viser(e); }
+      return;
+    }
+    if (geste.mode === 'couper') {
+      const largeur = rect().width * 0.76;               // largeur du booster
+      const v = Math.min(1, Math.abs(e.clientX - geste.x0) / largeur);
+      majCoupe(Math.max(coupe, v));                      // la coupe ne recule pas pendant le geste
+      if (coupe >= 1) finGeste();
+    } else if (!reduit) viser(e);
+  });
+
+  function finGeste() {
+    if (!geste) return;
+    const etait = geste.mode;
+    geste = null;
+    scene.classList.remove('coupe-en-cours');
+    if (etait === 'couper') {
+      if (coupe >= SEUIL) ouvrir();
+      else { revenirCoupe(); aide.textContent = 'Encore un peu : glisse jusqu’au bout des pointillés'; }
+    }
+    if (!survol) { cible.x = 0; cible.y = 0; }
+  }
+  scene.addEventListener('pointerup', finGeste);
+  scene.addEventListener('pointercancel', finGeste);
+  scene.addEventListener('pointerleave', () => { survol = false; if (!geste) { cible.x = 0; cible.y = 0; } });
+
+  function revenirCoupe() {
+    const depart = coupe, t0 = performance.now();
+    const pas = t => { const k = Math.min(1, (t - t0) / 220); majCoupe(depart * (1 - k)); if (k < 1) requestAnimationFrame(pas); };
+    requestAnimationFrame(pas);
+  }
+
+  function ouvrir() {
+    if (ouvert) return;
+    ouvert = true; geste = null;
+    majCoupe(1);
+    scene.classList.remove('zone-coupe', 'coupe-en-cours');
+    scene.classList.add('ouvert');
+    aide.textContent = '';
+  }
+  document.getElementById('ouvrir').addEventListener('click', ouvrir);
+  document.getElementById('reset').addEventListener('click', () => {
+    ouvert = false; majCoupe(0);
+    scene.classList.remove('ouvert');
+    pos = { x: 0, y: 0 }; vit = { x: 0, y: 0 }; cible = { x: 0, y: 0 };
+    aide.textContent = 'Glisse le long des pointillés pour ouvrir';
+  });
+
+  function boucle(t) {
+    if (!ouvert) {
+      let cx = cible.x, cy = cible.y;
+      if (!geste && !survol && !reduit) cy += Math.sin(t / 1700) * 3;   // balancement au repos
+      vit.x = (vit.x + (cx - pos.x) * RAIDEUR) * AMORTI;
+      vit.y = (vit.y + (cy - pos.y) * RAIDEUR) * AMORTI;
+      pos.x += vit.x; pos.y += vit.y;
+      const s = incline.style;
+      s.setProperty('--rx', pos.x.toFixed(2) + 'deg');
+      s.setProperty('--ry', pos.y.toFixed(2) + 'deg');
+      const n = pos.y / MAX_Y, m = pos.x / MAX_X;
+      s.setProperty('--gx', (50 + n * 40).toFixed(1) + '%');
+      s.setProperty('--gy', (35 - m * 30).toFixed(1) + '%');
+      s.setProperty('--fx', (50 + n * 45).toFixed(1) + '%');
+      s.setProperty('--go', (0.3 + Math.min(1, Math.hypot(n, m)) * 0.5).toFixed(2));
+    }
+    requestAnimationFrame(boucle);
+  }
+  requestAnimationFrame(boucle);
+})();
+</script>
+</body>
+</html>

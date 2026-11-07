@@ -1,0 +1,25 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`semaine et graine > draft de la semaine 2026-S45 figé 1`] = `
+{
+  "adversaire": "tenebres",
+  "cartes": [
+    "lan-086:commune",
+    "lan-047:commune",
+    "lan-077:commune",
+    "lan-088:peu-commune",
+    "lan-030:peu-commune",
+    "lan-074:commune",
+    "lan-099:commune",
+    "lan-096:commune",
+    "lan-088:peu-commune",
+    "lan-043:peu-commune",
+    "lan-024:commune",
+    "lan-024:commune",
+    "lan-081:commune",
+    "lan-015:peu-commune",
+    "lan-020:peu-commune",
+  ],
+  "theme": "frappe-lourde",
+}
+`;

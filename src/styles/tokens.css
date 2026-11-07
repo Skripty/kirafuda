@@ -1,0 +1,103 @@
+/* Identité visuelle Graphite (voir GDD > Identité visuelle).
+   Règle : le dégradé holo est réservé au K du logo et aux effets des cartes rares. */
+:root {
+  --graphite: #121316;
+  --anthracite: #2a2c31;
+  --gris-acier: #8b8f98;
+  --blanc-casse: #f2f2f0;
+  --holo: linear-gradient(135deg, #ff5fc8, #6ccbff 50%, #a9f26a);
+
+  --fond: var(--graphite);
+  --surface: var(--anthracite);
+  --texte: var(--blanc-casse);
+  --texte-secondaire: var(--gris-acier);
+
+  --police: 'Poppins', system-ui, sans-serif;
+  --rayon: 12px;
+  color-scheme: dark;
+
+  /* Carte : objet physique, mêmes couleurs quel que soit le thème (Atelier des cartes). */
+  --police-carte: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --carte-papier: #f4efe1;
+  --carte-encre: #2a2410;
+  --carte-bord: #d8cd98;
+  --carte-cadre: #8a7d4a;
+  --carte-fenetre: #6e7fa8;
+  --carte-trait: #00000022;
+  --carte-ombre: #00000055;
+  --carte-clair: #ffffff;
+  --carte-panneau: #0b0b14b8;
+  --carte-panneau-haut: #0b0b1480;
+  --carte-trait-clair: #ffffff30;
+  --carte-bord-holo: #cfc6e8;
+  --carte-bord-integrale: #c3c9d2;   /* cadre argenté */
+  --carte-papier-integrale: #eef0f3;
+  --carte-bord-pleine: #c9c4e8;
+  --carte-bord-alternative: #9fd3f0;
+  --carte-bord-immersive: #ffb3e0;
+  --carte-or: #e6c25a;
+  --carte-or-fond: #2a2410;
+  --carte-or-panneau: #2a2410d0;
+  --carte-or-texte: #ffe08a;
+  --carte-particule: #ffe8cd;
+  --carte-scene-fond: #1a1530;
+  /* Interface (maquettes docs/reference/refonte/) */
+  --surface-panneau: #1a1b1f;
+  --surface-pastille: #1c1d21;
+  --surface-profonde: #141518;
+  --bordure: #2a2c31;
+  --bordure-douce: #222429;
+  --bordure-forte: #3a3d44;
+  --texte-doux: #b4b7be;
+  --texte-clair: #d7d9de;
+  --hausse: #7fe0b8;
+  --baisse: #ff8f73;
+  --halo-fond: radial-gradient(60% 50% at 50% 30%, rgba(108, 203, 255, 0.06) 0%, transparent 70%);
+  --halo-booster: radial-gradient(50% 55% at 50% 45%, rgba(169, 242, 106, 0.08) 0%, rgba(108, 203, 255, 0.07) 35%, transparent 70%);
+  --rayon-panneau: 20px;
+
+  /* Booster (maquette) */
+  --booster-fond: linear-gradient(160deg, #34363d 0%, #1b1c20 55%, #24262b 100%);
+  --booster-dentelure: repeating-linear-gradient(90deg, #3a3d44 0 2px, #26282d 2px 6px);
+  --booster-reflet: linear-gradient(115deg, transparent 30%, rgba(255, 95, 200, 0.16) 42%, rgba(108, 203, 255, 0.18) 50%, rgba(169, 242, 106, 0.14) 58%, transparent 70%);
+  /* Accent de chaque extension (booster, vignette du sélecteur, bandeau de lancement) : --booster-accent-<id>. */
+  --booster-accent-defaut: #9aa0ac;
+  --booster-accent-lancement: #9aa0ac;
+  --booster-accent-renforts: #f0a64a;
+  /* Booster 3D (docs/reference/booster-webgl.html et booster-3d.html) : film irisé du sachet, ligne de déchirure, ombre. */
+  --booster3d-film: linear-gradient(115deg, transparent 38%, rgba(255, 95, 200, 0.12) 45%, rgba(108, 203, 255, 0.15) 50%, rgba(169, 242, 106, 0.12) 55%, transparent 62%);
+  --booster3d-coupe: linear-gradient(90deg, #ff5fc8, #6ccbff, #a9f26a);
+  --booster3d-lueur-coupe: rgba(108, 203, 255, 0.9);
+  --booster3d-ombre: radial-gradient(closest-side, rgba(0, 0, 0, 0.62), transparent);
+  --booster3d-epaisseur: #0b0c0e;
+
+  /* Cartes de base ♦ à ♦♦♦♦ (maquette Carte.dc.html) : fond sombre teinté par l'élément */
+  --carte-base-fond: #16171b;
+  --carte-base-attenue: #9a9ea7;
+  --carte-base-illu-haut: #26282e;
+  --carte-base-illu-bas: #141518;
+  --carte-cadre-commune: linear-gradient(160deg, #3a3d44 0%, #23252a 100%);
+  --carte-cadre-peu-commune: linear-gradient(160deg, #4b4f58 0%, #2a2c31 100%);
+  --carte-cadre-holo: linear-gradient(160deg, #50545e 0%, #2a2c31 100%);
+  --carte-cadre-integrale: linear-gradient(135deg, #eef0f3 0%, #a3a8b1 22%, #f7f8fa 45%, #8d929b 68%, #e3e6ea 100%);
+  --carte-film-base-illu: linear-gradient(120deg, transparent 15%, rgba(255, 95, 200, 0.45) 32%, rgba(108, 203, 255, 0.45) 48%, rgba(169, 242, 106, 0.4) 64%, transparent 82%);
+  --carte-film-base-total: linear-gradient(125deg, transparent 10%, rgba(255, 95, 200, 0.28) 30%, rgba(108, 203, 255, 0.3) 46%, rgba(169, 242, 106, 0.26) 62%, transparent 85%);
+
+  /* Films irisés des cartes rares (seul autre usage autorisé d'un dégradé holo). */
+  --carte-film-holo: repeating-linear-gradient(115deg, #ff3c8a40 0%, #ffd23c40 8%, #3cffb040 16%, #3c8aff40 24%, #c23cff40 32%, #ff3c8a40 40%);
+  --carte-film-foil: repeating-linear-gradient(60deg, #ffffff00 0 6px, #ffffff30 6px 7px),
+    repeating-linear-gradient(115deg, #ff3c8a33 0%, #ffd23c33 10%, #3cffb033 20%, #3c8aff33 30%, #ff3c8a33 40%);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--texte);
+  font-family: var(--police);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

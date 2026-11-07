@@ -1,0 +1,34 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`tirerBooster (rareté, puis carte de cette rareté) > résultat figé pour la graine « kirafuda » 1`] = `
+{
+  "cartes": [
+    {
+      "carteId": "lan-065",
+      "emplacement": 1,
+      "finition": "commune",
+    },
+    {
+      "carteId": "lan-096",
+      "emplacement": 2,
+      "finition": "commune",
+    },
+    {
+      "carteId": "lan-031",
+      "emplacement": 3,
+      "finition": "commune",
+    },
+    {
+      "carteId": "lan-063",
+      "emplacement": 4,
+      "finition": "peu-commune",
+    },
+    {
+      "carteId": "lan-001",
+      "emplacement": 5,
+      "finition": "holo-integrale",
+    },
+  ],
+  "exceptionnel": false,
+}
+`;

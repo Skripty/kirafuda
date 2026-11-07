@@ -1,0 +1,36 @@
+.galerie {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px));
+}
+.galerie-entete { display: flex; flex-wrap: wrap; align-items: end; gap: 12px 20px; }
+.galerie-entete h1 { margin: 0; font-size: 1.4rem; font-weight: 600; flex: 1 1 100%; }
+.galerie-choix { display: flex; flex-direction: column; gap: 4px; flex: 1 1 240px; min-width: 0; }
+.galerie-choix span { font-size: 0.8rem; color: var(--texte-secondaire); }
+.galerie-choix select { width: 100%; }
+.galerie select,
+.galerie button {
+  font: inherit;
+  color: var(--texte);
+  background: var(--surface);
+  border: 1px solid var(--texte-secondaire);
+  border-radius: var(--rayon);
+  padding: 8px 12px;
+  min-width: 0;
+}
+.galerie button { cursor: pointer; }
+.galerie select:focus-visible,
+.galerie button:focus-visible { outline: 2px solid var(--texte); outline-offset: 2px; }
+.galerie-nav { display: flex; gap: 8px; }
+.galerie-aide { color: var(--texte-secondaire); font-size: 0.85rem; margin: 16px 0 24px; }
+.galerie-aide code { overflow-wrap: anywhere; }
+.galerie-grille {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+  gap: 32px 20px;
+  justify-items: center;
+}
+.galerie-case { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+.galerie-case figcaption { font-size: 0.9rem; color: var(--texte-secondaire); text-align: center; }
+
+.galerie-titre { margin: 28px 0 12px; font-size: 1.05rem; font-weight: 600; }

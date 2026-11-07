@@ -1,0 +1,24 @@
+# En-têtes HTTP de Cloudflare Pages (copié tel quel dans dist/ par le build).
+
+# Page d'entrée : jamais en cache, pour qu'une nouvelle version soit vue au prochain chargement.
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+
+# Fichiers versionnés par Vite (nom avec empreinte, ex. index-DZv-Ps9R.js) : cache d'un an, jamais revalidés.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images des cartes : le jeu les demande avec « ?v=<empreinte de public/cartes> », qui change à chaque
+# modification d'image ; cache d'un an.
+/cartes/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Logo (adresses fixes, rarement modifié) : une semaine.
+/logo/*
+  Cache-Control: public, max-age=604800
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

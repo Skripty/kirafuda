@@ -1,0 +1,1512 @@
+{
+  "feu": [
+    {
+      "nom": "Étincelle",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "brulure"
+      }
+    },
+    {
+      "nom": "Coup ardent",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Poing de braise",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Flammèche",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "brulure"
+      }
+    },
+    {
+      "nom": "Lame rougeoyante",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Bond incandescent",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Tison",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Morsure de feu",
+      "type": "legere",
+      "cout": 1,
+      "degats": 40,
+      "effet": {
+        "type": "recul",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Souffle chaud",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "brulure"
+      }
+    },
+    {
+      "nom": "Cendres vives",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Vague de flammes",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": {
+        "type": "brulure"
+      }
+    },
+    {
+      "nom": "Éruption",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Brasier",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "brulure"
+      }
+    },
+    {
+      "nom": "Lame solaire",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": null
+    },
+    {
+      "nom": "Fournaise",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Pilier de flammes",
+      "type": "forte",
+      "cout": 3,
+      "degats": 100,
+      "effet": null
+    },
+    {
+      "nom": "Envol du phénix",
+      "type": "forte",
+      "cout": 3,
+      "degats": 90,
+      "effet": {
+        "type": "soin",
+        "valeur": 20
+      }
+    },
+    {
+      "nom": "Météore ardent",
+      "type": "forte",
+      "cout": 3,
+      "degats": 120,
+      "effet": {
+        "type": "recul",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Fournaise infernale",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": {
+        "type": "brulure"
+      }
+    },
+    {
+      "nom": "Embrasement total",
+      "type": "forte",
+      "cout": 3,
+      "degats": 130,
+      "effet": {
+        "type": "charge"
+      }
+    }
+  ],
+  "eau": [
+    {
+      "nom": "Jet d'eau",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": null
+    },
+    {
+      "nom": "Vaguelette",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Lame liquide",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Bulle",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "soin",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Courant vif",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Éclaboussure",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "ralentissement"
+      }
+    },
+    {
+      "nom": "Goutte perçante",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Ressac",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Bruine",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "soin",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Remous",
+      "type": "legere",
+      "cout": 1,
+      "degats": 40,
+      "effet": {
+        "type": "recul",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Torrent",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": null
+    },
+    {
+      "nom": "Tourbillon",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "ralentissement"
+      }
+    },
+    {
+      "nom": "Marée montante",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Danse des flots",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": {
+        "type": "soin",
+        "valeur": 20
+      }
+    },
+    {
+      "nom": "Lame de la rivière",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": null
+    },
+    {
+      "nom": "Raz-de-marée",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": null
+    },
+    {
+      "nom": "Cascade céleste",
+      "type": "forte",
+      "cout": 3,
+      "degats": 100,
+      "effet": {
+        "type": "soin",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Abysse",
+      "type": "forte",
+      "cout": 3,
+      "degats": 120,
+      "effet": {
+        "type": "recul",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Dragon des eaux",
+      "type": "forte",
+      "cout": 3,
+      "degats": 100,
+      "effet": {
+        "type": "ralentissement"
+      }
+    },
+    {
+      "nom": "Déluge",
+      "type": "forte",
+      "cout": 3,
+      "degats": 130,
+      "effet": {
+        "type": "charge"
+      }
+    }
+  ],
+  "glace": [
+    {
+      "nom": "Givre",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "ralentissement"
+      }
+    },
+    {
+      "nom": "Éclat de glace",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Souffle froid",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "ralentissement"
+      }
+    },
+    {
+      "nom": "Pointe gelée",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Neige fine",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": null
+    },
+    {
+      "nom": "Patinage",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Morsure du froid",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Cristal",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Grésil",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Lance de givre",
+      "type": "legere",
+      "cout": 1,
+      "degats": 40,
+      "effet": {
+        "type": "recul",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Blizzard",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": {
+        "type": "ralentissement"
+      }
+    },
+    {
+      "nom": "Prison de glace",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "gel"
+      }
+    },
+    {
+      "nom": "Rafale glaciale",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": null
+    },
+    {
+      "nom": "Lames de cristal",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Miroir de glace",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 20
+      }
+    },
+    {
+      "nom": "Hiver éternel",
+      "type": "forte",
+      "cout": 3,
+      "degats": 100,
+      "effet": {
+        "type": "gel"
+      }
+    },
+    {
+      "nom": "Avalanche",
+      "type": "forte",
+      "cout": 3,
+      "degats": 120,
+      "effet": {
+        "type": "recul",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Zéro absolu",
+      "type": "forte",
+      "cout": 3,
+      "degats": 130,
+      "effet": {
+        "type": "charge"
+      }
+    },
+    {
+      "nom": "Sanctuaire gelé",
+      "type": "forte",
+      "cout": 3,
+      "degats": 90,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Tempête de cristal",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": null
+    }
+  ],
+  "foudre": [
+    {
+      "nom": "Décharge",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Étincelle vive",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "perce-bouclier"
+      }
+    },
+    {
+      "nom": "Coup éclair",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Arc électrique",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Zap",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": null
+    },
+    {
+      "nom": "Pas de l'éclair",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Crépitement",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "perce-bouclier"
+      }
+    },
+    {
+      "nom": "Volt",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Éclair bref",
+      "type": "legere",
+      "cout": 1,
+      "degats": 40,
+      "effet": {
+        "type": "recul",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Statique",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": null
+    },
+    {
+      "nom": "Foudre en chaîne",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": null
+    },
+    {
+      "nom": "Lame d'orage",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Choc paralysant",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "paralysie"
+      }
+    },
+    {
+      "nom": "Tonnerre",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": {
+        "type": "perce-bouclier"
+      }
+    },
+    {
+      "nom": "Charge électrique",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Jugement de l'orage",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": {
+        "type": "perce-bouclier"
+      }
+    },
+    {
+      "nom": "Éclair divin",
+      "type": "forte",
+      "cout": 3,
+      "degats": 120,
+      "effet": {
+        "type": "recul",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Tempête électrique",
+      "type": "forte",
+      "cout": 3,
+      "degats": 100,
+      "effet": {
+        "type": "paralysie"
+      }
+    },
+    {
+      "nom": "Mille éclairs",
+      "type": "forte",
+      "cout": 3,
+      "degats": 130,
+      "effet": {
+        "type": "charge"
+      }
+    },
+    {
+      "nom": "Dragon de foudre",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": null
+    }
+  ],
+  "vent": [
+    {
+      "nom": "Bourrasque",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Lame d'air",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Brise",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "esquive"
+      }
+    },
+    {
+      "nom": "Pas léger",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "esquive"
+      }
+    },
+    {
+      "nom": "Coup de vent",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Sifflement",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": null
+    },
+    {
+      "nom": "Plume tranchante",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Tourbillon court",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Rafale",
+      "type": "legere",
+      "cout": 1,
+      "degats": 40,
+      "effet": {
+        "type": "recul",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Souffle",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "perce-bouclier"
+      }
+    },
+    {
+      "nom": "Cyclone",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": null
+    },
+    {
+      "nom": "Lames du vent",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Danse aérienne",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "esquive"
+      }
+    },
+    {
+      "nom": "Tornade",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": {
+        "type": "perce-bouclier"
+      }
+    },
+    {
+      "nom": "Vent coupant",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Ouragan",
+      "type": "forte",
+      "cout": 3,
+      "degats": 120,
+      "effet": {
+        "type": "recul",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Œil du cyclone",
+      "type": "forte",
+      "cout": 3,
+      "degats": 100,
+      "effet": {
+        "type": "esquive"
+      }
+    },
+    {
+      "nom": "Tempête de lames",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": null
+    },
+    {
+      "nom": "Ciel déchiré",
+      "type": "forte",
+      "cout": 3,
+      "degats": 130,
+      "effet": {
+        "type": "charge"
+      }
+    },
+    {
+      "nom": "Mille vents",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": {
+        "type": "perce-bouclier"
+      }
+    }
+  ],
+  "terre": [
+    {
+      "nom": "Coup de roc",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Jet de pierre",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Garde de pierre",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Secousse",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Poussière",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": null
+    },
+    {
+      "nom": "Poing de granit",
+      "type": "legere",
+      "cout": 1,
+      "degats": 40,
+      "effet": {
+        "type": "recul",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Racine",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "ralentissement"
+      }
+    },
+    {
+      "nom": "Charge lourde",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Éboulis",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Peau de pierre",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Séisme",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Mur de roche",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 20
+      }
+    },
+    {
+      "nom": "Pic rocheux",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": null
+    },
+    {
+      "nom": "Écrasement",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Glissement de terrain",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": {
+        "type": "ralentissement"
+      }
+    },
+    {
+      "nom": "Faille",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": null
+    },
+    {
+      "nom": "Montagne vivante",
+      "type": "forte",
+      "cout": 3,
+      "degats": 90,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Météorite",
+      "type": "forte",
+      "cout": 3,
+      "degats": 120,
+      "effet": {
+        "type": "recul",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Colère de la terre",
+      "type": "forte",
+      "cout": 3,
+      "degats": 130,
+      "effet": {
+        "type": "charge"
+      }
+    },
+    {
+      "nom": "Titan de pierre",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": null
+    }
+  ],
+  "lumiere": [
+    {
+      "nom": "Rayon",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Lueur",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "soin",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Éclat",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Bénédiction",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "soin",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Flèche de lumière",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Aube",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Halo",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Prisme",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Lance sacrée",
+      "type": "legere",
+      "cout": 1,
+      "degats": 40,
+      "effet": {
+        "type": "recul",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Clarté",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": null
+    },
+    {
+      "nom": "Rayon solaire",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Purification",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "soin",
+        "valeur": 20
+      }
+    },
+    {
+      "nom": "Aurore",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": null
+    },
+    {
+      "nom": "Lame céleste",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": {
+        "type": "perce-bouclier"
+      }
+    },
+    {
+      "nom": "Égide",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 20
+      }
+    },
+    {
+      "nom": "Jugement céleste",
+      "type": "forte",
+      "cout": 3,
+      "degats": 120,
+      "effet": {
+        "type": "recul",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Soleil levant",
+      "type": "forte",
+      "cout": 3,
+      "degats": 100,
+      "effet": {
+        "type": "soin",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Ailes de lumière",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": null
+    },
+    {
+      "nom": "Nova",
+      "type": "forte",
+      "cout": 3,
+      "degats": 130,
+      "effet": {
+        "type": "charge"
+      }
+    },
+    {
+      "nom": "Sanctuaire",
+      "type": "forte",
+      "cout": 3,
+      "degats": 90,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 30
+      }
+    }
+  ],
+  "tenebres": [
+    {
+      "nom": "Griffe d'ombre",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Murmure",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "malediction"
+      }
+    },
+    {
+      "nom": "Lame sombre",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Voile noir",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "esquive"
+      }
+    },
+    {
+      "nom": "Morsure",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Ombre furtive",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Maléfice",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "malediction"
+      }
+    },
+    {
+      "nom": "Coup bas",
+      "type": "legere",
+      "cout": 1,
+      "degats": 40,
+      "effet": {
+        "type": "recul",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Ténèbre",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Sombre présage",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "malediction"
+      }
+    },
+    {
+      "nom": "Abîme",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Étreinte des ombres",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "malediction"
+      }
+    },
+    {
+      "nom": "Lune noire",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": null
+    },
+    {
+      "nom": "Danse macabre",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": {
+        "type": "recul",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Brume maudite",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": {
+        "type": "malediction"
+      }
+    },
+    {
+      "nom": "Éclipse",
+      "type": "forte",
+      "cout": 3,
+      "degats": 120,
+      "effet": {
+        "type": "recul",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Domaine des ombres",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": {
+        "type": "malediction"
+      }
+    },
+    {
+      "nom": "Néant",
+      "type": "forte",
+      "cout": 3,
+      "degats": 130,
+      "effet": {
+        "type": "charge"
+      }
+    },
+    {
+      "nom": "Roi des ombres",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": null
+    },
+    {
+      "nom": "Pacte maudit",
+      "type": "forte",
+      "cout": 3,
+      "degats": 100,
+      "effet": {
+        "type": "soin",
+        "valeur": 30
+      }
+    }
+  ],
+  "neutre": [
+    {
+      "nom": "Coup de poing",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Coup de pied",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Pas de côté",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "esquive"
+      }
+    },
+    {
+      "nom": "Coup de tête",
+      "type": "legere",
+      "cout": 1,
+      "degats": 40,
+      "effet": {
+        "type": "recul",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Feinte",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "perce-bouclier"
+      }
+    },
+    {
+      "nom": "Plaquage",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Garde haute",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 10
+      }
+    },
+    {
+      "nom": "Provocation",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": {
+        "type": "ralentissement"
+      }
+    },
+    {
+      "nom": "Frappe rapide",
+      "type": "legere",
+      "cout": 1,
+      "degats": 30,
+      "effet": null
+    },
+    {
+      "nom": "Coup de bluff",
+      "type": "legere",
+      "cout": 1,
+      "degats": 20,
+      "effet": null
+    },
+    {
+      "nom": "Combo",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": null
+    },
+    {
+      "nom": "Contre-attaque",
+      "type": "forte",
+      "cout": 2,
+      "degats": 50,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 20
+      }
+    },
+    {
+      "nom": "Coup décisif",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": null
+    },
+    {
+      "nom": "Charge téméraire",
+      "type": "forte",
+      "cout": 2,
+      "degats": 70,
+      "effet": {
+        "type": "recul",
+        "valeur": 20
+      }
+    },
+    {
+      "nom": "Plan parfait",
+      "type": "forte",
+      "cout": 2,
+      "degats": 60,
+      "effet": {
+        "type": "perce-bouclier"
+      }
+    },
+    {
+      "nom": "Volonté inébranlable",
+      "type": "forte",
+      "cout": 3,
+      "degats": 100,
+      "effet": {
+        "type": "bouclier",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Coup de grâce",
+      "type": "forte",
+      "cout": 3,
+      "degats": 120,
+      "effet": {
+        "type": "recul",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Dernier recours",
+      "type": "forte",
+      "cout": 3,
+      "degats": 130,
+      "effet": {
+        "type": "charge"
+      }
+    },
+    {
+      "nom": "Esprit d'équipe",
+      "type": "forte",
+      "cout": 3,
+      "degats": 90,
+      "effet": {
+        "type": "soin",
+        "valeur": 30
+      }
+    },
+    {
+      "nom": "Coup ultime",
+      "type": "forte",
+      "cout": 3,
+      "degats": 110,
+      "effet": null
+    }
+  ]
+}
