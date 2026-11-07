@@ -14,7 +14,8 @@ Kirafuda est un jeu de collection de cartes de personnages d'anime, jouable dans
 
 - TypeScript strict, Vite, HTML et CSS. **Pas de framework** (ni React, ni Vue) et pas de nouvelle dépendance sans demande explicite.
 - Tests avec Vitest, dans `tests/`.
-- Version 1 **100 % locale** : pas de serveur, pas de compte. Sauvegarde dans `localStorage`, avec export et import d'un fichier JSON.
+- Le jeu reste **jouable sans compte** : sauvegarde dans `localStorage`, avec export et import d'un fichier JSON. La sauvegarde locale est toujours la référence pendant la partie.
+- Depuis la tâche 23 : compte **facultatif** (Supabase, connexion Discord, dépendance `@supabase/supabase-js` autorisée) et sauvegarde en ligne. Seule la clé publique (`VITE_SUPABASE_ANON_KEY`) est dans le jeu ; jamais de clé secrète. Tables et règles d'accès (Row Level Security) dans `supabase/migrations/`. Voir `docs/SUPABASE.md`.
 
 ## Structure
 
@@ -23,10 +24,12 @@ src/
   core/   logique pure, sans DOM : types, règles, tirage, économie, cote, draft
   data/   données du jeu en JSON (extension, booster, attaques) — ne pas modifier à la main sans raison
   ui/     écrans et composants (DOM, CSS, animations)
+  en-ligne/ compte et synchronisation (Supabase) ; les règles de décision sont dans core/synchro.ts
   styles/ jetons de l'identité visuelle Graphite
 tests/    tests Vitest de src/core
 public/   logo, images des cartes (public/cartes/<id-carte>/illustration.webp)
-docs/     GDD résumé, liste des tâches, références (Atelier des cartes)
+docs/     GDD résumé, liste des tâches, références (Atelier des cartes), mise en ligne, Supabase
+supabase/migrations/  SQL versionné de la base (à exécuter dans Supabase → SQL Editor)
 ```
 
 `src/core` ne doit jamais importer depuis `src/ui`.

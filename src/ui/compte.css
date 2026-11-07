@@ -1,0 +1,68 @@
+/* Compte : bouton de la barre du haut, section des Paramètres, fenêtres pseudo et choix (identité Graphite). */
+
+.compte-bouton {
+  display: flex; align-items: center; gap: 8px; max-width: 200px; height: 40px; padding: 0 14px;
+  border-radius: 999px; border: 1px solid var(--bordure-forte); background: var(--surface-pastille);
+  color: var(--texte); font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap;
+}
+.compte-bouton[hidden] { display: none; }
+.compte-bouton:disabled { opacity: 0.6; cursor: default; }
+.compte-bouton:focus-visible, .compte-principal:focus-visible, .compte-secondaire:focus-visible, .compte-lien:focus-visible {
+  outline: 2px solid var(--texte-clair); outline-offset: 2px;
+}
+.compte-pseudo { overflow: hidden; text-overflow: ellipsis; }
+/* Point d'état de la synchronisation (le texte complet est dans l'étiquette et dans Paramètres). */
+.compte-point { width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--hausse); }
+.compte-bouton[data-synchro='envoi'] .compte-point,
+.compte-bouton[data-synchro='en-attente'] .compte-point { background: var(--texte-secondaire); }
+.compte-bouton[data-synchro='hors-ligne'] .compte-point,
+.compte-bouton[data-synchro='erreur'] .compte-point,
+.compte-bouton[data-synchro='bloquee'] .compte-point { background: var(--baisse); }
+
+/* ---------- Section « Compte » des Paramètres ---------- */
+.compte-section { display: flex; flex-direction: column; gap: 10px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--bordure-douce); }
+.compte-section[hidden] { display: none; }
+.compte-section h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.compte-texte, .compte-aide, .compte-etat, .compte-message { margin: 0; font-size: 14px; line-height: 1.45; color: var(--texte-doux); }
+.compte-aide { font-size: 12px; color: var(--texte-secondaire); }
+.compte-etat { font-size: 13px; color: var(--texte-clair); }
+.compte-etat.hors-ligne, .compte-etat.erreur, .compte-etat.bloquee { color: var(--baisse); }
+.compte-message:empty { display: none; }
+.compte-message { color: var(--texte-clair); }
+
+.compte-principal, .compte-secondaire {
+  padding: 12px 16px; border-radius: 12px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; text-align: center;
+}
+.compte-principal { border: 1px solid var(--blanc-casse); background: var(--blanc-casse); color: var(--graphite); }
+.compte-secondaire { border: 1px solid var(--bordure-forte); background: none; color: var(--texte); font-weight: 500; }
+.compte-principal:disabled { opacity: 0.6; cursor: default; }
+.compte-lien { align-self: center; margin-top: 4px; padding: 8px; border: none; background: none; color: var(--texte-secondaire); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; }
+
+/* ---------- Fenêtres ---------- */
+.compte-dialogue {
+  width: min(520px, calc(100vw - 24px)); padding: 20px;
+  border: 1px solid var(--bordure-forte); border-radius: var(--rayon-panneau);
+  background: var(--surface-panneau); color: var(--texte);
+}
+.compte-dialogue[open] { display: flex; flex-direction: column; gap: 12px; }
+.compte-dialogue::backdrop { background: color-mix(in srgb, var(--graphite) 85%, transparent); }
+.compte-dialogue h2 { margin: 0; font-size: 18px; font-weight: 600; }
+.compte-form { display: flex; flex-direction: column; gap: 12px; }
+.compte-champ {
+  padding: 12px 14px; border-radius: 12px; border: 1px solid var(--bordure-forte);
+  background: var(--surface-profonde); color: var(--texte); font: inherit; font-size: 16px;
+}
+.compte-champ:focus-visible { outline: 2px solid var(--texte-clair); outline-offset: 1px; }
+.compte-erreur { margin: 0; min-height: 1.2em; font-size: 13px; color: var(--baisse); }
+.compte-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
+.compte-cotes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.compte-cote { display: flex; flex-direction: column; gap: 4px; padding: 14px; border-radius: 14px; border: 1px solid var(--bordure); background: var(--surface-pastille); }
+.compte-cote h3 { margin: 0 0 2px; font-size: 14px; font-weight: 600; }
+.compte-cote p { margin: 0; font-size: 13px; color: var(--texte-doux); font-variant-numeric: tabular-nums; }
+.compte-cote .compte-date { color: var(--texte-secondaire); font-size: 12px; }
+.compte-actions-choix > * { flex: 1 1 180px; }
+
+@media (max-width: 699px) {
+  .compte-bouton { height: 32px; padding: 0 10px; font-size: 12px; max-width: 120px; }
+  .compte-cotes { grid-template-columns: minmax(0, 1fr); }
+}

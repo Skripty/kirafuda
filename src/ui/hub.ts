@@ -16,6 +16,8 @@ import { creerBooster3D } from './booster3d';
 import { creerCarte } from './carte';
 import { creerBlocQuetesDuJour, creerCalendrier } from './quetes';
 import type { CibleReclamation, VueLancement, VueQuetes } from '../core/quetes';
+import type { Compte } from '../en-ligne/compte';
+import { creerBoutonCompte, creerSectionCompte } from './compte';
 
 export interface OptionsHub {
   sauvegarde: Sauvegarde;
@@ -39,6 +41,8 @@ export interface OptionsHub {
   /** Quêtes du jour, calendrier de bienvenue et récompenses à réclamer. */
   quetes: VueQuetes;
   onReclamer: (cible: CibleReclamation) => void;
+  /** Compte en ligne (null : jeu sans configuration Supabase, sauvegarde locale seulement). */
+  compte: Compte | null;
 }
 
 const SVG = 'http://www.w3.org/2000/svg';
@@ -142,7 +146,10 @@ export function creerHub(o: OptionsHub): HTMLElement {
   boutonParametres.type = 'button';
   boutonParametres.setAttribute('aria-label', 'Paramètres et sauvegarde');
   boutonParametres.append(icone('parametres', 18));
-  soldes.append(puceSceaux, pucePoints, boutonParametres);
+  soldes.append(puceSceaux, pucePoints);
+  // Compte : « Se connecter », ou le pseudo et l'état de la synchronisation (ouvre les Paramètres).
+  if (o.compte) soldes.append(creerBoutonCompte(o.compte, () => dialogue.showModal()));
+  soldes.append(boutonParametres);
   haut.append(logo, nav, soldes);
 
   const annonce = el('p', 'acc-annonce');
@@ -372,7 +379,7 @@ export function creerHub(o: OptionsHub): HTMLElement {
   fermer.addEventListener('click', () => dialogue.close());
   const enteteD = el('div', 'acc-dialogue-tete');
   enteteD.append(el('h2', undefined, 'Paramètres'), fermer);
-  dialogue.append(enteteD, o.panneauSauvegarde);
+  dialogue.append(enteteD, ...(o.compte ? [creerSectionCompte(o.compte)] : []), o.panneauSauvegarde);
   dialogue.addEventListener('click', (e) => { if (e.target === dialogue) dialogue.close(); });
   boutonParametres.addEventListener('click', () => dialogue.showModal());
 

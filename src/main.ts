@@ -8,7 +8,10 @@ import type { Ouverture, Popularite, Sauvegarde } from './core/types';
 import {
   disponibles, disponiblesPourDraft, extensionDeBooster, toutesLesExtensions, vaguesAvecCalendrier, validerJeu, type ExtensionSortie,
 } from './core/catalogue';
-import { chargerSauvegarde, enregistrerSauvegarde, type ContexteValidation, type Stockage } from './core/sauvegarde';
+import { CLE_SAUVEGARDE, chargerSauvegarde, enregistrerSauvegarde, validerSauvegarde, type ContexteValidation, type Stockage } from './core/sauvegarde';
+import { CLE_MODIFIEE_LE, creerCompte, type Compte } from './en-ligne/compte';
+import { configSupabase, creerServeurSupabase, serveurDiffere } from './en-ligne/supabase';
+import { installerDialoguesCompte } from './ui/compte';
 import {
   appliquerConnexion, appliquerEvenements, appliquerLancements, evenementsOuverture, reclamer, validerConfigQuetes, vueLancements, vueQuetes,
   type CibleReclamation, type ConfigQuetes, type ContexteQuetes, type Evenement,
@@ -60,7 +63,24 @@ function stockageNavigateur(): Stockage {
 }
 
 function demarrer(): void {
-  const stockage = stockageNavigateur();
+  const navigateur = stockageNavigateur();
+  /** Compte en ligne (null sans configuration Supabase : le jeu reste 100 % local). */
+  let compte: Compte | null = null;
+  /**
+   * Stockage du jeu : chaque écriture de la sauvegarde qui la change est datée et signalée au compte,
+   * qui l'envoie en ligne (envois regroupés). La sauvegarde locale reste la référence.
+   */
+  const stockage: Stockage = {
+    getItem: (cle) => navigateur.getItem(cle),
+    setItem: (cle, valeur) => {
+      let change = false;
+      if (cle === CLE_SAUVEGARDE) { try { change = navigateur.getItem(cle) !== valeur; } catch { change = true; } }
+      navigateur.setItem(cle, valeur);
+      if (!change) return;
+      try { navigateur.setItem(CLE_MODIFIEE_LE, new Date().toISOString()); } catch { /* sans conséquence */ }
+      compte?.signalerEcriture();
+    },
+  };
   const chargement = chargerSauvegarde(stockage, contexteSauvegarde(false));
   let sauvegarde: Sauvegarde = chargement.sauvegarde;
   let avertissement = chargement.avertissement;
@@ -207,6 +227,7 @@ function demarrer(): void {
         onRevelerNonVue: nonVue ? () => mettreEnScene(nonVue) : null,
         panneauSauvegarde: panneau,
         quetes: vueQuetes(sauvegarde, contexteQuetes()), onReclamer: reclamerQuete,
+        compte,
       }));
       annonce = null;
       avertissement = null;
@@ -215,6 +236,42 @@ function demarrer(): void {
   }
 
   verifierConnexion();
+
+  // ---------- Compte et sauvegarde en ligne (facultatif) ----------
+  const config = configSupabase();
+  if (config) {
+    /** Vrai pendant l'envoi fait au départ de la page (requête « keepalive »). */
+    const depart = { enCours: false };
+    const c = creerCompte({
+      serveur: serveurDiffere(creerServeurSupabase(config, depart)),
+      stockage: navigateur,
+      horloge: { maintenant: () => Date.now(), programmer: (f, ms) => setTimeout(f, ms), annuler: (id) => clearTimeout(id as number) },
+      lireLocale: () => sauvegarde,
+      // Sauvegarde du compte reprise sur cet appareil : écrite d'un bloc, puis récompense du jour si elle n'y est pas encore.
+      remplacerLocale: (s) => {
+        const r = enregistrerSauvegarde(stockage, s);
+        if (!r.ok) return false;
+        sauvegarde = s;
+        const gain = verifierConnexion() ? annonce : null;
+        annonce = ['Sauvegarde de ton compte chargée sur cet appareil.', gain].filter(Boolean).join(' ');
+        if (location.hash !== '#/ouverture') afficher();
+        return true;
+      },
+      validerEnLigne: (donnees) => validerSauvegarde(donnees, contexteSauvegarde(true)),
+      enLigne: () => navigator.onLine,
+    });
+    compte = c;
+    const partir = (): void => {
+      depart.enCours = true;
+      void c.vider().finally(() => { depart.enCours = false; });
+    };
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') partir(); });
+    window.addEventListener('pagehide', partir);
+    window.addEventListener('online', () => c.reseauRetabli());
+    installerDialoguesCompte(c);
+    void c.demarrer();
+  }
+
   window.addEventListener('hashchange', afficher);
   // Page restée ouverte après minuit : la récompense du nouveau jour (et une vague qui sort) arrive au retour sur l'onglet.
   document.addEventListener('visibilitychange', () => {

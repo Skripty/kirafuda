@@ -132,5 +132,33 @@ Le site en ligne est construit par Cloudflare, qui ne voit pas ton `.env` : il f
 - [ ] `.env` local créé avec `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY`.
 - [ ] Cloudflare Pages : les deux variables en Production et en Preview, puis un nouveau déploiement.
 
-Quand tout est coché, dis-le : la suite de la tâche 23 crée les tables (`supabase/migrations/`, à coller dans **SQL Editor** de Supabase), la connexion et la synchronisation.
-Tu n'as pas besoin de me donner tes clés : le code les lira dans `.env`.
+Tu n'as pas besoin de donner tes clés à qui que ce soit : le code les lit dans `.env`.
+
+---
+
+## 8. Créer les tables (une fois, puis à chaque nouveau fichier de migration)
+
+Les tables et leurs règles d'accès sont dans `supabase/migrations/` (SQL versionné, un fichier par évolution, dans l'ordre des noms).
+
+1. Supabase → **SQL Editor** → **New query**.
+2. Ouvre `supabase/migrations/20261107000000_comptes_et_sauvegardes.sql`, copie **tout** son contenu, colle-le, puis **Run**.
+   Le résultat attendu est « Success. No rows returned ».
+3. Vérifie dans **Table Editor** : deux tables, `profils` et `sauvegardes`. Chacune doit porter la mention **RLS enabled**, et leurs règles sont visibles dans **Authentication → Policies**.
+
+Un fichier de migration ne s'exécute qu'une fois : le relancer donne une erreur « already exists », sans danger.
+
+Ce que créent les tables :
+
+| Table | Contenu | Qui peut lire | Qui peut écrire |
+| --- | --- | --- | --- |
+| `profils` | id du joueur, pseudo unique (3 à 20 caractères, sans tenir compte des majuscules), date de création | tout le monde (pour les classements) | le joueur, son propre profil seulement |
+| `sauvegardes` | id du joueur, sauvegarde complète (JSON), version, date de mise à jour (posée par le serveur) | le joueur, la sienne seulement | le joueur, la sienne seulement |
+
+## 9. Vérifier
+
+1. `npm run dev` → `http://localhost:5173/` : le bouton **Se connecter** apparaît dans la barre du haut (et dans Paramètres).
+2. Clique dessus : Discord demande l'autorisation, puis tu reviens sur le jeu, connecté. Au premier login, choisis ton pseudo.
+3. Supabase → **Table Editor → sauvegardes** : une ligne apparaît (ta sauvegarde), mise à jour après chaque action dans le jeu.
+4. Sur le téléphone (site en ligne), connecte-toi avec le même compte Discord : ta collection est là.
+
+Si Supabase affiche `Unsupported provider: provider is not enabled`, l'étape 4 n'est pas enregistrée : Discord doit être activé (interrupteur *Enable*) avec le Client ID et le Client Secret, puis **Save**.
