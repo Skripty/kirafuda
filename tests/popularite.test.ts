@@ -170,7 +170,7 @@ describe('validation', () => {
   });
 
   it('base manquante, hors limites ou personnage inconnu : erreurs claires', () => {
-    const p = (id: string) => ({ id, nom: id, serie: 'S', rang: 'C' as const, element: 'feu' as const, pv: 1, attaques: [] as never });
+    const p = (id: string) => ({ id, nom: id, serie: 'S', rang: 'C' as const, element: 'feu' as const, type: 'base' as const, pv: 1, repli: 0, talent: null, attaques: [] });
     const b: BasePopularite = { personnages: { a: { nom: 'a', serie: 'S', base: 0 }, z: { nom: 'z', serie: 'S', base: 50 } } };
     expect(validerBase(b, [p('a'), p('x')])).toEqual([
       'Popularité de base : aucune base pour x (x).',

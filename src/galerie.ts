@@ -1,4 +1,5 @@
-// Page de test (/galerie.html) : les cartes d'un personnage, puis un aperçu de son rendu dans les 8 raretés.
+// Page de test (/galerie.html) : 6 cartes variées (mise en page des données de combat), puis les cartes d'un
+// personnage et un aperçu de son rendu dans les 8 raretés.
 import './styles/tokens.css';
 import './ui/galerie.css';
 import extension from './data/extension-lancement.json';
@@ -47,6 +48,9 @@ if (erreurs.length > 0) {
         </div>
       </header>
       <p class="galerie-aide">Survole ou fais glisser le doigt sur une carte pour voir le holo et le pivot. Une image par carte : <code>public/cartes/&lt;id-carte&gt;/illustration.webp</code>.</p>
+      <h2 class="galerie-titre">Six cartes variées</h2>
+      <p class="galerie-aide">Base sans talent, Base à talent, Éveillé A, Éveillé S, texte très long, ★★★ : talent, attaques, coûts, Repli et « Relève ».</p>
+      <section class="galerie-grille" id="variees"></section>
       <h2 class="galerie-titre">Ses cartes</h2>
       <section class="galerie-grille" id="reelles" aria-live="polite"></section>
       <h2 class="galerie-titre">Aperçu du rendu dans les 8 raretés</h2>
@@ -63,6 +67,20 @@ if (erreurs.length > 0) {
     opt.textContent = `${numeroCarte(base.numero, ext.total)} · ${p.nom} (${p.rang})${n > 1 ? ` · ${n} cartes` : ''}`;
     select.append(opt);
   }
+
+  // Six cartes variées : chacune montre un cas de la mise en page des données de combat.
+  const VARIEES: [string, string][] = [
+    ['lan-010', 'Base sans talent'],
+    ['lan-003', 'Base à talent'],
+    ['lan-002', 'Éveillé de rang A'],
+    ['lan-001', 'Éveillé de rang S'],
+    ['lan-025', 'Texte très long'],
+    ['lan-137', '★★★ Immersive'],
+  ];
+  app.querySelector<HTMLElement>('#variees')!.replaceChildren(...VARIEES.flatMap(([id, legende]) => {
+    const c = index.carte(id);
+    return c ? [caseCarte(c, `${legende} · ${numeroCarte(c.numero, ext.total)} ${FINITIONS[c.finition].symbole}`, ext)] : [];
+  }));
 
   const reelles = app.querySelector<HTMLElement>('#reelles')!;
   const apercu = app.querySelector<HTMLElement>('#apercu')!;

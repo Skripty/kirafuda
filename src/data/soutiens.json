@@ -1,0 +1,236 @@
+{
+ "_note": "Cartes Soutien de départ (voir docs/COMBAT.md). 'effet' est une proposition de structure pour le moteur, à adapter. Rareté fixe par type.",
+ "soutiens": [
+  {
+   "id": "sou-onigiri",
+   "nom": "Onigiri",
+   "type": "objet",
+   "texte": "Soigne 30 un de tes personnages.",
+   "finition": "commune",
+   "effet": {
+    "type": "soin",
+    "valeur": 30,
+    "cible": "un-allie"
+   }
+  },
+  {
+   "id": "sou-fumigene",
+   "nom": "Fumigène",
+   "type": "objet",
+   "texte": "Ce tour, ton actif peut se replier sans payer le Repli.",
+   "finition": "commune",
+   "effet": {
+    "type": "repli-gratuit"
+   }
+  },
+  {
+   "id": "sou-parchemin-invocation",
+   "nom": "Parchemin d'invocation",
+   "type": "objet",
+   "texte": "Ajoute à ta main un Base au hasard de ton deck.",
+   "finition": "commune",
+   "effet": {
+    "type": "chercher",
+    "quoi": "base",
+    "hasard": true
+   }
+  },
+  {
+   "id": "sou-relique-maudite",
+   "nom": "Relique maudite",
+   "type": "objet",
+   "texte": "Attache 1 énergie Ténèbres de ta zone à un de tes personnages Ténèbres ; il subit 10 dégâts.",
+   "finition": "commune",
+   "effet": {
+    "type": "energie",
+    "element": "tenebres",
+    "degats_soi": 10
+   }
+  },
+  {
+   "id": "sou-antidote",
+   "nom": "Antidote",
+   "type": "objet",
+   "texte": "Retire tous les états d'un de tes personnages.",
+   "finition": "commune",
+   "effet": {
+    "type": "retirer-etats"
+   }
+  },
+  {
+   "id": "sou-talisman",
+   "nom": "Talisman",
+   "type": "objet",
+   "texte": "Jusqu'à ton prochain tour, ton actif subit 20 dégâts de moins.",
+   "finition": "commune",
+   "effet": {
+    "type": "reduction",
+    "valeur": 20
+   }
+  },
+  {
+   "id": "sou-boussole",
+   "nom": "Boussole",
+   "type": "objet",
+   "texte": "Cherche un Objet dans ton deck et ajoute-le à ta main (pas une Boussole).",
+   "finition": "commune",
+   "effet": {
+    "type": "chercher",
+    "quoi": "objet"
+   }
+  },
+  {
+   "id": "sou-kunai",
+   "nom": "Kunaï",
+   "type": "objet",
+   "texte": "Inflige 10 dégâts à un personnage du banc adverse.",
+   "finition": "commune",
+   "effet": {
+    "type": "degats",
+    "valeur": 10,
+    "cible": "banc-adverse"
+   }
+  },
+  {
+   "id": "sou-pierre-energie",
+   "nom": "Pierre d'énergie",
+   "type": "objet",
+   "texte": "Une fois par tour : attache 1 énergie de ta zone à un personnage de ton banc (en plus de l'énergie normale), puis défausse une carte de ta main.",
+   "finition": "commune",
+   "effet": {
+    "type": "energie-bonus"
+   }
+  },
+  {
+   "id": "sou-bandage",
+   "nom": "Bandage",
+   "type": "objet",
+   "texte": "Soigne 20 ton actif et retire sa Brûlure.",
+   "finition": "commune",
+   "effet": {
+    "type": "soin",
+    "valeur": 20,
+    "cible": "actif",
+    "retire": "brulure"
+   }
+  },
+  {
+   "id": "sou-entrainement-intensif",
+   "nom": "Entraînement intensif",
+   "type": "soutien",
+   "texte": "Pioche 2 cartes.",
+   "finition": "peu-commune",
+   "effet": {
+    "type": "pioche",
+    "valeur": 2
+   }
+  },
+  {
+   "id": "sou-reperage",
+   "nom": "Repérage",
+   "type": "soutien",
+   "texte": "Regarde les 4 premières cartes de ton deck, ajoute-en 1 à ta main, remets les autres sous ton deck dans l'ordre de ton choix.",
+   "finition": "peu-commune",
+   "effet": {
+    "type": "regarder",
+    "valeur": 4,
+    "garder": 1
+   }
+  },
+  {
+   "id": "sou-appel-renfort",
+   "nom": "Appel au renfort",
+   "type": "soutien",
+   "texte": "Échange ton actif avec un personnage de ton banc, puis soigne 20 le nouvel actif.",
+   "finition": "peu-commune",
+   "effet": {
+    "type": "echange-soin",
+    "valeur": 20
+   }
+  },
+  {
+   "id": "sou-briefing-tactique",
+   "nom": "Briefing tactique",
+   "type": "soutien",
+   "texte": "L'adversaire mélange sa main dans son deck et pioche 3 cartes.",
+   "finition": "peu-commune",
+   "effet": {
+    "type": "perturbation",
+    "valeur": 3
+   }
+  },
+  {
+   "id": "sou-mentor",
+   "nom": "Mentor",
+   "type": "soutien",
+   "texte": "Cherche un Éveillé dans ton deck et ajoute-le à ta main.",
+   "finition": "peu-commune",
+   "effet": {
+    "type": "chercher",
+    "quoi": "eveille"
+   }
+  },
+  {
+   "id": "sou-infirmerie",
+   "nom": "Infirmerie",
+   "type": "soutien",
+   "texte": "Soigne 40 un de tes personnages et retire tous ses états.",
+   "finition": "peu-commune",
+   "effet": {
+    "type": "soin",
+    "valeur": 40,
+    "retire": "tous"
+   }
+  },
+  {
+   "id": "sou-shibuya-nuit",
+   "nom": "Shibuya, la nuit",
+   "type": "terrain",
+   "texte": "Les attaques des personnages Ténèbres font +10.",
+   "finition": "holo",
+   "effet": {
+    "type": "bonus-element",
+    "element": "tenebres",
+    "valeur": 10
+   }
+  },
+  {
+   "id": "sou-mur-maria",
+   "nom": "Mur Maria",
+   "type": "terrain",
+   "texte": "Le Repli de tous les personnages coûte 1 énergie de plus.",
+   "finition": "holo",
+   "effet": {
+    "type": "repli",
+    "valeur": 1
+   }
+  },
+  {
+   "id": "sou-mont-sagiri",
+   "nom": "Mont Sagiri",
+   "type": "terrain",
+   "texte": "Entre les tours, soigne 10 chaque personnage Eau et Vent en jeu.",
+   "finition": "holo",
+   "effet": {
+    "type": "soin-element",
+    "elements": [
+     "eau",
+     "vent"
+    ],
+    "valeur": 10
+   }
+  },
+  {
+   "id": "sou-arene-boxe",
+   "nom": "Arène de boxe",
+   "type": "terrain",
+   "texte": "Les attaques des Bases font +10.",
+   "finition": "holo",
+   "effet": {
+    "type": "bonus-type",
+    "quoi": "base",
+    "valeur": 10
+   }
+  }
+ ]
+}

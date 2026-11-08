@@ -32,9 +32,9 @@ const persoDeCarte = (carteId: string): Personnage => {
   return extension.personnages.find((p) => p.id === c.personnage)!;
 };
 /** Personnage fictif pour tester une règle précise (le score se calcule sur les personnages). */
-const fictive = (id: string, element: ElementId, serie = `Série ${id}`, pv = 100, d1 = 20, d2 = 80): Personnage => ({
-  id, nom: id, serie, rang: 'C', element, pv,
-  attaques: [{ nom: 'a', cout: 1, degats: d1, effet: null }, { nom: 'b', cout: 2, degats: d2, effet: null }],
+const fictive = (id: string, element: ElementId, serie = `Série ${id}`, pv = 100, d1: number | string = 20, d2: number | string = 80): Personnage => ({
+  id, nom: id, serie, rang: 'C', element, type: 'base', pv, repli: 1, talent: null,
+  attaques: [{ nom: 'a', cout: ['q'], degats: d1, effet: '' }, { nom: 'b', cout: ['q', 'q'], degats: d2, effet: '' }],
 });
 const themeElements = (...valeurs: ElementId[]): Theme => ({ id: 't', nom: 'T', description: '', critere: { type: 'elements', valeurs } });
 const points = (eq: Personnage[], theme: Theme, adv: ElementId, categorie: string): number =>
@@ -97,9 +97,16 @@ describe('thèmes', () => {
     expect(correspondAuTheme(c, themeElements('eau'))).toBe(false);
     expect(correspondAuTheme(c, { id: 's', nom: '', description: '', critere: { type: 'series', valeurs: ['One Piece'] } })).toBe(true);
     expect(correspondAuTheme(c, { id: 'p', nom: '', description: '', critere: { type: 'pv-min', valeur: 120 } })).toBe(true);
-    expect(correspondAuTheme(c, { id: 'd', nom: '', description: '', critere: { type: 'degats-forte-min', valeur: 111 } })).toBe(false);
-    const soin = extension.personnages.find((x) => x.attaques.some((a) => a.effet?.type === 'soin'))!;
-    expect(correspondAuTheme(soin, { id: 'e', nom: '', description: '', critere: { type: 'effets', valeurs: ['soin'] } })).toBe(true);
+    expect(correspondAuTheme(c, { id: 'd', nom: '', description: '', critere: { type: 'degats-min', valeur: 111 } })).toBe(false);
+    expect(correspondAuTheme(c, { id: 'd', nom: '', description: '', critere: { type: 'degats-min', valeur: 110 } })).toBe(true);
+    // « 30× » compte 45 et « 50 / 0 » compte 25 pour les seuils de dégâts aussi.
+    expect(correspondAuTheme(fictive('x', 'feu', 'S', 100, '', '30×'), { id: 'd', nom: '', description: '', critere: { type: 'degats-min', valeur: 45 } })).toBe(true);
+    const talent: Theme = { id: 't', nom: '', description: '', critere: { type: 'talent' } };
+    expect(correspondAuTheme(c, talent)).toBe(false);
+    expect(correspondAuTheme({ ...c, talent: { nom: 'T', texte: 'x' } }, talent)).toBe(true);
+    const eveil: Theme = { id: 'e', nom: '', description: '', critere: { type: 'type-personnage', valeur: 'eveille' } };
+    expect(correspondAuTheme(c, eveil)).toBe(false);
+    expect(correspondAuTheme({ ...c, type: 'eveille', rang: 'A' }, eveil)).toBe(true);
   });
 });
 

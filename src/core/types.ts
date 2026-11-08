@@ -13,22 +13,29 @@ export type FinitionId =
   | 'commune' | 'peu-commune' | 'holo' | 'holo-integrale' | 'pleine'
   | 'alternative' | 'immersive' | 'couronne';
 
-export type EffetType =
-  | 'brulure' | 'ralentissement' | 'gel' | 'paralysie' | 'perce-bouclier'
-  | 'esquive' | 'bouclier' | 'soin' | 'malediction' | 'recul' | 'charge';
+/**
+ * Énergie d'un coût (docs/COMBAT.md) : f Feu, e Eau, g Glace, z Foudre, v Vent, t Terre, l Lumière, n Ténèbres,
+ * q énergie quelconque (◇). Il n'y a pas d'énergie « neutre » : les personnages Neutres paient en ◇.
+ */
+export type CodeEnergie = 'f' | 'e' | 'g' | 'z' | 'v' | 't' | 'l' | 'n' | 'q';
 
-export interface Effet {
-  type: EffetType;
-  /** Présent pour Bouclier, Soin et Recul. */
-  valeur?: number;
+/** Base (rangs C et B, posé depuis la main) ou Éveillé (rangs A et S, entre en jeu par Relève). */
+export type TypePersonnage = 'base' | 'eveille';
+
+export interface Talent {
+  nom: string;
+  texte: string;
 }
 
+/** Attaque d'une fiche de combat (src/data/fiches-combat.json). */
 export interface Attaque {
   nom: string;
-  /** Nombre d'énergies, de 1 à 3. */
-  cout: number;
-  degats: number;
-  effet: Effet | null;
+  /** 1 à 4 énergies : celles de l'élément du personnage et des ◇ (q). */
+  cout: CodeEnergie[];
+  /** Nombre, '' (pas de dégâts), « 30× » (30 par face) ou « 50 / 0 » (pile ou face). */
+  degats: number | string;
+  /** Texte de l'effet ('' s'il n'y en a pas). */
+  effet: string;
 }
 
 /** Cadrage d'une image, en pourcentages (comme dans l'Atelier des cartes). */
@@ -55,8 +62,14 @@ export interface Personnage {
   serie: string;
   rang: Rang;
   element: ElementId;
+  /** Données de combat, reprises de la fiche du personnage (src/data/fiches-combat.json, npm run fiches). */
+  type: TypePersonnage;
   pv: number;
-  attaques: [Attaque, Attaque]; // [légère, forte]
+  /** Énergies à défausser pour se replier (0 à 4). */
+  repli: number;
+  talent: Talent | null;
+  /** 1 ou 2 attaques. */
+  attaques: Attaque[];
 }
 
 /** Carte de l'extension : un personnage dans une rareté fixe (système TCG Pocket). */

@@ -1,6 +1,6 @@
 // Fonction Supabase « soumettre-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : 1feff281f62d09fb
-// Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/draft.ts, src/core/extension.ts, src/core/regles.ts, src/core/rng.ts, src/core/tirage.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/soumettre-draft.ts
+// Empreinte des sources : de48ffee78055425
+// Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/combat.ts, src/core/draft.ts, src/core/extension.ts, src/core/regles.ts, src/core/rng.ts, src/core/tirage.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/soumettre-draft.ts
 // @ts-nocheck
 const id$2 = "booster-lancement";
 const extension = "lancement";
@@ -86,24 +86,32 @@ const personnages$1 = [
     serie: "One Piece",
     rang: "S",
     element: "lumiere",
-    pv: 80,
+    type: "eveille",
+    pv: 170,
+    repli: 1,
+    talent: {
+      nom: "Haki des rois",
+      texte: "quand Luffy entre par Relève, chaque personnage du banc adverse subit 10 dégâts."
+    },
     attaques: [
       {
-        nom: "Lance sacrée",
-        cout: 1,
+        nom: "Gomu Gomu no Pistol",
+        cout: [
+          "l"
+        ],
         degats: 40,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
+        effet: ""
       },
       {
-        nom: "Nova",
-        cout: 3,
-        degats: 130,
-        effet: {
-          type: "charge"
-        }
+        nom: "Gear Fifth : Bajrang Gun",
+        cout: [
+          "l",
+          "l",
+          "q",
+          "q"
+        ],
+        degats: 180,
+        effet: "Luffy ne peut pas attaquer au tour suivant."
       }
     ]
   },
@@ -113,19 +121,33 @@ const personnages$1 = [
     serie: "One Piece",
     rang: "A",
     element: "vent",
-    pv: 120,
+    type: "eveille",
+    pv: 140,
+    repli: 2,
+    talent: {
+      nom: "Bras droit",
+      texte: "si Luffy est en jeu, ses attaques font +30."
+    },
     attaques: [
       {
-        nom: "Bourrasque",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Oni Giri",
+        cout: [
+          "v",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       },
       {
-        nom: "Tempête de lames",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Asura",
+        cout: [
+          "v",
+          "v",
+          "q",
+          "q"
+        ],
+        degats: 130,
+        effet: ""
       }
     ]
   },
@@ -135,19 +157,22 @@ const personnages$1 = [
     serie: "One Piece",
     rang: "B",
     element: "terre",
-    pv: 70,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Archéologue",
+      texte: "une fois par tour, regarde les 2 premières cartes de ton deck, prends-en 1, l'autre va sous le deck."
+    },
     attaques: [
       {
-        nom: "Secousse",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Faille",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Cien Fleurs : Clutch",
+        cout: [
+          "t",
+          "q"
+        ],
+        degats: 40,
+        effet: "+20 si la cible est Étourdie."
       }
     ]
   },
@@ -157,19 +182,33 @@ const personnages$1 = [
     serie: "Naruto",
     rang: "A",
     element: "vent",
-    pv: 80,
+    type: "eveille",
+    pv: 140,
+    repli: 1,
+    talent: {
+      nom: "Multiclonage",
+      texte: "quand Naruto entre par Relève, pose un Base de Naruto de ton deck sur ton banc."
+    },
     attaques: [
       {
-        nom: "Sifflement",
-        cout: 1,
-        degats: 20,
-        effet: null
+        nom: "Rasengan",
+        cout: [
+          "v",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       },
       {
-        nom: "Tempête de lames",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Orbe Rasen-shuriken",
+        cout: [
+          "v",
+          "v",
+          "q",
+          "q"
+        ],
+        degats: 120,
+        effet: "pas utilisable au tour suivant."
       }
     ]
   },
@@ -179,21 +218,32 @@ const personnages$1 = [
     serie: "Naruto",
     rang: "A",
     element: "foudre",
+    type: "eveille",
     pv: 130,
+    repli: 1,
+    talent: {
+      nom: "Sharingan",
+      texte: "la première attaque qu'il subit à chaque tour adverse échoue sur un pile."
+    },
     attaques: [
       {
-        nom: "Crépitement",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "perce-bouclier"
-        }
+        nom: "Chidori",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 50,
+        effet: "ignore les boucliers."
       },
       {
-        nom: "Lame d'orage",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Amaterasu",
+        cout: [
+          "z",
+          "z",
+          "q"
+        ],
+        degats: 60,
+        effet: "la cible est Brûlée."
       }
     ]
   },
@@ -203,23 +253,33 @@ const personnages$1 = [
     serie: "Naruto",
     rang: "S",
     element: "tenebres",
-    pv: 80,
+    type: "eveille",
+    pv: 160,
+    repli: 2,
+    talent: {
+      nom: "Genjutsu des corbeaux",
+      texte: "quand l'adversaire fait une Relève, le personnage qui entre est Étourdi."
+    },
     attaques: [
       {
-        nom: "Voile noir",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "esquive"
-        }
+        nom: "Tsukuyomi",
+        cout: [
+          "n",
+          "q"
+        ],
+        degats: 40,
+        effet: "la cible est Étourdie."
       },
       {
-        nom: "Étreinte des ombres",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "malediction"
-        }
+        nom: "Susano'o : épée de Totsuka",
+        cout: [
+          "n",
+          "n",
+          "q",
+          "q"
+        ],
+        degats: 150,
+        effet: "défausse ensuite 2 énergies d'Itachi."
       }
     ]
   },
@@ -229,19 +289,32 @@ const personnages$1 = [
     serie: "Jujutsu Kaisen",
     rang: "S",
     element: "lumiere",
-    pv: 130,
+    type: "eveille",
+    pv: 170,
+    repli: 2,
+    talent: {
+      nom: "Infini",
+      texte: "tant qu'il a 2 énergies ou plus, il subit 30 dégâts de moins."
+    },
     attaques: [
       {
-        nom: "Clarté",
-        cout: 1,
-        degats: 20,
-        effet: null
+        nom: "Bleu",
+        cout: [
+          "l"
+        ],
+        degats: 30,
+        effet: "l'adversaire doit mettre un personnage de son banc en actif."
       },
       {
-        nom: "Rayon solaire",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Violet creux",
+        cout: [
+          "l",
+          "l",
+          "l",
+          "q"
+        ],
+        degats: 180,
+        effet: "défausse ensuite toutes ses énergies."
       }
     ]
   },
@@ -251,21 +324,28 @@ const personnages$1 = [
     serie: "Jujutsu Kaisen",
     rang: "A",
     element: "foudre",
-    pv: 70,
+    type: "eveille",
+    pv: 130,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Statique",
-        cout: 1,
-        degats: 20,
-        effet: null
+        nom: "Poing divergent",
+        cout: [
+          "z"
+        ],
+        degats: 30,
+        effet: "au tour suivant, la cible subit encore 30."
       },
       {
-        nom: "Choc paralysant",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "paralysie"
-        }
+        nom: "Black Flash",
+        cout: [
+          "z",
+          "z",
+          "q"
+        ],
+        degats: 90,
+        effet: "pile : +60."
       }
     ]
   },
@@ -275,19 +355,33 @@ const personnages$1 = [
     serie: "Jujutsu Kaisen",
     rang: "A",
     element: "tenebres",
-    pv: 80,
+    type: "eveille",
+    pv: 120,
+    repli: 1,
+    talent: {
+      nom: "Dix ombres",
+      texte: "une fois par tour, cherche un Base de Jujutsu Kaisen dans ton deck et pose-le sur ton banc."
+    },
     attaques: [
       {
-        nom: "Griffe d'ombre",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Chiens divins",
+        cout: [
+          "n",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       },
       {
-        nom: "Lune noire",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "Mahoraga",
+        cout: [
+          "n",
+          "n",
+          "n",
+          "q"
+        ],
+        degats: 140,
+        effet: "Megumi subit 50 dégâts."
       }
     ]
   },
@@ -297,22 +391,27 @@ const personnages$1 = [
     serie: "Jujutsu Kaisen",
     rang: "B",
     element: "terre",
-    pv: 110,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Poussière",
-        cout: 1,
+        nom: "Clou et marteau",
+        cout: [
+          "t"
+        ],
         degats: 20,
-        effet: null
+        effet: ""
       },
       {
-        nom: "Météorite",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        nom: "Résonance",
+        cout: [
+          "t",
+          "q"
+        ],
+        degats: 30,
+        effet: "+40 si l'actif adverse est déjà blessé."
       }
     ]
   },
@@ -322,24 +421,32 @@ const personnages$1 = [
     serie: "Jujutsu Kaisen",
     rang: "A",
     element: "tenebres",
-    pv: 120,
+    type: "eveille",
+    pv: 140,
+    repli: 2,
+    talent: {
+      nom: "Roi des fléaux",
+      texte: "peut relever Itadori au tour même où Itadori est entré."
+    },
     attaques: [
       {
-        nom: "Sombre présage",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "malediction"
-        }
+        nom: "Démantèlement",
+        cout: [
+          "n",
+          "q"
+        ],
+        degats: 50,
+        effet: "à un personnage du banc adverse."
       },
       {
-        nom: "Pacte maudit",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "soin",
-          valeur: 30
-        }
+        nom: "Sanctuaire malveillant",
+        cout: [
+          "n",
+          "n",
+          "n"
+        ],
+        degats: 50,
+        effet: "à chaque personnage adverse, puis défausse toutes ses énergies."
       }
     ]
   },
@@ -349,24 +456,23 @@ const personnages$1 = [
     serie: "Jujutsu Kaisen",
     rang: "B",
     element: "tenebres",
-    pv: 60,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Manipulation des fléaux",
+      texte: "une fois par tour, défausse une carte de ta main pour infliger 10 dégâts à un personnage adverse."
+    },
     attaques: [
       {
-        nom: "Murmure",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "malediction"
-        }
-      },
-      {
-        nom: "Pacte maudit",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "soin",
-          valeur: 30
-        }
+        nom: "Fléau de rang spécial",
+        cout: [
+          "n",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       }
     ]
   },
@@ -376,21 +482,23 @@ const personnages$1 = [
     serie: "Jujutsu Kaisen",
     rang: "B",
     element: "lumiere",
-    pv: 60,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: {
+      nom: "Rika",
+      texte: "la première fois de la partie où Yuta devrait être mis K.-O., il reste à 10 PV."
+    },
     attaques: [
       {
-        nom: "Halo",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Nova",
-        cout: 3,
-        degats: 130,
-        effet: {
-          type: "charge"
-        }
+        nom: "Copie",
+        cout: [
+          "l",
+          "q",
+          "q"
+        ],
+        degats: "",
+        effet: "utilise une attaque de l'actif adverse, sans payer son coût."
       }
     ]
   },
@@ -400,23 +508,22 @@ const personnages$1 = [
     serie: "Jujutsu Kaisen",
     rang: "B",
     element: "neutre",
-    pv: 110,
+    type: "base",
+    pv: 100,
+    repli: 1,
+    talent: {
+      nom: "Restriction céleste",
+      texte: "Toji n'est jamais touché par les états (Brûlure, Gel, Étourdi, Malédiction)."
+    },
     attaques: [
       {
-        nom: "Pas de côté",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "esquive"
-        }
-      },
-      {
-        nom: "Plan parfait",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "perce-bouclier"
-        }
+        nom: "Lance inverse céleste",
+        cout: [
+          "q",
+          "q"
+        ],
+        degats: 40,
+        effet: "ignore les boucliers et réductions de dégâts de la cible."
       }
     ]
   },
@@ -426,19 +533,22 @@ const personnages$1 = [
     serie: "Jujutsu Kaisen",
     rang: "B",
     element: "vent",
-    pv: 70,
+    type: "base",
+    pv: 90,
+    repli: 0,
+    talent: {
+      nom: "Arsenal maudit",
+      texte: "une fois par tour, défausse un Objet de ta main pour piocher 2 cartes."
+    },
     attaques: [
       {
-        nom: "Tourbillon court",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Cyclone",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "Dragon-Bone",
+        cout: [
+          "v",
+          "q"
+        ],
+        degats: 50,
+        effet: "+30 si Maki a déjà subi des dégâts."
       }
     ]
   },
@@ -448,22 +558,22 @@ const personnages$1 = [
     serie: "Jujutsu Kaisen",
     rang: "B",
     element: "neutre",
-    pv: 90,
+    type: "base",
+    pv: 100,
+    repli: 2,
+    talent: {
+      nom: "Heures supplémentaires",
+      texte: "si tu as moins de points que l'adversaire, ses attaques font +20."
+    },
     attaques: [
       {
-        nom: "Coup de pied",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Charge téméraire",
-        cout: 2,
-        degats: 70,
-        effet: {
-          type: "recul",
-          valeur: 20
-        }
+        nom: "Ratio 7:3",
+        cout: [
+          "q",
+          "q"
+        ],
+        degats: 40,
+        effet: "+40 si la cible a la moitié de ses PV ou moins."
       }
     ]
   },
@@ -473,22 +583,33 @@ const personnages$1 = [
     serie: "Chainsaw Man",
     rang: "A",
     element: "feu",
-    pv: 120,
+    type: "eveille",
+    pv: 140,
+    repli: 1,
+    talent: {
+      nom: "Pochita",
+      texte: "une fois par partie, quand Denji devrait être mis K.-O., lance une pièce : face, il reste à 10 PV."
+    },
     attaques: [
       {
-        nom: "Poing de braise",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Tronçonneuse",
+        cout: [
+          "f",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       },
       {
-        nom: "Envol du phénix",
-        cout: 3,
-        degats: 90,
-        effet: {
-          type: "soin",
-          valeur: 20
-        }
+        nom: "Chainsaw Man",
+        cout: [
+          "f",
+          "f",
+          "q",
+          "q"
+        ],
+        degats: 130,
+        effet: "Denji subit 20 dégâts."
       }
     ]
   },
@@ -498,22 +619,32 @@ const personnages$1 = [
     serie: "Chainsaw Man",
     rang: "A",
     element: "tenebres",
-    pv: 100,
+    type: "eveille",
+    pv: 140,
+    repli: 2,
+    talent: {
+      nom: "Contrôle",
+      texte: "une fois par tour, retire 1 énergie de l'actif adverse."
+    },
     attaques: [
       {
-        nom: "Lame sombre",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Pan",
+        cout: [
+          "n",
+          "q"
+        ],
+        degats: 40,
+        effet: "à n'importe quel personnage adverse."
       },
       {
-        nom: "Pacte maudit",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "soin",
-          valeur: 30
-        }
+        nom: "Contrat",
+        cout: [
+          "n",
+          "n",
+          "q"
+        ],
+        degats: 90,
+        effet: "si la cible est mise K.-O., soigne 30 Makima."
       }
     ]
   },
@@ -523,21 +654,29 @@ const personnages$1 = [
     serie: "Chainsaw Man",
     rang: "A",
     element: "tenebres",
-    pv: 110,
+    type: "eveille",
+    pv: 130,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Griffe d'ombre",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Marteau de sang",
+        cout: [
+          "n",
+          "q"
+        ],
+        degats: 60,
+        effet: "Power subit 10 dégâts."
       },
       {
-        nom: "Néant",
-        cout: 3,
-        degats: 130,
-        effet: {
-          type: "charge"
-        }
+        nom: "Lance de sang",
+        cout: [
+          "n",
+          "n",
+          "q"
+        ],
+        degats: 100,
+        effet: "+40 si Power a la moitié de ses PV ou moins."
       }
     ]
   },
@@ -547,19 +686,23 @@ const personnages$1 = [
     serie: "Chainsaw Man",
     rang: "B",
     element: "glace",
-    pv: 80,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Démon du Futur",
+      texte: "une fois par tour, regarde la carte du dessus de ton deck ; tu peux la mettre sous le deck."
+    },
     attaques: [
       {
-        nom: "Pointe gelée",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Tempête de cristal",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Démon de la Malédiction",
+        cout: [
+          "g",
+          "g",
+          "q"
+        ],
+        degats: 60,
+        effet: "la cible est Maudite."
       }
     ]
   },
@@ -569,23 +712,22 @@ const personnages$1 = [
     serie: "Chainsaw Man",
     rang: "B",
     element: "feu",
-    pv: 150,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Démon Bombe",
+      texte: "quand Reze est mise K.-O., l'actif adverse subit 30 dégâts."
+    },
     attaques: [
       {
-        nom: "Étincelle",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "brulure"
-        }
-      },
-      {
-        nom: "Fournaise infernale",
-        cout: 3,
-        degats: 110,
-        effet: {
-          type: "brulure"
-        }
+        nom: "Détonation",
+        cout: [
+          "f",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       }
     ]
   },
@@ -595,24 +737,18 @@ const personnages$1 = [
     serie: "Chainsaw Man",
     rang: "C",
     element: "vent",
-    pv: 60,
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Pas léger",
-        cout: 1,
+        nom: "Démon Fantôme",
+        cout: [
+          "v"
+        ],
         degats: 20,
-        effet: {
-          type: "esquive"
-        }
-      },
-      {
-        nom: "Ouragan",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        effet: "l'actif adverse ne peut pas se replier au prochain tour."
       }
     ]
   },
@@ -622,21 +758,19 @@ const personnages$1 = [
     serie: "Chainsaw Man",
     rang: "C",
     element: "foudre",
-    pv: 60,
+    type: "base",
+    pv: 70,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Crépitement",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "perce-bouclier"
-        }
-      },
-      {
-        nom: "Foudre en chaîne",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "Quatre flèches",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 40,
+        effet: "pile : +20."
       }
     ]
   },
@@ -646,21 +780,22 @@ const personnages$1 = [
     serie: "Chainsaw Man",
     rang: "C",
     element: "neutre",
-    pv: 160,
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: {
+      nom: "Démon de la Guerre",
+      texte: "une fois par tour, défausse une carte de ta main : la prochaine attaque d'Asa ce tour fait +30."
+    },
     attaques: [
       {
-        nom: "Frappe rapide",
-        cout: 1,
+        nom: "Lame d'uniforme",
+        cout: [
+          "q",
+          "q"
+        ],
         degats: 30,
-        effet: null
-      },
-      {
-        nom: "Plan parfait",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "perce-bouclier"
-        }
+        effet: ""
       }
     ]
   },
@@ -670,22 +805,33 @@ const personnages$1 = [
     serie: "L'Attaque des Titans",
     rang: "A",
     element: "terre",
-    pv: 140,
+    type: "eveille",
+    pv: 150,
+    repli: 2,
+    talent: {
+      nom: "Durcissement",
+      texte: "une fois par tour, défausse 1 énergie d'Eren : il subit 40 dégâts de moins jusqu'à ton prochain tour."
+    },
     attaques: [
       {
-        nom: "Poussière",
-        cout: 1,
-        degats: 20,
-        effet: null
+        nom: "Poing du Titan",
+        cout: [
+          "t",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       },
       {
-        nom: "Montagne vivante",
-        cout: 3,
-        degats: 90,
-        effet: {
-          type: "bouclier",
-          valeur: 30
-        }
+        nom: "Titan Originel",
+        cout: [
+          "t",
+          "t",
+          "q",
+          "q"
+        ],
+        degats: 110,
+        effet: "+40 si tu as 2 personnages de L'Attaque des Titans ou plus sur ton banc."
       }
     ]
   },
@@ -695,23 +841,31 @@ const personnages$1 = [
     serie: "L'Attaque des Titans",
     rang: "A",
     element: "vent",
-    pv: 70,
+    type: "eveille",
+    pv: 140,
+    repli: 1,
+    talent: {
+      nom: "Lien Ackerman",
+      texte: "si Eren est en jeu, Mikasa subit 20 dégâts de moins."
+    },
     attaques: [
       {
-        nom: "Brise",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "esquive"
-        }
+        nom: "Manœuvre tridimensionnelle",
+        cout: [
+          "v"
+        ],
+        degats: 30,
+        effet: "échange ensuite Mikasa avec un de tes personnages du banc."
       },
       {
-        nom: "Tornade",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "perce-bouclier"
-        }
+        nom: "Lames jumelles",
+        cout: [
+          "v",
+          "v",
+          "q"
+        ],
+        degats: 100,
+        effet: ""
       }
     ]
   },
@@ -721,23 +875,33 @@ const personnages$1 = [
     serie: "L'Attaque des Titans",
     rang: "S",
     element: "vent",
-    pv: 70,
+    type: "eveille",
+    pv: 160,
+    repli: 1,
+    talent: {
+      nom: "Nettoyage",
+      texte: "quand une attaque de Levi met un personnage K.-O., soigne 30 Levi."
+    },
     attaques: [
       {
-        nom: "Pas léger",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "esquive"
-        }
+        nom: "Taille en spirale",
+        cout: [
+          "v",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       },
       {
-        nom: "Tornade",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "perce-bouclier"
-        }
+        nom: "Massacre du Titan Bestial",
+        cout: [
+          "v",
+          "v",
+          "q",
+          "q"
+        ],
+        degats: 120,
+        effet: "+60 contre un Éveillé."
       }
     ]
   },
@@ -747,22 +911,23 @@ const personnages$1 = [
     serie: "L'Attaque des Titans",
     rang: "B",
     element: "feu",
-    pv: 90,
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: {
+      nom: "Stratège",
+      texte: "une fois par tour, regarde la main de l'adversaire."
+    },
     attaques: [
       {
-        nom: "Cendres vives",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Envol du phénix",
-        cout: 3,
-        degats: 90,
-        effet: {
-          type: "soin",
-          valeur: 20
-        }
+        nom: "Titan Colossal",
+        cout: [
+          "f",
+          "f",
+          "q"
+        ],
+        degats: 100,
+        effet: "Armin subit 40 dégâts."
       }
     ]
   },
@@ -772,19 +937,22 @@ const personnages$1 = [
     serie: "L'Attaque des Titans",
     rang: "B",
     element: "lumiere",
-    pv: 140,
+    type: "base",
+    pv: 100,
+    repli: 1,
+    talent: {
+      nom: "Consacrez vos cœurs",
+      texte: "tes autres personnages de L'Attaque des Titans font +10 avec leurs attaques."
+    },
     attaques: [
       {
-        nom: "Rayon",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Aurore",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "Charge héroïque",
+        cout: [
+          "l",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -794,24 +962,22 @@ const personnages$1 = [
     serie: "L'Attaque des Titans",
     rang: "B",
     element: "glace",
+    type: "base",
     pv: 100,
+    repli: 2,
+    talent: {
+      nom: "Titan Féminin",
+      texte: "Annie subit 20 dégâts de moins de la part des Éveillés."
+    },
     attaques: [
       {
-        nom: "Cristal",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "bouclier",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Zéro absolu",
-        cout: 3,
-        degats: 130,
-        effet: {
-          type: "charge"
-        }
+        nom: "Coup de pied durci",
+        cout: [
+          "g",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       }
     ]
   },
@@ -821,19 +987,19 @@ const personnages$1 = [
     serie: "L'Attaque des Titans",
     rang: "C",
     element: "terre",
-    pv: 150,
+    type: "base",
+    pv: 80,
+    repli: 2,
+    talent: null,
     attaques: [
       {
-        nom: "Poussière",
-        cout: 1,
-        degats: 20,
-        effet: null
-      },
-      {
-        nom: "Pic rocheux",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "Titan Cuirassé",
+        cout: [
+          "t",
+          "q"
+        ],
+        degats: 30,
+        effet: "Reiner subit 20 dégâts de moins jusqu'à ton prochain tour."
       }
     ]
   },
@@ -843,22 +1009,18 @@ const personnages$1 = [
     serie: "L'Attaque des Titans",
     rang: "C",
     element: "lumiere",
-    pv: 150,
+    type: "base",
+    pv: 60,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Halo",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Purification",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "soin",
-          valeur: 20
-        }
+        nom: "Reine des murs",
+        cout: [
+          "l"
+        ],
+        degats: "",
+        effet: "soigne 30 un de tes personnages de L'Attaque des Titans."
       }
     ]
   },
@@ -868,21 +1030,33 @@ const personnages$1 = [
     serie: "Demon Slayer",
     rang: "A",
     element: "eau",
-    pv: 160,
+    type: "eveille",
+    pv: 140,
+    repli: 1,
+    talent: {
+      nom: "Fil de l'ouverture",
+      texte: "ses attaques font +20 contre un personnage déjà blessé."
+    },
     attaques: [
       {
-        nom: "Goutte perçante",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Souffle de l'Eau : coupe en surface",
+        cout: [
+          "e",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       },
       {
-        nom: "Dragon des eaux",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "ralentissement"
-        }
+        nom: "Danse du Dieu du Feu",
+        cout: [
+          "e",
+          "e",
+          "q",
+          "q"
+        ],
+        degats: 120,
+        effet: "la cible est Brûlée."
       }
     ]
   },
@@ -892,21 +1066,31 @@ const personnages$1 = [
     serie: "Demon Slayer",
     rang: "A",
     element: "feu",
-    pv: 70,
+    type: "eveille",
+    pv: 130,
+    repli: 1,
+    talent: {
+      nom: "Régénération",
+      texte: "à la fin de chacun de tes tours, soigne 20 Nezuko."
+    },
     attaques: [
       {
-        nom: "Coup ardent",
-        cout: 1,
+        nom: "Coup de pied",
+        cout: [
+          "f"
+        ],
         degats: 30,
-        effet: null
+        effet: ""
       },
       {
-        nom: "Embrasement total",
-        cout: 3,
-        degats: 130,
-        effet: {
-          type: "charge"
-        }
+        nom: "Sang explosif",
+        cout: [
+          "f",
+          "f",
+          "q"
+        ],
+        degats: 80,
+        effet: "la cible est Brûlée."
       }
     ]
   },
@@ -916,21 +1100,22 @@ const personnages$1 = [
     serie: "Demon Slayer",
     rang: "B",
     element: "foudre",
-    pv: 90,
+    type: "base",
+    pv: 70,
+    repli: 0,
+    talent: {
+      nom: "Endormi",
+      texte: "ses attaques font +40 s'il a déjà subi des dégâts."
+    },
     attaques: [
       {
-        nom: "Coup éclair",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Jugement de l'orage",
-        cout: 3,
-        degats: 110,
-        effet: {
-          type: "perce-bouclier"
-        }
+        nom: "Éclair foudroyant",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -940,19 +1125,19 @@ const personnages$1 = [
     serie: "Demon Slayer",
     rang: "B",
     element: "terre",
-    pv: 80,
+    type: "base",
+    pv: 90,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Poussière",
-        cout: 1,
-        degats: 20,
-        effet: null
-      },
-      {
-        nom: "Pic rocheux",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "Crocs de la bête",
+        cout: [
+          "t",
+          "q"
+        ],
+        degats: 50,
+        effet: "+20 si l'actif adverse a plus de PV restants qu'Inosuke."
       }
     ]
   },
@@ -962,25 +1147,23 @@ const personnages$1 = [
     serie: "Demon Slayer",
     rang: "B",
     element: "eau",
-    pv: 110,
+    type: "base",
+    pv: 100,
+    repli: 2,
+    talent: {
+      nom: "Calme plat",
+      texte: "la première attaque qu'il subit à chaque tour adverse fait 30 dégâts de moins."
+    },
     attaques: [
       {
-        nom: "Bruine",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "soin",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Danse des flots",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "soin",
-          valeur: 20
-        }
+        nom: "Onzième forme",
+        cout: [
+          "e",
+          "q",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       }
     ]
   },
@@ -990,23 +1173,19 @@ const personnages$1 = [
     serie: "Demon Slayer",
     rang: "B",
     element: "vent",
-    pv: 130,
+    type: "base",
+    pv: 70,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Souffle",
-        cout: 1,
+        nom: "Poison de glycine",
+        cout: [
+          "v",
+          "q"
+        ],
         degats: 20,
-        effet: {
-          type: "perce-bouclier"
-        }
-      },
-      {
-        nom: "Danse aérienne",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "esquive"
-        }
+        effet: "la cible est Brûlée ; +30 contre un personnage Ténèbres."
       }
     ]
   },
@@ -1016,23 +1195,23 @@ const personnages$1 = [
     serie: "Demon Slayer",
     rang: "B",
     element: "tenebres",
-    pv: 90,
+    type: "base",
+    pv: 100,
+    repli: 2,
+    talent: {
+      nom: "Roi des démons",
+      texte: "une fois par tour, défausse une carte de ta main pour soigner 30 Muzan."
+    },
     attaques: [
       {
-        nom: "Voile noir",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "esquive"
-        }
-      },
-      {
-        nom: "Domaine des ombres",
-        cout: 3,
-        degats: 110,
-        effet: {
-          type: "malediction"
-        }
+        nom: "Tentacules",
+        cout: [
+          "n",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: "et 10 à chaque personnage du banc adverse."
       }
     ]
   },
@@ -1042,21 +1221,33 @@ const personnages$1 = [
     serie: "Demon Slayer",
     rang: "A",
     element: "feu",
-    pv: 110,
+    type: "eveille",
+    pv: 140,
+    repli: 2,
+    talent: {
+      nom: "Cœur ardent",
+      texte: "quand Rengoku est mis K.-O., soigne 50 chacun de tes personnages de Demon Slayer."
+    },
     attaques: [
       {
-        nom: "Cendres vives",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Lever du soleil",
+        cout: [
+          "f",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       },
       {
-        nom: "Fournaise infernale",
-        cout: 3,
-        degats: 110,
-        effet: {
-          type: "brulure"
-        }
+        nom: "Neuvième forme : Purgatoire",
+        cout: [
+          "f",
+          "f",
+          "q",
+          "q"
+        ],
+        degats: 140,
+        effet: ""
       }
     ]
   },
@@ -1066,22 +1257,33 @@ const personnages$1 = [
     serie: "Solo Leveling",
     rang: "S",
     element: "tenebres",
-    pv: 160,
+    type: "eveille",
+    pv: 170,
+    repli: 2,
+    talent: {
+      nom: "Arise",
+      texte: "une fois par tour, remets sur ton banc un Base de Solo Leveling de ta défausse, avec 30 PV."
+    },
     attaques: [
       {
-        nom: "Ombre furtive",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Dague de Kamish",
+        cout: [
+          "n",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       },
       {
-        nom: "Pacte maudit",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "soin",
-          valeur: 30
-        }
+        nom: "Monarque des Ombres",
+        cout: [
+          "n",
+          "n",
+          "q",
+          "q"
+        ],
+        degats: 120,
+        effet: "+20 par personnage sur ton banc."
       }
     ]
   },
@@ -1091,22 +1293,19 @@ const personnages$1 = [
     serie: "Solo Leveling",
     rang: "B",
     element: "lumiere",
+    type: "base",
     pv: 90,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Éclat",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Sanctuaire",
-        cout: 3,
-        degats: 90,
-        effet: {
-          type: "bouclier",
-          valeur: 30
-        }
+        nom: "Danse de l'épée",
+        cout: [
+          "l",
+          "q"
+        ],
+        degats: 50,
+        effet: "+30 si Jin-Woo est en jeu."
       }
     ]
   },
@@ -1116,22 +1315,23 @@ const personnages$1 = [
     serie: "Solo Leveling",
     rang: "B",
     element: "feu",
-    pv: 90,
+    type: "base",
+    pv: 100,
+    repli: 1,
+    talent: {
+      nom: "Chevalier de l'ombre",
+      texte: "tant qu'Igris est sur ton banc, ton actif de Solo Leveling subit 10 dégâts de moins."
+    },
     attaques: [
       {
-        nom: "Morsure de feu",
-        cout: 1,
-        degats: 40,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Fournaise",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Épée écarlate",
+        cout: [
+          "f",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       }
     ]
   },
@@ -1141,22 +1341,29 @@ const personnages$1 = [
     serie: "Solo Leveling",
     rang: "B",
     element: "vent",
-    pv: 90,
+    type: "base",
+    pv: 100,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Plume tranchante",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Griffes de fourmi",
+        cout: [
+          "v",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       },
       {
-        nom: "Ouragan",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        nom: "Rugissement du roi",
+        cout: [
+          "v",
+          "v",
+          "q"
+        ],
+        degats: 80,
+        effet: "pile : la cible est Étourdie."
       }
     ]
   },
@@ -1166,22 +1373,20 @@ const personnages$1 = [
     serie: "Solo Leveling",
     rang: "C",
     element: "terre",
-    pv: 110,
+    type: "base",
+    pv: 90,
+    repli: 2,
+    talent: null,
     attaques: [
       {
-        nom: "Jet de pierre",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Montagne vivante",
-        cout: 3,
-        degats: 90,
-        effet: {
-          type: "bouclier",
-          valeur: 30
-        }
+        nom: "Goliath",
+        cout: [
+          "t",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       }
     ]
   },
@@ -1191,22 +1396,22 @@ const personnages$1 = [
     serie: "Solo Leveling",
     rang: "C",
     element: "foudre",
-    pv: 110,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: {
+      nom: "Président de l'Association",
+      texte: "une fois par tour, si tu as moins de cartes en main que l'adversaire, pioche 1 carte."
+    },
     attaques: [
       {
-        nom: "Éclair bref",
-        cout: 1,
-        degats: 40,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Foudre en chaîne",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "Coup de tonnerre",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 30,
+        effet: ""
       }
     ]
   },
@@ -1216,22 +1421,19 @@ const personnages$1 = [
     serie: "Solo Leveling",
     rang: "C",
     element: "tenebres",
-    pv: 160,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Ombre furtive",
-        cout: 1,
+        nom: "Ombre originelle",
+        cout: [
+          "n",
+          "q"
+        ],
         degats: 30,
-        effet: null
-      },
-      {
-        nom: "Éclipse",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        effet: "récupère un Objet de ta défausse."
       }
     ]
   },
@@ -1241,21 +1443,19 @@ const personnages$1 = [
     serie: "Solo Leveling",
     rang: "C",
     element: "glace",
-    pv: 150,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Morsure du froid",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Blizzard",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "ralentissement"
-        }
+        nom: "Grand maréchal",
+        cout: [
+          "g",
+          "q"
+        ],
+        degats: 40,
+        effet: "+20 si Jin-Woo est en jeu."
       }
     ]
   },
@@ -1265,22 +1465,33 @@ const personnages$1 = [
     serie: "Frieren",
     rang: "A",
     element: "glace",
-    pv: 110,
+    type: "eveille",
+    pv: 130,
+    repli: 1,
+    talent: {
+      nom: "Mille ans de magie",
+      texte: "une fois par tour, récupère un Objet de ta défausse."
+    },
     attaques: [
       {
-        nom: "Lance de givre",
-        cout: 1,
-        degats: 40,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
+        nom: "Zoltraak",
+        cout: [
+          "g",
+          "q"
+        ],
+        degats: 50,
+        effet: "ignore les boucliers et réductions de dégâts."
       },
       {
-        nom: "Tempête de cristal",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Catastravia",
+        cout: [
+          "g",
+          "g",
+          "q",
+          "q"
+        ],
+        degats: 40,
+        effet: "à chaque personnage adverse."
       }
     ]
   },
@@ -1290,21 +1501,28 @@ const personnages$1 = [
     serie: "Frieren",
     rang: "B",
     element: "vent",
-    pv: 150,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Bourrasque",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Zoltraak rapide",
+        cout: [
+          "v"
+        ],
+        degats: 20,
+        effet: ""
       },
       {
-        nom: "Mille vents",
-        cout: 3,
-        degats: 110,
-        effet: {
-          type: "perce-bouclier"
-        }
+        nom: "Rafale",
+        cout: [
+          "v",
+          "v",
+          "q"
+        ],
+        degats: "30×",
+        effet: "lance 3 pièces : 30 dégâts par face."
       }
     ]
   },
@@ -1314,19 +1532,23 @@ const personnages$1 = [
     serie: "Frieren",
     rang: "C",
     element: "terre",
-    pv: 130,
+    type: "base",
+    pv: 90,
+    repli: 2,
+    talent: {
+      nom: "Peureux mais solide",
+      texte: "Stark subit 20 dégâts de moins."
+    },
     attaques: [
       {
-        nom: "Jet de pierre",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Faille",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Coup de hache éclair",
+        cout: [
+          "t",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       }
     ]
   },
@@ -1336,22 +1558,22 @@ const personnages$1 = [
     serie: "Frieren",
     rang: "B",
     element: "lumiere",
-    pv: 110,
+    type: "base",
+    pv: 100,
+    repli: 1,
+    talent: {
+      nom: "Le héros",
+      texte: "tant qu'Himmel est en jeu, tes autres personnages de Frieren subissent 10 dégâts de moins."
+    },
     attaques: [
       {
-        nom: "Lueur",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "soin",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Ailes de lumière",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Épée du héros",
+        cout: [
+          "l",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       }
     ]
   },
@@ -1361,22 +1583,19 @@ const personnages$1 = [
     serie: "Frieren",
     rang: "C",
     element: "vent",
-    pv: 150,
+    type: "base",
+    pv: 70,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Rafale",
-        cout: 1,
+        nom: "Reelseiden",
+        cout: [
+          "v",
+          "q"
+        ],
         degats: 40,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Tempête de lames",
-        cout: 3,
-        degats: 110,
-        effet: null
+        effet: "ignore les boucliers et réductions de dégâts."
       }
     ]
   },
@@ -1386,19 +1605,23 @@ const personnages$1 = [
     serie: "Frieren",
     rang: "C",
     element: "lumiere",
-    pv: 140,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: {
+      nom: "Grande mage",
+      texte: "une fois par tour, cherche un Objet dans ton deck."
+    },
     attaques: [
       {
-        nom: "Flèche de lumière",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Aurore",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "Magie primordiale",
+        cout: [
+          "l",
+          "q",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -1408,19 +1631,27 @@ const personnages$1 = [
     serie: "Frieren",
     rang: "C",
     element: "feu",
-    pv: 110,
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Lame rougeoyante",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Waldgose",
+        cout: [
+          "f",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       },
       {
-        nom: "Lame solaire",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "À mains nues",
+        cout: [
+          "q"
+        ],
+        degats: 20,
+        effet: ""
       }
     ]
   },
@@ -1430,22 +1661,22 @@ const personnages$1 = [
     serie: "Mob Psycho 100",
     rang: "B",
     element: "lumiere",
-    pv: 60,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "100 %",
+      texte: "si Mob a 30 PV ou moins, ses attaques font +60."
+    },
     attaques: [
       {
-        nom: "Éclat",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Purification",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "soin",
-          valeur: 20
-        }
+        nom: "Télékinésie",
+        cout: [
+          "l",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -1455,22 +1686,30 @@ const personnages$1 = [
     serie: "Mob Psycho 100",
     rang: "B",
     element: "neutre",
-    pv: 120,
+    type: "base",
+    pv: 100,
+    repli: 1,
+    talent: {
+      nom: "Baratin",
+      texte: "une fois par tour, regarde les 3 premières cartes de ton deck et remets-les dans l'ordre de ton choix."
+    },
     attaques: [
       {
-        nom: "Coup de pied",
-        cout: 1,
-        degats: 30,
-        effet: null
+        nom: "Massage spécial",
+        cout: [
+          "q"
+        ],
+        degats: "",
+        effet: "soigne 30 un de tes personnages."
       },
       {
-        nom: "Esprit d'équipe",
-        cout: 3,
-        degats: 90,
-        effet: {
-          type: "soin",
-          valeur: 30
-        }
+        nom: "Sel spécial",
+        cout: [
+          "q",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -1480,21 +1719,21 @@ const personnages$1 = [
     serie: "Mob Psycho 100",
     rang: "C",
     element: "tenebres",
-    pv: 110,
+    type: "base",
+    pv: 60,
+    repli: 0,
+    talent: {
+      nom: "Esprit flottant",
+      texte: "Dimple n'est jamais Gelé ni Étourdi."
+    },
     attaques: [
       {
-        nom: "Maléfice",
-        cout: 1,
+        nom: "Possession",
+        cout: [
+          "n"
+        ],
         degats: 20,
-        effet: {
-          type: "malediction"
-        }
-      },
-      {
-        nom: "Lune noire",
-        cout: 2,
-        degats: 60,
-        effet: null
+        effet: ""
       }
     ]
   },
@@ -1504,21 +1743,19 @@ const personnages$1 = [
     serie: "Mob Psycho 100",
     rang: "C",
     element: "foudre",
-    pv: 120,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Étincelle vive",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "perce-bouclier"
-        }
-      },
-      {
-        nom: "Charge électrique",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Épée psychique",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -1528,25 +1765,19 @@ const personnages$1 = [
     serie: "Mob Psycho 100",
     rang: "C",
     element: "glace",
-    pv: 160,
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Lance de givre",
-        cout: 1,
-        degats: 40,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Sanctuaire gelé",
-        cout: 3,
-        degats: 90,
-        effet: {
-          type: "bouclier",
-          valeur: 30
-        }
+        nom: "Lame psychique",
+        cout: [
+          "g",
+          "q"
+        ],
+        degats: 30,
+        effet: "pile : la cible est Gelée."
       }
     ]
   },
@@ -1556,25 +1787,21 @@ const personnages$1 = [
     serie: "Mob Psycho 100",
     rang: "C",
     element: "terre",
-    pv: 130,
+    type: "base",
+    pv: 90,
+    repli: 2,
+    talent: null,
     attaques: [
       {
-        nom: "Peau de pierre",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "bouclier",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Météorite",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        nom: "Psychique ultime",
+        cout: [
+          "t",
+          "t",
+          "q",
+          "q"
+        ],
+        degats: 100,
+        effet: ""
       }
     ]
   },
@@ -1584,19 +1811,22 @@ const personnages$1 = [
     serie: "Vinland Saga",
     rang: "B",
     element: "vent",
-    pv: 60,
+    type: "base",
+    pv: 90,
+    repli: 0,
+    talent: {
+      nom: "Je n'ai pas d'ennemis",
+      texte: "si Thorfinn n'a pas attaqué à ton tour précédent, il subit 30 dégâts de moins."
+    },
     attaques: [
       {
-        nom: "Tourbillon court",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Tempête de lames",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Double dague",
+        cout: [
+          "v",
+          "q"
+        ],
+        degats: 40,
+        effet: "pile : +20."
       }
     ]
   },
@@ -1606,21 +1836,22 @@ const personnages$1 = [
     serie: "Vinland Saga",
     rang: "B",
     element: "neutre",
-    pv: 130,
+    type: "base",
+    pv: 100,
+    repli: 1,
+    talent: {
+      nom: "Chef mercenaire",
+      texte: "quand tu poses un Base de Vinland Saga, pioche 1 carte."
+    },
     attaques: [
       {
-        nom: "Coup de pied",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Plan parfait",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "perce-bouclier"
-        }
+        nom: "Ruse du chef",
+        cout: [
+          "q",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       }
     ]
   },
@@ -1630,24 +1861,21 @@ const personnages$1 = [
     serie: "Vinland Saga",
     rang: "C",
     element: "glace",
-    pv: 100,
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: {
+      nom: "Roi",
+      texte: "tes autres personnages de Vinland Saga font +10 avec leurs attaques."
+    },
     attaques: [
       {
-        nom: "Cristal",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "bouclier",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Zéro absolu",
-        cout: 3,
-        degats: 130,
-        effet: {
-          type: "charge"
-        }
+        nom: "Ordre royal",
+        cout: [
+          "g"
+        ],
+        degats: 10,
+        effet: ""
       }
     ]
   },
@@ -1657,22 +1885,20 @@ const personnages$1 = [
     serie: "Vinland Saga",
     rang: "C",
     element: "terre",
-    pv: 70,
+    type: "base",
+    pv: 100,
+    repli: 2,
+    talent: null,
     attaques: [
       {
-        nom: "Éboulis",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Mur de roche",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "bouclier",
-          valeur: 20
-        }
+        nom: "Force brute",
+        cout: [
+          "t",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: "+30 si Thorkell a déjà subi des dégâts."
       }
     ]
   },
@@ -1682,19 +1908,19 @@ const personnages$1 = [
     serie: "Vinland Saga",
     rang: "C",
     element: "neutre",
-    pv: 100,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Coup de pied",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Coup décisif",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Poing de fermier",
+        cout: [
+          "q",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -1704,21 +1930,19 @@ const personnages$1 = [
     serie: "Vinland Saga",
     rang: "C",
     element: "eau",
-    pv: 100,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Goutte perçante",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Déluge",
-        cout: 3,
-        degats: 130,
-        effet: {
-          type: "charge"
-        }
+        nom: "Le vrai guerrier",
+        cout: [
+          "e",
+          "q"
+        ],
+        degats: 40,
+        effet: "pile : la cible ne peut pas attaquer au prochain tour."
       }
     ]
   },
@@ -1728,22 +1952,23 @@ const personnages$1 = [
     serie: "Tower of God",
     rang: "B",
     element: "eau",
-    pv: 130,
+    type: "base",
+    pv: 100,
+    repli: 1,
+    talent: {
+      nom: "Irrégulier",
+      texte: "si tu as moins de points que l'adversaire, ses attaques coûtent 1 énergie ◇ de moins."
+    },
     attaques: [
       {
-        nom: "Goutte perçante",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Abysse",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        nom: "Shinsu noir",
+        cout: [
+          "e",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       }
     ]
   },
@@ -1753,25 +1978,21 @@ const personnages$1 = [
     serie: "Tower of God",
     rang: "C",
     element: "glace",
-    pv: 80,
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: {
+      nom: "Stratège de la Tour",
+      texte: "une fois par tour, pioche 1 carte, puis remets 1 carte de ta main sous ton deck."
+    },
     attaques: [
       {
-        nom: "Lance de givre",
-        cout: 1,
-        degats: 40,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Avalanche",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        nom: "Lance de glace",
+        cout: [
+          "g"
+        ],
+        degats: 20,
+        effet: ""
       }
     ]
   },
@@ -1781,24 +2002,19 @@ const personnages$1 = [
     serie: "Tower of God",
     rang: "C",
     element: "foudre",
-    pv: 70,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Éclair bref",
-        cout: 1,
-        degats: 40,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Tempête électrique",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "paralysie"
-        }
+        nom: "Lance du chasseur",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 50,
+        effet: "Rak subit 10 dégâts."
       }
     ]
   },
@@ -1808,21 +2024,21 @@ const personnages$1 = [
     serie: "Tower of God",
     rang: "C",
     element: "neutre",
-    pv: 70,
+    type: "base",
+    pv: 60,
+    repli: 0,
+    talent: {
+      nom: "Trahison",
+      texte: "tant que Rachel est sur ton banc, l'actif adverse subit 10 dégâts de plus."
+    },
     attaques: [
       {
-        nom: "Feinte",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "perce-bouclier"
-        }
-      },
-      {
-        nom: "Coup ultime",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Coup bas",
+        cout: [
+          "q"
+        ],
+        degats: 10,
+        effet: ""
       }
     ]
   },
@@ -1832,22 +2048,19 @@ const personnages$1 = [
     serie: "Tower of God",
     rang: "C",
     element: "eau",
-    pv: 110,
+    type: "base",
+    pv: 70,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Bruine",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "soin",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Marée montante",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Coup de la princesse",
+        cout: [
+          "e",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -1857,25 +2070,20 @@ const personnages$1 = [
     serie: "Tower of God",
     rang: "C",
     element: "lumiere",
-    pv: 130,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Lueur",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "soin",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Égide",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "bouclier",
-          valeur: 20
-        }
+        nom: "Shinsu du Rang",
+        cout: [
+          "l",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       }
     ]
   },
@@ -1885,19 +2093,19 @@ const personnages$1 = [
     serie: "Tower of God",
     rang: "C",
     element: "feu",
-    pv: 60,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Coup ardent",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Éruption",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Black March",
+        cout: [
+          "f",
+          "q"
+        ],
+        degats: 40,
+        effet: "la cible est Brûlée."
       }
     ]
   },
@@ -1907,21 +2115,22 @@ const personnages$1 = [
     serie: "Omniscient Reader's Viewpoint",
     rang: "B",
     element: "neutre",
-    pv: 90,
+    type: "base",
+    pv: 100,
+    repli: 1,
+    talent: {
+      nom: "Lecteur omniscient",
+      texte: "une fois par tour, regarde les 2 premières cartes du deck adverse."
+    },
     attaques: [
       {
-        nom: "Pas de côté",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "esquive"
-        }
-      },
-      {
-        nom: "Coup ultime",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Épée inbrisable",
+        cout: [
+          "q",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       }
     ]
   },
@@ -1931,24 +2140,23 @@ const personnages$1 = [
     serie: "Omniscient Reader's Viewpoint",
     rang: "C",
     element: "feu",
-    pv: 80,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Régression",
+      texte: "une fois par partie, quand il est mis K.-O., il retourne dans ton deck au lieu de la défausse."
+    },
     attaques: [
       {
-        nom: "Étincelle",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "brulure"
-        }
-      },
-      {
-        nom: "Météore ardent",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        nom: "Épée du Roi démon",
+        cout: [
+          "f",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       }
     ]
   },
@@ -1958,21 +2166,18 @@ const personnages$1 = [
     serie: "Omniscient Reader's Viewpoint",
     rang: "C",
     element: "vent",
+    type: "base",
     pv: 70,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Tourbillon court",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Œil du cyclone",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "esquive"
-        }
+        nom: "Réécriture",
+        cout: [
+          "v"
+        ],
+        degats: "",
+        effet: "pioche 2 cartes."
       }
     ]
   },
@@ -1982,22 +2187,19 @@ const personnages$1 = [
     serie: "Omniscient Reader's Viewpoint",
     rang: "C",
     element: "lumiere",
-    pv: 120,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Clarté",
-        cout: 1,
-        degats: 20,
-        effet: null
-      },
-      {
-        nom: "Sanctuaire",
-        cout: 3,
-        degats: 90,
-        effet: {
-          type: "bouclier",
-          valeur: 30
-        }
+        nom: "Jugement",
+        cout: [
+          "l",
+          "q"
+        ],
+        degats: 40,
+        effet: "+30 contre un personnage Ténèbres."
       }
     ]
   },
@@ -2007,22 +2209,22 @@ const personnages$1 = [
     serie: "Omniscient Reader's Viewpoint",
     rang: "C",
     element: "terre",
-    pv: 150,
+    type: "base",
+    pv: 100,
+    repli: 2,
+    talent: {
+      nom: "Bouclier d'acier",
+      texte: "tes autres personnages d'Omniscient Reader's Viewpoint subissent 10 dégâts de moins."
+    },
     attaques: [
       {
-        nom: "Coup de roc",
-        cout: 1,
+        nom: "Coup d'épaule",
+        cout: [
+          "t",
+          "q"
+        ],
         degats: 30,
-        effet: null
-      },
-      {
-        nom: "Météorite",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        effet: ""
       }
     ]
   },
@@ -2032,22 +2234,19 @@ const personnages$1 = [
     serie: "Omniscient Reader's Viewpoint",
     rang: "C",
     element: "eau",
-    pv: 160,
+    type: "base",
+    pv: 60,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Vaguelette",
-        cout: 1,
+        nom: "Dresseuse",
+        cout: [
+          "e",
+          "q"
+        ],
         degats: 30,
-        effet: null
-      },
-      {
-        nom: "Danse des flots",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "soin",
-          valeur: 20
-        }
+        effet: "pile : la cible est Étourdie."
       }
     ]
   },
@@ -2057,21 +2256,19 @@ const personnages$1 = [
     serie: "Omniscient Reader's Viewpoint",
     rang: "C",
     element: "tenebres",
-    pv: 100,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Murmure",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "malediction"
-        }
-      },
-      {
-        nom: "Roi des ombres",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Complot",
+        cout: [
+          "n",
+          "q"
+        ],
+        degats: 30,
+        effet: "l'adversaire défausse une carte au hasard de sa main."
       }
     ]
   },
@@ -2081,25 +2278,22 @@ const personnages$1 = [
     serie: "Sakamoto Days",
     rang: "B",
     element: "neutre",
-    pv: 130,
+    type: "base",
+    pv: 110,
+    repli: 2,
+    talent: {
+      nom: "Retraité",
+      texte: "ses attaques ne descendent jamais la cible sous 10 PV, sauf si tu as moins de points que l'adversaire."
+    },
     attaques: [
       {
-        nom: "Coup de tête",
-        cout: 1,
-        degats: 40,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Coup de grâce",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        nom: "Arme du quotidien",
+        cout: [
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: "+20 si tu as joué un Objet ce tour."
       }
     ]
   },
@@ -2109,21 +2303,21 @@ const personnages$1 = [
     serie: "Sakamoto Days",
     rang: "C",
     element: "foudre",
-    pv: 60,
+    type: "base",
+    pv: 70,
+    repli: 0,
+    talent: {
+      nom: "Télépathie",
+      texte: "une fois par tour, regarde la main de l'adversaire."
+    },
     attaques: [
       {
-        nom: "Volt",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Mille éclairs",
-        cout: 3,
-        degats: 130,
-        effet: {
-          type: "charge"
-        }
+        nom: "Coup de pied",
+        cout: [
+          "z"
+        ],
+        degats: 20,
+        effet: ""
       }
     ]
   },
@@ -2133,22 +2327,19 @@ const personnages$1 = [
     serie: "Sakamoto Days",
     rang: "C",
     element: "feu",
-    pv: 100,
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Coup ardent",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Envol du phénix",
-        cout: 3,
-        degats: 90,
-        effet: {
-          type: "soin",
-          valeur: 20
-        }
+        nom: "Kung-fu",
+        cout: [
+          "f",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -2158,24 +2349,19 @@ const personnages$1 = [
     serie: "Sakamoto Days",
     rang: "C",
     element: "tenebres",
-    pv: 140,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Maléfice",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "malediction"
-        }
-      },
-      {
-        nom: "Éclipse",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        nom: "Couteau multifonction",
+        cout: [
+          "n",
+          "q"
+        ],
+        degats: 30,
+        effet: "à n'importe quel personnage adverse."
       }
     ]
   },
@@ -2185,19 +2371,20 @@ const personnages$1 = [
     serie: "Sakamoto Days",
     rang: "C",
     element: "glace",
+    type: "base",
     pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Patinage",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Lames de cristal",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Scie géante",
+        cout: [
+          "g",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       }
     ]
   },
@@ -2207,21 +2394,19 @@ const personnages$1 = [
     serie: "Sakamoto Days",
     rang: "C",
     element: "foudre",
-    pv: 130,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Étincelle vive",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "perce-bouclier"
-        }
-      },
-      {
-        nom: "Dragon de foudre",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Bâton télescopique",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 40,
+        effet: "+20 contre un Base."
       }
     ]
   },
@@ -2231,19 +2416,23 @@ const personnages$1 = [
     serie: "Dorohedoro",
     rang: "B",
     element: "terre",
-    pv: 140,
+    type: "base",
+    pv: 110,
+    repli: 2,
+    talent: {
+      nom: "Mâchoire",
+      texte: "quand une attaque de Caiman met un personnage K.-O., pioche 2 cartes."
+    },
     attaques: [
       {
-        nom: "Charge lourde",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Pic rocheux",
-        cout: 2,
+        nom: "Baïonnette",
+        cout: [
+          "t",
+          "q",
+          "q"
+        ],
         degats: 60,
-        effet: null
+        effet: ""
       }
     ]
   },
@@ -2253,22 +2442,22 @@ const personnages$1 = [
     serie: "Dorohedoro",
     rang: "C",
     element: "lumiere",
-    pv: 100,
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: {
+      nom: "Magie du temps",
+      texte: "une fois par partie, soigne un de tes personnages de tous les dégâts subis au dernier tour adverse."
+    },
     attaques: [
       {
-        nom: "Halo",
-        cout: 1,
+        nom: "Coup du dragon",
+        cout: [
+          "l",
+          "q"
+        ],
         degats: 30,
-        effet: null
-      },
-      {
-        nom: "Égide",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "bouclier",
-          valeur: 20
-        }
+        effet: ""
       }
     ]
   },
@@ -2278,21 +2467,20 @@ const personnages$1 = [
     serie: "Dorohedoro",
     rang: "C",
     element: "tenebres",
-    pv: 120,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Maléfice",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "malediction"
-        }
-      },
-      {
-        nom: "Abîme",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Magie des champignons",
+        cout: [
+          "n",
+          "q",
+          "q"
+        ],
+        degats: 50,
+        effet: "la cible est Maudite."
       }
     ]
   },
@@ -2302,23 +2490,19 @@ const personnages$1 = [
     serie: "Dorohedoro",
     rang: "C",
     element: "feu",
-    pv: 130,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Souffle chaud",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "brulure"
-        }
-      },
-      {
-        nom: "Brasier",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "brulure"
-        }
+        nom: "Démembrement",
+        cout: [
+          "f",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -2328,21 +2512,23 @@ const personnages$1 = [
     serie: "Dorohedoro",
     rang: "C",
     element: "glace",
-    pv: 150,
+    type: "base",
+    pv: 100,
+    repli: 2,
+    talent: {
+      nom: "Magie de soin",
+      texte: "une fois par tour, soigne 20 un de tes personnages de Dorohedoro."
+    },
     attaques: [
       {
-        nom: "Souffle froid",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "ralentissement"
-        }
-      },
-      {
-        nom: "Rafale glaciale",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "Poing de Noi",
+        cout: [
+          "g",
+          "q",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       }
     ]
   },
@@ -2352,23 +2538,18 @@ const personnages$1 = [
     serie: "Dorohedoro",
     rang: "C",
     element: "neutre",
-    pv: 100,
+    type: "base",
+    pv: 60,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Feinte",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "perce-bouclier"
-        }
-      },
-      {
-        nom: "Plan parfait",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "perce-bouclier"
-        }
+        nom: "Chaos",
+        cout: [
+          "q"
+        ],
+        degats: "50 / 0",
+        effet: "lance une pièce : face 50, pile rien."
       }
     ]
   },
@@ -2378,19 +2559,19 @@ const personnages$1 = [
     serie: "The Boxer",
     rang: "C",
     element: "glace",
-    pv: 150,
+    type: "base",
+    pv: 80,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Pointe gelée",
-        cout: 1,
+        nom: "Contre parfait",
+        cout: [
+          "g",
+          "q"
+        ],
         degats: 30,
-        effet: null
-      },
-      {
-        nom: "Tempête de cristal",
-        cout: 3,
-        degats: 110,
-        effet: null
+        effet: "+30 si Yu a subi des dégâts au dernier tour adverse."
       }
     ]
   },
@@ -2400,23 +2581,21 @@ const personnages$1 = [
     serie: "The Boxer",
     rang: "C",
     element: "neutre",
+    type: "base",
     pv: 80,
+    repli: 1,
+    talent: {
+      nom: "Entraîneur",
+      texte: "tes autres personnages de The Boxer font +10 avec leurs attaques."
+    },
     attaques: [
       {
-        nom: "Pas de côté",
-        cout: 1,
+        nom: "Leçon",
+        cout: [
+          "q"
+        ],
         degats: 20,
-        effet: {
-          type: "esquive"
-        }
-      },
-      {
-        nom: "Dernier recours",
-        cout: 3,
-        degats: 130,
-        effet: {
-          type: "charge"
-        }
+        effet: ""
       }
     ]
   },
@@ -2426,19 +2605,19 @@ const personnages$1 = [
     serie: "The Boxer",
     rang: "C",
     element: "foudre",
-    pv: 140,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Volt",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Lame d'orage",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Jab éclair",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -2448,21 +2627,20 @@ const personnages$1 = [
     serie: "The Boxer",
     rang: "C",
     element: "feu",
-    pv: 120,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Lame rougeoyante",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Vague de flammes",
-        cout: 2,
+        nom: "Uppercut brutal",
+        cout: [
+          "f",
+          "q",
+          "q"
+        ],
         degats: 60,
-        effet: {
-          type: "brulure"
-        }
+        effet: ""
       }
     ]
   },
@@ -2472,24 +2650,19 @@ const personnages$1 = [
     serie: "The Boxer",
     rang: "C",
     element: "terre",
-    pv: 100,
+    type: "base",
+    pv: 90,
+    repli: 2,
+    talent: null,
     attaques: [
       {
-        nom: "Racine",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "ralentissement"
-        }
-      },
-      {
-        nom: "Météorite",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        nom: "Garde de fer",
+        cout: [
+          "t",
+          "q"
+        ],
+        degats: 30,
+        effet: "il subit 20 dégâts de moins jusqu'à ton prochain tour."
       }
     ]
   },
@@ -2499,21 +2672,19 @@ const personnages$1 = [
     serie: "The Boxer",
     rang: "C",
     element: "eau",
-    pv: 90,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Ressac",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Dragon des eaux",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "ralentissement"
-        }
+        nom: "Crochet",
+        cout: [
+          "e",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -2523,22 +2694,20 @@ const personnages$1 = [
     serie: "The Boxer",
     rang: "C",
     element: "eau",
+    type: "base",
     pv: 90,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Ressac",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Danse des flots",
-        cout: 2,
+        nom: "Coup de massue",
+        cout: [
+          "e",
+          "q",
+          "q"
+        ],
         degats: 60,
-        effet: {
-          type: "soin",
-          valeur: 20
-        }
+        effet: "pile : la cible est Étourdie."
       }
     ]
   }
@@ -4486,21 +4655,33 @@ const personnages = [
     serie: "Hunter x Hunter",
     rang: "S",
     element: "foudre",
-    pv: 130,
+    type: "eveille",
+    pv: 160,
+    repli: 1,
+    talent: {
+      nom: "Vitesse divine",
+      texte: "une fois par tour, Killua peut se replier sans payer le Repli."
+    },
     attaques: [
       {
-        nom: "Zap",
-        cout: 1,
-        degats: 20,
-        effet: null
+        nom: "Éclair narcotique",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 40,
+        effet: "la cible est Étourdie."
       },
       {
-        nom: "Tonnerre",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "perce-bouclier"
-        }
+        nom: "Narukami",
+        cout: [
+          "z",
+          "z",
+          "q",
+          "q"
+        ],
+        degats: 140,
+        effet: ""
       }
     ]
   },
@@ -4510,22 +4691,31 @@ const personnages = [
     serie: "Hunter x Hunter",
     rang: "A",
     element: "terre",
-    pv: 120,
+    type: "eveille",
+    pv: 140,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Poing de granit",
-        cout: 1,
-        degats: 40,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
+        nom: "Jajanken : Pierre",
+        cout: [
+          "t",
+          "q",
+          "q"
+        ],
+        degats: 80,
+        effet: ""
       },
       {
-        nom: "Séisme",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Gon adulte",
+        cout: [
+          "t",
+          "t",
+          "t",
+          "q"
+        ],
+        degats: 200,
+        effet: "Gon subit 80 dégâts."
       }
     ]
   },
@@ -4535,25 +4725,32 @@ const personnages = [
     serie: "Dandadan",
     rang: "A",
     element: "lumiere",
-    pv: 100,
+    type: "eveille",
+    pv: 130,
+    repli: 1,
+    talent: {
+      nom: "Psychokinésie",
+      texte: "une fois par tour, échange l'actif adverse avec un personnage de son banc."
+    },
     attaques: [
       {
-        nom: "Bénédiction",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "soin",
-          valeur: 10
-        }
+        nom: "Mains d'aura",
+        cout: [
+          "l",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       },
       {
-        nom: "Soleil levant",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "soin",
-          valeur: 30
-        }
+        nom: "Prise psychique",
+        cout: [
+          "l",
+          "l",
+          "q"
+        ],
+        degats: 90,
+        effet: "la cible ne peut pas se replier au prochain tour."
       }
     ]
   },
@@ -4563,21 +4760,30 @@ const personnages = [
     serie: "Kaiju No. 8",
     rang: "A",
     element: "feu",
-    pv: 140,
+    type: "eveille",
+    pv: 150,
+    repli: 2,
+    talent: null,
     attaques: [
       {
-        nom: "Flammèche",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "brulure"
-        }
+        nom: "Poing du Kaiju",
+        cout: [
+          "f",
+          "q"
+        ],
+        degats: 60,
+        effet: ""
       },
       {
-        nom: "Pilier de flammes",
-        cout: 3,
-        degats: 100,
-        effet: null
+        nom: "Pleine puissance",
+        cout: [
+          "f",
+          "f",
+          "q",
+          "q"
+        ],
+        degats: 140,
+        effet: "Kafka subit 30 dégâts."
       }
     ]
   },
@@ -4587,19 +4793,22 @@ const personnages = [
     serie: "Spy x Family",
     rang: "A",
     element: "neutre",
-    pv: 70,
+    type: "eveille",
+    pv: 120,
+    repli: 1,
+    talent: {
+      nom: "Télépathie",
+      texte: "une fois par tour, regarde la main de l'adversaire et choisis une carte : il la remet sous son deck."
+    },
     attaques: [
       {
-        nom: "Coup de bluff",
-        cout: 1,
-        degats: 20,
-        effet: null
-      },
-      {
-        nom: "Combo",
-        cout: 2,
-        degats: 60,
-        effet: null
+        nom: "Regard de héros",
+        cout: [
+          "q",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       }
     ]
   },
@@ -4609,22 +4818,22 @@ const personnages = [
     serie: "Hunter x Hunter",
     rang: "B",
     element: "tenebres",
-    pv: 110,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Bungee Gum",
+      texte: "quand Hisoka attaque, l'actif adverse ne peut pas se replier au prochain tour."
+    },
     attaques: [
       {
-        nom: "Ténèbre",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Danse macabre",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "recul",
-          valeur: 10
-        }
+        nom: "Texture surprise",
+        cout: [
+          "n",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -4634,19 +4843,22 @@ const personnages = [
     serie: "Hunter x Hunter",
     rang: "B",
     element: "feu",
-    pv: 100,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Chaîne du Jugement",
+      texte: "ses attaques font +40 contre un Éveillé."
+    },
     attaques: [
       {
-        nom: "Bond incandescent",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Éruption",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Chaîne de la Pénitence",
+        cout: [
+          "f",
+          "q"
+        ],
+        degats: 40,
+        effet: ""
       }
     ]
   },
@@ -4656,19 +4868,22 @@ const personnages = [
     serie: "Dandadan",
     rang: "B",
     element: "vent",
+    type: "base",
     pv: 90,
+    repli: 0,
+    talent: {
+      nom: "Mode Turbo",
+      texte: "la première attaque qu'il subit à chaque tour adverse échoue sur un pile."
+    },
     attaques: [
       {
-        nom: "Coup de vent",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Vent coupant",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Coup turbo",
+        cout: [
+          "v",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       }
     ]
   },
@@ -4678,23 +4893,22 @@ const personnages = [
     serie: "Spy x Family",
     rang: "B",
     element: "glace",
+    type: "base",
     pv: 100,
+    repli: 1,
+    talent: {
+      nom: "Opération Strix",
+      texte: "une fois par tour, cherche un Soutien dans ton deck."
+    },
     attaques: [
       {
-        nom: "Givre",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "ralentissement"
-        }
-      },
-      {
-        nom: "Prison de glace",
-        cout: 2,
+        nom: "Agent Twilight",
+        cout: [
+          "g",
+          "q"
+        ],
         degats: 50,
-        effet: {
-          type: "gel"
-        }
+        effet: ""
       }
     ]
   },
@@ -4704,21 +4918,19 @@ const personnages = [
     serie: "Spy x Family",
     rang: "B",
     element: "vent",
+    type: "base",
     pv: 90,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Lame d'air",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Ciel déchiré",
-        cout: 3,
-        degats: 130,
-        effet: {
-          type: "charge"
-        }
+        nom: "Princesse Épine",
+        cout: [
+          "v",
+          "q"
+        ],
+        degats: 60,
+        effet: "Yor subit 10 dégâts."
       }
     ]
   },
@@ -4728,22 +4940,22 @@ const personnages = [
     serie: "Blue Lock",
     rang: "B",
     element: "eau",
+    type: "base",
     pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Méta-vision",
+      texte: "une fois par tour, regarde les 2 premières cartes de ton deck et choisis leur ordre."
+    },
     attaques: [
       {
-        nom: "Jet d'eau",
-        cout: 1,
-        degats: 20,
-        effet: null
-      },
-      {
-        nom: "Cascade céleste",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "soin",
-          valeur: 30
-        }
+        nom: "Tir direct",
+        cout: [
+          "e",
+          "q"
+        ],
+        degats: 50,
+        effet: "+20 si un autre personnage de Blue Lock est en jeu."
       }
     ]
   },
@@ -4753,22 +4965,20 @@ const personnages = [
     serie: "Kaiju No. 8",
     rang: "B",
     element: "foudre",
-    pv: 120,
+    type: "base",
+    pv: 100,
+    repli: 2,
+    talent: null,
     attaques: [
       {
-        nom: "Décharge",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Éclair divin",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        nom: "Canon d'artillerie",
+        cout: [
+          "z",
+          "z",
+          "q"
+        ],
+        degats: 90,
+        effet: ""
       }
     ]
   },
@@ -4778,22 +4988,19 @@ const personnages = [
     serie: "Hunter x Hunter",
     rang: "C",
     element: "neutre",
-    pv: 110,
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Coup de poing",
-        cout: 1,
+        nom: "Poing à distance",
+        cout: [
+          "q",
+          "q"
+        ],
         degats: 30,
-        effet: null
-      },
-      {
-        nom: "Volonté inébranlable",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "bouclier",
-          valeur: 30
-        }
+        effet: "à un personnage du banc adverse."
       }
     ]
   },
@@ -4803,21 +5010,18 @@ const personnages = [
     serie: "Dandadan",
     rang: "C",
     element: "tenebres",
-    pv: 80,
+    type: "base",
+    pv: 70,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Morsure",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Brume maudite",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "malediction"
-        }
+        nom: "Malédiction de la vitesse",
+        cout: [
+          "n"
+        ],
+        degats: 20,
+        effet: "la cible est Maudite."
       }
     ]
   },
@@ -4827,24 +5031,22 @@ const personnages = [
     serie: "Dandadan",
     rang: "C",
     element: "lumiere",
-    pv: 100,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: {
+      nom: "Médium",
+      texte: "une fois par tour, retire un état d'un de tes personnages."
+    },
     attaques: [
       {
-        nom: "Aube",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "bouclier",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Lame céleste",
-        cout: 2,
-        degats: 60,
-        effet: {
-          type: "perce-bouclier"
-        }
+        nom: "Exorcisme",
+        cout: [
+          "l",
+          "q"
+        ],
+        degats: 30,
+        effet: ""
       }
     ]
   },
@@ -4854,22 +5056,19 @@ const personnages = [
     serie: "Dandadan",
     rang: "C",
     element: "lumiere",
+    type: "base",
     pv: 70,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Prisme",
-        cout: 1,
+        nom: "Acrobatie",
+        cout: [
+          "l",
+          "q"
+        ],
         degats: 30,
-        effet: null
-      },
-      {
-        nom: "Jugement céleste",
-        cout: 3,
-        degats: 120,
-        effet: {
-          type: "recul",
-          valeur: 30
-        }
+        effet: "pile : +30."
       }
     ]
   },
@@ -4879,22 +5078,20 @@ const personnages = [
     serie: "Dandadan",
     rang: "C",
     element: "terre",
-    pv: 130,
+    type: "base",
+    pv: 100,
+    repli: 2,
+    talent: null,
     attaques: [
       {
-        nom: "Garde de pierre",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "bouclier",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Écrasement",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Œil maléfique",
+        cout: [
+          "t",
+          "q",
+          "q"
+        ],
+        degats: 60,
+        effet: "Jiji subit 10 dégâts."
       }
     ]
   },
@@ -4904,21 +5101,19 @@ const personnages = [
     serie: "Kaiju No. 8",
     rang: "C",
     element: "glace",
-    pv: 90,
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Grésil",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Hiver éternel",
-        cout: 3,
-        degats: 100,
-        effet: {
-          type: "gel"
-        }
+        nom: "Arme du Kaiju n°6",
+        cout: [
+          "g",
+          "q"
+        ],
+        degats: 40,
+        effet: "pile : la cible est Gelée."
       }
     ]
   },
@@ -4928,19 +5123,19 @@ const personnages = [
     serie: "Kaiju No. 8",
     rang: "C",
     element: "foudre",
-    pv: 100,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Arc électrique",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Lame d'orage",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Hache de combat",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 40,
+        effet: "+20 contre un Éveillé."
       }
     ]
   },
@@ -4950,21 +5145,19 @@ const personnages = [
     serie: "Kaiju No. 8",
     rang: "C",
     element: "vent",
-    pv: 110,
+    type: "base",
+    pv: 80,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Souffle",
-        cout: 1,
-        degats: 20,
-        effet: {
-          type: "perce-bouclier"
-        }
-      },
-      {
-        nom: "Lames du vent",
-        cout: 2,
-        degats: 70,
-        effet: null
+        nom: "Double lame",
+        cout: [
+          "v",
+          "q"
+        ],
+        degats: 50,
+        effet: ""
       }
     ]
   },
@@ -4974,25 +5167,21 @@ const personnages = [
     serie: "Spy x Family",
     rang: "C",
     element: "neutre",
-    pv: 120,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: {
+      nom: "Prémonition",
+      texte: "une fois par tour, regarde la carte du dessus de ton deck ; tu peux la mettre sous le deck."
+    },
     attaques: [
       {
-        nom: "Garde haute",
-        cout: 1,
+        nom: "Gros câlin",
+        cout: [
+          "q"
+        ],
         degats: 20,
-        effet: {
-          type: "bouclier",
-          valeur: 10
-        }
-      },
-      {
-        nom: "Contre-attaque",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "bouclier",
-          valeur: 20
-        }
+        effet: ""
       }
     ]
   },
@@ -5002,19 +5191,21 @@ const personnages = [
     serie: "Spy x Family",
     rang: "C",
     element: "neutre",
+    type: "base",
     pv: 70,
+    repli: 1,
+    talent: {
+      nom: "Informateur",
+      texte: "une fois par tour, si tu as un autre personnage de Spy x Family en jeu, pioche 1 carte puis défausse 1 carte."
+    },
     attaques: [
       {
-        nom: "Plaquage",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Coup ultime",
-        cout: 3,
-        degats: 110,
-        effet: null
+        nom: "Gadget",
+        cout: [
+          "q"
+        ],
+        degats: 10,
+        effet: ""
       }
     ]
   },
@@ -5024,21 +5215,18 @@ const personnages = [
     serie: "Blue Lock",
     rang: "C",
     element: "eau",
-    pv: 80,
+    type: "base",
+    pv: 70,
+    repli: 0,
+    talent: null,
     attaques: [
       {
-        nom: "Lame liquide",
-        cout: 1,
-        degats: 30,
-        effet: null
-      },
-      {
-        nom: "Tourbillon",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "ralentissement"
-        }
+        nom: "Dribble du monstre",
+        cout: [
+          "e"
+        ],
+        degats: 20,
+        effet: "échange ensuite Bachira avec un de tes personnages du banc."
       }
     ]
   },
@@ -5048,22 +5236,19 @@ const personnages = [
     serie: "Blue Lock",
     rang: "C",
     element: "glace",
-    pv: 90,
+    type: "base",
+    pv: 80,
+    repli: 1,
+    talent: null,
     attaques: [
       {
-        nom: "Neige fine",
-        cout: 1,
-        degats: 20,
-        effet: null
-      },
-      {
-        nom: "Miroir de glace",
-        cout: 2,
-        degats: 50,
-        effet: {
-          type: "bouclier",
-          valeur: 20
-        }
+        nom: "Contrôle parfait",
+        cout: [
+          "g",
+          "q"
+        ],
+        degats: 40,
+        effet: "pile : la cible est Gelée."
       }
     ]
   }
@@ -5565,6 +5750,17 @@ function indexer(extension2) {
   cache.set(extension2, index);
   return index;
 }
+function valeurDegats(d) {
+  if (typeof d === "number") return d;
+  const t = d.trim();
+  if (t === "") return 0;
+  const fois = /^(\d+)\s*×$/.exec(t);
+  if (fois) return Number(fois[1]) * 1.5;
+  const pile = /^(\d+)\s*\/\s*(\d+)$/.exec(t);
+  if (pile) return (Number(pile[1]) + Number(pile[2])) / 2;
+  return Number.NaN;
+}
+const texteDegats = (d) => typeof d === "number" ? String(d) : d.trim();
 const DEUX_32 = 4294967296;
 function creerRng(suivant) {
   function entier(n) {
@@ -5662,12 +5858,14 @@ function correspondAuTheme(carte, theme) {
       return c.valeurs.includes(carte.element);
     case "series":
       return c.valeurs.includes(carte.serie);
-    case "effets":
-      return carte.attaques.some((a) => a.effet !== null && c.valeurs.includes(a.effet.type));
+    case "talent":
+      return carte.talent !== null;
+    case "type-personnage":
+      return carte.type === c.valeur;
     case "pv-min":
       return carte.pv >= c.valeur;
-    case "degats-forte-min":
-      return carte.attaques[1].degats >= c.valeur;
+    case "degats-min":
+      return carte.attaques.some((a) => valeurDegats(a.degats) >= c.valeur);
     case "rang-max":
       return rangDe(carte.rang) <= rangDe(c.valeur);
     case "elements-differents-min":
@@ -5806,7 +6004,7 @@ function genererDraft(semaine, sources, themes2) {
   return { ...tirage, theme };
 }
 const BAREME = {
-  /** Puissance d'un personnage : (PV + dégâts des deux attaques) ÷ 10, arrondi. */
+  /** Puissance d'un personnage : (PV + dégâts de ses attaques) ÷ 10, arrondi (« 30× » compte 45, « 50 / 0 » compte 25). */
   diviseurPuissance: 10,
   parCarteDuTheme: 15,
   equipeEntiereDuTheme: 20,
@@ -5818,13 +6016,18 @@ const BAREME = {
   parCarteForteContreAdversaire: 10,
   parCarteFaibleContreAdversaire: -10
 };
+const degatsPuissance = (carte) => carte.attaques.reduce((n, a) => n + valeurDegats(a.degats), 0);
 function puissance(carte) {
-  return Math.round((carte.pv + carte.attaques[0].degats + carte.attaques[1].degats) / BAREME.diviseurPuissance);
+  return Math.round((carte.pv + degatsPuissance(carte)) / BAREME.diviseurPuissance);
 }
 function scorer(equipe, theme, adversaire) {
   const lignes = [];
   const nomEl = (e) => ELEMENTS[e].nom;
-  for (const c of equipe) lignes.push({ categorie: "Puissance", libelle: `${c.nom} (${c.pv} PV, ${c.attaques[0].degats} + ${c.attaques[1].degats} dégâts)`, points: puissance(c) });
+  const degats = (c) => c.attaques.map((a) => {
+    const v = valeurDegats(a.degats);
+    return typeof a.degats === "number" ? String(v) : texteDegats(a.degats) === "" ? "0" : `${texteDegats(a.degats)} (${v})`;
+  }).join(" + ");
+  for (const c of equipe) lignes.push({ categorie: "Puissance", libelle: `${c.nom} (${c.pv} PV, ${degats(c)} dégâts)`, points: puissance(c) });
   const progression = progressionEquipe(equipe, theme);
   if (progression) {
     if (equipe.length > 0) {
@@ -6036,38 +6239,27 @@ const themes = [
   {
     id: "frappe-lourde",
     nom: "Frappe lourde",
-    description: "Attaque forte de 120 dégâts ou plus.",
+    description: "Une attaque de 120 dégâts ou plus.",
     critere: {
-      type: "degats-forte-min",
+      type: "degats-min",
       valeur: 120
     }
   },
   {
-    id: "soutien",
-    nom: "Soutien",
-    description: "Une attaque avec Soin ou Bouclier.",
+    id: "talents",
+    nom: "Talents",
+    description: "Personnages dotés d’un talent.",
     critere: {
-      type: "effets",
-      valeurs: [
-        "soin",
-        "bouclier"
-      ]
+      type: "talent"
     }
   },
   {
-    id: "controle",
-    nom: "Contrôle",
-    description: "Une attaque avec Brûlure, Gel, Paralysie, Ralentissement, Recul ou Malédiction.",
+    id: "eveil",
+    nom: "Éveil",
+    description: "Personnages Éveillés (rangs A et S).",
     critere: {
-      type: "effets",
-      valeurs: [
-        "brulure",
-        "gel",
-        "paralysie",
-        "ralentissement",
-        "recul",
-        "malediction"
-      ]
+      type: "type-personnage",
+      valeur: "eveille"
     }
   },
   {

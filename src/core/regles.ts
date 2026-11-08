@@ -1,5 +1,5 @@
 // Règles fixes du GDD : éléments, faiblesses, finitions, multiplicateurs de cote.
-import type { Calque, EffetType, ElementId, FinitionId, Rang } from './types';
+import type { Calque, ElementId, FinitionId, Rang } from './types';
 
 /**
  * Éléments : nom, abréviation, couleur d'accent et icône.
@@ -39,20 +39,6 @@ export const FINITIONS: Record<FinitionId, { nom: string; symbole: string; plein
   'couronne':    { nom: 'Couronne',                 symbole: '♛',    pleineCarte: true,  multiplicateurCote: 100 },
 };
 
-/** Effets d'attaque. `avecValeur` : Bouclier, Soin et Recul portent une valeur (ex. Soin 20). */
-export const EFFETS: Record<EffetType, { nom: string; avecValeur: boolean }> = {
-  'brulure': { nom: 'Brûlure', avecValeur: false },
-  'ralentissement': { nom: 'Ralentissement', avecValeur: false },
-  'gel': { nom: 'Gel', avecValeur: false },
-  'paralysie': { nom: 'Paralysie', avecValeur: false },
-  'perce-bouclier': { nom: 'Perce-bouclier', avecValeur: false },
-  'esquive': { nom: 'Esquive', avecValeur: false },
-  'bouclier': { nom: 'Bouclier', avecValeur: true },
-  'soin': { nom: 'Soin', avecValeur: true },
-  'malediction': { nom: 'Malédiction', avecValeur: false },
-  'recul': { nom: 'Recul', avecValeur: true },
-  'charge': { nom: 'Charge', avecValeur: false },
-};
 
 /** Calques d'image selon la rareté : une illustration fixe pour toutes ; l'immersive peut avoir en plus une animation (WebP animé). */
 export const CALQUES_PAR_FINITION: Record<FinitionId, Calque[]> = {

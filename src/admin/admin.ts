@@ -4,17 +4,18 @@
 // dans le navigateur, puis envoyées au plugin Vite (outils/vite-admin.ts).
 import '../styles/tokens.css';
 import './admin.css';
-import { EFFETS, ELEMENTS, FAIBLESSE, FINITIONS, ORDRE_FINITIONS } from '../core/regles';
+import { ELEMENTS, FAIBLESSE, FINITIONS, ORDRE_FINITIONS } from '../core/regles';
+import { TYPES_PERSONNAGE, texteDegats } from '../core/combat';
 import { CADRAGE_DEFAUT, calquesDeLaFinition, cheminImage } from '../core/images';
 import { LIMITES_CADRAGE, TAILLE_MAX_IMAGE, nomFichierImage, planMigrationImages } from '../core/edition';
 import { indexer } from '../core/extension';
-import type { Attaque, Cadrage, Calque, Carte, EffetType, ElementId, Extension, FinitionId, Personnage } from '../core/types';
+import type { Cadrage, Calque, Carte, Extension, FinitionId, Personnage } from '../core/types';
 import { creerCarte, numeroCarte } from '../ui/carte';
 import { iconeElement } from '../ui/element';
 import { creerOngletPopularite } from './popularite';
 import { animationEnWebp, imageFixeEnWebp } from './webp';
 
-interface Brouillon { element: ElementId; attaques: [Attaque, Attaque]; cadrages: Partial<Record<Calque, Cadrage>> }
+interface Brouillon { cadrages: Partial<Record<Calque, Cadrage>> }
 
 const NOMS_CALQUES: Record<Calque, string> = { illustration: 'Illustration', animation: 'Animation' };
 const CONSEILS: Record<FinitionId, string> = {
@@ -73,17 +74,15 @@ function statut(c: Carte): { texte: string; classe: string } {
 }
 
 function brouillonDe(c: Carte): Brouillon {
-  const p = index().personnageDe(c);
-  return { element: p.element, attaques: clone(p.attaques), cadrages: clone(c.images) };
+  return { cadrages: clone(c.images) };
 }
 const cadrage = (k: Calque): Cadrage => brouillon.cadrages[k] ?? { ...CADRAGE_DEFAUT };
 
-/** Extension d'aperçu : le brouillon appliqué au personnage et à la carte sélectionnés. */
+/** Extension d'aperçu : le cadrage du brouillon appliqué à la carte sélectionnée. */
 function extensionApercu(): Extension {
   const c = carteSel();
   return {
     ...extension,
-    personnages: extension.personnages.map((p) => (p.id === c.personnage ? { ...p, element: brouillon.element, attaques: brouillon.attaques } : p)),
     cartes: extension.cartes.map((x) => (x.id === c.id ? { ...x, images: brouillon.cadrages } : x)),
   };
 }
@@ -161,17 +160,6 @@ function rendreListe(): void {
   zoneListe.replaceChildren(entete, champ, filtres, visibles.length ? ul : el('p', 'adm-vide', 'Aucun résultat.'));
 }
 
-function champNombre(valeur: number, min: number, max: number, etiquette: string, surChange: (v: number) => void): HTMLInputElement {
-  const i = el('input');
-  i.type = 'number';
-  i.min = String(min);
-  i.max = String(max);
-  i.value = String(valeur);
-  i.setAttribute('aria-label', etiquette);
-  i.addEventListener('input', () => surChange(Number(i.value)));
-  return i;
-}
-
 function rendreFiche(): void {
   const c = carteSel();
   const p = persoSel();
@@ -199,67 +187,28 @@ function rendreFiche(): void {
     }
   }
 
-  // Élément et attaques : propres au personnage, donc communs à toutes ses cartes.
+  // Données de combat : celles du personnage (communes à toutes ses cartes), en lecture seule.
+  // Elles viennent de src/data/fiches-combat.json : on les modifie là, puis npm run fiches.
   const form = el('div', 'adm-form');
-  form.append(el('p', 'adm-aide', autres.length
-    ? `Élément et attaques sont ceux du personnage : ils changent aussi sur ses ${autres.length} autre${autres.length > 1 ? 's' : ''} carte${autres.length > 1 ? 's' : ''} (${autres.map((x) => numeroCarte(x.numero, extension.total)).join(', ')}).`
-    : 'Élément et attaques sont ceux du personnage.'));
-  const selElement = el('select');
-  selElement.setAttribute('aria-label', 'Élément');
-  for (const [k, v] of Object.entries(ELEMENTS)) {
-    const o = el('option', undefined, v.nom);
-    o.value = k;
-    selElement.append(o);
-  }
-  selElement.value = brouillon.element;
-  selElement.addEventListener('change', () => { brouillon.element = selElement.value as ElementId; marquer(); rendreFiche(); rafraichirApercu(); });
-  const faiblesse = FAIBLESSE[brouillon.element];
+  const perso = indexer(extension).personnageDe(c);
+  form.append(el('p', 'adm-aide', `Données de combat du personnage${autres.length ? `, communes à ses ${autres.length + 1} cartes` : ''}. `
+    + 'Pour les modifier : src/data/fiches-combat.json, puis npm run fiches.'));
+  const faiblesse = FAIBLESSE[perso.element];
   const ligneEl = el('div', 'adm-champ');
-  // Icônes de l'élément choisi et de sa faiblesse (public/elements), le nom en texte alternatif.
+  // Icônes de l'élément et de sa faiblesse (public/elements), le nom en texte alternatif.
   const aideFaiblesse = el('span', 'adm-aide adm-faiblesse', faiblesse ? 'Faiblesse : ' : 'Faiblesse : aucune');
   if (faiblesse) aideFaiblesse.append(iconeElement(faiblesse, 'adm-element-icone', null), ELEMENTS[faiblesse].nom);
-  ligneEl.append(el('span', 'adm-lbl', 'Élément'), iconeElement(brouillon.element, 'adm-element-icone adm-element-choisi', ELEMENTS[brouillon.element].nom), selElement, aideFaiblesse);
+  ligneEl.append(el('span', 'adm-lbl', 'Élément'), iconeElement(perso.element, 'adm-element-icone adm-element-choisi', ELEMENTS[perso.element].nom),
+    el('span', undefined, ELEMENTS[perso.element].nom), aideFaiblesse);
   form.append(ligneEl);
-
-  brouillon.attaques.forEach((a, i) => {
-    const bloc = el('div', 'adm-attaque');
-    bloc.append(el('span', 'adm-lbl', i === 0 ? 'Attaque légère (coût 1)' : 'Attaque forte (coût 2 ou 3)'));
-    const nom = el('input');
-    nom.value = a.nom;
-    nom.maxLength = 40;
-    nom.setAttribute('aria-label', `Nom de l’attaque ${i + 1}`);
-    nom.addEventListener('input', () => { a.nom = nom.value; marquer(); rafraichirApercu(); });
-    const cout = champNombre(a.cout, i === 0 ? 1 : 2, i === 0 ? 1 : 3, `Coût de l’attaque ${i + 1}`, (v) => { a.cout = v; marquer(); rafraichirApercu(); });
-    cout.disabled = i === 0;
-    const degats = champNombre(a.degats, 0, 300, `Dégâts de l’attaque ${i + 1}`, (v) => { a.degats = v; marquer(); rafraichirApercu(); });
-    degats.step = '10';
-    const effet = el('select');
-    effet.setAttribute('aria-label', `Effet de l’attaque ${i + 1}`);
-    const aucun = el('option', undefined, 'Aucun effet');
-    aucun.value = '';
-    effet.append(aucun);
-    for (const [k, v] of Object.entries(EFFETS)) {
-      const o = el('option', undefined, v.nom);
-      o.value = k;
-      effet.append(o);
-    }
-    effet.value = a.effet?.type ?? '';
-    effet.addEventListener('change', () => {
-      const t = effet.value as EffetType | '';
-      a.effet = t === '' ? null : EFFETS[t].avecValeur ? { type: t, valeur: a.effet?.valeur ?? 10 } : { type: t };
-      marquer();
-      rendreFiche();
-      rafraichirApercu();
-    });
-    const ligne = el('div', 'adm-attaque-champs');
-    ligne.append(nom, cout, degats, effet);
-    if (a.effet && EFFETS[a.effet.type].avecValeur) {
-      const e = a.effet;
-      ligne.append(champNombre(e.valeur ?? 10, 1, 300, `Valeur de l’effet de l’attaque ${i + 1}`, (v) => { e.valeur = v; marquer(); rafraichirApercu(); }));
-    }
-    bloc.append(ligne);
-    form.append(bloc);
-  });
+  const resume = el('ul', 'adm-combat');
+  resume.append(
+    el('li', undefined, `${TYPES_PERSONNAGE[perso.type].nom}${perso.type === 'eveille' ? ` (Relève : ${perso.serie})` : ''} · ${perso.pv} PV · Repli ${perso.repli}`),
+    el('li', undefined, perso.talent ? `Talent « ${perso.talent.nom} » : ${perso.talent.texte}` : 'Pas de talent'),
+    ...perso.attaques.map((x) => el('li', undefined,
+      `${x.nom} — coût ${x.cout.join(' ')} — ${texteDegats(x.degats) || 'pas de dégâts'}${x.effet ? ` — ${x.effet}` : ''}`)),
+  );
+  form.append(resume);
 
   // Image(s) de la carte.
   const titreImages = el('div', 'adm-ligne');
@@ -490,7 +439,7 @@ async function sauver(): Promise<void> {
     const r = await fetch('/__admin/carte', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: c.id, element: brouillon.element, attaques: brouillon.attaques, cadrages: brouillon.cadrages }),
+      body: JSON.stringify({ id: c.id, cadrages: brouillon.cadrages }),
     });
     const corps = await r.json() as { ok: boolean; erreurs?: string[]; carte?: Carte; personnage?: Personnage; sauvegarde?: string; fichier?: string; inchange?: boolean };
     if (!r.ok || !corps.ok || !corps.carte || !corps.personnage) {

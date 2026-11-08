@@ -48,8 +48,8 @@ body { padding: 20px max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, e
 .adm-message ul { margin: 4px 0 0; padding-left: 18px; color: var(--texte-secondaire); }
 .adm-form { display: grid; gap: 10px; }
 .adm-champ { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
-.adm-attaque { display: grid; gap: 4px; }
-.adm-attaque-champs { display: grid; grid-template-columns: minmax(0, 1fr) 64px 76px minmax(0, 150px) 70px; gap: 6px; }
+/* Données de combat (lecture seule : src/data/fiches-combat.json). */
+.adm-combat { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 0.85rem; }
 
 .adm-tuiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
 .adm-tuile { border: 1px solid color-mix(in srgb, var(--gris-acier) 40%, transparent); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 6px; cursor: pointer; background: var(--fond); }
@@ -100,7 +100,6 @@ body { padding: 20px max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, e
 @media (max-width: 720px) {
   .adm-grille { grid-template-columns: minmax(0, 1fr); }
   .adm-liste ul { max-height: 40vh; }
-  .adm-attaque-champs { grid-template-columns: minmax(0, 1fr) 64px 76px; }
 }
 
 /* Filtres de la liste, pastille d'état et bandeau de migration */

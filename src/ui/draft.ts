@@ -120,7 +120,7 @@ function regles(r: RecompensesDraft): HTMLElement {
   d.append(el('summary', undefined, 'Comment le score est calculé'));
   const ul = el('ul');
   for (const t of [
-    `Puissance : (PV + dégâts des deux attaques) ÷ ${BAREME.diviseurPuissance}, pour chaque carte. La finition et le rang ne comptent pas.`,
+    `Puissance : (PV + dégâts de ses attaques) ÷ ${BAREME.diviseurPuissance}, pour chaque carte. « 30× » compte 45, « 50 / 0 » compte 25, une attaque sans dégâts compte 0. La finition et le rang ne comptent pas.`,
     `Thème : +${BAREME.parCarteDuTheme} par carte du thème, +${BAREME.equipeEntiereDuTheme} si toute l’équipe l’est. Thème d’équipe (rang, éléments différents, paires d’une même série) : +${BAREME.critereEquipeRespecte} si les 5 cartes le respectent ensemble.`,
     `Même série : +${BAREME.parCarteMemeSerie} par carte en plus d’une même série.`,
     `Éléments complémentaires : +${BAREME.parCarteCouverte} par carte couverte (une autre carte bat l’élément qui la bat).`,

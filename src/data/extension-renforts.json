@@ -12,21 +12,33 @@
       "serie": "Hunter x Hunter",
       "rang": "S",
       "element": "foudre",
-      "pv": 130,
+      "type": "eveille",
+      "pv": 160,
+      "repli": 1,
+      "talent": {
+        "nom": "Vitesse divine",
+        "texte": "une fois par tour, Killua peut se replier sans payer le Repli."
+      },
       "attaques": [
         {
-          "nom": "Zap",
-          "cout": 1,
-          "degats": 20,
-          "effet": null
+          "nom": "Éclair narcotique",
+          "cout": [
+            "z",
+            "q"
+          ],
+          "degats": 40,
+          "effet": "la cible est Étourdie."
         },
         {
-          "nom": "Tonnerre",
-          "cout": 2,
-          "degats": 60,
-          "effet": {
-            "type": "perce-bouclier"
-          }
+          "nom": "Narukami",
+          "cout": [
+            "z",
+            "z",
+            "q",
+            "q"
+          ],
+          "degats": 140,
+          "effet": ""
         }
       ]
     },
@@ -36,22 +48,31 @@
       "serie": "Hunter x Hunter",
       "rang": "A",
       "element": "terre",
-      "pv": 120,
+      "type": "eveille",
+      "pv": 140,
+      "repli": 1,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Poing de granit",
-          "cout": 1,
-          "degats": 40,
-          "effet": {
-            "type": "recul",
-            "valeur": 10
-          }
+          "nom": "Jajanken : Pierre",
+          "cout": [
+            "t",
+            "q",
+            "q"
+          ],
+          "degats": 80,
+          "effet": ""
         },
         {
-          "nom": "Séisme",
-          "cout": 2,
-          "degats": 70,
-          "effet": null
+          "nom": "Gon adulte",
+          "cout": [
+            "t",
+            "t",
+            "t",
+            "q"
+          ],
+          "degats": 200,
+          "effet": "Gon subit 80 dégâts."
         }
       ]
     },
@@ -61,25 +82,32 @@
       "serie": "Dandadan",
       "rang": "A",
       "element": "lumiere",
-      "pv": 100,
+      "type": "eveille",
+      "pv": 130,
+      "repli": 1,
+      "talent": {
+        "nom": "Psychokinésie",
+        "texte": "une fois par tour, échange l'actif adverse avec un personnage de son banc."
+      },
       "attaques": [
         {
-          "nom": "Bénédiction",
-          "cout": 1,
-          "degats": 20,
-          "effet": {
-            "type": "soin",
-            "valeur": 10
-          }
+          "nom": "Mains d'aura",
+          "cout": [
+            "l",
+            "q"
+          ],
+          "degats": 50,
+          "effet": ""
         },
         {
-          "nom": "Soleil levant",
-          "cout": 3,
-          "degats": 100,
-          "effet": {
-            "type": "soin",
-            "valeur": 30
-          }
+          "nom": "Prise psychique",
+          "cout": [
+            "l",
+            "l",
+            "q"
+          ],
+          "degats": 90,
+          "effet": "la cible ne peut pas se replier au prochain tour."
         }
       ]
     },
@@ -89,21 +117,30 @@
       "serie": "Kaiju No. 8",
       "rang": "A",
       "element": "feu",
-      "pv": 140,
+      "type": "eveille",
+      "pv": 150,
+      "repli": 2,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Flammèche",
-          "cout": 1,
-          "degats": 20,
-          "effet": {
-            "type": "brulure"
-          }
+          "nom": "Poing du Kaiju",
+          "cout": [
+            "f",
+            "q"
+          ],
+          "degats": 60,
+          "effet": ""
         },
         {
-          "nom": "Pilier de flammes",
-          "cout": 3,
-          "degats": 100,
-          "effet": null
+          "nom": "Pleine puissance",
+          "cout": [
+            "f",
+            "f",
+            "q",
+            "q"
+          ],
+          "degats": 140,
+          "effet": "Kafka subit 30 dégâts."
         }
       ]
     },
@@ -113,19 +150,22 @@
       "serie": "Spy x Family",
       "rang": "A",
       "element": "neutre",
-      "pv": 70,
+      "type": "eveille",
+      "pv": 120,
+      "repli": 1,
+      "talent": {
+        "nom": "Télépathie",
+        "texte": "une fois par tour, regarde la main de l'adversaire et choisis une carte : il la remet sous son deck."
+      },
       "attaques": [
         {
-          "nom": "Coup de bluff",
-          "cout": 1,
-          "degats": 20,
-          "effet": null
-        },
-        {
-          "nom": "Combo",
-          "cout": 2,
-          "degats": 60,
-          "effet": null
+          "nom": "Regard de héros",
+          "cout": [
+            "q",
+            "q"
+          ],
+          "degats": 50,
+          "effet": ""
         }
       ]
     },
@@ -135,22 +175,22 @@
       "serie": "Hunter x Hunter",
       "rang": "B",
       "element": "tenebres",
-      "pv": 110,
+      "type": "base",
+      "pv": 90,
+      "repli": 1,
+      "talent": {
+        "nom": "Bungee Gum",
+        "texte": "quand Hisoka attaque, l'actif adverse ne peut pas se replier au prochain tour."
+      },
       "attaques": [
         {
-          "nom": "Ténèbre",
-          "cout": 1,
-          "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Danse macabre",
-          "cout": 2,
-          "degats": 60,
-          "effet": {
-            "type": "recul",
-            "valeur": 10
-          }
+          "nom": "Texture surprise",
+          "cout": [
+            "n",
+            "q"
+          ],
+          "degats": 40,
+          "effet": ""
         }
       ]
     },
@@ -160,19 +200,22 @@
       "serie": "Hunter x Hunter",
       "rang": "B",
       "element": "feu",
-      "pv": 100,
+      "type": "base",
+      "pv": 90,
+      "repli": 1,
+      "talent": {
+        "nom": "Chaîne du Jugement",
+        "texte": "ses attaques font +40 contre un Éveillé."
+      },
       "attaques": [
         {
-          "nom": "Bond incandescent",
-          "cout": 1,
-          "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Éruption",
-          "cout": 2,
-          "degats": 70,
-          "effet": null
+          "nom": "Chaîne de la Pénitence",
+          "cout": [
+            "f",
+            "q"
+          ],
+          "degats": 40,
+          "effet": ""
         }
       ]
     },
@@ -182,19 +225,22 @@
       "serie": "Dandadan",
       "rang": "B",
       "element": "vent",
+      "type": "base",
       "pv": 90,
+      "repli": 0,
+      "talent": {
+        "nom": "Mode Turbo",
+        "texte": "la première attaque qu'il subit à chaque tour adverse échoue sur un pile."
+      },
       "attaques": [
         {
-          "nom": "Coup de vent",
-          "cout": 1,
-          "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Vent coupant",
-          "cout": 2,
-          "degats": 70,
-          "effet": null
+          "nom": "Coup turbo",
+          "cout": [
+            "v",
+            "q"
+          ],
+          "degats": 50,
+          "effet": ""
         }
       ]
     },
@@ -204,23 +250,22 @@
       "serie": "Spy x Family",
       "rang": "B",
       "element": "glace",
+      "type": "base",
       "pv": 100,
+      "repli": 1,
+      "talent": {
+        "nom": "Opération Strix",
+        "texte": "une fois par tour, cherche un Soutien dans ton deck."
+      },
       "attaques": [
         {
-          "nom": "Givre",
-          "cout": 1,
-          "degats": 20,
-          "effet": {
-            "type": "ralentissement"
-          }
-        },
-        {
-          "nom": "Prison de glace",
-          "cout": 2,
+          "nom": "Agent Twilight",
+          "cout": [
+            "g",
+            "q"
+          ],
           "degats": 50,
-          "effet": {
-            "type": "gel"
-          }
+          "effet": ""
         }
       ]
     },
@@ -230,21 +275,19 @@
       "serie": "Spy x Family",
       "rang": "B",
       "element": "vent",
+      "type": "base",
       "pv": 90,
+      "repli": 0,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Lame d'air",
-          "cout": 1,
-          "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Ciel déchiré",
-          "cout": 3,
-          "degats": 130,
-          "effet": {
-            "type": "charge"
-          }
+          "nom": "Princesse Épine",
+          "cout": [
+            "v",
+            "q"
+          ],
+          "degats": 60,
+          "effet": "Yor subit 10 dégâts."
         }
       ]
     },
@@ -254,22 +297,22 @@
       "serie": "Blue Lock",
       "rang": "B",
       "element": "eau",
+      "type": "base",
       "pv": 90,
+      "repli": 1,
+      "talent": {
+        "nom": "Méta-vision",
+        "texte": "une fois par tour, regarde les 2 premières cartes de ton deck et choisis leur ordre."
+      },
       "attaques": [
         {
-          "nom": "Jet d'eau",
-          "cout": 1,
-          "degats": 20,
-          "effet": null
-        },
-        {
-          "nom": "Cascade céleste",
-          "cout": 3,
-          "degats": 100,
-          "effet": {
-            "type": "soin",
-            "valeur": 30
-          }
+          "nom": "Tir direct",
+          "cout": [
+            "e",
+            "q"
+          ],
+          "degats": 50,
+          "effet": "+20 si un autre personnage de Blue Lock est en jeu."
         }
       ]
     },
@@ -279,22 +322,20 @@
       "serie": "Kaiju No. 8",
       "rang": "B",
       "element": "foudre",
-      "pv": 120,
+      "type": "base",
+      "pv": 100,
+      "repli": 2,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Décharge",
-          "cout": 1,
-          "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Éclair divin",
-          "cout": 3,
-          "degats": 120,
-          "effet": {
-            "type": "recul",
-            "valeur": 30
-          }
+          "nom": "Canon d'artillerie",
+          "cout": [
+            "z",
+            "z",
+            "q"
+          ],
+          "degats": 90,
+          "effet": ""
         }
       ]
     },
@@ -304,22 +345,19 @@
       "serie": "Hunter x Hunter",
       "rang": "C",
       "element": "neutre",
-      "pv": 110,
+      "type": "base",
+      "pv": 90,
+      "repli": 1,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Coup de poing",
-          "cout": 1,
+          "nom": "Poing à distance",
+          "cout": [
+            "q",
+            "q"
+          ],
           "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Volonté inébranlable",
-          "cout": 3,
-          "degats": 100,
-          "effet": {
-            "type": "bouclier",
-            "valeur": 30
-          }
+          "effet": "à un personnage du banc adverse."
         }
       ]
     },
@@ -329,21 +367,18 @@
       "serie": "Dandadan",
       "rang": "C",
       "element": "tenebres",
-      "pv": 80,
+      "type": "base",
+      "pv": 70,
+      "repli": 0,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Morsure",
-          "cout": 1,
-          "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Brume maudite",
-          "cout": 2,
-          "degats": 60,
-          "effet": {
-            "type": "malediction"
-          }
+          "nom": "Malédiction de la vitesse",
+          "cout": [
+            "n"
+          ],
+          "degats": 20,
+          "effet": "la cible est Maudite."
         }
       ]
     },
@@ -353,24 +388,22 @@
       "serie": "Dandadan",
       "rang": "C",
       "element": "lumiere",
-      "pv": 100,
+      "type": "base",
+      "pv": 80,
+      "repli": 1,
+      "talent": {
+        "nom": "Médium",
+        "texte": "une fois par tour, retire un état d'un de tes personnages."
+      },
       "attaques": [
         {
-          "nom": "Aube",
-          "cout": 1,
-          "degats": 20,
-          "effet": {
-            "type": "bouclier",
-            "valeur": 10
-          }
-        },
-        {
-          "nom": "Lame céleste",
-          "cout": 2,
-          "degats": 60,
-          "effet": {
-            "type": "perce-bouclier"
-          }
+          "nom": "Exorcisme",
+          "cout": [
+            "l",
+            "q"
+          ],
+          "degats": 30,
+          "effet": ""
         }
       ]
     },
@@ -380,22 +413,19 @@
       "serie": "Dandadan",
       "rang": "C",
       "element": "lumiere",
+      "type": "base",
       "pv": 70,
+      "repli": 1,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Prisme",
-          "cout": 1,
+          "nom": "Acrobatie",
+          "cout": [
+            "l",
+            "q"
+          ],
           "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Jugement céleste",
-          "cout": 3,
-          "degats": 120,
-          "effet": {
-            "type": "recul",
-            "valeur": 30
-          }
+          "effet": "pile : +30."
         }
       ]
     },
@@ -405,22 +435,20 @@
       "serie": "Dandadan",
       "rang": "C",
       "element": "terre",
-      "pv": 130,
+      "type": "base",
+      "pv": 100,
+      "repli": 2,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Garde de pierre",
-          "cout": 1,
-          "degats": 20,
-          "effet": {
-            "type": "bouclier",
-            "valeur": 10
-          }
-        },
-        {
-          "nom": "Écrasement",
-          "cout": 2,
-          "degats": 70,
-          "effet": null
+          "nom": "Œil maléfique",
+          "cout": [
+            "t",
+            "q",
+            "q"
+          ],
+          "degats": 60,
+          "effet": "Jiji subit 10 dégâts."
         }
       ]
     },
@@ -430,21 +458,19 @@
       "serie": "Kaiju No. 8",
       "rang": "C",
       "element": "glace",
-      "pv": 90,
+      "type": "base",
+      "pv": 70,
+      "repli": 1,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Grésil",
-          "cout": 1,
-          "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Hiver éternel",
-          "cout": 3,
-          "degats": 100,
-          "effet": {
-            "type": "gel"
-          }
+          "nom": "Arme du Kaiju n°6",
+          "cout": [
+            "g",
+            "q"
+          ],
+          "degats": 40,
+          "effet": "pile : la cible est Gelée."
         }
       ]
     },
@@ -454,19 +480,19 @@
       "serie": "Kaiju No. 8",
       "rang": "C",
       "element": "foudre",
-      "pv": 100,
+      "type": "base",
+      "pv": 80,
+      "repli": 1,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Arc électrique",
-          "cout": 1,
-          "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Lame d'orage",
-          "cout": 2,
-          "degats": 70,
-          "effet": null
+          "nom": "Hache de combat",
+          "cout": [
+            "z",
+            "q"
+          ],
+          "degats": 40,
+          "effet": "+20 contre un Éveillé."
         }
       ]
     },
@@ -476,21 +502,19 @@
       "serie": "Kaiju No. 8",
       "rang": "C",
       "element": "vent",
-      "pv": 110,
+      "type": "base",
+      "pv": 80,
+      "repli": 0,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Souffle",
-          "cout": 1,
-          "degats": 20,
-          "effet": {
-            "type": "perce-bouclier"
-          }
-        },
-        {
-          "nom": "Lames du vent",
-          "cout": 2,
-          "degats": 70,
-          "effet": null
+          "nom": "Double lame",
+          "cout": [
+            "v",
+            "q"
+          ],
+          "degats": 50,
+          "effet": ""
         }
       ]
     },
@@ -500,25 +524,21 @@
       "serie": "Spy x Family",
       "rang": "C",
       "element": "neutre",
-      "pv": 120,
+      "type": "base",
+      "pv": 80,
+      "repli": 1,
+      "talent": {
+        "nom": "Prémonition",
+        "texte": "une fois par tour, regarde la carte du dessus de ton deck ; tu peux la mettre sous le deck."
+      },
       "attaques": [
         {
-          "nom": "Garde haute",
-          "cout": 1,
+          "nom": "Gros câlin",
+          "cout": [
+            "q"
+          ],
           "degats": 20,
-          "effet": {
-            "type": "bouclier",
-            "valeur": 10
-          }
-        },
-        {
-          "nom": "Contre-attaque",
-          "cout": 2,
-          "degats": 50,
-          "effet": {
-            "type": "bouclier",
-            "valeur": 20
-          }
+          "effet": ""
         }
       ]
     },
@@ -528,19 +548,21 @@
       "serie": "Spy x Family",
       "rang": "C",
       "element": "neutre",
+      "type": "base",
       "pv": 70,
+      "repli": 1,
+      "talent": {
+        "nom": "Informateur",
+        "texte": "une fois par tour, si tu as un autre personnage de Spy x Family en jeu, pioche 1 carte puis défausse 1 carte."
+      },
       "attaques": [
         {
-          "nom": "Plaquage",
-          "cout": 1,
-          "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Coup ultime",
-          "cout": 3,
-          "degats": 110,
-          "effet": null
+          "nom": "Gadget",
+          "cout": [
+            "q"
+          ],
+          "degats": 10,
+          "effet": ""
         }
       ]
     },
@@ -550,21 +572,18 @@
       "serie": "Blue Lock",
       "rang": "C",
       "element": "eau",
-      "pv": 80,
+      "type": "base",
+      "pv": 70,
+      "repli": 0,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Lame liquide",
-          "cout": 1,
-          "degats": 30,
-          "effet": null
-        },
-        {
-          "nom": "Tourbillon",
-          "cout": 2,
-          "degats": 50,
-          "effet": {
-            "type": "ralentissement"
-          }
+          "nom": "Dribble du monstre",
+          "cout": [
+            "e"
+          ],
+          "degats": 20,
+          "effet": "échange ensuite Bachira avec un de tes personnages du banc."
         }
       ]
     },
@@ -574,22 +593,19 @@
       "serie": "Blue Lock",
       "rang": "C",
       "element": "glace",
-      "pv": 90,
+      "type": "base",
+      "pv": 80,
+      "repli": 1,
+      "talent": null,
       "attaques": [
         {
-          "nom": "Neige fine",
-          "cout": 1,
-          "degats": 20,
-          "effet": null
-        },
-        {
-          "nom": "Miroir de glace",
-          "cout": 2,
-          "degats": 50,
-          "effet": {
-            "type": "bouclier",
-            "valeur": 20
-          }
+          "nom": "Contrôle parfait",
+          "cout": [
+            "g",
+            "q"
+          ],
+          "degats": 40,
+          "effet": "pile : la cible est Gelée."
         }
       ]
     }

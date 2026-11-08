@@ -8,7 +8,7 @@ Projet personnel, gratuit, non commercial. Aucun paiement, aucune publicité. Le
 
 ## Cartes, rareté et cote (système TCG Pocket)
 
-**Chaque carte de l'extension a une seule rareté, fixe.** Un personnage peut avoir plusieurs cartes distinctes (sa carte de base, parfois des versions rares), chacune avec son numéro et son image. Données : `src/data/extension-lancement.json` contient `personnages` (100, avec PV et attaques) et `cartes` (140, chacune = un personnage + une `finition` qui est sa rareté).
+**Chaque carte de l'extension a une seule rareté, fixe.** Un personnage peut avoir plusieurs cartes distinctes (sa carte de base, parfois des versions rares), chacune avec son numéro et son image. Données : `src/data/extension-lancement.json` contient `personnages` (100, avec leurs données de combat : type, PV, Repli, talent, attaques) et `cartes` (140, chacune = un personnage + une `finition` qui est sa rareté).
 
 | Notion | Valeurs | Rôle |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ Projet personnel, gratuit, non commercial. Aucun paiement, aucune publicité. Le
 | Cote | nombre | Popularité de la semaine du personnage (0 à 100) × multiplicateur de la rareté. |
 
 - Cartes 001 à 100 : une carte de base par personnage. Cartes 101 à 140 : **cartes secrètes** (★ et plus), affichées « 127/100 ».
-- Toutes les cartes d'un personnage ont les mêmes PV et attaques. Aucune notion ne change la puissance.
+- Toutes les cartes d'un personnage ont la même fiche de combat (PV, talent, attaques). Aucune notion ne change la puissance.
 - La collection compte les exemplaires **par carte** (id `lan-xxx`).
 
 ## Éléments
@@ -26,16 +26,19 @@ Projet personnel, gratuit, non commercial. Aucun paiement, aucune publicité. Le
 
 ## Cartes
 
-- Mise en page Pokémon : en-tête (nom, PV, pastille d'élément), fenêtre d'illustration (~40 % de la carte), ligne de série, deux attaques (coût en pastilles, nom, dégâts), pied (faiblesse, numéro « 041/100 », symbole de finition, rang).
+- Mise en page Pokémon : en-tête (pastille « Base » ou « Éveillé », série — « Relève : <série> » pour un Éveillé —, nom, PV, icône d'élément), fenêtre d'illustration (~40 % de la carte), bloc Talent (nom + texte) s'il y en a un, 1 ou 2 attaques (coût en icônes d'éléments et ◇ gris pour l'énergie quelconque, nom, effet, dégâts), pied (faiblesse, Repli en ◇, numéro « 041/100 », symbole de finition, rang). Un texte long est écrit plus petit ; l'illustration garde toujours sa taille.
 - Finitions ★ et plus : illustration pleine carte, texte sur panneaux translucides.
 - Alternative et immersive : personnage détouré (`perso`) sur un fond (`fond`, généré si absent). Immersive : parallaxe entre les calques, film holo animé, particules.
 - Holo intégrale (♦♦♦♦) : mise en page fenêtre, cadre argenté, film holo sur toute la carte (fond, cadre, illustration).
 - Couronne : toute la carte en monochrome doré.
 - Images : une par carte, `public/cartes/<id-carte>/illustration.webp` ; pour ★★ et ★★★ : `perso.webp` + `fond.webp`. Repli : une carte secrète sans image reprend l'image de la carte de base du même personnage, puis un visuel de remplacement.
 
-## Attaques
+## Données de combat (voir `docs/COMBAT.md`)
 
-Chaque carte a une attaque légère (coût 1) et une forte (coût 2 ou 3), déjà dans `src/data/extension-lancement.json`. Réserves complètes : `src/data/attaques.json`. Les effets ne servent qu'au futur combat ; en version 1 on les affiche seulement.
+- Chaque personnage a une fiche dans `src/data/fiches-combat.json` (fichier d'équilibrage) : type **Base** (rangs C et B) ou **Éveillé** (rangs A et S, entre en jeu par Relève sur un personnage de la même série), PV, Repli (énergies à défausser pour se replier), talent éventuel, 1 ou 2 attaques.
+- Coût d'une attaque : 1 à 4 énergies de l'élément du personnage ou ◇ (quelconque) ; un Neutre paie en ◇. Dégâts : un nombre, « 30× » (30 par face), « 50 / 0 » (pile ou face) ou aucun.
+- `npm run fiches` recopie les fiches dans les personnages des extensions ; le jeu refuse de démarrer si un personnage sorti n'a pas de données de combat valides.
+- Le combat lui-même n'est pas encore codé (tâche 26) : en attendant, les cartes affichent les fiches.
 
 ## Boosters (voir `src/data/booster-lancement.json`)
 
@@ -93,7 +96,7 @@ Chaque carte a une attaque légère (coût 1) et une forte (coût 2 ou 3), déj�
 ## Draft hebdomadaire et classement
 
 - Une graine par semaine : tout le monde ouvre les mêmes 3 boosters de draft (15 cartes) et en garde 5. Les cartes du draft n'entrent pas dans la collection.
-- Score déterministe : puissance (PV + dégâts), respect du thème de la semaine, synergies (même série, éléments complémentaires, pas de faiblesse partagée), défi (adversaire d'un élément donné). Détail des points affiché.
+- Score déterministe : puissance ((PV + dégâts des attaques) ÷ 10 ; « 30× » compte 45, « 50 / 0 » compte 25, pas de dégâts 0), respect du thème de la semaine, synergies (même série, éléments complémentaires, pas de faiblesse partagée), défi (adversaire d'un élément donné). Détail des points affiché.
 - Semaine du lundi 00:00 au dimanche 23:59, heure de Paris. L'équipe peut être modifiée jusqu'à la fermeture ; une modification ne donne pas de nouvelle récompense.
 - **Avec un compte** : classement hebdomadaire en ligne (rang, pseudo, score, cartes ; semaines passées consultables). Le serveur recalcule les 15 cartes depuis la graine, vérifie les 5 choisies et recalcule le score avec le code du jeu. À égalité, la première équipe envoyée passe devant.
 - Récompenses de fin de semaine (`quetes.json`), réclamées une seule fois d'après le classement figé : 1er +5 sceaux, 2e +4, 3e +3, puis +2 pour toute participation.

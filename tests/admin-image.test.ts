@@ -75,10 +75,8 @@ describe('admin : image d’une carte Renforts, de bout en bout', () => {
   });
 
   it('le cadrage d’une carte Renforts est enregistré dans le fichier de sa vague', async () => {
-    const ext = (await requete('GET', '/__admin/extension')).corps;
-    const carte = ext.cartes.find((c: any) => c.id === 'ren-001');
-    const perso = ext.personnages.find((p: any) => p.id === carte.personnage);
-    const demande = { id: 'ren-001', element: perso.element, attaques: perso.attaques, cadrages: { illustration: { zoom: 130, x: 40, y: 60 } } };
+    expect((await requete('GET', '/__admin/extension')).corps.cartes.some((c: { id: string }) => c.id === 'ren-001')).toBe(true);
+    const demande = { id: 'ren-001', cadrages: { illustration: { zoom: 130, x: 40, y: 60 } } };
     const r = await requete('POST', '/__admin/carte', new TextEncoder().encode(JSON.stringify(demande)), 'application/json');
     expect(r.statut).toBe(200);
     expect(r.corps).toMatchObject({ ok: true, fichier: 'src/data/extension-renforts.json', carte: { id: 'ren-001', numero: 101, vague: 'renforts' } });

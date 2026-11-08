@@ -6,9 +6,13 @@ import { validerExtension } from '../src/core/validation';
 const extension = extensionJson as unknown as Extension;
 
 describe('extension de lancement (système TCG Pocket)', () => {
-  it('100 personnages, chacun avec exactement 2 attaques', () => {
+  it('100 personnages, chacun avec sa fiche de combat (type, PV, Repli, talent, 1 ou 2 attaques)', () => {
     expect(extension.personnages).toHaveLength(100);
-    for (const p of extension.personnages) expect(p.attaques, `personnage ${p.id}`).toHaveLength(2);
+    for (const p of extension.personnages) {
+      expect(p.attaques.length, `personnage ${p.id}`).toBeGreaterThanOrEqual(1);
+      expect(p.attaques.length, `personnage ${p.id}`).toBeLessThanOrEqual(2);
+      expect(['base', 'eveille']).toContain(p.type);
+    }
   });
 
   it('140 cartes : 100 de base (001 à 100) puis 40 secrètes (101 à 140)', () => {

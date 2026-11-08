@@ -58,7 +58,6 @@ function choixElement(onChange: () => void): { groupe: HTMLFieldSetElement; vale
   return { groupe, valeur: () => valeur, vider: () => { valeur = null; maj(); } };
 }
 
-const SILHOUETTE = '<svg viewBox="0 0 100 110" aria-hidden="true"><path d="M16 110 Q20 76 50 72 Q80 76 84 110Z"/><circle cx="50" cy="50" r="20"/></svg>';
 const pluriel = (n: number, mot: string): string => `${n} ${mot}${n > 1 ? 's' : ''}`;
 const libelleFinition = (f: FinitionId): string => `${FINITIONS[f].symbole} ${FINITIONS[f].nom}`;
 
@@ -129,12 +128,16 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
     fermer.addEventListener('click', () => dialogue.close());
     haut.append(h2, fermer);
 
+    const possedee = entree.exemplaires > 0;
     const visuel = creerCarte(carte, extension);
     visuel.style.setProperty('--carte-largeur', 'min(300px, 72vw)');
+    const cadreVisuel = el('div', `col-inspection-visuel${possedee ? '' : ' manquante'}`);
+    cadreVisuel.append(visuel);
+    if (!possedee) cadreVisuel.append(el('span', 'col-badge-manquante', 'Non possédée'));
     visuel.style.setProperty('--carte-pivot', '10deg'); // pivot horizontal seulement
 
     const infos = el('p', 'col-inspection-infos',
-      `${numeroCarte(carte.numero, extension.total)}${carte.secrete ? ' · carte secrète' : ''} · ${libelleFinition(carte.finition)} · ${personnage.serie} · ${pluriel(entree.exemplaires, 'exemplaire')}`);
+      `${numeroCarte(carte.numero, extension.total)}${carte.secrete ? ' · carte secrète' : ''} · ${libelleFinition(carte.finition)} · ${personnage.serie} · ${possedee ? pluriel(entree.exemplaires, 'exemplaire') : 'non possédée'}`);
     const t = tendanceCote(popularite, carte);
     const cote = el('p', 'col-inspection-cote', `Cote ${formaterCote(t.actuelle)} · ${formaterTendance(t)} (semaine ${popularite.semaine})`);
 
@@ -147,7 +150,6 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
       const b = el('button', 'col-finition');
       b.type = 'button';
       b.setAttribute('aria-pressed', String(v.carte.id === carte.id));
-      b.disabled = v.exemplaires === 0;
       b.append(
         el('span', undefined, `${numeroCarte(v.carte.numero, extension.total)} ${libelleFinition(v.carte.finition)}`),
         el('strong', undefined, v.exemplaires > 0 ? `×${v.exemplaires}` : 'manquante'),
@@ -156,10 +158,11 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
       liste.append(b);
     }
 
-    contenu.append(haut, visuel, infos, cote, liste);
+    contenu.append(haut, cadreVisuel, infos, cote, liste);
     dialogue.replaceChildren(contenu);
     if (!dialogue.open) dialogue.showModal();
-    onInspecter();
+    // Quêtes « inspecter une carte de ta collection » : seulement une carte possédée.
+    if (possedee) onInspecter();
     liste.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.focus();
   }
 
@@ -167,22 +170,15 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
   function tuile(entree: EntreeCollection): HTMLLIElement {
     const li = el('li');
     const numero = numeroCarte(entree.carte.numero, extension.total);
-    if (entree.exemplaires === 0) {
-      // Carte manquante : silhouette, numéro et rareté seulement (le personnage n'est pas dévoilé).
-      const vide = el('div', `col-manquante${entree.carte.secrete ? ' secrete' : ''}`);
-      vide.setAttribute('role', 'img');
-      vide.setAttribute('aria-label', `Carte ${numero} non possédée, ${FINITIONS[entree.carte.finition].nom}`);
-      vide.innerHTML = SILHOUETTE;
-      vide.append(el('span', 'col-manquante-numero', numero), el('span', 'col-manquante-rarete', FINITIONS[entree.carte.finition].symbole));
-      li.append(vide);
-      return li;
-    }
-    const b = el('button', 'col-tuile');
+    const possedee = entree.exemplaires > 0;
+    const b = el('button', `col-tuile${possedee ? '' : ' manquante'}`);
     b.type = 'button';
-    b.setAttribute('aria-label', `${entree.personnage.nom}, ${numero}, ${FINITIONS[entree.carte.finition].nom}, ${pluriel(entree.exemplaires, 'exemplaire')} : inspecter`);
+    b.setAttribute('aria-label', `${entree.personnage.nom}, ${numero}, ${FINITIONS[entree.carte.finition].nom}, `
+      + `${possedee ? pluriel(entree.exemplaires, 'exemplaire') : 'non possédée'} : inspecter`);
+    // Toutes les cartes sont visibles ; une carte non possédée est grisée (la mention reste écrite).
     const visuel = creerCarte(entree.carte, extension, { interactive: false });
     visuel.style.setProperty('--carte-largeur', '100%');
-    const legende = el('span', 'col-tuile-legende', `×${entree.exemplaires}`);
+    const legende = el('span', 'col-tuile-legende', possedee ? `×${entree.exemplaires}` : 'Non possédée');
     const t = tendanceCote(popularite, entree.carte);
     const cote = el('span', `col-tuile-cote ${t.sens}`);
     cote.append(el('span', undefined, `Cote ${formaterCote(t.actuelle)}`), el('span', undefined, formaterTendance(t)));

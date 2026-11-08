@@ -9,7 +9,7 @@
 //   POST /__admin/image?carte=<id-carte>&calque=<illustration|animation>
 //                            → enregistre l'image reçue : public/cartes/<id-carte>/illustration.webp (WebP),
 //                              ou animation.gif (GIF, cartes immersives seulement)
-//   POST /__admin/carte      → enregistre élément et attaques du personnage, cadrages de la carte, dans le JSON
+//   POST /__admin/carte      → enregistre les cadrages de la carte dans le JSON
 //                              de la vague de la carte, après une copie de sauvegarde dans sauvegardes-admin/
 //   GET  /__admin/popularite → popularité publiée (src/data/popularite.json, migrée de l'ancien format si besoin,
 //                              avec copie de sauvegarde), base (popularite-base.json) et semaine à publier

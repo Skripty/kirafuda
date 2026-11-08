@@ -20,8 +20,8 @@ const toutes: SourceDraft = { extension: assembler(catalogue[0]!), booster: lanc
 const themes = themesJson.themes as Theme[];
 const theme = (id: string): Theme => themes.find((t) => t.id === id)!;
 const perso = (id: string, element: ElementId, serie: string, rang: Rang = 'C'): Personnage => ({
-  id, nom: id, serie, rang, element, pv: 100,
-  attaques: [{ nom: 'a', cout: 1, degats: 20, effet: null }, { nom: 'b', cout: 2, degats: 80, effet: null }],
+  id, nom: id, serie, rang, element, type: rang === 'A' || rang === 'S' ? 'eveille' : 'base', pv: 100, repli: 1, talent: null,
+  attaques: [{ nom: 'a', cout: ['q'], degats: 20, effet: '' }, { nom: 'b', cout: ['q', 'q'], degats: 80, effet: '' }],
 });
 const themeDuJour = (sem: string): string => genererDraft(sem, [lancement], themes).theme.id;
 /** Semaines successives à partir de SEMAINE_DEBUT_SAC. */

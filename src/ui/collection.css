@@ -65,32 +65,21 @@
 .col-tuile-cote.hausse span:last-child { color: var(--texte); font-weight: 600; }
 .col-inspection-cote { margin: 0; text-align: center; font-size: 0.9rem; font-variant-numeric: tabular-nums; }
 
-/* Carte manquante : silhouette et numéro seulement. */
-.col-manquante {
-  position: relative;
-  aspect-ratio: 5 / 7;
-  border-radius: 5%;
-  border: 1px dashed var(--texte-secondaire);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: hidden;
-  opacity: 0.55;
+/* Carte non possédée : visible, mais grisée et assombrie (« Non possédée » reste écrit). */
+.col-tuile.manquante .carte,
+.col-inspection-visuel.manquante .carte { filter: grayscale(1) brightness(0.45); opacity: 0.85; }
+.col-tuile.manquante .col-tuile-legende { font-style: italic; }
+.col-tuile.manquante:hover .carte,
+.col-tuile.manquante:focus-visible .carte { filter: grayscale(1) brightness(0.65); }
+.col-inspection-visuel { position: relative; display: grid; place-items: center; }
+.col-badge-manquante {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  padding: 6px 14px; border-radius: 999px;
+  background: color-mix(in srgb, var(--graphite) 85%, transparent);
+  border: 1px solid var(--texte-secondaire);
+  color: var(--texte); font-size: 0.9rem; font-weight: 600; pointer-events: none;
 }
-.col-manquante svg { width: 70%; fill: var(--surface); }
-.col-manquante.secrete { border-style: dotted; }
-.col-manquante-rarete { position: absolute; top: calc(8% + 1.3em); left: 0; right: 0; text-align: center; font-size: 0.75rem; color: var(--texte-secondaire); }
-.col .col-finition:disabled { opacity: 0.55; cursor: default; }
-.col-manquante-numero {
-  position: absolute;
-  top: 8%;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 0.8rem;
-  color: var(--texte-secondaire);
-  font-variant-numeric: tabular-nums;
-}
+.col .col-finition strong { font-weight: 600; }
 
 /* ---------- Inspection ---------- */
 .col-inspection {

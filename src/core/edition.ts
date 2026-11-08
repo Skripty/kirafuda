@@ -1,11 +1,11 @@
 // Édition des cartes par la page d'admin (développement seulement).
 // Logique pure, partagée par le plugin Vite (côté serveur) et la page /admin.html (côté navigateur) :
 // vérification des paramètres d'image, application d'une édition, plan de migration des anciennes images.
-import { CALQUES_PAR_FINITION, EFFETS, ELEMENTS, FINITIONS } from './regles';
+import { CALQUES_PAR_FINITION, FINITIONS } from './regles';
 import { CADRAGE_DEFAUT, cheminImage, extensionCalque } from './images';
 import { indexer } from './extension';
 import { validerExtension } from './validation';
-import type { Attaque, Cadrage, Calque, Carte, ElementId, Extension, FinitionId, ImagesCarte, Personnage } from './types';
+import type { Cadrage, Calque, Carte, Extension, FinitionId, ImagesCarte, Personnage } from './types';
 
 export { CADRAGE_DEFAUT, cheminImage };
 
@@ -57,10 +57,8 @@ export function estWebp(octets: Uint8Array): boolean {
 // ---------- Édition d'une carte ----------
 
 export interface DemandeEdition {
-  /** Id de la carte éditée. Élément et attaques s'appliquent à son personnage (donc à toutes ses cartes). */
+  /** Id de la carte éditée. */
   id: string;
-  element: ElementId;
-  attaques: [Attaque, Attaque];
   /** Cadrage par calque de cette carte. */
   cadrages: Partial<Record<Calque, Cadrage>>;
 }
@@ -72,38 +70,9 @@ export type ResultatEdition =
 const estObjet = (x: unknown): x is Record<string, unknown> => typeof x === 'object' && x !== null && !Array.isArray(x);
 const entierEntre = (x: unknown, min: number, max: number): x is number => typeof x === 'number' && Number.isInteger(x) && x >= min && x <= max;
 
-function lireAttaque(a: unknown, i: number, erreurs: string[]): Attaque | null {
-  const ref = `Attaque ${i + 1}`;
-  if (!estObjet(a)) { erreurs.push(`${ref} : objet attendu.`); return null; }
-  const avant = erreurs.length;
-  const nom = typeof a.nom === 'string' ? a.nom.trim() : '';
-  if (nom === '' || nom.length > 40) erreurs.push(`${ref} : nom de 1 à 40 caractères attendu.`);
-  // Attaque légère : coût 1 ; attaque forte : coût 2 ou 3 (GDD).
-  if (i === 0 ? a.cout !== 1 : !entierEntre(a.cout, 2, 3)) erreurs.push(`${ref} : coût ${i === 0 ? '1 (attaque légère)' : '2 ou 3 (attaque forte)'} attendu.`);
-  if (!entierEntre(a.degats, 0, 300)) erreurs.push(`${ref} : dégâts entiers de 0 à 300 attendus.`);
-  let effet: Attaque['effet'] = null;
-  if (a.effet !== null && a.effet !== undefined) {
-    const e = a.effet;
-    if (!estObjet(e) || typeof e.type !== 'string' || !Object.hasOwn(EFFETS, e.type)) {
-      erreurs.push(`${ref} : effet inconnu.`);
-    } else {
-      const type = e.type as keyof typeof EFFETS;
-      if (EFFETS[type].avecValeur) {
-        if (!entierEntre(e.valeur, 1, 300)) erreurs.push(`${ref} : l’effet ${EFFETS[type].nom} demande une valeur entière de 1 à 300.`);
-        else effet = { type, valeur: e.valeur };
-      } else {
-        if (e.valeur !== undefined) erreurs.push(`${ref} : l’effet ${EFFETS[type].nom} ne prend pas de valeur.`);
-        else effet = { type };
-      }
-    }
-  }
-  if (erreurs.length > avant) return null;
-  return { nom, cout: a.cout as number, degats: a.degats as number, effet };
-}
-
 /**
- * Applique une édition à une copie de l'extension : élément et attaques sur le personnage de la carte,
- * cadrages sur la carte. Ne touche ni au nom, ni aux PV, ni au rang, ni aux numéros.
+ * Applique une édition à une copie de l'extension : cadrages de la carte. Les données du personnage (élément,
+ * PV, talent, attaques…) ne se modifient plus ici : elles viennent de src/data/fiches-combat.json (npm run fiches).
  * Un cadrage par défaut (100, 50, 50) n'est pas écrit.
  */
 export function appliquerEdition(extension: Extension, demande: unknown): ResultatEdition {
@@ -112,18 +81,10 @@ export function appliquerEdition(extension: Extension, demande: unknown): Result
   const iCarte = extension.cartes.findIndex((c) => c.id === demande.id);
   if (typeof demande.id !== 'string' || iCarte < 0) return { ok: false, erreurs: [`Carte inconnue « ${String(demande.id)} ».`] };
   const ancienneCarte = extension.cartes[iCarte]!;
-  const iPerso = extension.personnages.findIndex((p) => p.id === ancienneCarte.personnage);
-  if (iPerso < 0) return { ok: false, erreurs: [`Personnage inconnu « ${ancienneCarte.personnage} ».`] };
-
-  if (typeof demande.element !== 'string' || !Object.hasOwn(ELEMENTS, demande.element)) erreurs.push('Élément inconnu.');
-
-  let attaques: [Attaque, Attaque] | null = null;
-  if (!Array.isArray(demande.attaques) || demande.attaques.length !== 2) {
-    erreurs.push('Deux attaques attendues.');
-  } else {
-    const a0 = lireAttaque(demande.attaques[0], 0, erreurs);
-    const a1 = lireAttaque(demande.attaques[1], 1, erreurs);
-    if (a0 && a1) attaques = [a0, a1];
+  const personnage = extension.personnages.find((p) => p.id === ancienneCarte.personnage);
+  if (!personnage) return { ok: false, erreurs: [`Personnage inconnu « ${ancienneCarte.personnage} ».`] };
+  if ('element' in demande || 'attaques' in demande) {
+    erreurs.push('Élément et attaques ne se modifient plus dans l’admin : édite src/data/fiches-combat.json puis lance npm run fiches.');
   }
 
   const images: ImagesCarte = {};
@@ -143,14 +104,11 @@ export function appliquerEdition(extension: Extension, demande: unknown): Result
     }
   }
 
-  if (erreurs.length > 0 || !attaques) return { ok: false, erreurs };
-  const personnage: Personnage = { ...extension.personnages[iPerso]!, element: demande.element as ElementId, attaques };
+  if (erreurs.length > 0) return { ok: false, erreurs };
   const carte: Carte = { ...ancienneCarte, images };
-  const personnages = [...extension.personnages];
-  personnages[iPerso] = personnage;
   const cartes = [...extension.cartes];
   cartes[iCarte] = carte;
-  const nouvelle: Extension = { ...extension, personnages, cartes };
+  const nouvelle: Extension = { ...extension, cartes };
   const verif = validerExtension(nouvelle);
   if (verif.length > 0) return { ok: false, erreurs: verif };
   return { ok: true, extension: nouvelle, carte, personnage };

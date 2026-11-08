@@ -3,6 +3,7 @@
 import { CALQUES_PAR_FINITION, ELEMENTS, FINITIONS, ORDRE_RANGS, POPULARITE_MAX, TOTAL_POIDS } from './regles';
 import type { Booster, Extension, Popularite } from './types';
 import { validerThemes, type Theme } from './draft';
+import { validerCombat } from './combat';
 
 const estRang = (cle: string): boolean => (ORDRE_RANGS as string[]).includes(cle);
 const estFinition = (cle: string): boolean => Object.hasOwn(FINITIONS, cle);
@@ -43,7 +44,8 @@ export function validerExtension(extension: Extension): string[] {
     idsPerso.add(p.id);
     if (!estElement(p.element)) erreurs.push(`Personnage ${p.id} : élément « ${p.element} » inconnu (absent de src/core/regles.ts).`);
     if (!estRang(p.rang)) erreurs.push(`Personnage ${p.id} : rang « ${p.rang} » inconnu (attendu : ${ORDRE_RANGS.join(', ')}).`);
-    if (!Array.isArray(p.attaques) || p.attaques.length !== 2) erreurs.push(`Personnage ${p.id} : deux attaques attendues.`);
+    // Données de combat (fiche du personnage) : type, PV, Repli, talent, attaques et coûts.
+    erreurs.push(...validerCombat(p, `Personnage ${p.id} (${p.nom})`));
   }
 
   if (cartes.length !== totalAvecSecretes) erreurs.push(`${ref} : ${cartes.length} cartes pour un total annoncé de ${totalAvecSecretes}.`);

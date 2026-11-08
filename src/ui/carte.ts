@@ -2,12 +2,14 @@
 // Chaque carte a une rareté fixe ; PV et attaques viennent de son personnage (règle 5 : la rareté ne donne aucune puissance).
 import './carte.css';
 import './carte-base.css';
-import { EFFETS, ELEMENTS, FAIBLESSE, FINITIONS } from '../core/regles';
+import './carte-combat.css';
+import { ELEMENTS, FAIBLESSE, FINITIONS } from '../core/regles';
+import { ENERGIES, TYPES_PERSONNAGE, texteDegats } from '../core/combat';
 import { iconeElement } from './element';
 import { candidatsAffichage, type CandidatImage } from '../core/images';
 import { indexer } from '../core/extension';
 import { rngAGraine } from '../core/rng';
-import type { Attaque, Carte, ElementId, Extension } from '../core/types';
+import type { Attaque, Carte, CodeEnergie, Extension, Personnage } from '../core/types';
 
 export interface OptionsCarte {
   /** Holo qui suit le pointeur et pivot horizontal léger (par défaut : oui). */
@@ -91,27 +93,92 @@ function illustration(carte: Carte, base: Carte | undefined, transformerSrc: (ch
   return art;
 }
 
-/** Coût d'une attaque : autant d'icônes de l'élément que de points (le nombre est lu dans l'étiquette). */
-function cout(a: Attaque, element: ElementId, classe: string, classeIcone: string): HTMLElement {
-  const c = el('span', classe);
+// ---------- Données de combat (fiche du personnage), communes aux deux mises en page ----------
+
+/** Une énergie : icône de l'élément (public/elements), ou ◇ gris pour l'énergie quelconque. Décorative : le sens est dans l'étiquette. */
+function energie(code: CodeEnergie): HTMLElement {
+  const element = ENERGIES[code];
+  if (element) return iconeElement(element, 'cc-energie', null);
+  const q = el('span', 'cc-energie cc-quelconque', '◇');
+  q.setAttribute('aria-hidden', 'true');
+  return q;
+}
+
+/** « 2 Lumière et 1 quelconque ». */
+function texteEnergies(codes: CodeEnergie[]): string {
+  const n = new Map<CodeEnergie, number>();
+  for (const c of codes) n.set(c, (n.get(c) ?? 0) + 1);
+  const parties = [...n].map(([c, k]) => {
+    const element = ENERGIES[c];
+    return `${k} ${element ? ELEMENTS[element].nom : 'quelconque'}`;
+  });
+  return parties.length > 1 ? `${parties.slice(0, -1).join(', ')} et ${parties.at(-1)}` : parties[0] ?? '0';
+}
+
+function coutAttaque(a: Attaque): HTMLElement {
+  const c = el('span', 'cc-cout');
   c.setAttribute('role', 'img');
-  c.setAttribute('aria-label', `Coût ${a.cout} ${ELEMENTS[element].nom}`);
-  for (let i = 0; i < Math.max(0, Math.min(3, a.cout)); i++) c.append(iconeElement(element, classeIcone, null));
+  c.setAttribute('aria-label', `Coût : ${texteEnergies(a.cout)}`);
+  for (const code of a.cout) c.append(energie(code));
   return c;
 }
 
-function attaque(a: Attaque, element: ElementId): HTMLElement {
-  const ligne = el('div', 'carte-attaque');
-  const cout_ = cout(a, element, 'carte-cout', 'carte-cout-icone');
-
-  const nom = el('span', 'carte-attaque-nom');
+function attaque(a: Attaque): HTMLElement {
+  const ligne = el('div', 'cc-attaque');
+  const nom = el('span', 'cc-attaque-nom');
   nom.append(el('b', undefined, a.nom));
-  if (a.effet) {
-    const valeur = a.effet.valeur !== undefined ? ` ${a.effet.valeur}` : '';
-    nom.append(el('small', undefined, `${EFFETS[a.effet.type].nom}${valeur}`));
-  }
-  ligne.append(cout_, nom, el('span', 'carte-degats', String(a.degats)));
+  if (a.effet.trim()) nom.append(el('small', undefined, a.effet.trim()));
+  ligne.append(coutAttaque(a), nom, el('span', 'cc-degats', texteDegats(a.degats)));
   return ligne;
+}
+
+/** « Base · One Piece » ou « Éveillé · Relève : One Piece ». */
+function identite(p: Personnage): HTMLElement {
+  const ligne = el('div', 'cc-identite');
+  ligne.append(
+    el('span', `cc-type cc-type-${p.type}`, TYPES_PERSONNAGE[p.type].nom),
+    el('span', 'cc-serie', p.type === 'eveille' ? `Relève : ${p.serie}` : p.serie),
+  );
+  return ligne;
+}
+
+function talent(p: Personnage): HTMLElement | null {
+  if (!p.talent) return null;
+  const bloc = el('p', 'cc-talent');
+  bloc.append(el('span', 'cc-talent-etiquette', 'Talent'), el('b', undefined, p.talent.nom), ` ${p.talent.texte}`);
+  return bloc;
+}
+
+function repli(p: Personnage): HTMLElement {
+  const r = el('span', 'cc-repli', 'Repli');
+  r.setAttribute('role', 'img');
+  r.setAttribute('aria-label', p.repli === 0 ? 'Repli : aucune énergie' : `Repli : ${p.repli} énergie${p.repli > 1 ? 's' : ''} quelconque${p.repli > 1 ? 's' : ''}`);
+  if (p.repli === 0) r.append(el('span', 'cc-repli-zero', '0'));
+  for (let i = 0; i < p.repli; i++) r.append(energie('q'));
+  return r;
+}
+
+/**
+ * Densité du texte de combat (1 = taille normale, au moins 0,74) : plus le talent et les effets sont longs, plus
+ * le texte est petit, pour tenir dans la carte sans toucher à l'illustration. Calculée sur le nombre de caractères
+ * (même résultat partout, sans mesurer la page).
+ */
+export function densiteTexte(p: Personnage): number {
+  const caracteres = (p.talent ? p.talent.nom.length + p.talent.texte.length + 8 : 0)
+    + p.attaques.reduce((n, a) => n + a.nom.length + a.effet.length + 14, 0);
+  return Math.max(0.74, Math.min(1, 1 - (caracteres - 90) / 480));
+}
+
+/** Talent et attaques ; la colonne des coûts prend la largeur du plus long coût de la carte. */
+function blocCombat(p: Personnage, classe: string): HTMLElement {
+  const bloc = el('div', `cc-combat ${classe}`);
+  bloc.style.setProperty('--cout-max', String(Math.max(...p.attaques.map((a) => a.cout.length))));
+  const t_ = talent(p);
+  if (t_) bloc.append(t_);
+  const attaques = el('div', 'cc-attaques');
+  for (const a of p.attaques) attaques.append(attaque(a));
+  bloc.append(attaques);
+  return bloc;
 }
 
 /** Particules de la finition immersive : positions tirées d'une graine fixe par carte (pas de Math.random). */
@@ -212,16 +279,6 @@ function silhouetteBase(): HTMLElement {
   return div;
 }
 
-function attaqueBase(a: Attaque, element: ElementId): HTMLElement {
-  const ligne = el('div', 'cb-attaque');
-  const cout_ = cout(a, element, 'cb-cout', 'cb-cout-icone');
-  const nom = el('span', 'cb-attaque-nom');
-  nom.append(el('b', undefined, a.nom));
-  if (a.effet) nom.append(el('small', undefined, `${EFFETS[a.effet.type].nom}${a.effet.valeur !== undefined ? ` ${a.effet.valeur}` : ''}`));
-  ligne.append(cout_, nom, el('span', 'cb-degats', String(a.degats)));
-  return ligne;
-}
-
 /**
  * Carte de base : fond sombre teinté par l'élément, filigrane, pastille d'élément avec icône,
  * coûts en pastilles, cadre selon la rareté (graphite, acier, acier + holo sur l'illustration,
@@ -242,6 +299,7 @@ function creerCarteBase(carte: Carte, extension: Extension, options: OptionsCart
   racine.dataset.finition = carte.finition;
   racine.setAttribute('aria-label', `${perso.nom}, ${info.nom} ${info.symbole}, rang ${perso.rang}, n° ${numero}`);
   racine.style.setProperty('--aff', element.couleur);
+  racine.style.setProperty('--densite', densiteTexte(perso).toFixed(3));
 
   const corps = el('div', 'carte-corps cb-corps'); // cadre selon la rareté
   const interieur = el('div', 'cb-interieur');
@@ -250,7 +308,7 @@ function creerCarteBase(carte: Carte, extension: Extension, options: OptionsCart
 
   const entete = el('div', 'cb-entete');
   const titres = el('div', 'cb-titres');
-  titres.append(el('span', 'cb-serie', perso.serie), el('span', 'cb-nom', perso.nom));
+  titres.append(identite(perso), el('span', 'cb-nom', perso.nom));
   const pv = el('div', 'cb-pv');
   pv.append(el('span', undefined, 'PV'), el('strong', undefined, String(perso.pv)));
   const pastille = iconeElement(perso.element, 'cb-element', `Élément ${element.nom}`);
@@ -261,17 +319,17 @@ function creerCarteBase(carte: Carte, extension: Extension, options: OptionsCart
   if (img) illu.append(img);
   if (carte.finition === 'holo' || carte.finition === 'holo-integrale') illu.append(el('div', 'carte-film cb-film-illu'));
 
-  const attaques = el('div', 'cb-attaques');
-  attaques.append(attaqueBase(perso.attaques[0], perso.element), attaqueBase(perso.attaques[1], perso.element));
+  // Talent et attaques : prennent la place libre sous l'illustration (dont la taille ne change jamais).
+  const combat = blocCombat(perso, 'cb-combat');
 
   const pied = el('div', 'cb-pied');
   if (faible) {
     const pf = iconeElement(faible, 'cb-faible', `Faiblesse : ${ELEMENTS[faible].nom}`);
     pied.append(el('span', undefined, 'Faiblesse'), pf);
-  }
-  pied.append(el('span', 'cb-espace'), el('span', 'cb-numero', numero), el('span', 'cb-symbole', info.symbole), el('span', 'cb-rang', perso.rang));
+  } else pied.append(el('span', undefined, 'Faiblesse —'));
+  pied.append(repli(perso), el('span', 'cb-espace'), el('span', 'cb-numero', numero), el('span', 'cb-symbole', info.symbole), el('span', 'cb-rang', perso.rang));
 
-  interieur.append(entete, illu, attaques, el('div', 'cb-espace'), pied);
+  interieur.append(entete, illu, combat, pied);
   // Holo intégrale : film sur toute la carte.
   if (carte.finition === 'holo-integrale') interieur.append(el('div', 'carte-film cb-film-total'));
   corps.append(interieur);
@@ -302,6 +360,7 @@ export function creerCarte(carte: Carte, extension: Extension, options: OptionsC
     `${perso.nom}, ${infoFinition.nom} ${infoFinition.symbole}${carte.secrete ? ', carte secrète' : ''}, rang ${perso.rang}, n° ${numero}`,
   );
   racine.style.setProperty('--aff', element.couleur);
+  racine.style.setProperty('--densite', densiteTexte(perso).toFixed(3));
 
   const corps = el('div', 'carte-corps');
 
@@ -315,9 +374,10 @@ export function creerCarte(carte: Carte, extension: Extension, options: OptionsC
   if (faiblesse) ligneFaible.append(iconeElement(faiblesse, 'carte-faible-icone', `Faiblesse : ${ELEMENTS[faiblesse].nom}`));
   pied.append(
     ligneFaible,
-    el('span', undefined, `${numero} ${infoFinition.symbole} · ${perso.rang}`),
+    repli(perso),
+    el('span', 'carte-numero', `${numero} ${infoFinition.symbole} · ${perso.rang}`),
   );
-  texte.append(el('span', 'carte-serie', perso.serie), attaque(perso.attaques[0], perso.element), attaque(perso.attaques[1], perso.element), pied);
+  texte.append(identite(perso), blocCombat(perso, 'carte-combat'), pied);
 
   corps.append(illustration(carte, base, options.transformerSrc ?? versionner), entete, texte, el('div', 'carte-film foil'));
   if (finition === 'holo-integrale') {
@@ -337,7 +397,9 @@ export function creerCarte(carte: Carte, extension: Extension, options: OptionsC
     if (finition === 'immersive') {
       const reflet = el('div', 'carte-reflet');
       reflet.setAttribute('aria-hidden', 'true');
-      reflet.append(el('div', 'carte-reflet-film'));
+      const cadreReflet = el('div', 'carte-reflet-cadre');
+      cadreReflet.append(el('div', 'carte-reflet-film'));
+      reflet.append(cadreReflet);
       racine.append(reflet);
     }
   }

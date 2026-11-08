@@ -228,3 +228,58 @@ Avant : crée un projet gratuit sur supabase.com, et une application Discord (po
 > 4. Récompenses de fin de semaine (dans `quetes.json`) : 1er +5 sceaux, 2e +4, 3e +3, puis +2 pour toute participation (remplace la récompense actuelle). Réclamées une seule fois, via une fonction serveur qui lit le classement figé.
 > 5. Sans compte, le draft reste jouable mais hors classement, avec une invitation à se connecter.
 > 6. Tests (validation des 5 cartes, recalcul du score, fermeture de la semaine), `npm run typecheck` et `npm test` sans erreur.
+
+---
+
+# Chantier combat
+
+Règles : `docs/COMBAT.md`. Données : `src/data/fiches-combat.json` (132 fiches, dont 8 nouveaux personnages de la vague 3) et `src/data/soutiens.json` (20 cartes Soutien). Une tâche à la fois, dans l'ordre.
+
+## 25. Données de combat et nouvelle mise en page des cartes
+
+**À dire à Claude Code**
+> Fais uniquement cette tâche, puis arrête-toi. Lis docs/COMBAT.md.
+> 1. Intègre `src/data/fiches-combat.json` : chaque personnage des extensions reçoit type (base/éveillé), PV, Repli, talent et attaques de sa fiche. Les anciennes attaques génériques et `attaques.json` disparaissent. Ignore pour l'instant les 8 fiches marquées `nouveau` (vague 3, tâche 30). Validation au démarrage : chaque personnage sorti a une fiche, coûts valides, Éveillés uniquement en rang A et S.
+> 2. Mise en page des cartes (toutes raretés) : pastille « Base » ou « Éveillé », mention « Relève : <série> » sur les Éveillés, bloc Talent au-dessus des attaques (nom + texte), coûts avec les icônes d'éléments (`public/elements/`) et une icône ◇ grise pour l'énergie quelconque, Repli en bas (icônes ◇), Faiblesse inchangée. Les textes longs doivent rester lisibles : réduis la taille du texte si besoin, sans changer la taille de l'illustration.
+> 3. Draft : la puissance utilise les nouveaux PV et dégâts (« 30× » compte 45, « 50 / 0 » compte 25, une attaque sans dégâts compte 0). Mets à jour les fonctions serveur (`npm run fonctions`) et préviens-moi qu'il faut les redéployer.
+> 4. Galerie : affiche 6 cartes variées (un Base sans talent, un Base à talent, un Éveillé A, un Éveillé S, une carte avec un texte très long, une ★★★). Vérifie à 1440 et 375 px. `npm run typecheck` et `npm test` sans erreur.
+
+## 26. Moteur de combat
+
+**À dire à Claude Code**
+> Fais uniquement cette tâche, puis arrête-toi. Crée `src/core/combat/` : moteur de combat pur (aucun DOM), déterministe avec `rng.ts` et une graine, qui applique exactement docs/COMBAT.md.
+> 1. État de partie, liste des actions légales à chaque instant, application d'une action → nouvel état + journal des événements (pour l'animation et le débogage).
+> 2. Effets : définis un vocabulaire d'effets structurés et traduis chaque attaque et chaque talent des 124 fiches actuelles et des 20 cartes Soutien dans ce vocabulaire (champ `effets` dans les données). Les effets trop particuliers (Copie de Yuta, Arise de Jin-Woo, Rika, Roi des fléaux…) ont leur propre code. Liste-moi toute fiche ambiguë, avec l'interprétation que tu as choisie.
+> 3. Tests : chaque règle de docs/COMBAT.md, chaque état, chaque famille d'effets, et au moins un test par talent.
+> 4. `npm run simuler -- combat` : deux IA simples (une qui joue au hasard parmi les actions légales, une « gloutonne » qui maximise les dégâts) jouent 2 000 parties entre des decks de série générés automatiquement. Affiche le taux de victoire par série, les 10 cartes les plus jouées par les gagnants, la durée moyenne d'une partie en tours, et toute partie bloquée ou d'une durée anormale.
+> 5. `npm run typecheck` et `npm test` sans erreur. Montre-moi le rapport de simulation.
+
+## 27. Combat contre l'IA
+
+**À dire à Claude Code**
+> Fais uniquement cette tâche, puis arrête-toi. Écran de combat contre l'IA, en identité Graphite, utilisable au doigt.
+> 1. Plateau : l'actif et le banc de chaque joueur, main en bas, zone d'énergie, compteur de points, deck et défausse ; l'énergie se fait glisser sur un personnage (avec un équivalent au toucher) ; inspection d'une carte au toucher long ou au survol.
+> 2. Lisibilité : les actions possibles sont mises en avant, les attaques non payables sont grisées avec le coût manquant, un journal court raconte chaque action de l'IA.
+> 3. Animations sobres (transform et opacity) : attaque, dégâts qui s'affichent, K.-O., Relève (effet distinct, c'est le moment fort), changement de tour. Mode animations réduites.
+> 4. IA : une IA « normale » qui choisit ses actions avec une évaluation simple (dégâts, K.-O. possibles, menace adverse, préparation des Relèves), en moins de 300 ms par décision.
+> 5. Défis : une liste de 6 défis (un deck d'IA par série populaire : Jujutsu Kaisen, One Piece, Demon Slayer, Solo Leveling, L'Attaque des Titans, Chainsaw Man), +2 sceaux la première victoire de chaque défi. Avant la tâche 28, le joueur utilise un deck de départ imposé.
+> 6. Partie sauvegardée en cours (on peut fermer et reprendre). Vérifie une partie complète à 1440 et 375 px. `npm run typecheck` et `npm test` sans erreur.
+
+## 28. Constructeur de decks et decks de départ
+
+**À dire à Claude Code**
+> Fais uniquement cette tâche, puis arrête-toi.
+> 1. Écran « Decks » : liste des decks (10 maximum), création, copie, suppression, nom et carte de couverture. Construction : collection filtrable (série, élément, type, Base/Éveillé, Soutien), compteur 20 cartes, règles de docs/COMBAT.md vérifiées en direct avec un message clair, choix des 1 à 3 éléments d'énergie avec une suggestion automatique selon les cartes du deck.
+> 2. Deux decks de départ jouables par tous sans posséder les cartes. Propose-les à partir des fiches (deux séries ou mélanges cohérents, un Feu/Vent et un Eau/Foudre par exemple), vérifie avec la simulation qu'ils ont un taux de victoire proche de 50 % entre eux et contre les decks de défis, puis montre-les-moi avant de les figer.
+> 3. Le joueur choisit son deck avant un combat. Decks enregistrés dans la sauvegarde (synchronisée en ligne).
+> 4. `npm run typecheck` et `npm test` sans erreur.
+
+## 29. Cartes Soutien dans le jeu
+
+**À dire à Claude Code**
+> Fais uniquement cette tâche, puis arrête-toi. Ajoute les 20 cartes de `src/data/soutiens.json` : mise en page propre (pas de PV, type Objet / Soutien / Terrain en bandeau, illustration), tirage dans les boosters avec les personnages de même rareté, collection, boutique, constructeur de decks et moteur de combat. Les images sont dans `public/cartes/sou-xxx/illustration.webp` (visuel de remplacement en attendant). Relance la simulation de combat avec des Soutiens dans les decks et montre-moi le rapport. `npm run typecheck` et `npm test` sans erreur.
+
+## 30. Vague 3
+
+**À dire à Claude Code**
+> Fais uniquement cette tâche, puis arrête-toi. Ajoute la vague 3 de Lancement : les 8 personnages marqués `nouveau` dans `src/data/fiches-combat.json` (Kakashi, Sakura, Gaara, Rock Lee pour Naruto ; Sanji, Nami, Usopp, Chopper pour One Piece), une carte de base chacun, avec des ids définitifs dans la suite de Renforts et une date de sortie le jour de la mise en ligne du combat. Calendrier de sortie comme pour Renforts. Admin : les 8 cartes apparaissent pour leurs images. Simulation de combat relancée pour Naruto et One Piece. `npm run typecheck` et `npm test` sans erreur.

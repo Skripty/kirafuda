@@ -1,0 +1,99 @@
+/* Données de combat sur les cartes (tâche 25) : type Base / Éveillé, « Relève : série », talent, attaques,
+   coûts en icônes d'éléments (◇ gris pour l'énergie quelconque), Repli. Communes aux deux mises en page ;
+   --u vient de chaque mise en page (1/250 ou 1/260 de la largeur de la carte).
+   --densite (1 à 0,74, calculée par carte) réduit le texte des talents et des attaques quand il est long :
+   l'illustration garde toujours sa taille. */
+
+.cc-identite { display: flex; align-items: center; gap: calc(4 * var(--u)); min-width: 0; }
+.cc-type {
+  flex: none;
+  padding: 0 calc(4.5 * var(--u));
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--carte-clair) 35%, transparent);
+  font-size: calc(7.5 * var(--u));
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.55;
+  text-transform: uppercase;
+  color: var(--carte-clair);
+}
+.cc-type-eveille {
+  border-color: color-mix(in srgb, var(--aff) 80%, var(--carte-clair));
+  background: color-mix(in srgb, var(--aff) 60%, transparent);
+}
+.cc-serie {
+  min-width: 0;
+  font-size: calc(8.5 * var(--u));
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.cc-combat { display: flex; flex-direction: column; gap: calc(4 * var(--u)); min-height: 0; }
+
+.cc-talent {
+  margin: 0;
+  padding: calc(3 * var(--u)) calc(5 * var(--u));
+  border-radius: calc(5 * var(--u));
+  background: color-mix(in srgb, var(--carte-clair) 7%, transparent);
+  border-left: calc(2 * var(--u)) solid color-mix(in srgb, var(--aff) 75%, var(--carte-clair));
+  font-size: calc(9 * var(--u) * var(--densite, 1) * var(--taille-texte, 1));
+  line-height: 1.25;
+}
+.cc-talent-etiquette {
+  margin-right: calc(4 * var(--u));
+  font-size: calc(7 * var(--u) * var(--densite, 1) * var(--taille-texte, 1));
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+.cc-talent b { font-weight: 700; }
+.cc-talent b::after { content: ' —'; font-weight: 400; }
+
+.cc-attaques { display: flex; flex-direction: column; }
+.cc-attaque {
+  display: grid;
+  grid-template-columns: calc(var(--cout-max, 2) * 12.5 * var(--u)) minmax(0, 1fr) auto;
+  column-gap: calc(6 * var(--u));
+  align-items: start;
+  padding: calc(3.5 * var(--u) * var(--densite, 1) * var(--taille-texte, 1)) 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--carte-clair) 10%, transparent);
+}
+.cc-attaque:last-child { border-bottom: none; }
+.cc-cout { display: flex; gap: calc(1 * var(--u)); padding-top: calc(1.5 * var(--u)); }
+.cc-energie {
+  display: block; flex: none;
+  width: calc(11.5 * var(--u)); height: calc(11.5 * var(--u));
+  border-radius: 50%;
+}
+/* ◇ : énergie quelconque, pastille grise de la taille des icônes d'éléments. */
+.cc-quelconque {
+  display: grid; place-items: center;
+  background: var(--gris-acier);
+  box-shadow: inset 0 calc(-1 * var(--u)) 0 color-mix(in srgb, var(--graphite) 30%, transparent);
+  color: var(--carte-clair);
+  font-size: calc(8.5 * var(--u));
+  font-weight: 700;
+  line-height: 1;
+}
+.cc-attaque-nom { min-width: 0; display: flex; flex-direction: column; }
+.cc-attaque-nom b { font-size: calc(12 * var(--u) * var(--densite, 1) * var(--taille-texte, 1)); font-weight: 600; line-height: 1.2; }
+.cc-attaque-nom small { font-size: calc(9 * var(--u) * var(--densite, 1) * var(--taille-texte, 1)); line-height: 1.25; opacity: 0.8; }
+.cc-degats { font-size: calc(16 * var(--u)); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; white-space: nowrap; }
+
+.cc-repli { display: inline-flex; align-items: center; gap: calc(2 * var(--u)); }
+.cc-repli .cc-energie { width: calc(10 * var(--u)); height: calc(10 * var(--u)); font-size: calc(7.5 * var(--u)); }
+.cc-repli-zero { margin-left: calc(1 * var(--u)); }
+
+/* ---------- Cartes ♦ à ♦♦♦♦ : talent et attaques dans la place libre sous l'illustration ---------- */
+.cb-titres .cc-identite { color: var(--carte-base-attenue); margin-bottom: calc(1 * var(--u)); }
+/* Plus de place sous l'illustration que sur le panneau des cartes ★ : texte un peu plus grand. */
+.cb-combat { position: relative; flex: 1 1 auto; overflow: hidden; --taille-texte: 1.06; }
+.carte-base .cc-attaque-nom small { color: var(--carte-base-attenue); opacity: 1; }
+
+/* ---------- Cartes ★ et plus : panneau translucide du bas, à la hauteur de son contenu ---------- */
+.carte.pleine-carte .carte-texte { height: auto; max-height: 62%; overflow: hidden; gap: calc(4 * var(--u)); }
+.carte.pleine-carte .cc-identite { flex: none; }
+.carte.pleine-carte .cc-serie { font-size: calc(9.5 * var(--u)); font-style: italic; opacity: 0.85; }
+.carte.pleine-carte .cc-attaque { border-color: var(--carte-trait-clair); }
+.carte.pleine-carte .cc-energie { box-shadow: 0 0 0 calc(1 * var(--u)) color-mix(in srgb, var(--carte-clair) 45%, transparent); }
+.carte-pied .cc-repli { font-size: inherit; }

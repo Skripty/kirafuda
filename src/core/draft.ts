@@ -2,11 +2,12 @@
 // Une graine par semaine : tout le monde ouvre les mêmes 3 boosters (15 cartes) et en garde 5.
 // Le score est déterministe et ne dépend jamais de la finition ni du rang (règle 5).
 // Les cartes du draft n'entrent pas dans la collection : seule la récompense en sceaux est gagnée.
-import { EFFETS, ELEMENTS, FAIBLESSE, ORDRE_RANGS } from './regles';
+import { ELEMENTS, FAIBLESSE, ORDRE_RANGS } from './regles';
+import { TYPES_PERSONNAGE, texteDegats, valeurDegats } from './combat';
 import { rngAGraine, type Rng } from './rng';
 import { tirerBooster } from './tirage';
 import { indexer } from './extension';
-import type { Booster, CarteTiree, DraftJoue, EffetType, ElementId, Extension, Personnage, Rang, Sauvegarde } from './types';
+import type { Booster, CarteTiree, DraftJoue, ElementId, Extension, Personnage, Rang, Sauvegarde, TypePersonnage } from './types';
 
 // ---------- Thèmes ----------
 
@@ -14,9 +15,10 @@ import type { Booster, CarteTiree, DraftJoue, EffetType, ElementId, Extension, P
 export type CritereCarte =
   | { type: 'elements'; valeurs: ElementId[] }
   | { type: 'series'; valeurs: string[] }
-  | { type: 'effets'; valeurs: EffetType[] }
+  | { type: 'talent' }
+  | { type: 'type-personnage'; valeur: TypePersonnage }
   | { type: 'pv-min'; valeur: number }
-  | { type: 'degats-forte-min'; valeur: number };
+  | { type: 'degats-min'; valeur: number };
 
 /** Critères d'équipe : évalués sur les 5 cartes gardées. */
 export type CritereEquipe =
@@ -48,9 +50,11 @@ export function correspondAuTheme(carte: Personnage, theme: Theme): boolean {
   switch (c.type) {
     case 'elements': return c.valeurs.includes(carte.element);
     case 'series': return c.valeurs.includes(carte.serie);
-    case 'effets': return carte.attaques.some((a) => a.effet !== null && c.valeurs.includes(a.effet.type));
+    case 'talent': return carte.talent !== null;
+    case 'type-personnage': return carte.type === c.valeur;
     case 'pv-min': return carte.pv >= c.valeur;
-    case 'degats-forte-min': return carte.attaques[1].degats >= c.valeur;
+    // Au moins une attaque de N dégâts (« 30× » compte 45, « 50 / 0 » compte 25 : voir valeurDegats).
+    case 'degats-min': return carte.attaques.some((a) => valeurDegats(a.degats) >= c.valeur);
     case 'rang-max': return rangDe(carte.rang) <= rangDe(c.valeur);
     case 'elements-differents-min':
     case 'paires-serie-min': return false;
@@ -138,12 +142,13 @@ export function validerThemes(themes: Theme[], extension: Extension): string[] {
         for (const v of c.valeurs ?? []) if (!series.has(v)) erreurs.push(`${ref} : série inconnue « ${v} ».`);
         if (!c.valeurs?.length) erreurs.push(`${ref} : aucune valeur.`);
         break;
-      case 'effets':
-        for (const v of c.valeurs ?? []) if (!Object.hasOwn(EFFETS, v)) erreurs.push(`${ref} : effet inconnu « ${v} ».`);
-        if (!c.valeurs?.length) erreurs.push(`${ref} : aucune valeur.`);
+      case 'talent':
+        break;
+      case 'type-personnage':
+        if (!Object.hasOwn(TYPES_PERSONNAGE, c.valeur)) erreurs.push(`${ref} : type « ${String(c.valeur)} » inconnu (base ou eveille).`);
         break;
       case 'pv-min':
-      case 'degats-forte-min':
+      case 'degats-min':
         if (!Number.isInteger(c.valeur) || c.valeur <= 0) erreurs.push(`${ref} : valeur entière positive attendue.`);
         break;
       case 'rang-max':
@@ -328,7 +333,7 @@ export interface Score { total: number; lignes: LigneScore[] }
 
 /** Barème du score (détaillé à l'écran). */
 export const BAREME = {
-  /** Puissance d'un personnage : (PV + dégâts des deux attaques) ÷ 10, arrondi. */
+  /** Puissance d'un personnage : (PV + dégâts de ses attaques) ÷ 10, arrondi (« 30× » compte 45, « 50 / 0 » compte 25). */
   diviseurPuissance: 10,
   parCarteDuTheme: 15,
   equipeEntiereDuTheme: 20,
@@ -341,8 +346,11 @@ export const BAREME = {
   parCarteFaibleContreAdversaire: -10,
 } as const;
 
+/** Dégâts comptés pour la puissance : somme des attaques (« 30× » compte 45, « 50 / 0 » compte 25, sans dégâts 0). */
+export const degatsPuissance = (carte: Personnage): number => carte.attaques.reduce((n, a) => n + valeurDegats(a.degats), 0);
+
 export function puissance(carte: Personnage): number {
-  return Math.round((carte.pv + carte.attaques[0].degats + carte.attaques[1].degats) / BAREME.diviseurPuissance);
+  return Math.round((carte.pv + degatsPuissance(carte)) / BAREME.diviseurPuissance);
 }
 
 /**
@@ -357,7 +365,12 @@ export function scorer(equipe: Personnage[], theme: Theme, adversaire: ElementId
   const lignes: LigneScore[] = [];
   const nomEl = (e: ElementId): string => ELEMENTS[e].nom;
 
-  for (const c of equipe) lignes.push({ categorie: 'Puissance', libelle: `${c.nom} (${c.pv} PV, ${c.attaques[0].degats} + ${c.attaques[1].degats} dégâts)`, points: puissance(c) });
+  // « 30× » et « 50 / 0 » sont écrits tels quels, suivis de leur valeur (45, 25).
+  const degats = (c: Personnage): string => c.attaques.map((a) => {
+    const v = valeurDegats(a.degats);
+    return typeof a.degats === 'number' ? String(v) : texteDegats(a.degats) === '' ? '0' : `${texteDegats(a.degats)} (${v})`;
+  }).join(' + ');
+  for (const c of equipe) lignes.push({ categorie: 'Puissance', libelle: `${c.nom} (${c.pv} PV, ${degats(c)} dégâts)`, points: puissance(c) });
 
   const progression = progressionEquipe(equipe, theme);
   if (progression) {

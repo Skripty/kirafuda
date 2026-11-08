@@ -9,6 +9,7 @@ npm install
 npm run dev        # lance le jeu sur http://localhost:5173
 npm test           # tests
 npm run typecheck  # vérification TypeScript
+npm run fiches               # recopie src/data/fiches-combat.json dans les extensions (après un rééquilibrage)
 npm run deployer-fonctions  # régénère et déploie les fonctions serveur du classement (docs/SUPABASE.md, section 10)
 ```
 
@@ -24,7 +25,7 @@ npm run deployer-fonctions  # régénère et déploie les fonctions serveur du c
 | `docs/reference/atelier-des-cartes.html` | Rendu de référence des cartes et des finitions |
 | `src/data/extension-lancement.json` | Les 100 personnages (série, rang, élément, PV, attaques) et les 140 cartes (une rareté fixe chacune) |
 | `src/data/booster-lancement.json` | Tables de tirage du booster |
-| `src/data/attaques.json` | Les 180 attaques par élément |
+| `src/data/fiches-combat.json` | Fiches de combat des personnages (type, PV, Repli, talent, attaques), recopiées dans les extensions par `npm run fiches` |
 | `src/core/types.ts`, `src/core/regles.ts` | Modèle de données et règles fixes |
 | `public/logo/` | Logo, icône et emblème |
 
