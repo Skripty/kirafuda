@@ -79,12 +79,11 @@
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .carte-pv { font-size: calc(13 * var(--u)); font-weight: 600; }
+/* Icône de l'élément (public/elements) : ronde, fond transparent. */
 .carte-element {
+  display: block; flex: none;
   width: calc(24 * var(--u)); height: calc(24 * var(--u)); border-radius: 50%;
-  background: var(--aff); color: var(--carte-clair);
-  display: flex; align-items: center; justify-content: center;
-  font-size: calc(12 * var(--u)); font-weight: 700;
-  box-shadow: inset 0 0 0 calc(2 * var(--u)) color-mix(in srgb, var(--carte-clair) 33%, transparent);
+  box-shadow: 0 0 0 calc(1.5 * var(--u)) color-mix(in srgb, var(--carte-clair) 33%, transparent);
 }
 
 .carte-texte {
@@ -103,10 +102,9 @@
   padding: calc(2 * var(--u)) 0;
   border-bottom: 1px solid var(--carte-trait);
 }
-.carte-cout { display: flex; gap: calc(2 * var(--u)); }
-.carte-cout i {
-  display: block; width: calc(10 * var(--u)); height: calc(10 * var(--u));
-  border-radius: 50%; background: var(--aff);
+.carte-cout { display: flex; gap: calc(1 * var(--u)); }
+.carte-cout-icone {
+  display: block; flex: none; width: calc(12 * var(--u)); height: calc(12 * var(--u)); border-radius: 50%;
 }
 .carte-attaque-nom { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .carte-attaque-nom b {
@@ -115,6 +113,8 @@
 }
 .carte-attaque-nom small { font-size: calc(11.5 * var(--u)); opacity: 0.75; }
 .carte-degats { font-weight: 700; font-size: calc(17 * var(--u)); }
+.carte-faible { display: inline-flex; align-items: center; gap: calc(3 * var(--u)); }
+.carte-faible-icone { display: block; flex: none; width: calc(12 * var(--u)); height: calc(12 * var(--u)); border-radius: 50%; }
 .carte-pied {
   margin-top: auto;
   display: flex; justify-content: space-between; gap: calc(6 * var(--u));
@@ -172,12 +172,67 @@
   background: var(--carte-panneau); color: var(--carte-clair);
 }
 .carte.pleine-carte .carte-attaque { border-color: var(--carte-trait-clair); }
-.carte.pleine-carte .carte-cout i { box-shadow: 0 0 0 calc(1.5 * var(--u)) color-mix(in srgb, var(--carte-clair) 55%, transparent); }
+.carte.pleine-carte .carte-cout-icone { box-shadow: 0 0 0 calc(1.5 * var(--u)) color-mix(in srgb, var(--carte-clair) 55%, transparent); }
 .carte.pleine-carte .carte-remplacement span { top: calc(40 * var(--u)); }
 
-.carte.f-pleine .carte-corps { border-color: var(--carte-bord-pleine); }
-.carte.f-alternative .carte-corps { border-color: var(--carte-bord-alternative); }
-.carte.f-immersive .carte-corps { border-color: var(--carte-bord-immersive); }
+/* ★ à ★★★ : bande du cadre en dégradé holo. Épaisseur, coins et dimensions inchangés : la bande reste la bordure
+   de .carte-corps (7 u), seule sa couleur change. Rien ne déborde sur l'illustration :
+   - sous l'illustration, la bordure de .carte-corps montre le dégradé assombri par le trait (rgba 0 0 0 .35) ;
+   - par-dessus, .carte-bande (même boîte, bordure de 7 u − 1 px, masquée pour ne garder que cette bordure)
+     montre le dégradé pur et le liseré clair du bord extérieur. Il reste donc 1 px de trait sombre contre l'image.
+     Bordures arrondies au pixel de la même façon : l'écart vaut toujours exactement 1 px.
+   - ★★★ : .carte-reflet, même masque, reflet blanc qui passe en continu (coupé en animations réduites). */
+.carte.f-pleine { --carte-cadre-bande: var(--carte-cadre-pleine); }
+.carte.f-alternative { --carte-cadre-bande: var(--carte-cadre-alternative); }
+.carte.f-immersive { --carte-cadre-bande: var(--carte-cadre-immersive); }
+.carte.f-pleine, .carte.f-alternative, .carte.f-immersive { position: relative; }
+.carte.f-pleine .carte-corps,
+.carte.f-alternative .carte-corps,
+.carte.f-immersive .carte-corps {
+  border-color: transparent;
+  background: linear-gradient(var(--carte-cadre-trait), var(--carte-cadre-trait)) border-box, var(--carte-cadre-bande) border-box;
+}
+.carte-bande,
+.carte-reflet {
+  --u: calc(100cqw / 260);
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: calc(13 * var(--u));
+  border: calc(7 * var(--u) - 1px) solid transparent;
+  /* Seule la bordure reste visible (le contenu, c'est-à-dire l'illustration, est exclu du masque). */
+  -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0) border-box;
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) padding-box exclude, linear-gradient(#000 0 0) border-box;
+  /* Suit le pivot de la carte (même transformation que .carte-corps). */
+  transform: perspective(900px) rotateY(calc(var(--x) * var(--carte-pivot, 8deg)));
+  transition: transform 0.15s;
+}
+.carte-bande {
+  background: var(--carte-cadre-bande) border-box;
+  outline: 1px solid var(--carte-cadre-liseret);
+  outline-offset: -1px;
+}
+.carte-reflet {
+  z-index: 2;
+  --bord-reflet: calc(7 * var(--u) - 1px);
+}
+/* Calque enfant trois fois plus large que la carte, déplacé par transform (jamais par background-position) :
+   même rendu qu'un fond de 300 % qui glisse de 0 % à 100 %. Le masque du parent ne le laisse voir que dans la bande. */
+.carte-reflet-film {
+  position: absolute;
+  top: calc(-1 * var(--bord-reflet));
+  bottom: calc(-1 * var(--bord-reflet));
+  left: calc(-1 * var(--bord-reflet));
+  width: calc(3 * (100% + 2 * var(--bord-reflet)));
+  background: var(--carte-cadre-reflet);
+  animation: carte-reflet 1.6s ease-in-out infinite alternate; /* aller-retour en 3,2 s */
+}
+@keyframes carte-reflet {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-200% / 3)); }
+}
 .carte.f-pleine .carte-film.foil,
 .carte.f-immersive .carte-film.foil { opacity: 1; }
 
@@ -214,4 +269,7 @@
   .carte-corps, .carte-calque, .carte-film { transition: none !important; transform: none !important; }
   .carte-film::before, .carte-particule, .carte-particule i { animation: none !important; }
   .carte-particules { display: none; }
+  .carte-bande { transition: none !important; transform: none !important; }
+  .carte-reflet { display: none; }
+  .carte-reflet-film { animation: none !important; }
 }

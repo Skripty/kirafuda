@@ -15,6 +15,7 @@ import {
 import { formaterCote, formaterTendance, tendanceCote } from '../core/cote';
 import type { ElementId, Extension, FinitionId, Popularite, Sauvegarde } from '../core/types';
 import { creerCarte, numeroCarte } from './carte';
+import { iconeElement } from './element';
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, classe?: string, texte?: string): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag);
@@ -33,6 +34,28 @@ function choix(etiquette: string, options: [string, string][]): { label: HTMLLab
   }
   label.append(el('span', undefined, etiquette), select);
   return { label, select };
+}
+
+/** Filtre d'élément : « Tous » puis une icône par élément (boutons à bascule, nom en texte alternatif). */
+function choixElement(onChange: () => void): { groupe: HTMLFieldSetElement; valeur: () => ElementId | null; vider: () => void } {
+  const groupe = el('fieldset', 'col-filtre col-elements');
+  groupe.append(el('legend', undefined, 'Élément'));
+  let valeur: ElementId | null = null;
+  const boutons: [ElementId | null, HTMLButtonElement][] = [];
+  const maj = (): void => { for (const [id, b] of boutons) b.setAttribute('aria-pressed', String(id === valeur)); };
+  const ajouter = (id: ElementId | null): void => {
+    const b = el('button', id ? 'col-element' : 'col-element col-element-tous');
+    b.type = 'button';
+    if (id) b.append(iconeElement(id, 'col-element-icone', ELEMENTS[id].nom));
+    else b.textContent = 'Tous';
+    b.addEventListener('click', () => { valeur = id; maj(); onChange(); });
+    boutons.push([id, b]);
+    groupe.append(b);
+  };
+  ajouter(null);
+  for (const id of Object.keys(ELEMENTS) as ElementId[]) ajouter(id);
+  maj();
+  return { groupe, valeur: () => valeur, vider: () => { valeur = null; maj(); } };
 }
 
 const SILHOUETTE = '<svg viewBox="0 0 100 110" aria-hidden="true"><path d="M16 110 Q20 76 50 72 Q80 76 84 110Z"/><circle cx="50" cy="50" r="20"/></svg>';
@@ -73,12 +96,12 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
   // ---------- Filtres ----------
   const zoneFiltres = el('div', 'col-filtres');
   const fSerie = choix('Série', [['', 'Toutes'], ...series(extension).map((s): [string, string] => [s, s])]);
-  const fElement = choix('Élément', [['', 'Tous'], ...(Object.keys(ELEMENTS) as ElementId[]).map((k): [string, string] => [k, ELEMENTS[k].nom])]);
+  const fElement = choixElement(() => lireFiltres());
   const fFinition = choix('Rareté', [['', 'Toutes'], ...ORDRE_FINITIONS.map((f): [string, string] => [f, libelleFinition(f)])]);
   const fPossession = choix('Possession', [['', 'Toutes'], ['possedees', 'Possédées'], ['manquantes', 'Manquantes']]);
   const reinitialiser = el('button', 'col-reinit', 'Réinitialiser');
   reinitialiser.type = 'button';
-  zoneFiltres.append(fSerie.label, fElement.label, fFinition.label, fPossession.label, reinitialiser);
+  zoneFiltres.append(fSerie.label, fElement.groupe, fFinition.label, fPossession.label, reinitialiser);
 
   const resume = el('p', 'col-resume');
   resume.setAttribute('aria-live', 'polite');
@@ -178,18 +201,19 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
     grille.replaceChildren(...visibles.map(tuile));
   }
 
-  const lireFiltres = (): void => {
+  function lireFiltres(): void {
     filtres = {
       serie: fSerie.select.value || null,
-      element: (fElement.select.value || null) as ElementId | null,
+      element: fElement.valeur(),
       finition: (fFinition.select.value || null) as FinitionId | null,
       possession: (fPossession.select.value || null) as Filtres['possession'],
     };
     afficherGrille();
-  };
-  for (const s of [fSerie.select, fElement.select, fFinition.select, fPossession.select]) s.addEventListener('change', lireFiltres);
+  }
+  for (const s of [fSerie.select, fFinition.select, fPossession.select]) s.addEventListener('change', lireFiltres);
   reinitialiser.addEventListener('click', () => {
-    for (const s of [fSerie.select, fElement.select, fFinition.select, fPossession.select]) s.value = '';
+    for (const s of [fSerie.select, fFinition.select, fPossession.select]) s.value = '';
+    fElement.vider();
     lireFiltres();
   });
 

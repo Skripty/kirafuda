@@ -146,7 +146,8 @@
 .acc-avatar {
   width: 36px; height: 36px; border-radius: 10px; flex: none;
   display: grid; place-items: center; font-size: 13px; font-weight: 700;
-  color: var(--fond); background: var(--aff);
+  /* Couleur de l’élément éclaircie : le texte sombre reste lisible même sur Ténèbres (violet) ou Eau (bleu). */
+  color: var(--fond); background: color-mix(in srgb, var(--aff) 55%, var(--carte-clair));
 }
 .acc-hausse-textes { flex: 1; min-width: 0; }
 .acc-hausse-nom { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

@@ -211,8 +211,8 @@ Aucune clé à fournir : Supabase donne lui-même à ses fonctions `SUPABASE_URL
 
 Le serveur doit calculer exactement comme le jeu. En tête de chaque fichier généré figurent la liste des fichiers réellement utilisés par la fonction et leur empreinte. `npm test` échoue (« n'est plus à jour : lance npm run deployer-fonctions ») dès que l'un d'eux change :
 
-- **oblige à redéployer** : le code du draft et du score (`src/core/draft.ts`, `classement.ts`, `tirage.ts`, `rng.ts`, `regles.ts`…), les cartes et boosters (`extension-*.json`, `booster-*.json`, `extensions.json`), les thèmes (`themes-draft.json`), les récompenses du classement (`quetes.json` → `hebdomadaire.recompensesDraft` uniquement) ;
-- **n'oblige pas** : la cote (`popularite*.json`), les autres réglages de `quetes.json`, l'interface, les images.
+- **oblige à redéployer** : le code du draft et du score (`src/core/draft.ts`, `classement.ts`, `tirage.ts`, `rng.ts`, `regles.ts`…), les personnages et les cartes (`extension-*.json` : nom, série, rang, élément, PV, attaques, rareté, liste des cartes), les boosters (`booster-*.json`, `extensions.json`), les thèmes (`themes-draft.json`), les récompenses du classement (`quetes.json` → `hebdomadaire.recompensesDraft` uniquement) ;
+- **n'oblige pas** : la cote (`popularite*.json`), les autres réglages de `quetes.json`, l’interface, les images et leurs réglages dans l’admin (cadrage, zoom, position : la partie `images` des cartes).
 
 Après un changement qui l'oblige : `npm run deployer-fonctions`, en même temps que la mise en ligne du site (`git push`). Pour seulement vérifier : `npm run fonctions -- --verifier`.
 

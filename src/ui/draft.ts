@@ -28,6 +28,7 @@ import { finSemaineDraft, rangTexte, semaineDraft, type RecompensesDraft } from 
 import type { Compte } from '../en-ligne/compte';
 import type { DraftEnLigne, EtatEnvoi } from '../en-ligne/classement';
 import { creerCarte } from './carte';
+import { iconeElement } from './element';
 import { lier } from './compte';
 
 export interface OptionsDraft {
@@ -57,11 +58,14 @@ const sceaux = (n: number): string => `${n} sceau${n > 1 ? 'x' : ''}`;
 const signe = (n: number): string => (n >= 0 ? `+${n}` : `−${Math.abs(n)}`);
 const CATEGORIES: Categorie[] = ['Puissance', 'Thème', 'Synergies', 'Défi'];
 
+/** Marque d'un élément dans le texte du défi, remplacée à l'affichage par son icône suivie de son nom. */
+const MARQUE = '\u0000';
+
 /** « Lumière bat Ténèbres ; Lumière est faible contre lui. » */
 function texteDefi(adversaire: ElementId): string {
   const fort = FAIBLESSE[adversaire];
   const faibles = (Object.keys(FAIBLESSE) as ElementId[]).filter((e) => FAIBLESSE[e] === adversaire);
-  const nom = (e: ElementId): string => ELEMENTS[e].nom;
+  const nom = (e: ElementId): string => `${MARQUE}${e}${MARQUE}`;
   const plus = signe(BAREME.parCarteForteContreAdversaire);
   const moins = signe(BAREME.parCarteFaibleContreAdversaire);
   // Lumière et Ténèbres sont faibles l'une contre l'autre : les deux effets s'annulent.
@@ -70,6 +74,19 @@ function texteDefi(adversaire: ElementId): string {
   }
   return `Adversaire ${nom(adversaire)} : ${fort ? `les cartes ${nom(fort)} le battent (${plus})` : 'aucun élément ne le bat'}`
     + `${faibles.length ? ` ; les cartes ${faibles.map(nom).join(', ')} lui sont faibles (${moins})` : ''}.`;
+}
+
+/** Texte du défi avec l'icône de chaque élément devant son nom (le nom reste écrit : l'icône est décorative). */
+function ligneDefi(adversaire: ElementId): HTMLElement {
+  const p = el('p', 'draft-defi');
+  texteDefi(adversaire).split(MARQUE).forEach((morceau, i) => {
+    if (i % 2 === 0) { if (morceau) p.append(morceau); return; }
+    const id = morceau as ElementId;
+    const nom = el('span', 'draft-element');
+    nom.append(iconeElement(id, 'draft-element-icone', null), ELEMENTS[id].nom);
+    p.append(nom);
+  });
+  return p;
 }
 
 /** Détail du score, groupé par catégorie. */
@@ -152,7 +169,7 @@ export function creerDraft(o: OptionsDraft): HTMLElement {
       el('p', 'draft-semaine', `Semaine ${semaine} · équipe modifiable jusqu’au dimanche 23 h 59 (heure de Paris) · nouveau draft ${prochain}`),
       el('p', 'draft-theme', `Thème : ${draft.theme.nom}`),
       el('p', 'draft-theme-desc', draft.theme.description + (estCritereEquipe(draft.theme.critere) ? ` Critère d’équipe : il se juge sur les ${CARTES_A_GARDER} cartes gardées.` : '')),
-      el('p', 'draft-defi', texteDefi(draft.adversaire)),
+      ligneDefi(draft.adversaire),
     );
     const annonce = el('p', 'draft-annonce', message);
     annonce.setAttribute('role', 'status');

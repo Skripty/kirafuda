@@ -10,18 +10,27 @@ export const FONCTIONS = ['soumettre-draft', 'reclamer-draft'] as const;
 
 /**
  * Fichiers de données dont les fonctions n'utilisent qu'une partie : seule cette partie compte.
- * quetes.json : les fonctions ne lisent que les récompenses du classement (les autres quêtes ne les concernent pas).
+ * - quetes.json : les récompenses du classement (les autres quêtes ne concernent pas les fonctions) ;
+ * - extension-*.json : les personnages (nom, série, rang, élément, PV, attaques) et la liste des cartes avec leur
+ *   rareté. Les réglages d'images (fichiers, cadrage, zoom, position, faits dans l'admin) ne servent pas au draft.
  */
-export const PARTIES_UTILISEES: Record<string, (donnees: any) => unknown> = {
-  'src/data/quetes.json': (q) => q.hebdomadaire?.recompensesDraft ?? null,
-};
+export const PARTIES_UTILISEES: [RegExp, (donnees: any) => unknown][] = [
+  [/^src\/data\/quetes\.json$/, (q) => q.hebdomadaire?.recompensesDraft ?? null],
+  [/^src\/data\/extension-[^/]+\.json$/, (e) => ({
+    id: e.id, total: e.total, totalAvecSecretes: e.totalAvecSecretes,
+    personnages: e.personnages,
+    cartes: Array.isArray(e.cartes)
+      ? e.cartes.map((c: any) => ({ id: c.id, numero: c.numero, personnage: c.personnage, finition: c.finition, secrete: c.secrete }))
+      : e.cartes,
+  })],
+];
 
 /** Empreinte d'une liste de fichiers (chemins relatifs à la racine, avec « / »), fins de ligne normalisées. */
 export function empreinteDe(racine: string, sources: string[]): string {
   const hash = createHash('sha256');
   for (const s of [...sources].sort()) {
     const texte = readFileSync(path.join(racine, s), 'utf8').replace(/\r\n/g, '\n');
-    const partie = PARTIES_UTILISEES[s];
+    const partie = PARTIES_UTILISEES.find(([motif]) => motif.test(s))?.[1];
     hash.update(s).update('\0').update(partie ? JSON.stringify(partie(JSON.parse(texte))) : texte).update('\0');
   }
   return hash.digest('hex').slice(0, 16);

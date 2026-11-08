@@ -891,7 +891,13 @@
       "personnage": "ren-per-023",
       "finition": "commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 24
+        }
+      }
     },
     {
       "id": "ren-024",

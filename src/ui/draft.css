@@ -123,3 +123,9 @@
 .draft-classement:empty { display: none; }
 .draft-classement { padding: 10px 14px; border: 1px solid var(--texte-secondaire); border-radius: var(--rayon); display: grid; gap: 8px; justify-items: start; }
 .draft-classement p { margin: 0; }
+
+/* Défi : icône de l'élément devant son nom. */
+.draft-element { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.draft-element-icone { display: block; width: 18px; height: 18px; border-radius: 50%; }
+.draft-element { display: inline; white-space: nowrap; }
+.draft-element-icone { display: inline-block; vertical-align: -0.28em; margin-right: 4px; }

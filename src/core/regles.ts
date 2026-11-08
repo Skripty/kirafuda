@@ -5,16 +5,21 @@ import type { Calque, EffetType, ElementId, FinitionId, Rang } from './types';
  * Éléments : nom, abréviation, couleur d'accent et icône.
  * `glyphe` : tracé SVG (attribut d) d'une icône au trait, dans une grille de 24 × 24.
  */
+/**
+ * Couleurs alignées sur les icônes (public/elements/<element>.webp) et sur tokens.css (--element-<id>) :
+ * Feu rouge orangé, Eau bleu, Glace bleu ciel, Foudre jaune, Vent vert, Terre brun, Lumière ivoire doré,
+ * Ténèbres violet, Neutre gris.
+ */
 export const ELEMENTS: Record<ElementId, { nom: string; abreviation: string; couleur: string; glyphe: string }> = {
-  feu:      { nom: 'Feu',      abreviation: 'Fe', couleur: '#F06A3F', glyphe: 'M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 2.5-5 .3 2 1.3 3 2.5 3.5C11.5 9 11 6 12 3z' },
-  eau:      { nom: 'Eau',      abreviation: 'Ea', couleur: '#3D8FE8', glyphe: 'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z' },
-  glace:    { nom: 'Glace',    abreviation: 'Gl', couleur: '#4FBFDB', glyphe: 'M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9' },
-  foudre:   { nom: 'Foudre',   abreviation: 'Fo', couleur: '#A56BEB', glyphe: 'M13 3L5 13h6l-1 8 8-10h-6l1-8z' },
-  vent:     { nom: 'Vent',     abreviation: 'Ve', couleur: '#2FB98E', glyphe: 'M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h8' },
-  terre:    { nom: 'Terre',    abreviation: 'Te', couleur: '#C08443', glyphe: 'M3 19L9 8l4 6 3-4 5 9z' },
-  lumiere:  { nom: 'Lumière',  abreviation: 'Lu', couleur: '#E0AE22', glyphe: 'M12 7a5 5 0 1 0 0 10a5 5 0 1 0 0-10zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4' },
-  tenebres: { nom: 'Ténèbres', abreviation: 'Té', couleur: '#8B6FE0', glyphe: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z' },
-  neutre:   { nom: 'Neutre',   abreviation: 'Ne', couleur: '#9A958A', glyphe: 'M12 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16z' },
+  feu:      { nom: 'Feu',      abreviation: 'Fe', couleur: '#CE2F18', glyphe: 'M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 2.5-5 .3 2 1.3 3 2.5 3.5C11.5 9 11 6 12 3z' },
+  eau:      { nom: 'Eau',      abreviation: 'Ea', couleur: '#1764DA', glyphe: 'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z' },
+  glace:    { nom: 'Glace',    abreviation: 'Gl', couleur: '#2F9FDC', glyphe: 'M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9' },
+  foudre:   { nom: 'Foudre',   abreviation: 'Fo', couleur: '#E8AB07', glyphe: 'M13 3L5 13h6l-1 8 8-10h-6l1-8z' },
+  vent:     { nom: 'Vent',     abreviation: 'Ve', couleur: '#38A937', glyphe: 'M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h8' },
+  terre:    { nom: 'Terre',    abreviation: 'Te', couleur: '#AA6327', glyphe: 'M3 19L9 8l4 6 3-4 5 9z' },
+  lumiere:  { nom: 'Lumière',  abreviation: 'Lu', couleur: '#F2E3B2', glyphe: 'M12 7a5 5 0 1 0 0 10a5 5 0 1 0 0-10zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4' },
+  tenebres: { nom: 'Ténèbres', abreviation: 'Té', couleur: '#722DA1', glyphe: 'M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z' },
+  neutre:   { nom: 'Neutre',   abreviation: 'Ne', couleur: '#828285', glyphe: 'M12 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16z' },
 };
 
 /** Faiblesse de chaque élément (null = aucune). */

@@ -3,10 +3,11 @@
 import './carte.css';
 import './carte-base.css';
 import { EFFETS, ELEMENTS, FAIBLESSE, FINITIONS } from '../core/regles';
+import { iconeElement } from './element';
 import { candidatsAffichage, type CandidatImage } from '../core/images';
 import { indexer } from '../core/extension';
 import { rngAGraine } from '../core/rng';
-import type { Attaque, Carte, Extension } from '../core/types';
+import type { Attaque, Carte, ElementId, Extension } from '../core/types';
 
 export interface OptionsCarte {
   /** Holo qui suit le pointeur et pivot horizontal léger (par défaut : oui). */
@@ -90,11 +91,18 @@ function illustration(carte: Carte, base: Carte | undefined, transformerSrc: (ch
   return art;
 }
 
-function attaque(a: Attaque): HTMLElement {
+/** Coût d'une attaque : autant d'icônes de l'élément que de points (le nombre est lu dans l'étiquette). */
+function cout(a: Attaque, element: ElementId, classe: string, classeIcone: string): HTMLElement {
+  const c = el('span', classe);
+  c.setAttribute('role', 'img');
+  c.setAttribute('aria-label', `Coût ${a.cout} ${ELEMENTS[element].nom}`);
+  for (let i = 0; i < Math.max(0, Math.min(3, a.cout)); i++) c.append(iconeElement(element, classeIcone, null));
+  return c;
+}
+
+function attaque(a: Attaque, element: ElementId): HTMLElement {
   const ligne = el('div', 'carte-attaque');
-  const cout = el('span', 'carte-cout');
-  cout.setAttribute('aria-label', `Coût ${a.cout}`);
-  for (let i = 0; i < Math.max(0, Math.min(3, a.cout)); i++) cout.append(el('i'));
+  const cout_ = cout(a, element, 'carte-cout', 'carte-cout-icone');
 
   const nom = el('span', 'carte-attaque-nom');
   nom.append(el('b', undefined, a.nom));
@@ -102,7 +110,7 @@ function attaque(a: Attaque): HTMLElement {
     const valeur = a.effet.valeur !== undefined ? ` ${a.effet.valeur}` : '';
     nom.append(el('small', undefined, `${EFFETS[a.effet.type].nom}${valeur}`));
   }
-  ligne.append(cout, nom, el('span', 'carte-degats', String(a.degats)));
+  ligne.append(cout_, nom, el('span', 'carte-degats', String(a.degats)));
   return ligne;
 }
 
@@ -204,15 +212,13 @@ function silhouetteBase(): HTMLElement {
   return div;
 }
 
-function attaqueBase(a: Attaque): HTMLElement {
+function attaqueBase(a: Attaque, element: ElementId): HTMLElement {
   const ligne = el('div', 'cb-attaque');
-  const cout = el('span', 'cb-cout');
-  cout.setAttribute('aria-label', `Coût ${a.cout}`);
-  for (let i = 0; i < Math.max(0, Math.min(3, a.cout)); i++) cout.append(el('i'));
+  const cout_ = cout(a, element, 'cb-cout', 'cb-cout-icone');
   const nom = el('span', 'cb-attaque-nom');
   nom.append(el('b', undefined, a.nom));
   if (a.effet) nom.append(el('small', undefined, `${EFFETS[a.effet.type].nom}${a.effet.valeur !== undefined ? ` ${a.effet.valeur}` : ''}`));
-  ligne.append(cout, nom, el('span', 'cb-degats', String(a.degats)));
+  ligne.append(cout_, nom, el('span', 'cb-degats', String(a.degats)));
   return ligne;
 }
 
@@ -247,9 +253,7 @@ function creerCarteBase(carte: Carte, extension: Extension, options: OptionsCart
   titres.append(el('span', 'cb-serie', perso.serie), el('span', 'cb-nom', perso.nom));
   const pv = el('div', 'cb-pv');
   pv.append(el('span', undefined, 'PV'), el('strong', undefined, String(perso.pv)));
-  const pastille = el('span', 'cb-element');
-  pastille.title = element.nom;
-  pastille.append(icone(element.glyphe, 0, 2.2, 'cb-element-icone', `Élément ${element.nom}`));
+  const pastille = iconeElement(perso.element, 'cb-element', `Élément ${element.nom}`);
   entete.append(titres, pv, pastille);
 
   const illu = el('div', 'cb-illu');
@@ -258,15 +262,11 @@ function creerCarteBase(carte: Carte, extension: Extension, options: OptionsCart
   if (carte.finition === 'holo' || carte.finition === 'holo-integrale') illu.append(el('div', 'carte-film cb-film-illu'));
 
   const attaques = el('div', 'cb-attaques');
-  attaques.append(attaqueBase(perso.attaques[0]), attaqueBase(perso.attaques[1]));
+  attaques.append(attaqueBase(perso.attaques[0], perso.element), attaqueBase(perso.attaques[1], perso.element));
 
   const pied = el('div', 'cb-pied');
   if (faible) {
-    const f = ELEMENTS[faible];
-    const pf = el('span', 'cb-faible');
-    pf.title = f.nom;
-    pf.style.setProperty('--faible', f.couleur);
-    pf.append(icone(f.glyphe, 0, 2.6, 'cb-faible-icone', `Faiblesse : ${f.nom}`));
+    const pf = iconeElement(faible, 'cb-faible', `Faiblesse : ${ELEMENTS[faible].nom}`);
     pied.append(el('span', undefined, 'Faiblesse'), pf);
   }
   pied.append(el('span', 'cb-espace'), el('span', 'cb-numero', numero), el('span', 'cb-symbole', info.symbole), el('span', 'cb-rang', perso.rang));
@@ -306,18 +306,18 @@ export function creerCarte(carte: Carte, extension: Extension, options: OptionsC
   const corps = el('div', 'carte-corps');
 
   const entete = el('div', 'carte-entete');
-  const pastille = el('span', 'carte-element', element.abreviation);
-  pastille.title = element.nom;
-  pastille.setAttribute('aria-label', `Élément ${element.nom}`);
+  const pastille = iconeElement(perso.element, 'carte-element', `Élément ${element.nom}`);
   entete.append(el('span', 'carte-nom', perso.nom), el('span', 'carte-pv', `PV ${perso.pv}`), pastille);
 
   const texte = el('div', 'carte-texte');
   const pied = el('div', 'carte-pied');
+  const ligneFaible = el('span', 'carte-faible', faiblesse ? 'Faiblesse' : 'Faiblesse : —');
+  if (faiblesse) ligneFaible.append(iconeElement(faiblesse, 'carte-faible-icone', `Faiblesse : ${ELEMENTS[faiblesse].nom}`));
   pied.append(
-    el('span', undefined, `Faiblesse : ${faiblesse ? ELEMENTS[faiblesse].nom : '—'}`),
+    ligneFaible,
     el('span', undefined, `${numero} ${infoFinition.symbole} · ${perso.rang}`),
   );
-  texte.append(el('span', 'carte-serie', perso.serie), attaque(perso.attaques[0]), attaque(perso.attaques[1]), pied);
+  texte.append(el('span', 'carte-serie', perso.serie), attaque(perso.attaques[0], perso.element), attaque(perso.attaques[1], perso.element), pied);
 
   corps.append(illustration(carte, base, options.transformerSrc ?? versionner), entete, texte, el('div', 'carte-film foil'));
   if (finition === 'holo-integrale') {
@@ -329,6 +329,18 @@ export function creerCarte(carte: Carte, extension: Extension, options: OptionsC
   }
   if (finition === 'immersive') corps.append(particules(carte));
   racine.append(corps);
+  // ★ à ★★★ : bande du cadre en dégradé holo (et reflet pour ★★★), dessinée par-dessus la bordure, hors de l'image.
+  if (finition === 'pleine' || finition === 'alternative' || finition === 'immersive') {
+    const bande = el('div', 'carte-bande');
+    bande.setAttribute('aria-hidden', 'true');
+    racine.append(bande);
+    if (finition === 'immersive') {
+      const reflet = el('div', 'carte-reflet');
+      reflet.setAttribute('aria-hidden', 'true');
+      reflet.append(el('div', 'carte-reflet-film'));
+      racine.append(reflet);
+    }
+  }
 
   if (options.interactive !== false) rendreInteractive(racine, corps);
   return racine;

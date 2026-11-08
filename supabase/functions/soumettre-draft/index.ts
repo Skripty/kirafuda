@@ -1,5 +1,5 @@
 // Fonction Supabase « soumettre-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : 5e9261345590dbb2
+// Empreinte des sources : 1feff281f62d09fb
 // Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/draft.ts, src/core/extension.ts, src/core/regles.ts, src/core/rng.ts, src/core/tirage.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/soumettre-draft.ts
 // @ts-nocheck
 const id$2 = "booster-lancement";
@@ -2606,7 +2606,13 @@ const cartes$1 = [
     personnage: "per-005",
     finition: "holo",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-006",
@@ -2614,7 +2620,13 @@ const cartes$1 = [
     personnage: "per-006",
     finition: "holo-integrale",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 26
+      }
+    }
   },
   {
     id: "lan-007",
@@ -2624,7 +2636,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 10
       }
@@ -2638,7 +2650,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 36
       }
@@ -2652,7 +2664,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 34
       }
@@ -2666,7 +2678,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 20
       }
@@ -2680,9 +2692,9 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
-        y: 16
+        y: 11
       }
     }
   },
@@ -2694,7 +2706,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 22
       }
@@ -2708,9 +2720,9 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
-        y: 0
+        y: 1
       }
     }
   },
@@ -2722,7 +2734,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 8
       }
@@ -2736,7 +2748,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 26
       }
@@ -2750,9 +2762,9 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
-        y: 17
+        y: 13
       }
     }
   },
@@ -2764,7 +2776,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 25
       }
@@ -2778,7 +2790,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 27
       }
@@ -2792,7 +2804,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 24
       }
@@ -2806,7 +2818,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 17
       }
@@ -2820,7 +2832,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 25
       }
@@ -2834,7 +2846,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 21
       }
@@ -2848,9 +2860,9 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
-        y: 0
+        y: 2
       }
     }
   },
@@ -2862,7 +2874,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 14
       }
@@ -2876,7 +2888,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 67
       }
@@ -2890,7 +2902,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 23
       }
@@ -2904,7 +2916,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 42
       }
@@ -2918,7 +2930,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 54
       }
@@ -2932,7 +2944,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 14
       }
@@ -2946,7 +2958,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 23
       }
@@ -2960,7 +2972,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 12
       }
@@ -2988,7 +3000,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 11
       }
@@ -3002,7 +3014,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 20
       }
@@ -3016,7 +3028,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 29
       }
@@ -3030,7 +3042,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 22
       }
@@ -3044,7 +3056,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 17
       }
@@ -3058,7 +3070,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 18
       }
@@ -3072,7 +3084,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 35
       }
@@ -3086,7 +3098,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 20
       }
@@ -3100,7 +3112,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 29
       }
@@ -3114,7 +3126,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 18
       }
@@ -3128,7 +3140,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 18
       }
@@ -3142,7 +3154,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 5
       }
@@ -3156,7 +3168,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 25
       }
@@ -3170,7 +3182,7 @@ const cartes$1 = [
     secrete: false,
     images: {
       illustration: {
-        zoom: 100,
+        zoom: 102,
         x: 50,
         y: 25
       }
@@ -3980,7 +3992,13 @@ const cartes$1 = [
     personnage: "per-008",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-105",
@@ -3988,7 +4006,13 @@ const cartes$1 = [
     personnage: "per-014",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-106",
@@ -3996,7 +4020,13 @@ const cartes$1 = [
     personnage: "per-017",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-107",
@@ -4004,7 +4034,13 @@ const cartes$1 = [
     personnage: "per-021",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-108",
@@ -4012,7 +4048,13 @@ const cartes$1 = [
     personnage: "per-022",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-109",
@@ -4020,7 +4062,13 @@ const cartes$1 = [
     personnage: "per-026",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-110",
@@ -4036,7 +4084,13 @@ const cartes$1 = [
     personnage: "per-033",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-112",
@@ -4044,7 +4098,13 @@ const cartes$1 = [
     personnage: "per-038",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-113",
@@ -4216,7 +4276,13 @@ const cartes$1 = [
     personnage: "per-006",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-127",
@@ -4224,7 +4290,13 @@ const cartes$1 = [
     personnage: "per-007",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-128",
@@ -4232,7 +4304,13 @@ const cartes$1 = [
     personnage: "per-011",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-129",
@@ -4240,7 +4318,13 @@ const cartes$1 = [
     personnage: "per-018",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-130",
@@ -4248,7 +4332,13 @@ const cartes$1 = [
     personnage: "per-025",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-131",
@@ -4256,7 +4346,13 @@ const cartes$1 = [
     personnage: "per-027",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-132",
@@ -4264,7 +4360,13 @@ const cartes$1 = [
     personnage: "per-040",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-133",
@@ -4272,7 +4374,13 @@ const cartes$1 = [
     personnage: "per-041",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-134",
@@ -4280,7 +4388,13 @@ const cartes$1 = [
     personnage: "per-049",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-135",
@@ -4312,7 +4426,13 @@ const cartes$1 = [
     personnage: "per-006",
     finition: "couronne",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-139",
@@ -4320,7 +4440,13 @@ const cartes$1 = [
     personnage: "per-007",
     finition: "couronne",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "lan-140",
@@ -4328,7 +4454,13 @@ const cartes$1 = [
     personnage: "per-027",
     finition: "couronne",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   }
 ];
 const __vite_glob_0_1 = {
@@ -4943,7 +5075,13 @@ const cartes = [
     personnage: "ren-per-001",
     finition: "holo-integrale",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 46
+      }
+    }
   },
   {
     id: "ren-002",
@@ -4951,7 +5089,13 @@ const cartes = [
     personnage: "ren-per-002",
     finition: "holo",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "ren-003",
@@ -4959,7 +5103,13 @@ const cartes = [
     personnage: "ren-per-003",
     finition: "holo",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 15
+      }
+    }
   },
   {
     id: "ren-004",
@@ -4967,7 +5117,13 @@ const cartes = [
     personnage: "ren-per-004",
     finition: "holo",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 25
+      }
+    }
   },
   {
     id: "ren-005",
@@ -4975,7 +5131,13 @@ const cartes = [
     personnage: "ren-per-005",
     finition: "holo",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 25
+      }
+    }
   },
   {
     id: "ren-006",
@@ -4983,7 +5145,13 @@ const cartes = [
     personnage: "ren-per-006",
     finition: "peu-commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 27
+      }
+    }
   },
   {
     id: "ren-007",
@@ -4991,7 +5159,13 @@ const cartes = [
     personnage: "ren-per-007",
     finition: "peu-commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "ren-008",
@@ -4999,7 +5173,13 @@ const cartes = [
     personnage: "ren-per-008",
     finition: "peu-commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 25
+      }
+    }
   },
   {
     id: "ren-009",
@@ -5007,7 +5187,13 @@ const cartes = [
     personnage: "ren-per-009",
     finition: "peu-commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 39
+      }
+    }
   },
   {
     id: "ren-010",
@@ -5015,7 +5201,13 @@ const cartes = [
     personnage: "ren-per-010",
     finition: "peu-commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 26
+      }
+    }
   },
   {
     id: "ren-011",
@@ -5023,7 +5215,13 @@ const cartes = [
     personnage: "ren-per-011",
     finition: "peu-commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 34
+      }
+    }
   },
   {
     id: "ren-012",
@@ -5031,7 +5229,13 @@ const cartes = [
     personnage: "ren-per-012",
     finition: "peu-commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 11
+      }
+    }
   },
   {
     id: "ren-013",
@@ -5039,7 +5243,13 @@ const cartes = [
     personnage: "ren-per-013",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 41
+      }
+    }
   },
   {
     id: "ren-014",
@@ -5047,7 +5257,13 @@ const cartes = [
     personnage: "ren-per-014",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 46
+      }
+    }
   },
   {
     id: "ren-015",
@@ -5055,7 +5271,13 @@ const cartes = [
     personnage: "ren-per-015",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 26
+      }
+    }
   },
   {
     id: "ren-016",
@@ -5063,7 +5285,13 @@ const cartes = [
     personnage: "ren-per-016",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 22
+      }
+    }
   },
   {
     id: "ren-017",
@@ -5071,7 +5299,13 @@ const cartes = [
     personnage: "ren-per-017",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 16
+      }
+    }
   },
   {
     id: "ren-018",
@@ -5079,7 +5313,13 @@ const cartes = [
     personnage: "ren-per-018",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 32
+      }
+    }
   },
   {
     id: "ren-019",
@@ -5087,7 +5327,13 @@ const cartes = [
     personnage: "ren-per-019",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 17
+      }
+    }
   },
   {
     id: "ren-020",
@@ -5119,7 +5365,13 @@ const cartes = [
     personnage: "ren-per-023",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 24
+      }
+    }
   },
   {
     id: "ren-024",
@@ -5135,7 +5387,13 @@ const cartes = [
     personnage: "ren-per-006",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "ren-026",
@@ -5143,7 +5401,13 @@ const cartes = [
     personnage: "ren-per-010",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "ren-027",
@@ -5167,7 +5431,13 @@ const cartes = [
     personnage: "ren-per-003",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "ren-030",
@@ -5175,7 +5445,13 @@ const cartes = [
     personnage: "ren-per-005",
     finition: "alternative",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "ren-031",
@@ -5191,7 +5467,13 @@ const cartes = [
     personnage: "ren-per-001",
     finition: "couronne",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   }
 ];
 const __vite_glob_0_2 = {
@@ -5230,15 +5512,15 @@ const liste = {
   extensions
 };
 const ELEMENTS = {
-  feu: { nom: "Feu", abreviation: "Fe", couleur: "#F06A3F", glyphe: "M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 2.5-5 .3 2 1.3 3 2.5 3.5C11.5 9 11 6 12 3z" },
-  eau: { nom: "Eau", abreviation: "Ea", couleur: "#3D8FE8", glyphe: "M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" },
-  glace: { nom: "Glace", abreviation: "Gl", couleur: "#4FBFDB", glyphe: "M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9" },
-  foudre: { nom: "Foudre", abreviation: "Fo", couleur: "#A56BEB", glyphe: "M13 3L5 13h6l-1 8 8-10h-6l1-8z" },
-  vent: { nom: "Vent", abreviation: "Ve", couleur: "#2FB98E", glyphe: "M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h8" },
-  terre: { nom: "Terre", abreviation: "Te", couleur: "#C08443", glyphe: "M3 19L9 8l4 6 3-4 5 9z" },
-  lumiere: { nom: "Lumière", abreviation: "Lu", couleur: "#E0AE22", glyphe: "M12 7a5 5 0 1 0 0 10a5 5 0 1 0 0-10zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" },
-  tenebres: { nom: "Ténèbres", abreviation: "Té", couleur: "#8B6FE0", glyphe: "M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" },
-  neutre: { nom: "Neutre", abreviation: "Ne", couleur: "#9A958A", glyphe: "M12 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16z" }
+  feu: { nom: "Feu", abreviation: "Fe", couleur: "#CE2F18", glyphe: "M12 3c1 4 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 2.5-5 .3 2 1.3 3 2.5 3.5C11.5 9 11 6 12 3z" },
+  eau: { nom: "Eau", abreviation: "Ea", couleur: "#1764DA", glyphe: "M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" },
+  glace: { nom: "Glace", abreviation: "Gl", couleur: "#2F9FDC", glyphe: "M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9" },
+  foudre: { nom: "Foudre", abreviation: "Fo", couleur: "#E8AB07", glyphe: "M13 3L5 13h6l-1 8 8-10h-6l1-8z" },
+  vent: { nom: "Vent", abreviation: "Ve", couleur: "#38A937", glyphe: "M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h8" },
+  terre: { nom: "Terre", abreviation: "Te", couleur: "#AA6327", glyphe: "M3 19L9 8l4 6 3-4 5 9z" },
+  lumiere: { nom: "Lumière", abreviation: "Lu", couleur: "#F2E3B2", glyphe: "M12 7a5 5 0 1 0 0 10a5 5 0 1 0 0-10zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" },
+  tenebres: { nom: "Ténèbres", abreviation: "Té", couleur: "#722DA1", glyphe: "M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z" },
+  neutre: { nom: "Neutre", abreviation: "Ne", couleur: "#828285", glyphe: "M12 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16z" }
 };
 const FAIBLESSE = {
   feu: "eau",

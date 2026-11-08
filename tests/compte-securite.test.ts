@@ -166,6 +166,39 @@ describe('classement du draft (tâche 24)', () => {
     }
   });
 
+  it('recadrer une image dans l’admin ne change pas l’empreinte ; modifier les PV d’un personnage, oui', async () => {
+    const { empreinteDe } = await charger(path.join(projet, 'outils', 'empreinte-fonctions.ts'));
+    const os = await charger('node:os');
+    const copie: string = fs.mkdtempSync(path.join(os.tmpdir(), 'kirafuda-empreinte-'));
+    const fichier = 'src/data/extension-lancement.json';
+    const chemin = path.join(copie, fichier);
+    fs.mkdirSync(path.dirname(chemin), { recursive: true });
+    fs.copyFileSync(path.join(projet, fichier), chemin);
+    const lire = (): any => JSON.parse(fs.readFileSync(chemin, 'utf8'));
+    const ecrire = (e: unknown): void => fs.writeFileSync(chemin, JSON.stringify(e, null, 2));
+    const avant = empreinteDe(copie, [fichier]);
+    try {
+      // Ce que fait l'admin : cadrage, zoom et position d'une illustration, nouvelle image sur une autre carte.
+      const e = lire();
+      e.cartes[0].images = { ...e.cartes[0].images, illustration: { zoom: 137, x: 12, y: 88 } };
+      e.cartes[1].images = { illustration: { zoom: 102, x: 50, y: 50 }, perso: { zoom: 100, x: 40, y: 60 } };
+      delete e.cartes[2].images;
+      ecrire(e);
+      expect(empreinteDe(copie, [fichier])).toBe(avant);
+      // Les PV d'un personnage servent au score du draft : il faut redéployer.
+      e.personnages[0].pv += 10;
+      ecrire(e);
+      expect(empreinteDe(copie, [fichier])).not.toBe(avant);
+      // La rareté d'une carte aussi (tirage des boosters du draft).
+      e.personnages[0].pv -= 10;
+      e.cartes[0].finition = e.cartes[0].finition === 'commune' ? 'peu-commune' : 'commune';
+      ecrire(e);
+      expect(empreinteDe(copie, [fichier])).not.toBe(avant);
+    } finally {
+      fs.rmSync(copie, { recursive: true, force: true });
+    }
+  });
+
   it('changer popularite.json ou une quête du jour n’oblige pas à redéployer ; changer le barème, oui', async () => {
     const { empreinteDe } = await charger(path.join(projet, 'outils', 'empreinte-fonctions.ts'));
     const os = await charger('node:os');

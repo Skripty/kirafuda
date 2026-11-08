@@ -44,8 +44,8 @@ describe('build : seulement le jeu', () => {
     expect(lire('outils', 'vite-admin.ts')).toMatch(/apply: 'serve'/);
   });
 
-  it('public/ ne contient que les images, le logo et _headers', () => {
-    expect(fs.readdirSync(path.join(projet, 'public')).sort()).toEqual(['_headers', 'cartes', 'logo']);
+  it('public/ ne contient que les images, les icônes des éléments, le logo et _headers', () => {
+    expect(fs.readdirSync(path.join(projet, 'public')).sort()).toEqual(['_headers', 'cartes', 'elements', 'logo']);
   });
 });
 

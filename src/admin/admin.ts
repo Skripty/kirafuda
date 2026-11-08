@@ -10,6 +10,7 @@ import { LIMITES_CADRAGE, TAILLE_MAX_IMAGE, nomFichierImage, planMigrationImages
 import { indexer } from '../core/extension';
 import type { Attaque, Cadrage, Calque, Carte, EffetType, ElementId, Extension, FinitionId, Personnage } from '../core/types';
 import { creerCarte, numeroCarte } from '../ui/carte';
+import { iconeElement } from '../ui/element';
 import { creerOngletPopularite } from './popularite';
 import { animationEnWebp, imageFixeEnWebp } from './webp';
 
@@ -214,7 +215,10 @@ function rendreFiche(): void {
   selElement.addEventListener('change', () => { brouillon.element = selElement.value as ElementId; marquer(); rendreFiche(); rafraichirApercu(); });
   const faiblesse = FAIBLESSE[brouillon.element];
   const ligneEl = el('div', 'adm-champ');
-  ligneEl.append(el('span', 'adm-lbl', 'Élément'), selElement, el('span', 'adm-aide', `Faiblesse : ${faiblesse ? ELEMENTS[faiblesse].nom : 'aucune'}`));
+  // Icônes de l'élément choisi et de sa faiblesse (public/elements), le nom en texte alternatif.
+  const aideFaiblesse = el('span', 'adm-aide adm-faiblesse', faiblesse ? 'Faiblesse : ' : 'Faiblesse : aucune');
+  if (faiblesse) aideFaiblesse.append(iconeElement(faiblesse, 'adm-element-icone', null), ELEMENTS[faiblesse].nom);
+  ligneEl.append(el('span', 'adm-lbl', 'Élément'), iconeElement(brouillon.element, 'adm-element-icone adm-element-choisi', ELEMENTS[brouillon.element].nom), selElement, aideFaiblesse);
   form.append(ligneEl);
 
   brouillon.attaques.forEach((a, i) => {

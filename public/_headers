@@ -19,6 +19,10 @@
 /logo/*
   Cache-Control: public, max-age=604800
 
+# Icônes des 9 éléments (adresses fixes, rarement modifiées) : une semaine.
+/elements/*
+  Cache-Control: public, max-age=604800
+
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

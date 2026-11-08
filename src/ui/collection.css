@@ -110,3 +110,18 @@
 .col-finitions { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .col .col-finition { display: flex; gap: 8px; align-items: baseline; font-size: 0.85rem; padding: 6px 12px; }
 .col .col-finition[aria-pressed='true'] { background: var(--texte); color: var(--fond); border-color: var(--texte); }
+
+/* Filtre d'élément : icônes des 9 éléments (public/elements), sur toute la largeur des filtres. */
+.col-elements { grid-column: 1 / -1; margin: 0; padding: 0; border: 0; display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px; }
+.col-elements legend { padding: 0; margin-bottom: 4px; font-size: 0.8rem; color: var(--texte-secondaire); float: left; width: 100%; }
+.col-element {
+  font: inherit; color: var(--texte); cursor: pointer;
+  min-width: 44px; height: 44px; padding: 4px;
+  display: grid; place-items: center;
+  background: var(--surface); border: 1px solid var(--bordure); border-radius: 999px;
+}
+.col-element-tous { padding: 0 14px; }
+.col-element-icone { display: block; width: 32px; height: 32px; border-radius: 50%; }
+.col-element[aria-pressed='true'] { border-color: var(--texte); box-shadow: 0 0 0 1px var(--texte); }
+.col-element:not([aria-pressed='true']) .col-element-icone { opacity: 0.85; }
+.col-element:focus-visible { outline: 2px solid var(--texte); outline-offset: 2px; }

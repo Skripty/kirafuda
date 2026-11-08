@@ -32,9 +32,23 @@
   --carte-bord-holo: #cfc6e8;
   --carte-bord-integrale: #c3c9d2;   /* cadre argenté */
   --carte-papier-integrale: #eef0f3;
-  --carte-bord-pleine: #c9c4e8;
-  --carte-bord-alternative: #9fd3f0;
-  --carte-bord-immersive: #ffb3e0;
+  /* Couleurs des 9 éléments, relevées sur leurs icônes (public/elements) ; mêmes valeurs que src/core/regles.ts. */
+  --element-feu: #CE2F18;
+  --element-eau: #1764DA;
+  --element-glace: #2F9FDC;
+  --element-foudre: #E8AB07;
+  --element-vent: #38A937;
+  --element-terre: #AA6327;
+  --element-lumiere: #F2E3B2;
+  --element-tenebres: #722DA1;
+  --element-neutre: #828285;
+  /* Bande du cadre des cartes ★, ★★ et ★★★ : holo pastel, holo plus vif, holo de Kirafuda (pleine intensité). */
+  --carte-cadre-pleine: linear-gradient(115deg, #CFE7F7, #E9D9FB, #D7F2E6, #FBE3EF, #CFE7F7);
+  --carte-cadre-alternative: linear-gradient(115deg, #9FD3F5, #C8A8F5, #A9E9C9, #F5B8D3, #9FD3F5);
+  --carte-cadre-immersive: linear-gradient(115deg, #FF5FC8, #6CCBFF, #A9F26A, #FFE27A, #FF5FC8);
+  --carte-cadre-liseret: rgba(255, 255, 255, 0.55);   /* bord extérieur du cadre */
+  --carte-cadre-trait: rgba(0, 0, 0, 0.35);           /* trait autour de l'illustration */
+  --carte-cadre-reflet: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.85) 50%, transparent 58%);
   --carte-or: #e6c25a;
   --carte-or-fond: #2a2410;
   --carte-or-panneau: #2a2410d0;
