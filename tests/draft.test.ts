@@ -10,7 +10,9 @@ import {
   equipeChoisie,
   genererDraft,
   jouerDraft,
+  marquerDraftEnvoye,
   prochaineSemaine,
+  regulariserDraft,
   puissance,
   scorer,
   semaineIso,
@@ -178,11 +180,15 @@ describe('choix, récompense et sauvegarde', () => {
     expect(equipeChoisie(d, [0, 1, 2, 3, 4], extension)).toMatch(/Monkey D. Luffy est déjà dans l’équipe/);
   });
 
-  it('jouer : score, sceaux et draft enregistrés en une seule nouvelle sauvegarde', () => {
+  const sansCompte = { participation: 2, compte: false };
+  const avecCompte = { participation: 2, compte: true };
+
+  it('jouer sans compte : score, participation et draft enregistrés en une seule nouvelle sauvegarde', () => {
     const s: Sauvegarde = { ...sauvegardeParDefaut(), sceaux: 4, collection: { 'lan-001': 1 } };
-    const r = jouerDraft(s, draft, choixValide(), extension, 2);
+    const r = jouerDraft(s, draft, choixValide(), extension, sansCompte);
     if (!r.ok) throw new Error(r.message);
-    expect(r.sceaux).toBe(2); // participation fixe (quetes.json), le score ne change pas la récompense
+    expect(r.sceaux).toBe(2); // participation (quetes.json), tout de suite, hors classement
+    expect(r.modification).toBe(false);
     expect(r.sauvegarde.sceaux).toBe(4 + r.sceaux);
     expect(r.sauvegarde.dernierDraft).toEqual({ semaine: '2026-S45', choix: choixValide(), score: r.score.total, sceaux: r.sceaux });
     expect(r.sauvegarde.collection).toEqual(s.collection); // les cartes du draft n'entrent pas dans la collection
@@ -190,11 +196,50 @@ describe('choix, récompense et sauvegarde', () => {
     expect(validerSauvegarde(r.sauvegarde).ok).toBe(true);
   });
 
-  it('une seule fois par semaine', () => {
-    const r = jouerDraft(sauvegardeParDefaut(), draft, choixValide(), extension, 2);
+  it('l’équipe peut changer pendant la semaine, sans nouvelle récompense ; la semaine suivante repart de zéro', () => {
+    const r = jouerDraft(sauvegardeParDefaut(), draft, choixValide(), extension, sansCompte);
     if (!r.ok) throw new Error(r.message);
-    expect(jouerDraft(r.sauvegarde, draft, choixValide(), extension, 2)).toMatchObject({ ok: false, raison: 'deja-joue' });
+    // Autre équipe valide : les 5 premiers personnages distincts en partant de la fin.
+    const autre = choixDe([...draft.cartes].reverse()).map((i) => draft.cartes.length - 1 - i);
+    expect(autre).not.toEqual(choixValide());
+    const m = jouerDraft(r.sauvegarde, draft, autre, extension, sansCompte);
+    if (!m.ok) throw new Error(m.message);
+    expect(m.modification).toBe(true);
+    expect(m.sceaux).toBe(0);
+    expect(m.sauvegarde.sceaux).toBe(r.sauvegarde.sceaux);
+    expect(m.sauvegarde.dernierDraft!.sceaux).toBe(2); // la participation déjà reçue reste notée (déduite au classement)
     const suivant = genererDraft('2026-S46', [{ extension, booster }], themes);
-    expect(jouerDraft(r.sauvegarde, suivant, choixDe(suivant.cartes), extension, 2).ok).toBe(true);
+    const n = jouerDraft(m.sauvegarde, suivant, choixDe(suivant.cartes), extension, sansCompte);
+    expect(n.ok && n.sceaux).toBe(2);
+  });
+
+  it('avec un compte : rien tout de suite, l’équipe attend l’accord du serveur', () => {
+    const r = jouerDraft(sauvegardeParDefaut(), draft, choixValide(), extension, avecCompte);
+    if (!r.ok) throw new Error(r.message);
+    expect(r.sceaux).toBe(0);
+    expect(r.sauvegarde.dernierDraft).toMatchObject({ sceaux: 0, envoye: false });
+    const envoye = marquerDraftEnvoye(r.sauvegarde, '2026-S45', choixValide(), 123);
+    expect(envoye.dernierDraft).toMatchObject({ envoye: true, dansClassement: true, score: 123 });
+    expect(validerSauvegarde(envoye).ok).toBe(true);
+    // Une autre équipe que celle envoyée n'est pas marquée.
+    expect(marquerDraftEnvoye(r.sauvegarde, '2026-S45', [9, 10, 11, 12, 13], 1)).toBe(r.sauvegarde);
+    expect(marquerDraftEnvoye(r.sauvegarde, '2026-S46', choixValide(), 1)).toBe(r.sauvegarde);
+    // Modifiée après l'envoi : elle reste au classement, la modification attend.
+    const m = jouerDraft(envoye, draft, choixValide(), extension, avecCompte);
+    expect(m.ok && m.sauvegarde.dernierDraft).toMatchObject({ envoye: false, dansClassement: true });
+  });
+
+  it('semaine fermée sans que l’équipe ait pu rejoindre le classement : participation sur l’appareil, une fois', () => {
+    const r = jouerDraft(sauvegardeParDefaut(), draft, choixValide(), extension, avecCompte);
+    if (!r.ok) throw new Error(r.message);
+    expect(regulariserDraft(r.sauvegarde, '2026-S45', 2).sceaux).toBe(0); // semaine encore ouverte
+    const g = regulariserDraft(r.sauvegarde, '2026-S46', 2);
+    expect(g.sceaux).toBe(2);
+    expect(g.sauvegarde.sceaux).toBe(r.sauvegarde.sceaux + 2);
+    expect(regulariserDraft(g.sauvegarde, '2026-S46', 2).sceaux).toBe(0);
+    // Au classement (récompense par le serveur) ou joué sans compte : rien à régulariser.
+    expect(regulariserDraft(marquerDraftEnvoye(r.sauvegarde, '2026-S45', choixValide(), 1), '2026-S46', 2).sceaux).toBe(0);
+    const sc = jouerDraft(sauvegardeParDefaut(), draft, choixValide(), extension, sansCompte);
+    expect(sc.ok && regulariserDraft(sc.sauvegarde, '2026-S46', 2).sceaux).toBe(0);
   });
 });

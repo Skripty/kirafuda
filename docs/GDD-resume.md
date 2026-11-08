@@ -4,7 +4,7 @@ Référence complète : le GDD « Kirafuda — GDD de la version 1 » et la « S
 
 ## Statut
 
-Projet personnel, gratuit, non commercial. Aucun paiement, aucune publicité. Version 1 locale, sans serveur.
+Projet personnel, gratuit, non commercial. Aucun paiement, aucune publicité. Le jeu est jouable sans compte, avec une sauvegarde locale. Un compte Discord, facultatif, ajoute la sauvegarde en ligne et le classement du draft (voir « Comptes et sauvegarde en ligne »).
 
 ## Cartes, rareté et cote (système TCG Pocket)
 
@@ -74,7 +74,7 @@ Chaque carte a une attaque légère (coût 1) et une forte (coût 2 ou 3), déj�
   - quêtes du jour : 3 par jour, tirées dans une réserve avec la graine du jour (les mêmes pour tous) ; les 3 faites = +1 sceau ;
   - calendrier de bienvenue, les 7 premiers jours : J1 4, J2 3, J3 3, J4 2, J5 2, J6 2, J7 4. Le tout premier booster et le booster du J7 garantissent une carte ★ (exactement ★) en 5e position ;
   - quêtes de débutant (une seule fois) : premier booster +2, 30 boosters ouverts +2, inspecter une carte +1, un échange en boutique +1, 25 cartes +1, 75 cartes +2, une série complète +2, 3 drafts joués +2 ;
-  - hebdomadaire : participation au draft +2, quête de la semaine +1 ;
+  - hebdomadaire : draft (avec un compte, classement de fin de semaine : 1er +5, 2e +4, 3e +3, puis +2 pour toute participation ; sans compte, +2 tout de suite), quête de la semaine +1 ;
   - revente de doublons.
 - Rythme visé : une dizaine de boosters le premier jour, une première semaine riche, puis 2 à 3 boosters par jour hors événement.
 - Points de booster : par extension, sans expiration. Boutique de points : chaque carte a un prix selon sa rareté (commune 35, peu-commune 70, holo 150, holo-integrale 500, pleine 400, alternative 1250, immersive 1500, couronne 2500).
@@ -90,12 +90,22 @@ Chaque carte a une attaque légère (coût 1) et une forte (coût 2 ou 3), déj�
 - Cote d'un exemplaire = popularité × multiplicateur de rareté. Flèche de tendance par rapport à la semaine précédente.
 - Valeur totale de la collection et « plus fortes hausses de la semaine » à l'accueil.
 
-## Draft hebdomadaire (solo en version 1)
+## Draft hebdomadaire et classement
 
-- Une graine par semaine : tout le monde ouvre les mêmes 3 boosters de draft (15 cartes) et en garde 5.
-- Score déterministe : puissance (PV + dégâts), respect du thème de la semaine, synergies (même série, éléments complémentaires, pas de faiblesse partagée), défi (adversaire d'un élément donné).
-- Détail des points affiché. Récompense en sceaux.
+- Une graine par semaine : tout le monde ouvre les mêmes 3 boosters de draft (15 cartes) et en garde 5. Les cartes du draft n'entrent pas dans la collection.
+- Score déterministe : puissance (PV + dégâts), respect du thème de la semaine, synergies (même série, éléments complémentaires, pas de faiblesse partagée), défi (adversaire d'un élément donné). Détail des points affiché.
+- Semaine du lundi 00:00 au dimanche 23:59, heure de Paris. L'équipe peut être modifiée jusqu'à la fermeture ; une modification ne donne pas de nouvelle récompense.
+- **Avec un compte** : classement hebdomadaire en ligne (rang, pseudo, score, cartes ; semaines passées consultables). Le serveur recalcule les 15 cartes depuis la graine, vérifie les 5 choisies et recalcule le score avec le code du jeu. À égalité, la première équipe envoyée passe devant.
+- Récompenses de fin de semaine (`quetes.json`), réclamées une seule fois d'après le classement figé : 1er +5 sceaux, 2e +4, 3e +3, puis +2 pour toute participation.
+- **Sans compte** : draft jouable, hors classement, +2 sceaux de participation tout de suite (une fois par semaine), avec une invitation à se connecter. Ces 2 sceaux sont déduits de la récompense de fin de semaine si le joueur rejoint le classement la même semaine. Une équipe qui n'a pas pu être envoyée avant la fermeture (réseau absent) reçoit la participation sur l'appareil.
+
+## Comptes et sauvegarde en ligne
+
+- Compte facultatif, connexion avec Discord (Supabase). Pseudo unique choisi au premier login (3 à 20 caractères).
+- La sauvegarde locale reste la référence pendant la partie. Elle est envoyée en ligne après chaque opération (au plus toutes les 5 secondes) et au départ ; hors ligne, le jeu continue et envoie au retour du réseau.
+- À la connexion : si une seule sauvegarde existe (locale ou en ligne), on la garde ; si les deux existent et diffèrent, le joueur choisit (date, cartes, boosters de chacune).
+- Seule la clé publique est dans le jeu ; les règles d'accès de la base (Row Level Security) protègent les données. Détails : `docs/SUPABASE.md`.
 
 ## Hors version 1
 
-Combat, serveur et comptes, classements en ligne, Wonder Pick, échanges, ouverture ×10, son.
+Combat, Wonder Pick, échanges, ouverture ×10, son.

@@ -91,11 +91,11 @@ function simulerJoueur(profil: Profil, graine: number): Resultat {
     const evenements = (e: Evenement[]): void => { s = appliquerEvenements(s, e, ctx); };
     s = appliquerConnexion(s, ctx).sauvegarde;
 
-    // Draft : participation, une fois par semaine (récompense fixe de quetes.json).
+    // Draft : participation, une fois par semaine (quetes.json ; hors podium du classement).
     const semaine = lundiLocal(maintenant);
     if (semaineDraft !== semaine && (assidu || rng.entier(2) === 0)) {
       semaineDraft = semaine;
-      s = { ...s, sceaux: s.sceaux + config.hebdomadaire.participationDraft.sceaux };
+      s = { ...s, sceaux: s.sceaux + config.hebdomadaire.recompensesDraft.participation };
       evenements([{ type: 'draft-joue' }]);
     }
 

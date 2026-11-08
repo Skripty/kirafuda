@@ -10,7 +10,11 @@ import {
 } from './core/catalogue';
 import { CLE_SAUVEGARDE, chargerSauvegarde, enregistrerSauvegarde, validerSauvegarde, type ContexteValidation, type Stockage } from './core/sauvegarde';
 import { CLE_MODIFIEE_LE, creerCompte, type Compte } from './en-ligne/compte';
-import { configSupabase, creerServeurSupabase, serveurDiffere } from './en-ligne/supabase';
+import { classementDiffere, configSupabase, creerServeurSupabase, serveurDiffere } from './en-ligne/supabase';
+import { creerDraftEnLigne, type DraftEnLigne, type ServeurClassement } from './en-ligne/classement';
+import { creerClassement } from './ui/classement';
+import { semaineDraft } from './core/classement';
+import { indexer } from './core/extension';
 import { installerDialoguesCompte } from './ui/compte';
 import {
   appliquerConnexion, appliquerEvenements, appliquerLancements, evenementsOuverture, reclamer, validerConfigQuetes, vueLancements, vueQuetes,
@@ -27,7 +31,7 @@ import { creerCollection } from './ui/collection';
 import { creerBoutique } from './ui/boutique';
 import { creerDraft } from './ui/draft';
 import { creerEcranQuetes } from './ui/quetes';
-import { lundiSemaineIso, type Theme } from './core/draft';
+import { lundiSemaineIso, regulariserDraft, type Theme } from './core/draft';
 import { lireFichierPopularite, versPopularite, type BasePopularite } from './core/popularite';
 import { lancerOuverture } from './ui/ouverture/scene';
 import { marquerVue, ouvertureNonVue } from './core/revelation';
@@ -43,6 +47,14 @@ const configQuetes = quetesJson as unknown as ConfigQuetes;
 const app = document.querySelector<HTMLDivElement>('#app')!;
 /** Cartes du draft d'une semaine : vagues sorties à son lundi (le draft ne change pas en cours de semaine). */
 const sourcesDraft = (semaine: string): ExtensionSortie[] => disponiblesPourDraft(catalogue, lundiSemaineIso(semaine));
+
+/** Toutes les cartes du jeu (classement : équipes des autres joueurs, semaines passées). */
+const indexToutes = toutesLesExtensions(catalogue).map((extension) => ({ extension, index: indexer(extension) }));
+const carteDe = (id: string) => {
+  for (const { extension, index } of indexToutes) { const carte = index.carte(id); if (carte) return { carte, extension }; }
+  return null;
+};
+const recompensesDraft = configQuetes.hebdomadaire.recompensesDraft;
 
 /** Lancement à l'heure actuelle : les cartes de ses vagues sorties (une vague rejoint le booster à sa date « disponibleLe »). */
 const sorties = (): ExtensionSortie[] => disponibles(catalogue, new Date());
@@ -66,6 +78,9 @@ function demarrer(): void {
   const navigateur = stockageNavigateur();
   /** Compte en ligne (null sans configuration Supabase : le jeu reste 100 % local). */
   let compte: Compte | null = null;
+  /** Classement du draft (null sans configuration Supabase) et envoi de l'équipe. */
+  let serveurClassement: ServeurClassement | null = null;
+  let draftEnLigne: DraftEnLigne | null = null;
   /**
    * Stockage du jeu : chaque écriture de la sauvegarde qui la change est datée et signalée au compte,
    * qui l'envoie en ligne (envois regroupés). La sauvegarde locale reste la référence.
@@ -127,9 +142,12 @@ function demarrer(): void {
       if (c.boosterGaranti) morceaux.push('Ton prochain booster contient une carte ★ ou plus.');
     }
     for (const g of l.gains) morceaux.push(`Sortie de la vague ${g.nom}, jour ${g.jour} : +${sceauxTexte(g.sceaux)}.`);
-    if (!c.nouvelleJournee && l.gains.length === 0 && c.sauvegarde.quetes === sauvegarde.quetes) return false;
+    // Semaine du draft fermée sans que l'équipe ait pu rejoindre le classement : participation sur l'appareil.
+    const d = regulariserDraft(l.sauvegarde, semaineDraft(maintenant), recompensesDraft.participation);
+    if (d.sceaux > 0) morceaux.push(`Draft de la semaine ${l.sauvegarde.dernierDraft!.semaine} : ton équipe n’a pas pu rejoindre le classement, +${sceauxTexte(d.sceaux)} de participation.`);
+    if (!c.nouvelleJournee && l.gains.length === 0 && d.sceaux === 0 && c.sauvegarde.quetes === sauvegarde.quetes) return false;
     // Nouvelle période (jour ou semaine) sans gain : l'état est gardé à jour, sans annonce.
-    if (!enregistrer(l.sauvegarde)) return false;
+    if (!enregistrer(d.sauvegarde)) return false;
     if (morceaux.length === 0) return false;
     annonce = morceaux.join(' ');
     return true;
@@ -180,7 +198,10 @@ function demarrer(): void {
       annonce = null;
     } else if (ecran === 'draft') {
       app.replaceChildren(creerDraft({ sauvegarde, sources: sourcesDraft, themes, maintenant: new Date(), enregistrer,
-        sceauxParticipation: configQuetes.hebdomadaire.participationDraft.sceaux }));
+        recompenses: recompensesDraft, compte, enLigne: draftEnLigne }));
+    } else if (ecran === 'classement') {
+      app.replaceChildren(creerClassement({ serveur: serveurClassement, compte, semaine: route.split('/')[1] ?? null, maintenant: new Date(),
+        carteDe, recompenses: recompensesDraft }));
     } else if (ecran === 'boutique') {
       app.replaceChildren(creerBoutique({ sauvegarde, extension: courante.extension, popularite: pop, enregistrer }));
     } else if (ecran === 'collection') {
@@ -242,8 +263,9 @@ function demarrer(): void {
   if (config) {
     /** Vrai pendant l'envoi fait au départ de la page (requête « keepalive »). */
     const depart = { enCours: false };
+    const supabase = creerServeurSupabase(config, depart);
     const c = creerCompte({
-      serveur: serveurDiffere(creerServeurSupabase(config, depart)),
+      serveur: serveurDiffere(supabase),
       stockage: navigateur,
       horloge: { maintenant: () => Date.now(), programmer: (f, ms) => setTimeout(f, ms), annuler: (id) => clearTimeout(id as number) },
       lireLocale: () => sauvegarde,
@@ -261,13 +283,30 @@ function demarrer(): void {
       enLigne: () => navigator.onLine,
     });
     compte = c;
+    serveurClassement = classementDiffere(supabase);
+    const enLigne = creerDraftEnLigne({ serveur: serveurClassement, compte: c, lire: () => sauvegarde, enregistrer: (s) => enregistrer(s) });
+    draftEnLigne = enLigne;
+    // À chaque connexion : l'équipe de la semaine part au classement, et les récompenses des semaines fermées arrivent.
+    let statut: string | null = null;
+    c.abonner((e) => {
+      if (e.statut === statut) return;
+      statut = e.statut;
+      if (e.statut !== 'connecte') return;
+      void enLigne.envoyer();
+      void enLigne.reclamer().then((m) => {
+        if (!m) return;
+        annonce = m;
+        const ecran = location.hash.replace(/^#\/?/, '').split('/')[0];
+        if (ecran === '' || ecran === 'quetes') afficher();
+      });
+    });
     const partir = (): void => {
       depart.enCours = true;
       void c.vider().finally(() => { depart.enCours = false; });
     };
     document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') partir(); });
     window.addEventListener('pagehide', partir);
-    window.addEventListener('online', () => c.reseauRetabli());
+    window.addEventListener('online', () => { c.reseauRetabli(); void enLigne.envoyer(); });
     installerDialoguesCompte(c);
     void c.demarrer();
   }

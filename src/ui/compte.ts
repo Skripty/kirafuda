@@ -19,7 +19,7 @@ function bouton(texte: string, classe: string, action: () => void): HTMLButtonEl
 }
 
 /** Abonne un élément à l'état du compte ; l'abonnement s'arrête quand l'élément a quitté la page. */
-function lier(compte: Compte, racine: HTMLElement, rendre: (e: EtatCompte) => void): void {
+export function lier(compte: Compte, racine: HTMLElement, rendre: (e: EtatCompte) => void): void {
   rendre(compte.etat());
   let vu = false;
   const fin = compte.abonner((e) => {

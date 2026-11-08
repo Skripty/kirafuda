@@ -4,6 +4,7 @@
 // La bibliothèque n'est chargée (import dynamique) que si le jeu est configuré pour les comptes.
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { ErreurReseau, type LigneSauvegarde, type Serveur, type Utilisateur } from './serveur';
+import type { LigneClassement, RecompenseClassement, ServeurClassement } from './classement';
 
 export interface ConfigSupabase { url: string; cle: string }
 
@@ -46,7 +47,7 @@ function erreurDe(e: { message?: string; code?: string } | null, quoi: string): 
 /** Paramètres de retour de Discord à retirer de l'adresse une fois la connexion finalisée. */
 const PARAMETRES_RETOUR = ['code', 'error', 'error_code', 'error_description', 'state'];
 
-export async function creerServeurSupabase(config: ConfigSupabase, depart: { enCours: boolean }): Promise<Serveur> {
+export async function creerServeurSupabase(config: ConfigSupabase, depart: { enCours: boolean }): Promise<Serveur & ServeurClassement> {
   const { createClient } = await import('@supabase/supabase-js');
   const client: SupabaseClient = createClient(config.url, config.cle, {
     auth: { flowType: 'pkce', detectSessionInUrl: true, persistSession: true, autoRefreshToken: true, storageKey: 'kirafuda:session' },
@@ -124,7 +125,52 @@ export async function creerServeurSupabase(config: ConfigSupabase, depart: { enC
       const lignes = data as { mis_a_jour_le: string }[];
       return lignes.length === 0 ? 'conflit' : lignes[0]!.mis_a_jour_le;
     },
+
+    // ---------- Classement du draft (tâche 24) ----------
+    async lireClassement(semaine, limite) {
+      const colonnes = 'rang, pseudo, score, cartes';
+      const { data, error, count } = await client.from('classement_draft').select(colonnes, { count: 'exact' })
+        .eq('semaine', semaine).order('rang').limit(Math.max(1, limite));
+      if (error) throw erreurDe(error, 'Lecture du classement');
+      const lignes = (data ?? []) as LigneClassement[];
+      const id = (await client.auth.getSession()).data.session?.user.id;
+      let moi: LigneClassement | null = null;
+      if (id) {
+        const r = await client.from('classement_draft').select(colonnes).eq('semaine', semaine).eq('utilisateur', id).maybeSingle();
+        if (r.error) throw erreurDe(r.error, 'Lecture du classement');
+        moi = (r.data as LigneClassement | null) ?? null;
+      }
+      return { semaine, lignes: limite > 0 ? lignes : [], participants: count ?? lignes.length, moi };
+    },
+    async soumettreDraft(semaine, choix, dejaRecu) {
+      const r = await appelerFonction('soumettre-draft', { semaine, choix, dejaRecu });
+      if (r.ok === true) {
+        return { ok: true, score: r.score as number, rang: (r.rang as number | null) ?? null, participants: (r.participants as number | null) ?? null };
+      }
+      return { ok: false, code: String(r.code ?? 'erreur'), message: String(r.message ?? 'Équipe refusée par le serveur.') };
+    },
+    async reclamerRecompenses() {
+      const r = await appelerFonction('reclamer-draft', {});
+      if (r.ok !== true) throw new Error(String(r.message ?? 'Récompenses indisponibles.'));
+      return r.recompenses as RecompenseClassement[];
+    },
   };
+
+  /**
+   * Appelle une fonction serveur (supabase/functions) avec la session du joueur. Une réponse d'erreur (4xx) est
+   * renvoyée telle quelle ({ ok: false, code, message }) ; une coupure réseau lève ErreurReseau.
+   */
+  async function appelerFonction(nom: string, corps: object): Promise<Record<string, unknown>> {
+    const { data, error } = await client.functions.invoke(nom, { body: corps });
+    if (!error) return data as Record<string, unknown>;
+    const reponse = (error as { context?: unknown }).context;
+    if (reponse instanceof Response) {
+      try { return (await reponse.json()) as Record<string, unknown>; } catch { /* corps illisible */ }
+      if (reponse.status === 404) throw new Error(`Fonction « ${nom} » introuvable : elle n’est pas encore déployée.`);
+      throw new Error(`${nom} : erreur ${reponse.status}`);
+    }
+    throw new ErreurReseau(`${nom} : réseau indisponible`);
+  }
 }
 
 /** Serveur utilisable tout de suite, dont la bibliothèque Supabase se charge en arrière-plan. */
@@ -139,5 +185,14 @@ export function serveurDiffere(p: Promise<Serveur>): Serveur {
     lireSauvegarde: async (id) => (await p).lireSauvegarde(id),
     creerSauvegarde: async (id, d, v) => (await p).creerSauvegarde(id, d, v),
     remplacerSauvegarde: async (id, d, v, si) => (await p).remplacerSauvegarde(id, d, v, si),
+  };
+}
+
+/** Classement utilisable tout de suite, dont la bibliothèque Supabase se charge en arrière-plan. */
+export function classementDiffere(p: Promise<ServeurClassement>): ServeurClassement {
+  return {
+    lireClassement: async (semaine, limite) => (await p).lireClassement(semaine, limite),
+    soumettreDraft: async (semaine, choix, dejaRecu) => (await p).soumettreDraft(semaine, choix, dejaRecu),
+    reclamerRecompenses: async () => (await p).reclamerRecompenses(),
   };
 }

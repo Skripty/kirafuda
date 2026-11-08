@@ -114,3 +114,50 @@ describe('base de données (supabase/migrations)', () => {
     expect(s).not.toMatch(/on public\.profils for delete/);
   });
 });
+
+describe('classement du draft (tâche 24)', () => {
+  const migration = (): string => fs.readFileSync(path.join(projet, 'supabase', 'migrations', '20261108000000_classement_draft.sql'), 'utf8');
+
+  it('drafts : lecture par tous (pseudo, score, cartes), aucune écriture par les joueurs', () => {
+    const s = migration();
+    expect(s).toMatch(/create table public\.drafts \(\s*utilisateur uuid not null references public\.profils/);
+    expect(s).toMatch(/primary key \(utilisateur, semaine\)/);
+    expect(s).toMatch(/cardinality\(cartes\) = 5/);
+    expect(s).toMatch(/alter table public\.drafts enable row level security/);
+    expect(s).toMatch(/on public\.drafts for select\s+to anon, authenticated\s+using \(true\)/);
+    expect(s).not.toMatch(/on public\.drafts for (insert|update|delete|all)/);
+    expect(s).toMatch(/revoke all on public\.drafts from anon, authenticated/);
+    expect(s).toMatch(/grant select \([^)]*\bcartes\b[^)]*\bscore\b[^)]*\) on public\.drafts to anon, authenticated/);
+    expect(s).not.toMatch(/grant (insert|update|delete)[^;]*on public\.drafts/);
+    // La vue du classement garde les droits du lecteur et donne le pseudo.
+    expect(s).toMatch(/create view public\.classement_draft\s+with \(security_invoker = true\)/);
+    expect(s).toMatch(/p\.pseudo/);
+  });
+
+  it('récompenses : chacun lit les siennes, écriture par la fonction serveur seulement', () => {
+    const s = migration();
+    expect(s).toMatch(/alter table public\.recompenses_draft enable row level security/);
+    expect(s).toMatch(/on public\.recompenses_draft for select\s+to authenticated\s+using \(\(select auth\.uid\(\)\) = utilisateur\)/);
+    expect(s).not.toMatch(/on public\.recompenses_draft for (insert|update|delete|all)/);
+    expect(s).toMatch(/revoke all on public\.recompenses_draft from anon, authenticated/);
+  });
+
+  it('les fonctions serveur lisent la clé service_role dans leur environnement, jamais dans le dépôt', () => {
+    const dossier = path.join(projet, 'supabase', 'fonctions');
+    for (const n of fs.readdirSync(dossier) as string[]) {
+      const t: string = fs.readFileSync(path.join(dossier, n), 'utf8');
+      expect(t, n).not.toMatch(/sb_secret_[A-Za-z0-9]|eyJhbGciOi[A-Za-z0-9_-]{20,}/);
+    }
+    expect(fs.readFileSync(path.join(dossier, 'contexte.ts'), 'utf8')).toMatch(/Deno\.env\.get\('SUPABASE_SERVICE_ROLE_KEY'\)/);
+  });
+
+  it('les fichiers déployés (supabase/functions) sont regénérés depuis src/core : npm run fonctions', async () => {
+    const { empreinteFonctions, enTete, FONCTIONS } = await charger(path.join(projet, 'outils', 'empreinte-fonctions.ts'));
+    const empreinte = empreinteFonctions(projet);
+    for (const nom of FONCTIONS as string[]) {
+      const fichier = path.join(projet, 'supabase', 'functions', nom, 'index.ts');
+      expect(fs.existsSync(fichier), `${nom} : lance npm run fonctions`).toBe(true);
+      expect((fs.readFileSync(fichier, 'utf8') as string).startsWith(enTete(nom, empreinte)), `${nom} n'est plus à jour : lance npm run fonctions, puis redéploie`).toBe(true);
+    }
+  });
+});

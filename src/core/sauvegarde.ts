@@ -321,6 +321,12 @@ function lire(d: Record<string, unknown>, contexte: ContexteValidation): { sauve
       erreurs.push('Dernier draft : semaine, 5 choix distincts de 0 à 14, score et sceaux entiers attendus (ou null).');
     } else {
       dernierDraft = { semaine: dj.semaine, choix: [...(dj.choix as number[])], score: dj.score, sceaux: dj.sceaux as number };
+      // Classement en ligne (tâche 24) : champs facultatifs, sans changement de version.
+      for (const champ of ['envoye', 'dansClassement'] as const) {
+        if (dj[champ] === undefined) continue;
+        if (typeof dj[champ] !== 'boolean') erreurs.push(`Dernier draft : « ${champ} » doit être vrai ou faux.`);
+        else dernierDraft[champ] = dj[champ];
+      }
     }
   }
 

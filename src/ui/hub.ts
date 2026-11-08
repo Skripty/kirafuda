@@ -8,7 +8,8 @@ import { ELEMENTS, PLAFOND_SCEAUX } from '../core/regles';
 import { formaterCote, formaterTendance, plusFortesHausses, valeurCollection } from '../core/cote';
 import { completion, completionParRarete, entreesCollection } from '../core/collection';
 import { delaiAvantRecompense, formaterDelai, prochaineRecompense, progressionJournee } from '../core/economie';
-import { genererDraft, prochaineSemaine, semaineIso, type SourcesDraft, type Theme } from '../core/draft';
+import { genererDraft, type SourcesDraft, type Theme } from '../core/draft';
+import { semaineDraft } from '../core/classement';
 import { soldePoints } from '../core/boutique';
 import { indexer } from '../core/extension';
 import { styleAccent } from './booster';
@@ -58,6 +59,7 @@ const ICONES = {
   draft: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>',
   plus: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
   quetes: '<path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/>',
+  classement: '<path d="M3 20h18M5 20v-6h4v6M10 20V8h4v12M15 20v-9h4v9"/>',
   historique: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
 };
 
@@ -134,7 +136,7 @@ export function creerHub(o: OptionsHub): HTMLElement {
   nav.setAttribute('aria-label', 'Navigation principale');
   const accueil = lien('#/', '', 'Accueil');
   accueil.setAttribute('aria-current', 'page');
-  nav.append(accueil, lien(`#/collection`, '', 'Collection'), lien(`#/boutique`, '', 'Boutique'), lien('#/draft', '', 'Draft'), lien('#/quetes', '', o.quetes.aReclamer > 0 ? `Quêtes (${o.quetes.aReclamer})` : 'Quêtes'), lien('#/historique', '', 'Historique'));
+  nav.append(accueil, lien(`#/collection`, '', 'Collection'), lien(`#/boutique`, '', 'Boutique'), lien('#/draft', '', 'Draft'), lien('#/classement', '', 'Classement'), lien('#/quetes', '', o.quetes.aReclamer > 0 ? `Quêtes (${o.quetes.aReclamer})` : 'Quêtes'), lien('#/historique', '', 'Historique'));
   const soldes = el('div', 'acc-soldes');
   const puceSceaux = el('div', 'acc-puce');
   puceSceaux.append(icone('sceau'), el('strong', undefined, String(s.sceaux)), el('span', 'bureau-seul', `/ ${PLAFOND_SCEAUX} sceaux`), el('span', 'mobile-seul', s.sceaux > 1 ? 'sceaux' : 'sceau'));
@@ -223,16 +225,17 @@ export function creerHub(o: OptionsHub): HTMLElement {
     ? `Ton stock est plein (${PLAFOND_SCEAUX} sceaux ou plus) : la prochaine récompense n’ajoutera rien.`
     : `Stock maximum : ${PLAFOND_SCEAUX} sceaux.`));
 
-  const semaine = semaineIso(maintenant);
+  const semaine = semaineDraft(maintenant);
   const draft = genererDraft(semaine, o.sourcesDraft, o.themes);
-  const finSemaine = new Date(prochaineSemaine(maintenant).getTime() - 1).toLocaleDateString('fr-FR', { weekday: 'long', timeZone: 'UTC' });
   const pDraft = panneau('', 'Draft de la semaine', 'acc-t-draft');
-  pDraft.querySelector('h2')!.after(el('span', 'acc-etiquette', `jusqu’à ${finSemaine}`));
+  pDraft.querySelector('h2')!.after(el('span', 'acc-etiquette', 'jusqu’à dimanche 23 h 59'));
   const joue = s.dernierDraft?.semaine === semaine ? s.dernierDraft : null;
+  const etatJoue = !joue ? '' : joue.dansClassement ? ' Au classement.' : joue.envoye === false ? ' Envoi au classement en attente.' : ' Hors classement.';
   pDraft.append(
     el('p', 'acc-doux', `Thème : ${draft.theme.nom}`),
-    ...(joue ? [el('p', 'acc-fin', `Joué cette semaine : ${joue.score} points, +${sceaux(joue.sceaux)}.`)] : []),
-    lien('#/draft', 'acc-bouton-secondaire', joue ? 'Voir le résultat' : 'Participer'),
+    ...(joue ? [el('p', 'acc-fin', `Joué cette semaine : ${joue.score} points.${etatJoue}`)] : []),
+    lien('#/draft', 'acc-bouton-secondaire', joue ? 'Voir ou modifier' : 'Participer'),
+    ...(o.compte ? [lien('#/classement', 'acc-lien-discret', 'Classement')] : []),
   );
   const calendrier = creerCalendrier(o.quetes);
   gauche.append(creerBlocQuetesDuJour(o.quetes, o.onReclamer), ...(calendrier ? [calendrier] : []), pCollection, pRecompense, pDraft);
@@ -405,6 +408,7 @@ export function creerHub(o: OptionsHub): HTMLElement {
   fermerMenu.addEventListener('click', () => menuPlus.close());
   menuPlus.append(
     lien('#/quetes', 'acc-menu-ligne', icone('quetes', 20), 'Quêtes'),
+    lien('#/classement', 'acc-menu-ligne', icone('classement', 20), 'Classement du draft'),
     lien('#/historique', 'acc-menu-ligne', icone('historique', 20), 'Historique'),
     lien(`#/probabilites`, 'acc-menu-ligne', icone('probabilites', 20), 'Probabilités'),
     parametresMobile,

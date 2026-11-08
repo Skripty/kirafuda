@@ -8,6 +8,7 @@ import { indexer } from './extension';
 import { joursDepuisSortie } from './catalogue';
 import { validerTablePoids } from './validation';
 import type { ElementId, EtatQuetes, Extension, FinitionId, Ouverture, Sauvegarde, TablePoids } from './types';
+import { validerRecompensesDraft, type RecompensesDraft } from './classement';
 
 // ---------- Configuration (quetes.json) ----------
 
@@ -57,7 +58,7 @@ export interface ConfigQuetes {
   tableGarantie: { finitions: TablePoids<FinitionId> };
   calendrierBienvenue: { jours: { jour: number; sceaux: number; boosterGaranti?: boolean }[] };
   quetesDebutant: DefQueteDebutant[];
-  hebdomadaire: { participationDraft: { sceaux: number }; queteSemaine: DefQuete & { sceaux: number } };
+  hebdomadaire: { recompensesDraft: RecompensesDraft; queteSemaine: DefQuete & { sceaux: number } };
   /** Calendrier de lancement d'une extension : sceaux des 7 jours calendaires qui suivent sa sortie. */
   calendrierLancementExtension: { jours: number[] };
 }
@@ -117,7 +118,7 @@ export function validerConfigQuetes(c: ConfigQuetes): string[] {
   if (!Array.isArray(lancement) || lancement.length !== 7 || !lancement.every((n) => entier(n, 0))) {
     e.push('Calendrier de lancement d’extension : 7 nombres de sceaux entiers attendus.');
   }
-  if (!entier(c.hebdomadaire?.participationDraft?.sceaux, 0)) e.push('Hebdomadaire : sceaux de participation au draft entiers attendus.');
+  e.push(...validerRecompensesDraft(c.hebdomadaire?.recompensesDraft));
   if (c.hebdomadaire?.queteSemaine) {
     verifierQuete(c.hebdomadaire.queteSemaine, 'Quête de la semaine', false);
     if (!entier(c.hebdomadaire.queteSemaine.sceaux, 0)) e.push('Quête de la semaine : sceaux entiers attendus.');

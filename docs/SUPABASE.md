@@ -162,3 +162,53 @@ Ce que créent les tables :
 4. Sur le téléphone (site en ligne), connecte-toi avec le même compte Discord : ta collection est là.
 
 Si Supabase affiche `Unsupported provider: provider is not enabled`, l'étape 4 n'est pas enregistrée : Discord doit être activé (interrupteur *Enable*) avec le Client ID et le Client Secret, puis **Save**.
+
+---
+
+## 10. Classement du draft (tâche 24) : tables et fonctions serveur
+
+Le classement est vérifié par le serveur : le jeu n'envoie que la semaine et les 5 cartes choisies. Deux **fonctions Supabase** (Edge Functions) recalculent le draft de la semaine et le score avec le code du jeu (`src/core`) :
+
+| Fonction | Rôle |
+| --- | --- |
+| `soumettre-draft` | Vérifie que les 5 cartes font partie des 15 de la semaine et sont différentes, recalcule le score, enregistre l'équipe. Refuse après le dimanche 23 h 59 (heure de Paris). |
+| `reclamer-draft` | Après la fermeture de la semaine, lit le classement figé et donne les récompenses (1er +5, 2e +4, 3e +3, puis +2), une seule fois. |
+
+Leurs sources sont dans `supabase/fonctions/` ; le fichier déployé de chacune, `supabase/functions/<nom>/index.ts`, est **généré** par `npm run fonctions` (code du jeu et données regroupés en un seul fichier).
+
+### 10.1 Créer les tables
+
+SQL Editor → New query → colle tout `supabase/migrations/20261108000000_classement_draft.sql` → **Run** (« Success. No rows returned »).
+Elle crée la table `drafts` (lisible par tous, aucune écriture par les joueurs), la vue `classement_draft` (rang, pseudo, score, cartes) et la table `recompenses_draft`.
+
+### 10.2 Déployer les deux fonctions
+
+**Avec la ligne de commande (recommandé).** Rien à installer : `npx` télécharge l'outil Supabase.
+
+```sh
+npx supabase login
+npx supabase functions deploy soumettre-draft --project-ref <ref> --no-verify-jwt --use-api
+npx supabase functions deploy reclamer-draft --project-ref <ref> --no-verify-jwt --use-api
+```
+
+`--no-verify-jwt` : chaque fonction vérifie elle-même le joueur connecté (auprès de Supabase Auth), ce qui marche avec tous les types de clés du projet.
+
+**Ou depuis le tableau de bord** : Edge Functions → *Deploy a new function* → *Via Editor* → nom `soumettre-draft` → remplace tout le code par le contenu de `supabase/functions/soumettre-draft/index.ts` → *Deploy*. Puis, dans les réglages de la fonction, désactive *Enforce JWT verification* (*Verify JWT*). Même chose pour `reclamer-draft`.
+
+Aucune clé à fournir : Supabase donne lui-même à ses fonctions `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` (la clé secrète reste chez Supabase, jamais dans le jeu ni dans le dépôt).
+
+### 10.3 Après une modification du jeu
+
+Le serveur doit calculer exactement comme le jeu. Après un changement dans `src/core` ou `src/data` (barème du draft, thèmes, extensions, récompenses de `quetes.json`) :
+
+1. `npm run fonctions` (régénère les deux fichiers ; `npm test` échoue tant que ce n'est pas fait) ;
+2. redéploie les deux fonctions (10.2) en même temps que le site (`git push`).
+
+### 10.4 Vérifier
+
+1. Connecté, joue le draft (`#/draft`) et valide ton équipe : « Au classement : 1er sur 1, … points ».
+2. Supabase → Table Editor → `drafts` : une ligne avec ta semaine, tes 5 cartes et le score.
+3. `#/classement` : ta ligne est mise en avant ; « Équipe » montre les 5 cartes.
+4. Le lundi suivant, à la première ouverture du jeu connecté : « Classement du draft — semaine …, 1er : +5 sceaux » (une ligne apparaît dans `recompenses_draft`).
+
+En cas de problème : Edge Functions → la fonction → *Logs*. « Fonction introuvable » dans le jeu = la fonction n'est pas déployée ; une erreur `401` dans les journaux de la fonction pour les appels REST = la clé `service_role` historique est désactivée dans *API Keys* (réactive les clés « Legacy »).

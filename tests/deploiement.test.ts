@@ -36,7 +36,7 @@ describe('build : seulement le jeu', () => {
   it('le jeu (src/main.ts) n’importe ni l’admin, ni le plugin d’admin, ni docs/', () => {
     const graphe = [...grapheImports('src/main.ts')];
     expect(graphe.length).toBeGreaterThan(20);
-    expect(graphe.filter((f) => /^(src\/admin|outils|docs|sauvegardes-admin|scripts)\//.test(f))).toEqual([]);
+    expect(graphe.filter((f) => /^(src\/admin|outils|docs|sauvegardes-admin|scripts|supabase)\//.test(f))).toEqual([]);
   });
 
   it('une seule entrée (index.html) ; le plugin d’admin ne tourne qu’avec npm run dev', () => {

@@ -47,7 +47,11 @@
   ],
   "hebdomadaire": {
     "_note": "Semaine du lundi au dimanche (heure locale).",
-    "participationDraft": { "sceaux": 2 },
+    "recompensesDraft": {
+      "_note": "Classement du draft (tâche 24), réclamé une fois après la fermeture de la semaine (dimanche 23 h 59, heure de Paris) : podium = sceaux du 1er, du 2e, du 3e ; participation = tous les autres. Sans compte : participation reçue tout de suite, hors classement.",
+      "podium": [5, 4, 3],
+      "participation": 2
+    },
     "queteSemaine": { "id": "ouvrir-15", "texte": "Ouvre 15 boosters cette semaine", "evenement": "booster-ouvert", "objectif": 15, "sceaux": 1 }
   },
   "calendrierLancementExtension": {

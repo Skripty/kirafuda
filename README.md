@@ -9,6 +9,7 @@ npm install
 npm run dev        # lance le jeu sur http://localhost:5173
 npm test           # tests
 npm run typecheck  # vérification TypeScript
+npm run fonctions  # régénère les fonctions serveur du classement (supabase/functions) après un changement de src/core ou src/data
 ```
 
 ## Ce que contient ce dossier

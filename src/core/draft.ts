@@ -6,7 +6,7 @@ import { EFFETS, ELEMENTS, FAIBLESSE, ORDRE_RANGS } from './regles';
 import { rngAGraine, type Rng } from './rng';
 import { tirerBooster } from './tirage';
 import { indexer } from './extension';
-import type { Booster, CarteTiree, EffetType, ElementId, Extension, Personnage, Rang, Sauvegarde } from './types';
+import type { Booster, CarteTiree, DraftJoue, EffetType, ElementId, Extension, Personnage, Rang, Sauvegarde } from './types';
 
 // ---------- Thèmes ----------
 
@@ -400,7 +400,7 @@ export function scorer(equipe: Personnage[], theme: Theme, adversaire: ElementId
 }
 
 // ---------- Choix et récompense ----------
-// Récompense : participation au draft (quetes.json, « hebdomadaire »), quel que soit le score.
+// Récompense : participation (sans compte) ou classement de fin de semaine (src/core/classement.ts).
 
 /** Cartes de l'équipe choisie (indices dans les 15). Renvoie un message d'erreur si le choix est invalide. */
 export function equipeChoisie(draft: DraftSemaine, choix: number[], extension: Extension): Personnage[] | string {
@@ -420,29 +420,47 @@ export function equipeChoisie(draft: DraftSemaine, choix: number[], extension: E
 }
 
 export type ResultatDraft =
-  | { ok: true; sauvegarde: Sauvegarde; score: Score; sceaux: number }
-  | { ok: false; raison: 'deja-joue' | 'choix-invalide'; message: string };
+  | { ok: true; sauvegarde: Sauvegarde; score: Score; sceaux: number; modification: boolean }
+  | { ok: false; raison: 'choix-invalide'; message: string };
 
 /**
- * Valide l'équipe de la semaine : score, récompense de participation et enregistrement en une seule nouvelle sauvegarde.
- * La récompense est la participation au draft (quetes.json, « hebdomadaire ») : le score ne la change pas.
+ * Valide (ou modifie) l'équipe de la semaine : score et enregistrement en une seule nouvelle sauvegarde.
+ * L'équipe peut changer jusqu'à la fermeture de la semaine (src/core/classement.ts) ; une modification ne donne
+ * aucune nouvelle récompense.
+ * - Sans compte : la participation (quetes.json) est reçue tout de suite, une fois par semaine (hors classement).
+ * - Avec un compte : rien tout de suite ; l'équipe part au classement (`envoye: false` jusqu'à l'accord du serveur)
+ *   et la récompense de fin de semaine dépend du rang.
  */
-export function jouerDraft(s: Sauvegarde, draft: DraftSemaine, choix: number[], extension: Extension, sceauxParticipation: number): ResultatDraft {
-  if (s.dernierDraft?.semaine === draft.semaine) {
-    return { ok: false, raison: 'deja-joue', message: 'Tu as déjà joué le draft de cette semaine.' };
-  }
+export function jouerDraft(
+  s: Sauvegarde, draft: DraftSemaine, choix: number[], extension: Extension,
+  o: { participation: number; compte: boolean },
+): ResultatDraft {
   const equipe = equipeChoisie(draft, choix, extension);
   if (typeof equipe === 'string') return { ok: false, raison: 'choix-invalide', message: equipe };
   const score = scorer(equipe, draft.theme, draft.adversaire);
-  const sceaux = sceauxParticipation;
-  return {
-    ok: true,
-    score,
-    sceaux,
-    sauvegarde: {
-      ...s,
-      sceaux: s.sceaux + sceaux,
-      dernierDraft: { semaine: draft.semaine, choix: [...choix], score: score.total, sceaux },
-    },
-  };
+  const avant = s.dernierDraft?.semaine === draft.semaine ? s.dernierDraft : null;
+  const sceaux = avant || o.compte ? 0 : o.participation;
+  const dernierDraft: DraftJoue = { semaine: draft.semaine, choix: [...choix], score: score.total, sceaux: (avant?.sceaux ?? 0) + sceaux };
+  if (o.compte || avant?.envoye !== undefined) dernierDraft.envoye = false;
+  if (avant?.dansClassement) dernierDraft.dansClassement = true;
+  return { ok: true, score, sceaux, modification: avant !== null, sauvegarde: { ...s, sceaux: s.sceaux + sceaux, dernierDraft } };
+}
+
+/** L'équipe de la semaine a été acceptée par le serveur (score recalculé par lui). Inchangée si elle a changé entre-temps. */
+export function marquerDraftEnvoye(s: Sauvegarde, semaine: string, choix: number[], score: number): Sauvegarde {
+  const dj = s.dernierDraft;
+  if (!dj || dj.semaine !== semaine || dj.choix.join() !== choix.join()) return s;
+  return { ...s, dernierDraft: { ...dj, score, envoye: true, dansClassement: true } };
+}
+
+/**
+ * Semaine fermée sans que l'équipe ait jamais rejoint le classement (compte, mais réseau absent jusqu'à dimanche soir) :
+ * la participation est donnée sur l'appareil, comme sans compte. Sauvegarde inchangée sinon.
+ */
+export function regulariserDraft(s: Sauvegarde, semaineCourante: string, participation: number): { sauvegarde: Sauvegarde; sceaux: number } {
+  const dj = s.dernierDraft;
+  if (!dj || dj.semaine >= semaineCourante || dj.dansClassement || dj.envoye !== false || dj.sceaux > 0 || participation <= 0) {
+    return { sauvegarde: s, sceaux: 0 };
+  }
+  return { sauvegarde: { ...s, sceaux: s.sceaux + participation, dernierDraft: { ...dj, sceaux: participation } }, sceaux: participation };
 }

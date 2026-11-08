@@ -136,7 +136,11 @@ export interface DraftJoue {
   semaine: string;       // ex. « 2026-S45 »
   choix: number[];       // indices (0 à 14) des 5 cartes gardées
   score: number;
-  sceaux: number;        // récompense reçue
+  sceaux: number;        // participation reçue sur l'appareil (sans compte), 0 sinon
+  /** Avec un compte : l'équipe actuelle a été acceptée par le serveur (absent si jouée sans compte). */
+  envoye?: boolean;
+  /** Avec un compte : une équipe de la semaine est au classement en ligne (même si une modification attend). */
+  dansClassement?: boolean;
 }
 
 /**

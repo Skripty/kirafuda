@@ -5,7 +5,7 @@ Kirafuda est un jeu de collection de cartes de personnages d'anime, jouable dans
 ## Façon de travailler
 
 - **Une tâche à la fois**, dans l'ordre de `docs/TACHES.md`. Ne commence pas la tâche suivante sans qu'on te le demande.
-- **N'ajoute aucune mécanique** absente du GDD (pas de combat, pas de serveur, pas d'échanges, pas de Wonder Pick en version 1). Si une tâche semble en demander, arrête-toi et pose la question.
+- **N'ajoute aucune mécanique** absente du GDD (pas de combat, pas d’échanges, pas de Wonder Pick en version 1 ; le serveur se limite aux comptes, à la sauvegarde en ligne et au classement du draft). Si une tâche semble en demander, arrête-toi et pose la question.
 - Avant de terminer une tâche : `npm run typecheck` et `npm test` doivent passer, sans erreur.
 - Explique en quelques lignes ce que tu as changé et comment le vérifier dans le navigateur.
 - Petits commits, un par tâche, message en français.
@@ -15,7 +15,7 @@ Kirafuda est un jeu de collection de cartes de personnages d'anime, jouable dans
 - TypeScript strict, Vite, HTML et CSS. **Pas de framework** (ni React, ni Vue) et pas de nouvelle dépendance sans demande explicite.
 - Tests avec Vitest, dans `tests/`.
 - Le jeu reste **jouable sans compte** : sauvegarde dans `localStorage`, avec export et import d'un fichier JSON. La sauvegarde locale est toujours la référence pendant la partie.
-- Depuis la tâche 23 : compte **facultatif** (Supabase, connexion Discord, dépendance `@supabase/supabase-js` autorisée) et sauvegarde en ligne. Seule la clé publique (`VITE_SUPABASE_ANON_KEY`) est dans le jeu ; jamais de clé secrète. Tables et règles d'accès (Row Level Security) dans `supabase/migrations/`. Voir `docs/SUPABASE.md`.
+- Depuis la tâche 23 : compte **facultatif** (Supabase, connexion Discord, dépendance `@supabase/supabase-js` autorisée) et sauvegarde en ligne. Seule la clé publique (`VITE_SUPABASE_ANON_KEY`) est dans le jeu ; jamais de clé secrète. Tables et règles d'accès (Row Level Security) dans `supabase/migrations/`. Depuis la tâche 24 : classement du draft vérifié par des fonctions serveur (`supabase/fonctions/`, qui réutilisent `src/core`) ; après un changement de `src/core` ou `src/data`, lancer `npm run fonctions` et redéployer. Voir `docs/SUPABASE.md`.
 
 ## Structure
 
@@ -30,6 +30,8 @@ tests/    tests Vitest de src/core
 public/   logo, images des cartes (public/cartes/<id-carte>/illustration.webp)
 docs/     GDD résumé, liste des tâches, références (Atelier des cartes), mise en ligne, Supabase
 supabase/migrations/  SQL versionné de la base (à exécuter dans Supabase → SQL Editor)
+supabase/fonctions/   sources des fonctions serveur (classement du draft), qui réutilisent src/core
+supabase/functions/   fichiers déployés, GÉNÉRÉS par `npm run fonctions` (ne pas modifier à la main)
 ```
 
 `src/core` ne doit jamais importer depuis `src/ui`.

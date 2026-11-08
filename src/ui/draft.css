@@ -116,3 +116,10 @@
 .draft-confirmation h2 { margin: 0 0 8px; font-size: 1.1rem; font-weight: 600; }
 .draft-confirmation p { margin: 0 0 16px; color: var(--texte-secondaire); }
 .draft-confirmation-actions { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+
+/* Classement (tâche 24) : état de l'envoi, invitation à se connecter, modifier l'équipe. */
+.draft-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.draft-equipe .draft-actions { justify-content: flex-end; }
+.draft-classement:empty { display: none; }
+.draft-classement { padding: 10px 14px; border: 1px solid var(--texte-secondaire); border-radius: var(--rayon); display: grid; gap: 8px; justify-items: start; }
+.draft-classement p { margin: 0; }

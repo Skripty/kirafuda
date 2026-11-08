@@ -10,7 +10,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "simuler": "vite-node scripts/simuler.ts",
-    "images": "node scripts/images.mjs"
+    "images": "node scripts/images.mjs",
+    "fonctions": "vite-node outils/fonctions.ts"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
