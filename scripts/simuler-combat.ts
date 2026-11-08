@@ -1,108 +1,131 @@
-// npm run simuler -- combat [parties] : parties entre des decks de série générés automatiquement, jouées par deux IA
-// simples (hasard et gloutonne, réparties au hasard). Rapport : victoires par série et par IA, cartes les plus jouées
-// par les gagnants, durée moyenne, parties bloquées ou anormalement longues. Tout est déterministe (graines).
+// npm run simuler -- combat [parties] : parties entre decks standardisés de série, jouées par deux IA gloutonnes.
+// Decks : 7 personnages × 2 + les 6 mêmes cartes Soutien (src/core/combat/decks.ts, deckStandard).
+// Rapport : victoires par série, par personnage (decks qui le contiennent), dégâts et K.-O. par personnage,
+// cartes au-dessus de 60 % ou en dessous de 40 %, durée, parties bloquées ou anormalement longues.
+// Tout est déterministe (graines).
 import { catalogue } from '../src/catalogue';
 import { fusionner, toutesLesExtensions } from '../src/core/catalogue';
 import { rngAGraine } from '../src/core/rng';
 import soutiensJson from '../src/data/soutiens.json';
 import { bibliotheque, type CarteSoutien, type IdJoueur } from '../src/core/combat/etat';
 import { actionsLegales, appliquer, creerPartie } from '../src/core/combat/moteur';
-import { deckDeSerie, seriesDe } from '../src/core/combat/decks';
-import { iaGloutonne, iaHasard, type IA } from '../src/core/combat/ia';
+import { complementDe, deckStandard, seriesDe, SOUTIENS_STANDARD } from '../src/core/combat/decks';
+import { iaGloutonne } from '../src/core/combat/ia';
 
 declare const process: { argv: string[]; exitCode?: number };
 
-const PARTIES = Number(process.argv.find((x) => /^\d+$/.test(x)) ?? 2000);
+const PARTIES = Number(process.argv.find((x) => /^\d+$/.test(x)) ?? 5000);
 /** Au-delà, la partie est « anormalement longue » (arrêtée et signalée). */
 const TOURS_MAX = 120;
 const ACTIONS_MAX = 4000;
+const HAUT = 0.6;
+const BAS = 0.4;
 
 const bib = bibliotheque(fusionner(toutesLesExtensions(catalogue)).personnages, soutiensJson.soutiens as unknown as CarteSoutien[]);
-const series = seriesDe(bib);
-const decks = new Map(series.map((s) => [s, deckDeSerie(s, bib)]));
-const jouables = series.filter((s) => decks.get(s));
-const exclues = series.filter((s) => !decks.get(s));
 const rng = rngAGraine('simulation-combat');
+const series = seriesDe(bib);
+const jouables = series.filter((s) => deckStandard(s, bib, rngAGraine('verification')));
+const exclues = series.filter((s) => !jouables.includes(s));
 
-const stats = new Map(jouables.map((s) => [s, { parties: 0, victoires: 0 }]));
-const ia = { glouton: { parties: 0, victoires: 0 }, hasard: { parties: 0, victoires: 0 } };
-const jouees = new Map<string, number>();
+interface Stat { parties: number; victoires: number }
+interface StatPerso extends Stat { degats: number; ko: number }
+const parSerie = new Map(jouables.map((s) => [s, { parties: 0, victoires: 0 } as Stat]));
+const parPerso = new Map<string, StatPerso>();
 const durees: number[] = [];
 const anomalies: string[] = [];
-/** Parties trop longues ou bloquées, par paire d'IA (« glouton / hasard »…). */
-const parPaire = new Map<string, { parties: number; anomalies: number; tours: number[] }>();
-const nomCarte = (id: string): string => bib.personnages.get(id)?.nom ?? bib.soutiens.get(id)?.nom ?? id;
 const debut = Date.now();
+const nom = (id: string): string => bib.personnages.get(id)?.nom ?? bib.soutiens.get(id)?.nom ?? id;
+const pc = (v: number, t: number): string => (t ? `${((v / t) * 100).toFixed(1).replace('.', ',')} %` : '—');
+const dec = (x: number): string => x.toFixed(1).replace('.', ',');
 
 for (let n = 0; n < PARTIES; n++) {
   const a = jouables[rng.entier(jouables.length)]!;
   let b = jouables[rng.entier(jouables.length - 1)]!;
   if (b === a) b = jouables[jouables.length - 1]!;
-  const types = (['glouton', 'hasard'] as const).map(() => (rng.entier(2) === 0 ? 'glouton' : 'hasard'));
-  const paire = [...types].sort().join(' / ');
-  if (!parPaire.has(paire)) parPaire.set(paire, { parties: 0, anomalies: 0, tours: [] });
-  parPaire.get(paire)!.parties++;
-  const ias: IA[] = types.map((t, i) => (t === 'glouton' ? iaGloutonne(`g:${n}:${i}`) : iaHasard(`h:${n}:${i}`)));
-  const graine = `partie:${n}`;
-  let partie = creerPartie(bib, [deckDeSerie(a, bib)!, deckDeSerie(b, bib)!], graine).partie;
-  const cartesJouees: [Set<string>, Set<string>] = [new Set(), new Set()];
+  const decks = [deckStandard(a, bib, rng)!, deckStandard(b, bib, rng)!] as const;
+  const ias = [iaGloutonne(`g:${n}:0`), iaGloutonne(`g:${n}:1`)];
+  let partie = creerPartie(bib, [decks[0], decks[1]], `partie:${n}`).partie;
+  // Dégâts et K.-O. infligés par les attaques de chaque personnage, dans cette partie.
+  const contribution = new Map<string, { degats: number; ko: number }>();
   let actions = 0;
   let probleme: string | null = null;
   try {
     while (partie.phase !== 'fin') {
       if (++actions > ACTIONS_MAX) { probleme = `plus de ${ACTIONS_MAX} actions`; break; }
       if (partie.tour > TOURS_MAX) { probleme = `plus de ${TOURS_MAX} tours`; break; }
-      const legales = actionsLegales(partie, bib);
-      if (legales.length === 0) { probleme = 'aucune action possible'; break; }
+      if (actionsLegales(partie, bib).length === 0) { probleme = 'aucune action possible'; break; }
       const qui: IdJoueur = partie.phase === 'mise-en-place' ? (partie.joueurs[0].pret ? 1 : 0)
         : partie.phase === 'choix-premier' ? partie.gagnantPiece
           : partie.attente ? partie.attente.joueurs[0]! : partie.joueurActif;
       const action = ias[qui]!(partie, bib);
-      if (action.type === 'poser' || action.type === 'releve' || action.type === 'jouer') cartesJouees[qui].add(partie.cartes[action.carte]!);
-      if (action.type === 'mise-en-place') for (const u of [action.actif, ...action.banc]) cartesJouees[qui].add(partie.cartes[u]!);
-      partie = appliquer(partie, action, bib, { verifier: false }).partie;
+      const attaquant = action.type === 'attaquer' ? partie.joueurs[qui].actif?.id : undefined;
+      const r = appliquer(partie, action, bib, { verifier: false });
+      if (attaquant) {
+        const adv = qui === 0 ? 'J2-' : 'J1-';
+        const c = contribution.get(attaquant) ?? { degats: 0, ko: 0 };
+        for (const e of r.journal) {
+          if (e.type === 'degats' && e.cible?.startsWith(adv)) c.degats += e.valeur ?? 0;
+          if (e.type === 'ko' && e.joueur !== qui) c.ko++;
+        }
+        contribution.set(attaquant, c);
+      }
+      partie = r.partie;
     }
   } catch (e) {
     probleme = `erreur : ${(e as Error).message}`;
   }
-  if (probleme) { parPaire.get(paire)!.anomalies++; anomalies.push(`partie ${n} (${a} contre ${b}, ${types.join(' / ')}) : ${probleme}`); continue; }
+  if (probleme) { anomalies.push(`partie ${n} (${a} contre ${b}) : ${probleme}`); continue; }
   durees.push(partie.tour);
-  parPaire.get(paire)!.tours.push(partie.tour);
   const g = partie.gagnant!;
-  const noms = [a, b];
-  for (const i of [0, 1] as IdJoueur[]) {
-    stats.get(noms[i]!)!.parties++;
-    ia[types[i]!].parties++;
-    if (i === g) { stats.get(noms[i]!)!.victoires++; ia[types[i]!].victoires++; }
-  }
-  for (const id of cartesJouees[g]) jouees.set(id, (jouees.get(id) ?? 0) + 1);
+  [a, b].forEach((s, i) => {
+    const st = parSerie.get(s)!;
+    st.parties++;
+    if (i === g) st.victoires++;
+    for (const id of new Set(decks[i]!.cartes.filter((x) => bib.personnages.has(x)))) {
+      const sp = parPerso.get(id) ?? { parties: 0, victoires: 0, degats: 0, ko: 0 };
+      sp.parties++;
+      if (i === g) sp.victoires++;
+      // Un personnage peut être dans les deux decks (complément) : sa contribution est partagée entre eux.
+      const c = contribution.get(id);
+      const dansLesDeux = decks[0].cartes.includes(id) && decks[1].cartes.includes(id);
+      if (c) { sp.degats += dansLesDeux ? c.degats / 2 : c.degats; sp.ko += dansLesDeux ? c.ko / 2 : c.ko; }
+      parPerso.set(id, sp);
+    }
+  });
 }
 
-const pc = (v: number, t: number): string => (t ? `${((v / t) * 100).toFixed(1).replace('.', ',')} %` : '—');
 const lignes: string[] = [];
-lignes.push(`Simulation de combat : ${PARTIES} parties en ${((Date.now() - debut) / 1000).toFixed(0)} s (graine « simulation-combat »).`);
+const taux = (s: Stat): number => s.victoires / Math.max(1, s.parties);
+lignes.push(`Simulation de combat : ${PARTIES} parties, IA gloutonne contre IA gloutonne, en ${((Date.now() - debut) / 1000).toFixed(0)} s (graine « simulation-combat »).`);
+lignes.push(`Decks standardisés : 7 personnages × 2 + ${SOUTIENS_STANDARD.map(nom).join(', ')}.`);
 lignes.push(`Parties terminées : ${durees.length} · bloquées ou anormales : ${anomalies.length}`);
-lignes.push(`Durée moyenne : ${(durees.reduce((x, y) => x + y, 0) / Math.max(1, durees.length)).toFixed(1).replace('.', ',')} tours `
+lignes.push(`Durée moyenne : ${dec(durees.reduce((x, y) => x + y, 0) / Math.max(1, durees.length))} tours `
   + `(médiane ${[...durees].sort((x, y) => x - y)[Math.floor(durees.length / 2)] ?? '—'}, max ${Math.max(0, ...durees)})`);
-const moyenne = (l: number[]): string => (l.reduce((x, y) => x + y, 0) / Math.max(1, l.length)).toFixed(1).replace('.', ',');
-for (const [paire, s] of [...parPaire].sort()) lignes.push(`  ${paire.padEnd(18)} ${moyenne(s.tours).padStart(5)} tours en moyenne (${s.tours.length} parties terminées)`);
-lignes.push('', 'Victoires par IA :');
-for (const [nom, s] of Object.entries(ia)) lignes.push(`  ${nom.padEnd(8)} ${pc(s.victoires, s.parties).padStart(8)}  (${s.victoires}/${s.parties})`);
-lignes.push('', 'Victoires par série (decks générés : personnages ×2 + cartes Soutien) :');
-for (const [s, v] of [...stats].sort((x, y) => y[1].victoires / Math.max(1, y[1].parties) - x[1].victoires / Math.max(1, x[1].parties))) {
-  lignes.push(`  ${s.padEnd(32)} ${pc(v.victoires, v.parties).padStart(8)}  (${v.victoires}/${v.parties})`);
+
+lignes.push('', 'Victoires par série :');
+for (const [s, v] of [...parSerie].sort((x, y) => taux(y[1]) - taux(x[1]))) {
+  const signal = taux(v) > HAUT ? '  ▲ plus de 60 %' : taux(v) < BAS ? '  ▼ moins de 40 %' : '';
+  lignes.push(`  ${s.padEnd(32)} ${pc(v.victoires, v.parties).padStart(8)}  (${v.victoires}/${v.parties})${signal}`);
 }
-if (exclues.length) lignes.push('', `Séries sans deck possible (aucun Base) : ${exclues.join(', ')}.`);
-lignes.push('', '10 cartes les plus jouées par les gagnants (nombre de parties gagnées où la carte a été jouée) :');
-for (const [id, n] of [...jouees].sort((x, y) => y[1] - x[1]).slice(0, 10)) lignes.push(`  ${String(n).padStart(5)}  ${nomCarte(id)}`);
-lignes.push('', 'Les mêmes, personnages seulement (les cartes Soutien de complément sont dans tous les decks) :');
-for (const [id, n] of [...jouees].filter(([id]) => bib.personnages.has(id)).sort((x, y) => y[1] - x[1]).slice(0, 10)) {
-  lignes.push(`  ${String(n).padStart(5)}  ${nomCarte(id)} (${bib.personnages.get(id)!.serie})`);
+if (exclues.length) lignes.push('', `Séries sans deck (aucun Base à elles) : ${exclues.join(', ')}.`);
+lignes.push('', 'Compléments (séries de moins de 7 personnages, toujours les mêmes) :');
+for (const s of jouables) { const c = complementDe(s, bib); if (c.length) lignes.push(`  ${s.padEnd(32)} ${c.map((p) => `${p.nom} (${p.serie})`).join(', ')}`); }
+
+lignes.push('', 'Par personnage (decks qui le contiennent) : victoires · dégâts infligés par ses attaques et K.-O., en moyenne par partie :');
+const persos = [...parPerso].sort((x, y) => taux(y[1]) - taux(x[1]));
+for (const [id, v] of persos) {
+  const signal = taux(v) > HAUT ? '  ▲' : taux(v) < BAS ? '  ▼' : '';
+  const p = bib.personnages.get(id)!;
+  lignes.push(`  ${`${p.nom} (${p.serie})`.padEnd(48)} ${pc(v.victoires, v.parties).padStart(8)}  ${String(v.parties).padStart(5)} parties  `
+    + `${dec(v.degats / v.parties).padStart(6)} dégâts  ${dec(v.ko / v.parties).padStart(4)} K.-O.${signal}`);
 }
-lignes.push('', `Parties bloquées ou anormalement longues (plus de ${TOURS_MAX} tours), par paire d'IA :`);
-for (const [paire, s] of [...parPaire].sort()) lignes.push(`  ${paire.padEnd(18)} ${String(s.anomalies).padStart(4)} sur ${s.parties}`);
-lignes.push('', anomalies.length ? 'Détail :' : 'Aucune partie bloquée ni anormale.');
-for (const x of (process.argv.includes('--tout') ? anomalies : anomalies.slice(0, 15))) lignes.push(`  ${x}`);
-if (anomalies.length > 15 && !process.argv.includes('--tout')) lignes.push(`  … et ${anomalies.length - 15} autres.`);
+const hauts = persos.filter(([, v]) => taux(v) > HAUT);
+const bas = persos.filter(([, v]) => taux(v) < BAS);
+lignes.push('', `Au-dessus de 60 % (${hauts.length}) : ${hauts.map(([id, v]) => `${nom(id)} ${pc(v.victoires, v.parties)}`).join(' · ') || 'aucune'}`);
+lignes.push(`En dessous de 40 % (${bas.length}) : ${bas.map(([id, v]) => `${nom(id)} ${pc(v.victoires, v.parties)}`).join(' · ') || 'aucune'}`);
+
+lignes.push('', anomalies.length ? `Parties bloquées ou anormalement longues (plus de ${TOURS_MAX} tours) :` : 'Aucune partie bloquée ni anormale.');
+for (const x of anomalies.slice(0, 20)) lignes.push(`  ${x}`);
+if (anomalies.length > 20) lignes.push(`  … et ${anomalies.length - 20} autres.`);
 console.log(lignes.join('\n'));
 if (anomalies.some((x) => !x.includes('tours'))) process.exitCode = 1; // une partie bloquée (erreur, aucune action) est un échec

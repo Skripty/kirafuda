@@ -85,7 +85,7 @@
             "t",
             "q"
           ],
-          "degats": 200,
+          "degats": 180,
           "effet": "Gon subit 80 dégâts.",
           "effets": [
             {
@@ -195,7 +195,7 @@
       "rang": "A",
       "element": "neutre",
       "type": "eveille",
-      "pv": 120,
+      "pv": 130,
       "repli": 1,
       "talent": {
         "nom": "Télépathie",

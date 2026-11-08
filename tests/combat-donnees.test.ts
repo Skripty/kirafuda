@@ -55,3 +55,27 @@ describe('decks de série (simulation)', () => {
     expect(sans).toEqual(['Naruto']); // Naruto, Sasuke et Itachi sont tous Éveillés (Bases de Naruto : vague 3)
   });
 });
+
+describe('decks standardisés (simulation d’équilibrage)', () => {
+  it('7 personnages × 2 et les 6 mêmes cartes Soutien ; compléments fixes ; decks valides', async () => {
+    const { deckStandard, complementDe, SOUTIENS_STANDARD } = await import('../src/core/combat/decks');
+    const { rngAGraine } = await import('../src/core/rng');
+    for (const s of seriesDe(bib)) {
+      for (const g of ['a', 'b', 'c']) {
+        const d = deckStandard(s, bib, rngAGraine(g));
+        if (s === 'Naruto') { expect(d).toBeNull(); continue; }
+        expect(validerDeck(d!, bib), s).toEqual([]);
+        expect(d!.cartes.slice(14), s).toEqual(SOUTIENS_STANDARD);
+        expect(new Set(d!.cartes.slice(0, 14)).size, s).toBe(7);
+        // Une série qui a au moins 3 Bases en garde au moins 3 dans son deck.
+        const bases = d!.cartes.slice(0, 14).filter((id) => bib.personnages.get(id)!.serie === s && bib.personnages.get(id)!.type === 'base');
+        expect(new Set(bases).size, s).toBeGreaterThanOrEqual(Math.min(3, [...bib.personnages.values()].filter((p) => p.serie === s && p.type === 'base').length));
+      }
+      // Compléments : Bases d'autres séries partageant un élément, toujours les mêmes.
+      const c = complementDe(s, bib);
+      expect(complementDe(s, bib)).toEqual(c);
+      const elements = new Set([...bib.personnages.values()].filter((p) => p.serie === s).map((p) => p.element));
+      for (const p of c) { expect(p.serie).not.toBe(s); expect(p.type).toBe('base'); expect(elements.has(p.element)).toBe(true); }
+    }
+  });
+});

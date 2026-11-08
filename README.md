@@ -9,7 +9,7 @@ npm install
 npm run dev        # lance le jeu sur http://localhost:5173
 npm test           # tests
 npm run typecheck  # vérification TypeScript
-npm run simuler -- combat    # 2 000 parties de combat entre decks de série (rapport d'équilibrage)
+npm run simuler -- combat    # 5 000 parties de combat entre decks standardisés (rapport d'équilibrage)
 npm run fiches               # recopie src/data/fiches-combat.json dans les extensions (après un rééquilibrage)
 npm run deployer-fonctions  # régénère et déploie les fonctions serveur du classement (docs/SUPABASE.md, section 10)
 ```

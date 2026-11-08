@@ -134,10 +134,10 @@ describe('effets d’attaque', () => {
   });
 
   it('Copie : utilise une attaque de l’actif adverse sans payer son coût', () => {
-    const p = partie({ actif: 'per-013', energies: [['lumiere', 'feu', 'feu']] }, { actif: 'ren-per-002' }); // Gon : Jajanken 80, Gon adulte 200
+    const p = partie({ actif: 'per-013', energies: [['lumiere', 'feu', 'feu']] }, { actif: 'ren-per-002' }); // Gon : Jajanken 80, Gon adulte 180
     expect(legales(p).filter((a) => a.type === 'attaquer').map((a) => (a as { choix: { copie?: number } }).choix.copie)).toEqual([0, 1]);
     const r = attaque(p, 0, { copie: 1 });
-    expect(inflige(r.journal, 'B-ren-per-002')).toBe(200);
+    expect(inflige(r.journal, 'B-ren-per-002')).toBe(180);
     // « Gon subit 80 dégâts » : c'est Yuta (80 PV) qui les subit… et Rika le garde à 10 PV.
     expect(degats(r.p, 'A-per-013')).toBe(70);
     expect(texte(r.journal)).toMatch(/copie : Gon adulte/);

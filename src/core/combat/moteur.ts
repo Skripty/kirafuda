@@ -316,9 +316,11 @@ function calculerDegats(
   }
   if (ignore === null) for (const b of cible.boucliers) d -= b.valeur;
   d = Math.max(0, d);
-  // « Retraité » : ne descend jamais la cible sous 10 PV, sauf si tu as moins de points.
+  // « Retraité » : une attaque qui devrait mettre K.-O. une cible à plus de 10 PV la laisse à 10 PV
+  // (une cible à 10 PV ou moins peut être mise K.-O. : jamais de blocage).
   for (const t of aTalent(c, source, 'plancher')) {
-    if (!t.sauf || !condition(c, t.sauf, ctxSoi)) d = Math.min(d, Math.max(0, pvRestants(c, cible) - t.valeur));
+    const reste = pvRestants(c, cible);
+    if (reste > t.valeur && d >= reste && (!t.sauf || !condition(c, t.sauf, ctxSoi))) d = reste - t.valeur;
   }
   return d;
 }
@@ -1076,6 +1078,7 @@ function executer(c: Ctx, a: Action): void {
         for (const e of tal.effets) {
           if (e.type === 'degats-banc-adverse') for (const y of p.joueurs[autre(a.joueur)].banc) blesser(c, y, e.valeur, fiche(c, x.id).talent!.nom);
           if (e.type === 'poser-base-serie') appliquerEffetsAction(c, a.joueur, [{ type: 'chercher', quoi: 'base', vers: 'banc', serie: 'la-sienne' }], {}, x);
+          if (e.type === 'retirer-energie-adverse') appliquerEffetsAction(c, a.joueur, [{ type: 'retirer-energie-adverse' }], {}, x);
         }
       }
       // « Genjutsu des corbeaux » : un Itachi adverse en jeu étourdit le personnage qui entre (s'il est actif).

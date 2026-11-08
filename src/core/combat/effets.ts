@@ -100,12 +100,12 @@ export type EffetTalent =
   | { type: 'vulnerabilite-adverse'; valeur: number }                  // tant que soi est sur le banc : l'actif adverse subit +valeur
   | { type: 'immunite'; etats: EtatCombat[] }
   | { type: 'cout-reduit'; valeur: number; si: Condition }             // ses attaques coûtent `valeur` ◇ de moins
-  | { type: 'plancher'; valeur: number; sauf?: Condition }             // ses attaques ne descendent jamais la cible sous `valeur` PV
+  | { type: 'plancher'; valeur: number; sauf?: Condition }             // une attaque qui devrait mettre K.-O. une cible à plus de `valeur` PV la laisse à `valeur` PV
   | { type: 'survie'; pv: number; piece?: Piece }                      // une fois par partie, au lieu d'être mis K.-O.
   | { type: 'retour-deck' }                                            // une fois par partie : K.-O. → retourne dans le deck
   | { type: 'si-ko-subi'; effets: ({ type: 'degats-actif-adverse'; valeur: number } | { type: 'soin-serie'; valeur: number })[] }
   | { type: 'si-ko-inflige'; effets: ({ type: 'soin-soi'; valeur: number } | { type: 'pioche'; valeur: number })[] }
-  | { type: 'entree-releve'; effets: ({ type: 'degats-banc-adverse'; valeur: number } | { type: 'poser-base-serie' })[] }
+  | { type: 'entree-releve'; effets: ({ type: 'degats-banc-adverse'; valeur: number } | { type: 'poser-base-serie' } | { type: 'retirer-energie-adverse' })[] }
   | { type: 'releve-adverse-etourdie' }
   | { type: 'fin-de-tour'; soin: number }
   | { type: 'pose-base-serie'; pioche: number }                        // quand tu poses un Base de sa série

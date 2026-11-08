@@ -82,10 +82,10 @@ describe('talents', () => {
     expect(q.joueurs[0].main).toEqual(['A-per-045']);
     expect(q.joueurs[0].deck).toEqual(['A-per-063', 'A-per-066']);
   });
-  t('per-002', 'Bras droit : +30 si Luffy est en jeu', () => {
+  t('per-002', 'Bras droit : +20 si Luffy est en jeu', () => {
     const p = (banc: string[]) => partie({ actif: 'per-002', banc, energies: [['vent', 'vent']] }, { actif: ASK });
     expect(degats(attaque(p([]), 0).p, 'B-per-063')).toBe(50);
-    expect(degats(attaque(p(['per-001']), 0).p, 'B-per-063')).toBe(80);
+    expect(degats(attaque(p(['per-001']), 0).p, 'B-per-063')).toBe(70);
   });
   t('per-001', 'Haki des rois : à l’entrée par Relève, 10 à chaque personnage du banc adverse', () => {
     const p = partie({ actif: 'per-003', main: ['per-001'] }, { actif: EINAR, banc: [THOMAS, EINAR] });
@@ -98,8 +98,10 @@ describe('talents', () => {
     expect(degats(attaque(avecPieces(p, ['face']), 0).p, 'B-per-017')).toBe(130);
     expect(attaque(avecPieces(p, ['pile']), 0).p.joueurs[0].points).toBe(2);
   });
-  t('per-018', 'Contrôle : retire 1 énergie de l’actif adverse', () => {
-    const q = talent(partie({ actif: 'per-018' }, { actif: EINAR, energies: [['feu', 'eau']] }), 'A-per-018').p;
+  t('per-018', 'Contrôle : quand Makima entre par Relève, retire 1 énergie de l’actif adverse', () => {
+    const p = partie({ actif: 'per-022', main: ['per-018'] }, { actif: EINAR, energies: [['feu', 'eau']] });
+    expect(types(p)).not.toContain('talent'); // plus de talent utilisable chaque tour
+    const q = jouer(p, { type: 'releve', joueur: 0, carte: 'A-per-018', cible: 'A-per-022' }).p;
     expect(perso(q, 'B-per-066').energies).toEqual(['feu']);
   });
   t('per-020', 'Démon du Futur : regarde la carte du dessus, peut la mettre sous le deck', () => {
@@ -147,8 +149,8 @@ describe('talents', () => {
   t('per-033', 'Fil de l’ouverture : +20 contre un personnage déjà blessé', () => {
     expect(degats(attaque(partie({ actif: 'per-033', energies: [['eau', 'eau']] }, { actif: ASK, degats: [10] }), 0).p, 'B-per-063')).toBe(10 + 70);
   });
-  t('per-034', 'Régénération : à la fin de chacun de tes tours, soigne 20 Nezuko', () => {
-    expect(degats(passer(partie({ actif: 'per-034', degats: [30] }, { actif: EINAR })), 'A-per-034')).toBe(10);
+  t('per-034', 'Régénération : à la fin de chacun de tes tours, soigne 10 Nezuko', () => {
+    expect(degats(passer(partie({ actif: 'per-034', degats: [30] }, { actif: EINAR })), 'A-per-034')).toBe(20);
   });
   t('per-040', 'Cœur ardent : quand Rengoku est mis K.-O., soigne 50 tes personnages de Demon Slayer', () => {
     const q = attaque(partie({ actif: EINAR, energies: [['feu', 'feu']] }, { actif: 'per-040', banc: ['per-035', EINAR], degats: [130, 60, 20] }), 0).p;
@@ -246,10 +248,11 @@ describe('talents', () => {
     expect(degats(attaque(partie({ actif: EINAR, energies: [['feu', 'feu']] }, { actif: 'per-078', banc: ['per-079'] }), 0).p, 'B-per-078')).toBe(30);
   });
   // ---------- Sakamoto Days ----------
-  t('per-082', 'Retraité : ne descend jamais la cible sous 10 PV, sauf si tu as moins de points', () => {
-    const p = (pts: number) => partie({ actif: 'per-082', energies: [['feu', 'feu']] }, { actif: EINAR, banc: [EINAR], degats: [50], points: pts });
-    expect(degats(attaque(p(0), 0).p, 'B-per-066')).toBe(70);
-    expect(attaque(p(1), 0).p.joueurs[0].points).toBe(1);
+  t('per-082', 'Retraité : une attaque qui devrait mettre K.-O. une cible à plus de 10 PV la laisse à 10 PV', () => {
+    const p = (d: number) => partie({ actif: 'per-082', energies: [['feu', 'feu']] }, { actif: EINAR, banc: [EINAR], degats: [d] });
+    expect(degats(attaque(p(50), 0).p, 'B-per-066')).toBe(70); // 30 PV restants : reste à 10
+    expect(degats(attaque(p(0), 0).p, 'B-per-066')).toBe(70); // 70 dégâts ne mettent pas K.-O. : inchangé
+    expect(attaque(p(70), 0).p.joueurs[0].points).toBe(1); // à 10 PV : K.-O. (plus de blocage)
   });
   t('per-083', 'Télépathie : regarde la main de l’adversaire', () => {
     expect(texte(talent(partie({ actif: 'per-083' }, { actif: EINAR }), 'A-per-083').journal)).toMatch(/regarde la main de Bruno/);
@@ -266,14 +269,14 @@ describe('talents', () => {
     expect(degats(q, 'A-per-089')).toBe(20);
     expect(types(passer(passer(q)))).not.toContain('talent');
   });
-  t('per-092', 'Magie de soin : soigne 20 un de tes personnages de Dorohedoro', () => {
+  t('per-092', 'Magie de soin : soigne 30 un de tes personnages de Dorohedoro', () => {
     const p = partie({ actif: 'per-092', banc: ['per-091', EINAR], degats: [0, 30, 30] }, { actif: EINAR });
     expect(legales(p).filter((a) => a.type === 'talent').map((a) => (a as { choix: { cible?: string } }).choix.cible)).toEqual(['A-per-092', 'A-per-091']);
-    expect(degats(talent(p, 'A-per-092', { cible: 'A-per-091' }).p, 'A-per-091')).toBe(10);
+    expect(degats(talent(p, 'A-per-092', { cible: 'A-per-091' }).p, 'A-per-091')).toBe(0);
   });
   // ---------- The Boxer ----------
-  t('per-095', 'Entraîneur : tes autres personnages de The Boxer font +10', () => {
-    expect(degats(attaque(partie({ actif: 'per-097', banc: ['per-095'], energies: [['feu', 'feu', 'feu']] }, { actif: ASK }), 0).p, 'B-per-063')).toBe(70);
+  t('per-095', 'Entraîneur : tes autres personnages de The Boxer font +20', () => {
+    expect(degats(attaque(partie({ actif: 'per-097', banc: ['per-095'], energies: [['feu', 'feu', 'feu']] }, { actif: ASK }), 0).p, 'B-per-063')).toBe(70 + 20);
   });
   // ---------- Hunter x Hunter ----------
   t('ren-per-001', 'Vitesse divine : Killua se replie sans payer, une fois par tour', () => {

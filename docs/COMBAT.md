@@ -87,7 +87,7 @@ Liste de départ : `src/data/soutiens.json`. Dans les boosters : Objets en ♦, 
 
 ## Moteur (tâche 26)
 
-Code : `src/core/combat/` — `moteur.ts` (création de la partie, actions légales, application d'une action → nouvel état + journal), `etat.ts` (état sérialisable, aléatoire par graine), `effets.ts` (vocabulaire des effets), `ia.ts` (IA de simulation), `decks.ts` (decks de série générés). Chaque attaque, talent et carte Soutien porte un champ `effets` écrit dans ce vocabulaire (`src/data/fiches-combat.json`, `src/data/soutiens.json`) ; après une modification des fiches : `npm run fiches`. Simulation : `npm run simuler -- combat`.
+Code : `src/core/combat/` — `moteur.ts` (création de la partie, actions légales, application d'une action → nouvel état + journal), `etat.ts` (état sérialisable, aléatoire par graine), `effets.ts` (vocabulaire des effets), `ia.ts` (IA de simulation), `decks.ts` (decks de série générés). Chaque attaque, talent et carte Soutien porte un champ `effets` écrit dans ce vocabulaire (`src/data/fiches-combat.json`, `src/data/soutiens.json`) ; après une modification des fiches : `npm run fiches`. Simulation : `npm run simuler -- combat` (5 000 parties entre IA gloutonnes, decks standardisés : 7 personnages × 2 et 6 cartes Soutien identiques).
 
 ### Interprétations retenues
 
@@ -105,12 +105,13 @@ Textes ambigus des fiches, et choix faits par le moteur (à corriger dans les do
 - **Roi des fléaux** : Sukuna peut relever Itadori entré ce tour-ci, mais pas au premier tour du joueur (règle générale).
 - **Multiclonage** : aucun Base de Naruto n'existe encore (vague 3) ; l'effet ne trouve rien. La série Naruto n'a donc pas de deck possible pour l'instant.
 - **Genjutsu des corbeaux** : Itachi doit être en jeu ; le personnage qui entre n'est Étourdi que s'il entre en actif (les états ne vont que sur l'actif).
-- **Contrôle (Makima)** : retire la dernière énergie attachée. **Durcissement (Eren)** : défausse la dernière énergie attachée.
+- **Durcissement (Eren)** : défausse la dernière énergie attachée.
 - **Manœuvre tridimensionnelle, Dribble du monstre** : l'échange après l'attaque est facultatif (le joueur peut garder son actif).
 - **Démon de la Guerre (Asa)** : le bonus ne vaut que pour la prochaine attaque de ce tour, puis disparaît.
 - **Consacrez vos cœurs, Roi, Entraîneur** : +10 par personnage portant ce talent en jeu (actif ou banc), pour tes autres personnages de sa série.
 - **Je n'ai pas d'ennemis** : « ton tour précédent » = le tour précédent de son propriétaire.
-- **Retraité (Sakamoto)** : les points sont comparés au moment de l'attaque. À égalité de points, Sakamoto ne peut jamais mettre K.-O. (risque de partie bloquée si l'adversaire ne peut pas le battre : à surveiller à l'équilibrage).
+- **Retraité (Sakamoto)** : une attaque qui devrait mettre K.-O. une cible à plus de 10 PV la laisse à 10 PV ; une cible à 10 PV ou moins peut être mise K.-O. (plus de blocage possible).
+- **Contrôle (Makima)** : à l'entrée par Relève, retire la dernière énergie attachée à l'actif adverse.
 - **Irrégulier (Bam)** : retire un ◇ du coût ; sans effet sur une attaque sans ◇.
 - **Archéologue, Repérage** : les cartes non gardées vont sous le deck dans l'ordre où elles étaient (Repérage : « dans l'ordre de ton choix » simplifié). Baratin et Méta-vision : le joueur choisit l'ordre.
 - **Stratège de la Tour (Khun), Informateur (Franky)** : la carte rendue (sous le deck ou défaussée) est choisie automatiquement : une carte Soutien de la main s'il y en a, sinon la carte piochée.

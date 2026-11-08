@@ -1,5 +1,5 @@
 // Fonction Supabase « reclamer-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : 11a5086d7c448ec9
+// Empreinte des sources : 3e2c3355a4a3e0a5
 // Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/draft.ts, src/core/regles.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/reclamer-draft.ts
 // @ts-nocheck
 const id$2 = "booster-lancement";
@@ -122,7 +122,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 180,
+        degats: 160,
         effet: "Luffy ne peut pas attaquer au tour suivant.",
         effets: [
           {
@@ -144,11 +144,11 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Bras droit",
-      texte: "si Luffy est en jeu, ses attaques font +30.",
+      texte: "si Luffy est en jeu, ses attaques font +20.",
       effets: [
         {
           type: "bonus-attaque",
-          valeur: 30,
+          valeur: 20,
           si: {
             si: "perso-en-jeu",
             personnage: "per-001"
@@ -917,11 +917,10 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Contrôle",
-      texte: "une fois par tour, retire 1 énergie de l'actif adverse.",
+      texte: "quand Makima entre par Relève, retire 1 énergie de l'actif adverse.",
       effets: [
         {
-          type: "activable",
-          limite: "tour",
+          type: "entree-releve",
           effets: [
             {
               type: "retirer-energie-adverse"
@@ -1590,11 +1589,11 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Régénération",
-      texte: "à la fin de chacun de tes tours, soigne 20 Nezuko.",
+      texte: "à la fin de chacun de tes tours, soigne 10 Nezuko.",
       effets: [
         {
           type: "fin-de-tour",
-          soin: 20
+          soin: 10
         }
       ]
     },
@@ -1850,7 +1849,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 140,
+        degats: 120,
         effet: "",
         effets: []
       }
@@ -2422,14 +2421,14 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "100 %",
-      texte: "si Mob a 30 PV ou moins, ses attaques font +60.",
+      texte: "si Mob a 40 PV ou moins, ses attaques font +60.",
       effets: [
         {
           type: "bonus-attaque",
           valeur: 60,
           si: {
             si: "soi-pv-max",
-            valeur: 30
+            valeur: 40
           }
         }
       ]
@@ -2553,7 +2552,7 @@ const personnages$1 = [
           "z",
           "q"
         ],
-        degats: 40,
+        degats: 50,
         effet: "",
         effets: []
       }
@@ -2839,7 +2838,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 60,
+        degats: 70,
         effet: "",
         effets: []
       }
@@ -2875,7 +2874,7 @@ const personnages$1 = [
         cout: [
           "g"
         ],
-        degats: 20,
+        degats: 30,
         effet: "",
         effets: []
       }
@@ -2957,7 +2956,7 @@ const personnages$1 = [
           "e",
           "q"
         ],
-        degats: 40,
+        degats: 50,
         effet: "",
         effets: []
       }
@@ -2981,7 +2980,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 60,
+        degats: 70,
         effet: "",
         effets: []
       }
@@ -3047,7 +3046,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 50,
+        degats: 60,
         effet: "",
         effets: []
       }
@@ -3079,7 +3078,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 60,
+        degats: 70,
         effet: "",
         effets: []
       }
@@ -3129,7 +3128,7 @@ const personnages$1 = [
           "l",
           "q"
         ],
-        degats: 40,
+        degats: 50,
         effet: "+30 contre un personnage Ténèbres.",
         effets: [
           {
@@ -3185,7 +3184,7 @@ const personnages$1 = [
     rang: "C",
     element: "eau",
     type: "base",
-    pv: 60,
+    pv: 70,
     repli: 1,
     talent: null,
     attaques: [
@@ -3227,7 +3226,7 @@ const personnages$1 = [
           "n",
           "q"
         ],
-        degats: 30,
+        degats: 40,
         effet: "l'adversaire défausse une carte au hasard de sa main.",
         effets: [
           {
@@ -3249,14 +3248,11 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Retraité",
-      texte: "ses attaques ne descendent jamais la cible sous 10 PV, sauf si tu as moins de points que l'adversaire.",
+      texte: "si une attaque de Sakamoto devait mettre K.-O. une cible qui a plus de 10 PV, elle reste à 10 PV.",
       effets: [
         {
           type: "plancher",
-          valeur: 10,
-          sauf: {
-            si: "moins-de-points"
-          }
+          valeur: 10
         }
       ]
     },
@@ -3267,7 +3263,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 60,
+        degats: 70,
         effet: "+20 si tu as joué un Objet ce tour.",
         effets: [
           {
@@ -3334,7 +3330,7 @@ const personnages$1 = [
           "f",
           "q"
         ],
-        degats: 40,
+        degats: 50,
         effet: "",
         effets: []
       }
@@ -3357,7 +3353,7 @@ const personnages$1 = [
           "n",
           "q"
         ],
-        degats: 30,
+        degats: 40,
         effet: "à n'importe quel personnage adverse.",
         effets: [
           {
@@ -3431,7 +3427,7 @@ const personnages$1 = [
     rang: "B",
     element: "terre",
     type: "base",
-    pv: 110,
+    pv: 120,
     repli: 2,
     talent: {
       nom: "Mâchoire",
@@ -3456,7 +3452,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 60,
+        degats: 70,
         effet: "",
         effets: []
       }
@@ -3517,7 +3513,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 50,
+        degats: 60,
         effet: "la cible est Maudite.",
         effets: [
           {
@@ -3545,7 +3541,7 @@ const personnages$1 = [
           "f",
           "q"
         ],
-        degats: 40,
+        degats: 50,
         effet: "",
         effets: []
       }
@@ -3562,7 +3558,7 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Magie de soin",
-      texte: "une fois par tour, soigne 20 un de tes personnages de Dorohedoro.",
+      texte: "une fois par tour, soigne 30 un de tes personnages de Dorohedoro.",
       effets: [
         {
           type: "activable",
@@ -3570,7 +3566,7 @@ const personnages$1 = [
           effets: [
             {
               type: "soin",
-              valeur: 20,
+              valeur: 30,
               cible: "allie",
               serie: "Dorohedoro"
             }
@@ -3637,7 +3633,7 @@ const personnages$1 = [
           "g",
           "q"
         ],
-        degats: 30,
+        degats: 40,
         effet: "+30 si Yu a subi des dégâts au dernier tour adverse.",
         effets: [
           {
@@ -3662,11 +3658,11 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Entraîneur",
-      texte: "tes autres personnages de The Boxer font +10 avec leurs attaques.",
+      texte: "tes autres personnages de The Boxer font +20 avec leurs attaques.",
       effets: [
         {
           type: "bonus-serie",
-          valeur: 10
+          valeur: 20
         }
       ]
     },
@@ -3676,7 +3672,7 @@ const personnages$1 = [
         cout: [
           "q"
         ],
-        degats: 20,
+        degats: 30,
         effet: "",
         effets: []
       }
@@ -3699,7 +3695,7 @@ const personnages$1 = [
           "z",
           "q"
         ],
-        degats: 40,
+        degats: 50,
         effet: "",
         effets: []
       }
@@ -3723,7 +3719,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 60,
+        degats: 70,
         effet: "",
         effets: []
       }
@@ -3746,7 +3742,7 @@ const personnages$1 = [
           "t",
           "q"
         ],
-        degats: 30,
+        degats: 40,
         effet: "il subit 20 dégâts de moins jusqu'à ton prochain tour.",
         effets: [
           {
@@ -3774,7 +3770,7 @@ const personnages$1 = [
           "e",
           "q"
         ],
-        degats: 40,
+        degats: 50,
         effet: "",
         effets: []
       }
@@ -3798,7 +3794,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 60,
+        degats: 70,
         effet: "pile : la cible est Étourdie.",
         effets: [
           {
@@ -5830,7 +5826,7 @@ const personnages = [
           "t",
           "q"
         ],
-        degats: 200,
+        degats: 180,
         effet: "Gon subit 80 dégâts.",
         effets: [
           {
@@ -5940,7 +5936,7 @@ const personnages = [
     rang: "A",
     element: "neutre",
     type: "eveille",
-    pv: 120,
+    pv: 130,
     repli: 1,
     talent: {
       nom: "Télépathie",

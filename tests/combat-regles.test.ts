@@ -270,7 +270,7 @@ describe('états', () => {
 
 describe('cartes Soutien', () => {
   it('Objets : autant que voulu ; Soutien : un par tour, jamais au premier tour du premier joueur', () => {
-    const p = partie({ actif: EINAR, degats: [60], main: ['sou-onigiri', 'sou-onigiri', 'sou-entrainement-intensif', 'sou-mentor'], deck: [EINAR, EINAR, 'per-008'] }, { actif: EINAR });
+    const p = partie({ actif: EINAR, degats: [40], main: ['sou-onigiri', 'sou-onigiri', 'sou-entrainement-intensif', 'sou-mentor'], deck: [EINAR, EINAR, 'per-008'] }, { actif: EINAR });
     let q = jouer(p, { type: 'jouer', joueur: 0, carte: 'A-sou-onigiri', choix: { cible: 'A-per-066' } }).p;
     q = jouer(q, { type: 'jouer', joueur: 0, carte: 'A-sou-onigiri#2', choix: { cible: 'A-per-066' } }).p;
     expect(degats(q, 'A-per-066')).toBe(0);

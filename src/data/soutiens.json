@@ -5,12 +5,12 @@
    "id": "sou-onigiri",
    "nom": "Onigiri",
    "type": "objet",
-   "texte": "Soigne 30 un de tes personnages.",
+   "texte": "Soigne 20 un de tes personnages.",
    "finition": "commune",
    "effets": [
     {
      "type": "soin",
-     "valeur": 30,
+     "valeur": 20,
      "cible": "allie"
     }
    ]
