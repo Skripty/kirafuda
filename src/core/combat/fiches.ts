@@ -70,8 +70,8 @@ const entier = (x: unknown, min: number, max: number): x is number => typeof x =
 
 /**
  * Vérifie les données de combat d'un personnage (ou d'une fiche) : type selon le rang (Éveillés uniquement en
- * rang A et S, Bases en C et B), PV, Repli, talent, 1 ou 2 attaques aux coûts valides (énergies de son élément
- * et ◇ ; ◇ seulement pour un Neutre) et aux dégâts lisibles.
+ * rang A et S, Bases et Héros en C et B), PV, Repli, talent, 1 ou 2 attaques aux coûts valides (énergies de son
+ * élément et ◇ ; ◇ seulement pour un Neutre et pour tout personnage de rang C) et aux dégâts lisibles.
  */
 export function validerCombat(p: Partial<Personnage> & { id?: unknown }, ref: string, exigerEffets = true): string[] {
   const e: string[] = [];
@@ -106,6 +106,8 @@ export function validerCombat(p: Partial<Personnage> & { id?: unknown }, ref: st
       for (const c of a.cout as unknown[]) {
         if (typeof c !== 'string' || !Object.hasOwn(ENERGIES, c)) e.push(`${ra} : énergie « ${String(c)} » inconnue (f, e, g, z, v, t, l, n ou q).`);
         // Élément inconnu : déjà signalé par la validation de l'extension, pas de seconde erreur ici.
+        // Rang C : toutes ses attaques ne coûtent que des ◇ (3e équilibrage).
+        else if (c !== 'q' && p.rang === 'C') e.push(`${ra} : énergie « ${c} » ; un personnage de rang C ne paie qu'en ◇ (q).`);
         else if (c !== 'q' && c !== propre && p.element && Object.hasOwn(ELEMENTS, p.element)) {
           e.push(`${ra} : énergie « ${c} » ; seules ${propre ? `« ${propre} » (${ELEMENTS[p.element!].nom}) et ` : ''}« q » (◇) sont permises.`);
         }

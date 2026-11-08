@@ -47,6 +47,12 @@ export const PERSONNAGES_STANDARD = 7;
 /** Au moins autant de Bases (ou Héros) de la série dans un deck tiré (séries de plus de 7 personnages). */
 const BASES_MIN = 3;
 
+/**
+ * Compléments imposés : Spy x Family garde Fern et Kim Dokja, ceux du 1er rapport d'équilibrage, pour comparer
+ * à conditions égales (Kim Dokja est devenu Héros depuis : il n'aurait plus été tiré parmi les Bases).
+ */
+export const COMPLEMENTS_FIXES: Record<string, string[]> = { 'Spy x Family': ['per-050', 'per-075'] };
+
 /** Mélange déterministe (Fisher-Yates). */
 function melangerAvec<T>(rng: Rng, l: T[]): T[] {
   const r = [...l];
@@ -62,6 +68,8 @@ export function complementDe(serie: string, bib: Bibliotheque): Personnage[] {
   const persos = [...bib.personnages.values()].filter((p) => p.serie === serie);
   const manque = PERSONNAGES_STANDARD - persos.length;
   if (manque <= 0) return [];
+  const fixe = COMPLEMENTS_FIXES[serie];
+  if (fixe) return fixe.map((id) => bib.personnages.get(id)).filter((p): p is Personnage => !!p).slice(0, manque);
   const elements = new Set(persos.map((p) => p.element));
   const candidats = [...bib.personnages.values()]
     .filter((p) => p.serie !== serie && p.type === 'base' && elements.has(p.element))

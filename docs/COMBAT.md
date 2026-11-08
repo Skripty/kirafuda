@@ -46,6 +46,8 @@ Quand l'actif est mis K.-O., son propriétaire choisit un remplaçant sur le ban
 
 Éléments : feu, eau, glace, foudre, vent, terre, lumière, ténèbres, neutre. Coûts dans les fiches : `f` Feu, `e` Eau, `g` Glace, `z` Foudre, `v` Vent, `t` Terre, `l` Lumière, `n` Ténèbres, `q` énergie quelconque (◇). Il n'y a pas d'énergie « neutre » : les personnages Neutres paient en ◇.
 
+**Rang C** : toutes les attaques des personnages de rang C (Bases de rang C et Héros de rang C) ne coûtent que des ◇. Ils jouent dans n'importe quel deck, quels que soient ses éléments.
+
 ## Dégâts
 
 Ordre de calcul d'une attaque : dégâts de base → bonus de l'attaque et des talents de l'attaquant → **Faiblesse +20** → réductions et boucliers de la cible (sauf effet « ignore les boucliers ») → minimum 0. Les dégâts au banc ne prennent pas la Faiblesse.

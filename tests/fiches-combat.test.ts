@@ -82,6 +82,14 @@ describe('validation des données de combat', () => {
     expect(validerCombat(avec({ element: 'neutre', attaques: [{ ...attaque, cout: ['q', 'q'] }] }), 'x')).toEqual([]);
   });
 
+  it('rang C : toutes les attaques ne coûtent que des ◇', () => {
+    const rangC = (lancementJson as unknown as Extension).personnages.concat((renfortsJson as unknown as Extension).personnages).filter((p) => p.rang === 'C');
+    expect(rangC.length).toBeGreaterThan(50);
+    for (const p of rangC) for (const a of p.attaques) expect(a.cout.every((c) => c === 'q'), `${p.nom} : ${a.nom}`).toBe(true);
+    const thors = rangC.find((p) => p.id === 'per-067')!; // Eau, rang C
+    expect(validerCombat({ ...thors, attaques: [{ ...thors.attaques[0]!, cout: ['e', 'q'] }] }, 'x').join(' ')).toMatch(/rang C ne paie qu'en ◇/);
+  });
+
   it('1 ou 2 attaques, PV, Repli, talent et dégâts lisibles', () => {
     expect(validerCombat(avec({ attaques: [] }), 'x').join(' ')).toMatch(/1 ou 2 attaques/);
     expect(validerCombat(avec({ pv: 75 }), 'x').join(' ')).toMatch(/PV/);

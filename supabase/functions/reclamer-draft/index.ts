@@ -1,5 +1,5 @@
 // Fonction Supabase « reclamer-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : 4069ccee1cd68c56
+// Empreinte des sources : 2019f8cdb4ebf2b5
 // Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/draft.ts, src/core/regles.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/reclamer-draft.ts
 // @ts-nocheck
 const id$2 = "booster-lancement";
@@ -883,7 +883,7 @@ const personnages$1 = [
           "f",
           "q"
         ],
-        degats: 50,
+        degats: 40,
         effet: "",
         effets: []
       },
@@ -952,7 +952,7 @@ const personnages$1 = [
           "n",
           "q"
         ],
-        degats: 90,
+        degats: 80,
         effet: "si la cible est mise K.-O., soigne 30 Makima.",
         effets: [
           {
@@ -997,11 +997,11 @@ const personnages$1 = [
           "q"
         ],
         degats: 100,
-        effet: "+40 si Power a la moitié de ses PV ou moins.",
+        effet: "+30 si Power a la moitié de ses PV ou moins.",
         effets: [
           {
             type: "bonus",
-            valeur: 40,
+            valeur: 30,
             si: {
               si: "soi-moitie-pv"
             }
@@ -1107,7 +1107,7 @@ const personnages$1 = [
       {
         nom: "Démon Fantôme",
         cout: [
-          "v"
+          "q"
         ],
         degats: 20,
         effet: "l'actif adverse ne peut pas se replier au prochain tour.",
@@ -1133,7 +1133,7 @@ const personnages$1 = [
       {
         nom: "Quatre flèches",
         cout: [
-          "z",
+          "q",
           "q"
         ],
         degats: 40,
@@ -1483,7 +1483,7 @@ const personnages$1 = [
       {
         nom: "Titan Cuirassé",
         cout: [
-          "t",
+          "q",
           "q"
         ],
         degats: 30,
@@ -1511,7 +1511,7 @@ const personnages$1 = [
       {
         nom: "Reine des murs",
         cout: [
-          "l"
+          "q"
         ],
         degats: "",
         effet: "soigne 30 un de tes personnages de L'Attaque des Titans.",
@@ -1614,7 +1614,7 @@ const personnages$1 = [
           "f",
           "q"
         ],
-        degats: 80,
+        degats: 70,
         effet: "la cible est Brûlée.",
         effets: [
           {
@@ -1837,7 +1837,7 @@ const personnages$1 = [
           "f",
           "q"
         ],
-        degats: 50,
+        degats: 40,
         effet: "",
         effets: []
       },
@@ -2034,7 +2034,7 @@ const personnages$1 = [
       {
         nom: "Goliath",
         cout: [
-          "t",
+          "q",
           "q",
           "q"
         ],
@@ -2076,7 +2076,7 @@ const personnages$1 = [
       {
         nom: "Coup de tonnerre",
         cout: [
-          "z",
+          "q",
           "q"
         ],
         degats: 30,
@@ -2099,7 +2099,7 @@ const personnages$1 = [
       {
         nom: "Ombre originelle",
         cout: [
-          "n",
+          "q",
           "q"
         ],
         degats: 30,
@@ -2127,7 +2127,7 @@ const personnages$1 = [
       {
         nom: "Grand maréchal",
         cout: [
-          "g",
+          "q",
           "q"
         ],
         degats: 40,
@@ -2266,7 +2266,7 @@ const personnages$1 = [
       {
         nom: "Coup de hache éclair",
         cout: [
-          "t",
+          "q",
           "q",
           "q"
         ],
@@ -2324,7 +2324,7 @@ const personnages$1 = [
       {
         nom: "Reelseiden",
         cout: [
-          "v",
+          "q",
           "q"
         ],
         degats: 40,
@@ -2368,7 +2368,7 @@ const personnages$1 = [
       {
         nom: "Magie primordiale",
         cout: [
-          "l",
+          "q",
           "q",
           "q"
         ],
@@ -2392,7 +2392,7 @@ const personnages$1 = [
       {
         nom: "Waldgose",
         cout: [
-          "f",
+          "q",
           "q"
         ],
         degats: 40,
@@ -2539,7 +2539,7 @@ const personnages$1 = [
       {
         nom: "Possession",
         cout: [
-          "n"
+          "q"
         ],
         degats: 20,
         effet: "",
@@ -2561,7 +2561,7 @@ const personnages$1 = [
       {
         nom: "Épée psychique",
         cout: [
-          "z",
+          "q",
           "q"
         ],
         degats: 50,
@@ -2584,7 +2584,7 @@ const personnages$1 = [
       {
         nom: "Lame psychique",
         cout: [
-          "g",
+          "q",
           "q"
         ],
         degats: 30,
@@ -2616,8 +2616,8 @@ const personnages$1 = [
       {
         nom: "Psychique ultime",
         cout: [
-          "t",
-          "t",
+          "q",
+          "q",
           "q",
           "q"
         ],
@@ -2676,7 +2676,7 @@ const personnages$1 = [
           "v",
           "q"
         ],
-        degats: 90,
+        degats: 80,
         effet: "",
         effets: []
       }
@@ -2737,7 +2737,7 @@ const personnages$1 = [
       {
         nom: "Ordre royal",
         cout: [
-          "g"
+          "q"
         ],
         degats: 10,
         effet: "",
@@ -2759,7 +2759,7 @@ const personnages$1 = [
       {
         nom: "Force brute",
         cout: [
-          "t",
+          "q",
           "q",
           "q"
         ],
@@ -2814,7 +2814,7 @@ const personnages$1 = [
       {
         nom: "Le vrai guerrier",
         cout: [
-          "e",
+          "q",
           "q"
         ],
         degats: 40,
@@ -2906,7 +2906,7 @@ const personnages$1 = [
       {
         nom: "Lance de glace",
         cout: [
-          "g"
+          "q"
         ],
         degats: 30,
         effet: "",
@@ -2928,7 +2928,7 @@ const personnages$1 = [
       {
         nom: "Lance du chasseur",
         cout: [
-          "z",
+          "q",
           "q"
         ],
         degats: 50,
@@ -2987,7 +2987,7 @@ const personnages$1 = [
       {
         nom: "Coup de la princesse",
         cout: [
-          "e",
+          "q",
           "q"
         ],
         degats: 50,
@@ -3010,7 +3010,7 @@ const personnages$1 = [
       {
         nom: "Shinsu du Rang",
         cout: [
-          "l",
+          "q",
           "q",
           "q"
         ],
@@ -3034,7 +3034,7 @@ const personnages$1 = [
       {
         nom: "Black March",
         cout: [
-          "f",
+          "q",
           "q"
         ],
         degats: 40,
@@ -3120,7 +3120,7 @@ const personnages$1 = [
       {
         nom: "Épée du Roi démon",
         cout: [
-          "f",
+          "q",
           "q",
           "q"
         ],
@@ -3144,7 +3144,7 @@ const personnages$1 = [
       {
         nom: "Réécriture",
         cout: [
-          "v"
+          "q"
         ],
         degats: "",
         effet: "pioche 2 cartes.",
@@ -3171,7 +3171,7 @@ const personnages$1 = [
       {
         nom: "Jugement",
         cout: [
-          "l",
+          "q",
           "q"
         ],
         degats: 50,
@@ -3214,7 +3214,7 @@ const personnages$1 = [
       {
         nom: "Coup d'épaule",
         cout: [
-          "t",
+          "q",
           "q"
         ],
         degats: 30,
@@ -3237,7 +3237,7 @@ const personnages$1 = [
       {
         nom: "Dresseuse",
         cout: [
-          "e",
+          "q",
           "q"
         ],
         degats: 30,
@@ -3269,7 +3269,7 @@ const personnages$1 = [
       {
         nom: "Complot",
         cout: [
-          "n",
+          "q",
           "q"
         ],
         degats: 40,
@@ -3363,7 +3363,7 @@ const personnages$1 = [
       {
         nom: "Coup de pied",
         cout: [
-          "z"
+          "q"
         ],
         degats: 20,
         effet: "",
@@ -3385,7 +3385,7 @@ const personnages$1 = [
       {
         nom: "Kung-fu",
         cout: [
-          "f",
+          "q",
           "q"
         ],
         degats: 50,
@@ -3408,7 +3408,7 @@ const personnages$1 = [
       {
         nom: "Couteau multifonction",
         cout: [
-          "n",
+          "q",
           "q"
         ],
         degats: 40,
@@ -3436,7 +3436,7 @@ const personnages$1 = [
       {
         nom: "Scie géante",
         cout: [
-          "g",
+          "q",
           "q",
           "q"
         ],
@@ -3460,7 +3460,7 @@ const personnages$1 = [
       {
         nom: "Bâton télescopique",
         cout: [
-          "z",
+          "q",
           "q"
         ],
         degats: 40,
@@ -3555,7 +3555,7 @@ const personnages$1 = [
       {
         nom: "Coup du dragon",
         cout: [
-          "l",
+          "q",
           "q"
         ],
         degats: 30,
@@ -3578,7 +3578,7 @@ const personnages$1 = [
       {
         nom: "Magie des champignons",
         cout: [
-          "n",
+          "q",
           "q",
           "q"
         ],
@@ -3607,7 +3607,7 @@ const personnages$1 = [
       {
         nom: "Démembrement",
         cout: [
-          "f",
+          "q",
           "q"
         ],
         degats: 50,
@@ -3647,7 +3647,7 @@ const personnages$1 = [
       {
         nom: "Poing de Noi",
         cout: [
-          "g",
+          "q",
           "q",
           "q"
         ],
@@ -3699,7 +3699,7 @@ const personnages$1 = [
       {
         nom: "Contre parfait",
         cout: [
-          "g",
+          "q",
           "q"
         ],
         degats: 40,
@@ -3717,8 +3717,8 @@ const personnages$1 = [
       {
         nom: "Combinaison du Monstre",
         cout: [
-          "g",
-          "g",
+          "q",
+          "q",
           "q"
         ],
         degats: 90,
@@ -3772,7 +3772,7 @@ const personnages$1 = [
       {
         nom: "Jab éclair",
         cout: [
-          "z",
+          "q",
           "q"
         ],
         degats: 50,
@@ -3795,7 +3795,7 @@ const personnages$1 = [
       {
         nom: "Uppercut brutal",
         cout: [
-          "f",
+          "q",
           "q",
           "q"
         ],
@@ -3819,7 +3819,7 @@ const personnages$1 = [
       {
         nom: "Garde de fer",
         cout: [
-          "t",
+          "q",
           "q"
         ],
         degats: 40,
@@ -3847,7 +3847,7 @@ const personnages$1 = [
       {
         nom: "Crochet",
         cout: [
-          "e",
+          "q",
           "q"
         ],
         degats: 50,
@@ -3870,7 +3870,7 @@ const personnages$1 = [
       {
         nom: "Coup de massue",
         cout: [
-          "e",
+          "q",
           "q",
           "q"
         ],
@@ -6338,7 +6338,7 @@ const personnages = [
       {
         nom: "Malédiction de la vitesse",
         cout: [
-          "n"
+          "q"
         ],
         degats: 20,
         effet: "la cible est Maudite.",
@@ -6380,7 +6380,7 @@ const personnages = [
       {
         nom: "Exorcisme",
         cout: [
-          "l",
+          "q",
           "q"
         ],
         degats: 30,
@@ -6403,7 +6403,7 @@ const personnages = [
       {
         nom: "Acrobatie",
         cout: [
-          "l",
+          "q",
           "q"
         ],
         degats: 30,
@@ -6435,7 +6435,7 @@ const personnages = [
       {
         nom: "Œil maléfique",
         cout: [
-          "t",
+          "q",
           "q",
           "q"
         ],
@@ -6464,7 +6464,7 @@ const personnages = [
       {
         nom: "Arme du Kaiju n°6",
         cout: [
-          "g",
+          "q",
           "q"
         ],
         degats: 40,
@@ -6496,7 +6496,7 @@ const personnages = [
       {
         nom: "Hache de combat",
         cout: [
-          "z",
+          "q",
           "q"
         ],
         degats: 40,
@@ -6528,7 +6528,7 @@ const personnages = [
       {
         nom: "Double lame",
         cout: [
-          "v",
+          "q",
           "q"
         ],
         degats: 50,
@@ -6629,7 +6629,7 @@ const personnages = [
       {
         nom: "Dribble du monstre",
         cout: [
-          "e"
+          "q"
         ],
         degats: 20,
         effet: "échange ensuite Bachira avec un de tes personnages du banc.",
@@ -6655,7 +6655,7 @@ const personnages = [
       {
         nom: "Contrôle parfait",
         cout: [
-          "g",
+          "q",
           "q"
         ],
         degats: 40,

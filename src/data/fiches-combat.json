@@ -820,7 +820,7 @@
       "f",
       "q"
      ],
-     "degats": 50,
+     "degats": 40,
      "effet": "",
      "effets": []
     },
@@ -890,7 +890,7 @@
       "n",
       "q"
      ],
-     "degats": 90,
+     "degats": 80,
      "effet": "si la cible est mise K.-O., soigne 30 Makima.",
      "effets": [
       {
@@ -936,11 +936,11 @@
       "q"
      ],
      "degats": 100,
-     "effet": "+40 si Power a la moitié de ses PV ou moins.",
+     "effet": "+30 si Power a la moitié de ses PV ou moins.",
      "effets": [
       {
        "type": "bonus",
-       "valeur": 40,
+       "valeur": 30,
        "si": {
         "si": "soi-moitie-pv"
        }
@@ -1049,7 +1049,7 @@
     {
      "nom": "Démon Fantôme",
      "cout": [
-      "v"
+      "q"
      ],
      "degats": 20,
      "effet": "l'actif adverse ne peut pas se replier au prochain tour.",
@@ -1076,7 +1076,7 @@
     {
      "nom": "Quatre flèches",
      "cout": [
-      "z",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -1434,7 +1434,7 @@
     {
      "nom": "Titan Cuirassé",
      "cout": [
-      "t",
+      "q",
       "q"
      ],
      "degats": 30,
@@ -1463,7 +1463,7 @@
     {
      "nom": "Reine des murs",
      "cout": [
-      "l"
+      "q"
      ],
      "degats": "",
      "effet": "soigne 30 un de tes personnages de L'Attaque des Titans.",
@@ -1568,7 +1568,7 @@
       "f",
       "q"
      ],
-     "degats": 80,
+     "degats": 70,
      "effet": "la cible est Brûlée.",
      "effets": [
       {
@@ -1611,7 +1611,7 @@
       "f",
       "q"
      ],
-     "degats": 50,
+     "degats": 40,
      "effet": "",
      "effets": []
     },
@@ -1999,7 +1999,7 @@
     {
      "nom": "Goliath",
      "cout": [
-      "t",
+      "q",
       "q",
       "q"
      ],
@@ -2042,7 +2042,7 @@
     {
      "nom": "Coup de tonnerre",
      "cout": [
-      "z",
+      "q",
       "q"
      ],
      "degats": 30,
@@ -2066,7 +2066,7 @@
     {
      "nom": "Ombre originelle",
      "cout": [
-      "n",
+      "q",
       "q"
      ],
      "degats": 30,
@@ -2095,7 +2095,7 @@
     {
      "nom": "Grand maréchal",
      "cout": [
-      "g",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -2272,7 +2272,7 @@
     {
      "nom": "Coup de hache éclair",
      "cout": [
-      "t",
+      "q",
       "q",
       "q"
      ],
@@ -2297,7 +2297,7 @@
     {
      "nom": "Reelseiden",
      "cout": [
-      "v",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -2342,7 +2342,7 @@
     {
      "nom": "Magie primordiale",
      "cout": [
-      "l",
+      "q",
       "q",
       "q"
      ],
@@ -2367,7 +2367,7 @@
     {
      "nom": "Waldgose",
      "cout": [
-      "f",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -2517,7 +2517,7 @@
     {
      "nom": "Possession",
      "cout": [
-      "n"
+      "q"
      ],
      "degats": 20,
      "effet": "",
@@ -2540,7 +2540,7 @@
     {
      "nom": "Épée psychique",
      "cout": [
-      "z",
+      "q",
       "q"
      ],
      "degats": 50,
@@ -2564,7 +2564,7 @@
     {
      "nom": "Lame psychique",
      "cout": [
-      "g",
+      "q",
       "q"
      ],
      "degats": 30,
@@ -2597,8 +2597,8 @@
     {
      "nom": "Psychique ultime",
      "cout": [
-      "t",
-      "t",
+      "q",
+      "q",
       "q",
       "q"
      ],
@@ -2658,7 +2658,7 @@
       "v",
       "q"
      ],
-     "degats": 90,
+     "degats": 80,
      "effet": "",
      "effets": []
     }
@@ -2721,7 +2721,7 @@
     {
      "nom": "Ordre royal",
      "cout": [
-      "g"
+      "q"
      ],
      "degats": 10,
      "effet": "",
@@ -2744,7 +2744,7 @@
     {
      "nom": "Force brute",
      "cout": [
-      "t",
+      "q",
       "q",
       "q"
      ],
@@ -2801,7 +2801,7 @@
     {
      "nom": "Le vrai guerrier",
      "cout": [
-      "e",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -2895,7 +2895,7 @@
     {
      "nom": "Lance de glace",
      "cout": [
-      "g"
+      "q"
      ],
      "degats": 30,
      "effet": "",
@@ -2918,7 +2918,7 @@
     {
      "nom": "Lance du chasseur",
      "cout": [
-      "z",
+      "q",
       "q"
      ],
      "degats": 50,
@@ -2979,7 +2979,7 @@
     {
      "nom": "Coup de la princesse",
      "cout": [
-      "e",
+      "q",
       "q"
      ],
      "degats": 50,
@@ -3003,7 +3003,7 @@
     {
      "nom": "Shinsu du Rang",
      "cout": [
-      "l",
+      "q",
       "q",
       "q"
      ],
@@ -3028,7 +3028,7 @@
     {
      "nom": "Black March",
      "cout": [
-      "f",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -3116,7 +3116,7 @@
     {
      "nom": "Épée du Roi démon",
      "cout": [
-      "f",
+      "q",
       "q",
       "q"
      ],
@@ -3141,7 +3141,7 @@
     {
      "nom": "Réécriture",
      "cout": [
-      "v"
+      "q"
      ],
      "degats": "",
      "effet": "pioche 2 cartes.",
@@ -3169,7 +3169,7 @@
     {
      "nom": "Jugement",
      "cout": [
-      "l",
+      "q",
       "q"
      ],
      "degats": 50,
@@ -3213,7 +3213,7 @@
     {
      "nom": "Coup d'épaule",
      "cout": [
-      "t",
+      "q",
       "q"
      ],
      "degats": 30,
@@ -3237,7 +3237,7 @@
     {
      "nom": "Dresseuse",
      "cout": [
-      "e",
+      "q",
       "q"
      ],
      "degats": 30,
@@ -3270,7 +3270,7 @@
     {
      "nom": "Complot",
      "cout": [
-      "n",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -3366,7 +3366,7 @@
     {
      "nom": "Coup de pied",
      "cout": [
-      "z"
+      "q"
      ],
      "degats": 20,
      "effet": "",
@@ -3389,7 +3389,7 @@
     {
      "nom": "Kung-fu",
      "cout": [
-      "f",
+      "q",
       "q"
      ],
      "degats": 50,
@@ -3413,7 +3413,7 @@
     {
      "nom": "Couteau multifonction",
      "cout": [
-      "n",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -3442,7 +3442,7 @@
     {
      "nom": "Scie géante",
      "cout": [
-      "g",
+      "q",
       "q",
       "q"
      ],
@@ -3467,7 +3467,7 @@
     {
      "nom": "Bâton télescopique",
      "cout": [
-      "z",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -3564,7 +3564,7 @@
     {
      "nom": "Coup du dragon",
      "cout": [
-      "l",
+      "q",
       "q"
      ],
      "degats": 30,
@@ -3588,7 +3588,7 @@
     {
      "nom": "Magie des champignons",
      "cout": [
-      "n",
+      "q",
       "q",
       "q"
      ],
@@ -3618,7 +3618,7 @@
     {
      "nom": "Démembrement",
      "cout": [
-      "f",
+      "q",
       "q"
      ],
      "degats": 50,
@@ -3659,7 +3659,7 @@
     {
      "nom": "Poing de Noi",
      "cout": [
-      "g",
+      "q",
       "q",
       "q"
      ],
@@ -3713,7 +3713,7 @@
     {
      "nom": "Contre parfait",
      "cout": [
-      "g",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -3731,8 +3731,8 @@
     {
      "nom": "Combinaison du Monstre",
      "cout": [
-      "g",
-      "g",
+      "q",
+      "q",
       "q"
      ],
      "degats": 90,
@@ -3788,7 +3788,7 @@
     {
      "nom": "Jab éclair",
      "cout": [
-      "z",
+      "q",
       "q"
      ],
      "degats": 50,
@@ -3812,7 +3812,7 @@
     {
      "nom": "Uppercut brutal",
      "cout": [
-      "f",
+      "q",
       "q",
       "q"
      ],
@@ -3837,7 +3837,7 @@
     {
      "nom": "Garde de fer",
      "cout": [
-      "t",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -3866,7 +3866,7 @@
     {
      "nom": "Crochet",
      "cout": [
-      "e",
+      "q",
       "q"
      ],
      "degats": 50,
@@ -3890,7 +3890,7 @@
     {
      "nom": "Coup de massue",
      "cout": [
-      "e",
+      "q",
       "q",
       "q"
      ],
@@ -4200,7 +4200,7 @@
     {
      "nom": "Malédiction de la vitesse",
      "cout": [
-      "n"
+      "q"
      ],
      "degats": 20,
      "effet": "la cible est Maudite.",
@@ -4243,7 +4243,7 @@
     {
      "nom": "Exorcisme",
      "cout": [
-      "l",
+      "q",
       "q"
      ],
      "degats": 30,
@@ -4267,7 +4267,7 @@
     {
      "nom": "Acrobatie",
      "cout": [
-      "l",
+      "q",
       "q"
      ],
      "degats": 30,
@@ -4300,7 +4300,7 @@
     {
      "nom": "Œil maléfique",
      "cout": [
-      "t",
+      "q",
       "q",
       "q"
      ],
@@ -4396,7 +4396,7 @@
     {
      "nom": "Arme du Kaiju n°6",
      "cout": [
-      "g",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -4429,7 +4429,7 @@
     {
      "nom": "Hache de combat",
      "cout": [
-      "z",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -4462,7 +4462,7 @@
     {
      "nom": "Double lame",
      "cout": [
-      "v",
+      "q",
       "q"
      ],
      "degats": 50,
@@ -4734,7 +4734,7 @@
     {
      "nom": "Dribble du monstre",
      "cout": [
-      "e"
+      "q"
      ],
      "degats": 20,
      "effet": "échange ensuite Bachira avec un de tes personnages du banc.",
@@ -4761,7 +4761,7 @@
     {
      "nom": "Contrôle parfait",
      "cout": [
-      "g",
+      "q",
       "q"
      ],
      "degats": 40,
@@ -4988,7 +4988,7 @@
     {
      "nom": "Docteur de bord",
      "cout": [
-      "e"
+      "q"
      ],
      "degats": "",
      "effet": "soigne 30 un de tes personnages."
@@ -4996,7 +4996,7 @@
     {
      "nom": "Point de garde",
      "cout": [
-      "e",
+      "q",
       "q",
       "q"
      ],

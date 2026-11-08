@@ -71,11 +71,15 @@ describe('decks standardisés (simulation d’équilibrage)', () => {
         const bases = d!.cartes.slice(0, 14).filter((id) => bib.personnages.get(id)!.serie === s && bib.personnages.get(id)!.type === 'base');
         expect(new Set(bases).size, s).toBeGreaterThanOrEqual(Math.min(3, [...bib.personnages.values()].filter((p) => p.serie === s && p.type === 'base').length));
       }
-      // Compléments : Bases d'autres séries partageant un élément, toujours les mêmes.
+      // Compléments : personnages posables d'autres séries partageant un élément, toujours les mêmes.
       const c = complementDe(s, bib);
       expect(complementDe(s, bib)).toEqual(c);
       const elements = new Set([...bib.personnages.values()].filter((p) => p.serie === s).map((p) => p.element));
-      for (const p of c) { expect(p.serie).not.toBe(s); expect(p.type).toBe('base'); expect(elements.has(p.element)).toBe(true); }
+      for (const p of c) { expect(p.serie).not.toBe(s); expect(['base', 'heros']).toContain(p.type); expect(elements.has(p.element)).toBe(true); }
+    }
+    // Spy x Family garde Fern et Kim Dokja (1er rapport), pour comparer à conditions égales.
+    expect(complementDe('Spy x Family', bib).map((p) => p.nom)).toEqual(['Fern', 'Kim Dokja']);
+    {
     }
   });
 });

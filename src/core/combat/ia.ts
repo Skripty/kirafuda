@@ -68,8 +68,8 @@ export function iaGloutonne(graine: string): IA {
       // Utile : une de ses attaques demande cette énergie (ou ◇) et reste payable avec les éléments du deck.
       const codesDuDeck = new Set(['q', ...J.elements.map((e) => CODE[e])]);
       const utile = (x: PersoEnJeu): boolean => bib.personnages.get(x.id)!.attaques
-        .some((a) => a.cout.every((c) => codesDuDeck.has(c)) && a.cout.some((c) => c === 'q' || c === CODE[el]));
-      const debloque = (x: PersoEnJeu): boolean => !payable(bib, x, x.energies) && payable(bib, x, [...x.energies, el]);
+        .some((a) => fait(a) && a.cout.every((c) => codesDuDeck.has(c)) && a.cout.some((c) => c === 'q' || c === CODE[el]));
+      const debloque = (x: PersoEnJeu): boolean => bib.personnages.get(x.id)!.attaques.some((a) => fait(a) && !peutPayer(x.energies, a.cout) && peutPayer([...x.energies, el], a.cout));
       // Actif bloqué (aucune attaque payable avec les éléments du deck) : juste assez d'énergie pour pouvoir se replier.
       const actif = J.actif;
       if (actif && bloque(bib, actif, J.elements) && J.banc.length && actif.energies.length < bib.personnages.get(actif.id)!.repli) {
@@ -94,7 +94,12 @@ export function iaGloutonne(graine: string): IA {
     if (talents.length) {
       const meilleur = talents.map((a) => ({ a, g: gain(partie, bib, a) })).sort((x, y) => y.g - x.g)[0]!;
       if (meilleur.g > 0) return meilleur.a;
-      const sansCout = talents.filter((a) => !a.choix.defausse);
+      // Au hasard, seulement les talents gratuits (un talent qui défausse une carte ou une énergie se paie).
+      const sansCout = talents.filter((a) => {
+        const x = [J.actif, ...J.banc].find((y) => y?.uid === a.source);
+        const t = x && bib.personnages.get(x.id)!.talent?.effets?.find((e) => e.type === 'activable');
+        return !a.choix.defausse && !(t && t.type === 'activable' && t.cout);
+      });
       if (sansCout.length) return auHasard(sansCout);
     }
     // Repli : l'actif ne peut pas attaquer mais un personnage du banc le pourrait.
@@ -108,9 +113,18 @@ export function iaGloutonne(graine: string): IA {
         return [...replis].sort((a, b) => charge(b.cible) - charge(a.cible))[0]!;
       }
     }
-    // Attaque : celle qui fait le plus de dégâts.
+    // Attaque : celle qui fait le plus de dégâts. Si elle n'en fait aucun (ex. Réécriture) et qu'un personnage du banc
+    // a une attaque payable qui fait des dégâts, se replier d'abord.
     const attaques = de('attaquer');
-    if (attaques.length) return attaques.map((a) => ({ a, g: gain(partie, bib, a) })).sort((x, y) => y.g - x.g)[0]!.a;
+    const meilleure = attaques.map((a) => ({ a, g: gain(partie, bib, a) })).sort((x, y) => y.g - x.g)[0];
+    if ((!meilleure || meilleure.g <= 0) && replis.length) {
+      const frappe = replis.find((r) => {
+        const x = J.banc.find((y) => y.uid === r.cible)!;
+        return bib.personnages.get(x.id)!.attaques.some((at) => typeof at.degats === 'number' && at.degats > 0 && peutPayer(x.energies, at.cout));
+      });
+      if (frappe) return frappe;
+    }
+    if (meilleure) return meilleure.a;
     return de('passer')[0] ?? actions[0]!;
   };
 }
@@ -123,3 +137,5 @@ const bloque = (bib: Bibliotheque, x: PersoEnJeu, elements: ElementId[]): boolea
   const codes = new Set(['q', ...elements.map((e) => CODE[e])]);
   return !bib.personnages.get(x.id)!.attaques.some((a) => a.cout.every((c) => codes.has(c)));
 };
+/** L'attaque fait-elle des dégâts ? (Réécriture, Massage spécial, Reine des murs : non) */
+const fait = (a: { degats: number | string }): boolean => (typeof a.degats === 'number' ? a.degats > 0 : a.degats.trim() !== '');

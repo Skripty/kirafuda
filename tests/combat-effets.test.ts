@@ -109,10 +109,10 @@ describe('effets d’attaque', () => {
     const historia = partie({ actif: 'per-032', banc: ['per-025', EINAR], energies: [['lumiere']], degats: [0, 50, 50] }, { actif: EINAR });
     expect(legales(historia).filter((a) => a.type === 'attaquer').map((a) => (a as { choix: { cible?: string } }).choix.cible)).toEqual(['A-per-032', 'A-per-025']); // personnages de L'Attaque des Titans seulement
     expect(degats(attaque(historia, 0, { cible: 'A-per-025' }).p, 'A-per-025')).toBe(20);
-    // Cible : Askeladd (Neutre, 100 PV) ; Contrat fait 90.
+    // Cible : Askeladd (Neutre, 100 PV) ; Contrat fait 80.
     const makima = (d: number) => partie({ actif: 'per-018', energies: [['tenebres', 'tenebres', 'feu']], degats: [40] }, { actif: 'per-063', banc: [THOMAS], degats: [d] });
     expect(degats(attaque(makima(0), 1).p, 'A-per-018')).toBe(40);
-    expect(degats(attaque(makima(10), 1).p, 'A-per-018')).toBe(10);
+    expect(degats(attaque(makima(20), 1).p, 'A-per-018')).toBe(10);
   });
 
   it('bouclier jusqu’à ton prochain tour (Titan Cuirassé : −20)', () => {

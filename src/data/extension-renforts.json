@@ -517,7 +517,7 @@
         {
           "nom": "Malédiction de la vitesse",
           "cout": [
-            "n"
+            "q"
           ],
           "degats": 20,
           "effet": "la cible est Maudite.",
@@ -559,7 +559,7 @@
         {
           "nom": "Exorcisme",
           "cout": [
-            "l",
+            "q",
             "q"
           ],
           "degats": 30,
@@ -582,7 +582,7 @@
         {
           "nom": "Acrobatie",
           "cout": [
-            "l",
+            "q",
             "q"
           ],
           "degats": 30,
@@ -614,7 +614,7 @@
         {
           "nom": "Œil maléfique",
           "cout": [
-            "t",
+            "q",
             "q",
             "q"
           ],
@@ -643,7 +643,7 @@
         {
           "nom": "Arme du Kaiju n°6",
           "cout": [
-            "g",
+            "q",
             "q"
           ],
           "degats": 40,
@@ -675,7 +675,7 @@
         {
           "nom": "Hache de combat",
           "cout": [
-            "z",
+            "q",
             "q"
           ],
           "degats": 40,
@@ -707,7 +707,7 @@
         {
           "nom": "Double lame",
           "cout": [
-            "v",
+            "q",
             "q"
           ],
           "degats": 50,
@@ -808,7 +808,7 @@
         {
           "nom": "Dribble du monstre",
           "cout": [
-            "e"
+            "q"
           ],
           "degats": 20,
           "effet": "échange ensuite Bachira avec un de tes personnages du banc.",
@@ -834,7 +834,7 @@
         {
           "nom": "Contrôle parfait",
           "cout": [
-            "g",
+            "q",
             "q"
           ],
           "degats": 40,
