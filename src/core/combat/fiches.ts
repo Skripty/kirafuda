@@ -15,9 +15,14 @@ export const ENERGIES: Record<CodeEnergie, ElementId | null> = {
 export const codeEnergie = (e: ElementId): CodeEnergie | null =>
   (Object.entries(ENERGIES).find(([, el]) => el === e)?.[0] as CodeEnergie | undefined) ?? null;
 
-export const TYPES_PERSONNAGE: Record<TypePersonnage, { nom: string; rangs: Rang[] }> = {
-  base: { nom: 'Base', rangs: ['C', 'B'] },
-  eveille: { nom: 'Éveillé', rangs: ['A', 'S'] },
+/**
+ * Types de personnage (docs/COMBAT.md) : rangs permis, points rapportés à l'adversaire s'il est mis K.-O.,
+ * et pose directe depuis la main (Base, Héros) ou entrée par Relève seulement (Éveillé).
+ */
+export const TYPES_PERSONNAGE: Record<TypePersonnage, { nom: string; rangs: Rang[]; points: number; posable: boolean }> = {
+  base: { nom: 'Base', rangs: ['C', 'B'], points: 1, posable: true },
+  eveille: { nom: 'Éveillé', rangs: ['A', 'S'], points: 2, posable: false },
+  heros: { nom: 'Héros', rangs: ['C', 'B'], points: 2, posable: true },
 };
 
 /**
@@ -71,8 +76,8 @@ const entier = (x: unknown, min: number, max: number): x is number => typeof x =
 export function validerCombat(p: Partial<Personnage> & { id?: unknown }, ref: string, exigerEffets = true): string[] {
   const e: string[] = [];
   const type = p.type as unknown;
-  if (type !== 'base' && type !== 'eveille') {
-    e.push(`${ref} : type « base » ou « eveille » attendu (fiche de combat manquante ? lance npm run fiches).`);
+  if (type !== 'base' && type !== 'eveille' && type !== 'heros') {
+    e.push(`${ref} : type « base », « eveille » ou « heros » attendu (fiche de combat manquante ? lance npm run fiches).`);
   } else if (p.rang && !TYPES_PERSONNAGE[type].rangs.includes(p.rang)) {
     e.push(`${ref} : un ${TYPES_PERSONNAGE[type].nom} doit être de rang ${TYPES_PERSONNAGE[type].rangs.join(' ou ')} (rang ${p.rang}).`);
   }

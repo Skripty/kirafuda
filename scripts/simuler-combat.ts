@@ -32,6 +32,8 @@ interface StatPerso extends Stat { degats: number; ko: number }
 const parSerie = new Map(jouables.map((s) => [s, { parties: 0, victoires: 0 } as Stat]));
 const parPerso = new Map<string, StatPerso>();
 const durees: number[] = [];
+/** Points marqués, selon le type du personnage mis K.-O. */
+const pointsParType: Record<string, number> = { base: 0, eveille: 0, heros: 0 };
 const anomalies: string[] = [];
 const debut = Date.now();
 const nom = (id: string): string => bib.personnages.get(id)?.nom ?? bib.soutiens.get(id)?.nom ?? id;
@@ -60,6 +62,7 @@ for (let n = 0; n < PARTIES; n++) {
       const action = ias[qui]!(partie, bib);
       const attaquant = action.type === 'attaquer' ? partie.joueurs[qui].actif?.id : undefined;
       const r = appliquer(partie, action, bib, { verifier: false });
+      for (const e of r.journal) if (e.type === 'ko' && e.cible) pointsParType[bib.personnages.get(partie.cartes[e.cible]!)!.type] += e.valeur ?? 0;
       if (attaquant) {
         const adv = qui === 0 ? 'J2-' : 'J1-';
         const c = contribution.get(attaquant) ?? { degats: 0, ko: 0 };
@@ -107,7 +110,7 @@ for (const [s, v] of [...parSerie].sort((x, y) => taux(y[1]) - taux(x[1]))) {
   const signal = taux(v) > HAUT ? '  ▲ plus de 60 %' : taux(v) < BAS ? '  ▼ moins de 40 %' : '';
   lignes.push(`  ${s.padEnd(32)} ${pc(v.victoires, v.parties).padStart(8)}  (${v.victoires}/${v.parties})${signal}`);
 }
-if (exclues.length) lignes.push('', `Séries sans deck (aucun Base à elles) : ${exclues.join(', ')}.`);
+if (exclues.length) lignes.push('', `Séries sans deck (aucun Base ni Héros à elles) : ${exclues.join(', ')}.`);
 lignes.push('', 'Compléments (séries de moins de 7 personnages, toujours les mêmes) :');
 for (const s of jouables) { const c = complementDe(s, bib); if (c.length) lignes.push(`  ${s.padEnd(32)} ${c.map((p) => `${p.nom} (${p.serie})`).join(', ')}`); }
 
@@ -119,6 +122,14 @@ for (const [id, v] of persos) {
   lignes.push(`  ${`${p.nom} (${p.serie})`.padEnd(48)} ${pc(v.victoires, v.parties).padStart(8)}  ${String(v.parties).padStart(5)} parties  `
     + `${dec(v.degats / v.parties).padStart(6)} dégâts  ${dec(v.ko / v.parties).padStart(4)} K.-O.${signal}`);
 }
+lignes.push('', 'Héros (posés comme un Base, 2 points s’ils sont mis K.-O.) :');
+for (const [id, v] of persos.filter(([id]) => bib.personnages.get(id)!.type === 'heros')) {
+  const p = bib.personnages.get(id)!;
+  lignes.push(`  ${`${p.nom} (${p.serie})`.padEnd(48)} ${pc(v.victoires, v.parties).padStart(8)}  ${dec(v.degats / v.parties).padStart(6)} dégâts  ${dec(v.ko / v.parties).padStart(4)} K.-O.`);
+}
+const totalPoints = Object.values(pointsParType).reduce((x, y) => x + y, 0);
+lignes.push('', `Points marqués (${totalPoints}), selon le personnage mis K.-O. :`);
+lignes.push(`  Éveillés ${pc(pointsParType.eveille!, totalPoints)} · Héros ${pc(pointsParType.heros!, totalPoints)} · Éveillés et Héros ${pc(pointsParType.eveille! + pointsParType.heros!, totalPoints)} · Bases ${pc(pointsParType.base!, totalPoints)}`);
 const hauts = persos.filter(([, v]) => taux(v) > HAUT);
 const bas = persos.filter(([, v]) => taux(v) < BAS);
 lignes.push('', `Au-dessus de 60 % (${hauts.length}) : ${hauts.map(([id, v]) => `${nom(id)} ${pc(v.victoires, v.parties)}`).join(' · ') || 'aucune'}`);

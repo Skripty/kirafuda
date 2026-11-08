@@ -14,9 +14,9 @@ describe('effets d’attaque', () => {
     expect(degats(attaque(p(10), 1).p, 'B-per-045')).toBe(10 + 70);
   });
 
-  it('bonus par personnage du banc (Monarque des Ombres : +20 par personnage sur ton banc)', () => {
+  it('bonus par personnage du banc (Monarque des Ombres : +10 par personnage sur ton banc)', () => {
     const p = partie({ actif: 'per-041', banc: [EINAR, EINAR], energies: [['tenebres', 'tenebres', 'feu', 'feu']] }, { actif: 'ren-per-002' });
-    expect(inflige(attaque(p, 1).journal, 'B-ren-per-002')).toBe(160);
+    expect(inflige(attaque(p, 1).journal, 'B-ren-per-002')).toBe(100 + 20);
   });
 
   it('pièces : 30 par face sur 3 pièces (Rafale), face 50 ou pile rien (Chaos)', () => {
@@ -38,7 +38,7 @@ describe('effets d’attaque', () => {
   it('zone : chaque personnage adverse (Catastravia) ; en plus au banc (Tentacules)', () => {
     const frieren = partie({ actif: 'per-049', energies: [['glace', 'glace', 'feu', 'feu']] }, { actif: EINAR, banc: [THOMAS, EINAR] });
     const q = attaque(frieren, 1).p;
-    expect([degats(q, B), degats(q, 'B-per-045'), degats(q, 'B-per-066#2')]).toEqual([40, 40, 40]);
+    expect([degats(q, B), degats(q, 'B-per-045'), degats(q, 'B-per-066#2')]).toEqual([30, 30, 30]);
     const muzan = partie({ actif: 'per-039', energies: [['tenebres', 'feu', 'feu']] }, { actif: EINAR, banc: [THOMAS] });
     const r = attaque(muzan, 0).p;
     expect([degats(r, B), degats(r, 'B-per-045')]).toEqual([60, 10]);

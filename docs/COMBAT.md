@@ -4,23 +4,26 @@ Référence pour coder le combat. Version complète et discussions : GDD, onglet
 
 ## Principe
 
-Deux joueurs. Chacun a un personnage **actif** et jusqu'à **3 personnages sur le banc**. On gagne **1 point** en mettant K.-O. un Base adverse, **2 points** pour un Éveillé. Le premier à **3 points** gagne. On gagne aussi si l'adversaire n'a plus aucun personnage en jeu.
+Deux joueurs. Chacun a un personnage **actif** et jusqu'à **3 personnages sur le banc**. On gagne **1 point** en mettant K.-O. un Base adverse, **2 points** pour un Éveillé ou un Héros. Le premier à **3 points** gagne. On gagne aussi si l'adversaire n'a plus aucun personnage en jeu.
 
 La rareté ne change rien : toutes les cartes d'un même personnage ont la même fiche (`src/data/fiches-combat.json`).
 
-## Base et Éveillé
+## Base, Éveillé et Héros
 
 | Type | Rangs | Entrée en jeu | Points si K.-O. |
 | --- | --- | --- | --- |
 | Base | C, B | Posé depuis la main, sur le banc ou en actif | 1 |
 | Éveillé | A, S | Uniquement par **Relève** | 2 |
+| Héros | C, B | Posé depuis la main comme un Base, sur le banc ou en actif | 2 |
+
+Un **Héros** est le personnage fort d'une série qui n'a pas d'Éveillé : il entre en jeu tout de suite, mais rapporte 2 points à l'adversaire. Comme un Base, il peut être relevé par un Éveillé de sa série. Héros actuels : Mob, Twenty-Fifth Bam, Kim Dokja, Taro Sakamoto, Caiman, Yu, Thorfinn, Yoichi Isagi.
 
 **Relève** : un Éveillé remplace un de tes personnages en jeu **de la même série**, qui est en jeu depuis le début de ton tour (posé à un tour précédent). L'Éveillé garde les énergies attachées, les dégâts et la position (actif ou banc) du personnage remplacé ; les états sont retirés. Le personnage remplacé va à la défausse. Pas de Relève au premier tour de chaque joueur. Exception : talent « Roi des fléaux » de Sukuna.
 
 ## Mise en place
 
-1. Chaque joueur mélange son deck de 20 cartes et pioche 5 cartes. Une main sans Base : on montre, on remélange, on repioche (garanti : au moins un Base dans la main de départ).
-2. Chaque joueur pose un Base face cachée en actif, et jusqu'à 3 Bases sur le banc.
+1. Chaque joueur mélange son deck de 20 cartes et pioche 5 cartes. Une main sans Base ni Héros : on montre, on remélange, on repioche (garanti : au moins un personnage à poser dans la main de départ).
+2. Chaque joueur pose un Base ou un Héros face cachée en actif, et jusqu'à 3 Bases ou Héros sur le banc.
 3. Pile ou face : le gagnant choisit de commencer ou non.
 
 ## Tour
@@ -29,7 +32,7 @@ La rareté ne change rien : toutes les cartes d'un même personnage ont la même
 2. La zone d'énergie produit 1 énergie, tirée au hasard parmi les 1 à 3 éléments du deck. Le premier joueur n'en reçoit pas à son premier tour. L'énergie non attachée ce tour est perdue.
 3. Dans l'ordre voulu :
    - attacher l'énergie à un de ses personnages (une fois par tour) ;
-   - poser des Bases sur le banc (3 maximum) ;
+   - poser des Bases et des Héros sur le banc (3 maximum) ;
    - faire des Relèves ;
    - jouer des **Objets** (autant que voulu), **un Soutien**, **un Terrain** ;
    - utiliser les talents « une fois par tour » ;
@@ -72,7 +75,7 @@ Liste de départ : `src/data/soutiens.json`. Dans les boosters : Objets en ♦, 
 
 ## Decks
 
-- 20 cartes, au moins 1 Base.
+- 20 cartes, au moins 1 Base ou Héros.
 - 2 exemplaires maximum d'un même personnage, toutes raretés confondues.
 - 2 exemplaires maximum d'une même carte Soutien.
 - 1 à 3 éléments d'énergie choisis par le joueur.
@@ -104,6 +107,7 @@ Textes ambigus des fiches, et choix faits par le moteur (à corriger dans les do
 - **Bleu** : c'est l'adversaire qui choisit son nouvel actif ; l'ancien va sur le banc (ses états sont retirés).
 - **Roi des fléaux** : Sukuna peut relever Itadori entré ce tour-ci, mais pas au premier tour du joueur (règle générale).
 - **Multiclonage** : aucun Base de Naruto n'existe encore (vague 3) ; l'effet ne trouve rien. La série Naruto n'a donc pas de deck possible pour l'instant.
+- **Héros et « Base »** : un effet qui parle d'un Base (Parchemin d'invocation, Dix ombres, Arise, Chef mercenaire, Arène de boxe, +20 contre un Base) ne concerne pas les Héros.
 - **Genjutsu des corbeaux** : Itachi doit être en jeu ; le personnage qui entre n'est Étourdi que s'il entre en actif (les états ne vont que sur l'actif).
 - **Durcissement (Eren)** : défausse la dernière énergie attachée.
 - **Manœuvre tridimensionnelle, Dribble du monstre** : l'échange après l'attaque est facultatif (le joueur peut garder son actif).

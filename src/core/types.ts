@@ -21,8 +21,11 @@ export type FinitionId =
  */
 export type CodeEnergie = 'f' | 'e' | 'g' | 'z' | 'v' | 't' | 'l' | 'n' | 'q';
 
-/** Base (rangs C et B, posé depuis la main) ou Éveillé (rangs A et S, entre en jeu par Relève). */
-export type TypePersonnage = 'base' | 'eveille';
+/**
+ * Base (rangs C et B, posé depuis la main, 1 point s'il est mis K.-O.), Éveillé (rangs A et S, entre en jeu par
+ * Relève, 2 points) ou Héros (rangs C et B, posé depuis la main comme un Base, 2 points).
+ */
+export type TypePersonnage = 'base' | 'eveille' | 'heros';
 
 export interface Talent {
   nom: string;

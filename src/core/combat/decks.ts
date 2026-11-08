@@ -27,8 +27,8 @@ export function elementsDe(persos: Personnage[]): ElementId[] {
  */
 export function deckDeSerie(serie: string, bib: Bibliotheque): Deck | null {
   const persos = [...bib.personnages.values()].filter((p) => p.serie === serie)
-    .sort((a, b) => (a.type === b.type ? a.id.localeCompare(b.id) : a.type === 'base' ? -1 : 1));
-  if (!persos.some((p) => p.type === 'base')) return null;
+    .sort((a, b) => ((a.type === 'eveille') === (b.type === 'eveille') ? a.id.localeCompare(b.id) : a.type === 'eveille' ? 1 : -1));
+  if (!persos.some((p) => p.type !== 'eveille')) return null;
   const cartes: string[] = [];
   for (const p of persos) for (let k = 0; k < 2 && cartes.length < TAILLE_DECK; k++) cartes.push(p.id);
   for (const s of SOUTIENS_DE_COMPLEMENT) for (let k = 0; k < 2 && cartes.length < TAILLE_DECK; k++) if (bib.soutiens.has(s)) cartes.push(s);
@@ -44,7 +44,7 @@ export const seriesDe = (bib: Bibliotheque): string[] => [...new Set([...bib.per
 export const SOUTIENS_STANDARD = ['sou-entrainement-intensif', 'sou-entrainement-intensif', 'sou-parchemin-invocation', 'sou-parchemin-invocation', 'sou-onigiri', 'sou-appel-renfort'];
 /** Personnages différents par deck standardisé (2 exemplaires chacun : 14 cartes). */
 export const PERSONNAGES_STANDARD = 7;
-/** Au moins autant de Bases de la série dans un deck tiré (séries de plus de 7 personnages). */
+/** Au moins autant de Bases (ou Héros) de la série dans un deck tiré (séries de plus de 7 personnages). */
 const BASES_MIN = 3;
 
 /** Mélange déterministe (Fisher-Yates). */
@@ -73,15 +73,15 @@ export function complementDe(serie: string, bib: Bibliotheque): Personnage[] {
  * Deck standardisé d'une série : 7 personnages différents en 2 exemplaires (14 cartes) + les 6 mêmes cartes Soutien.
  * - 7 personnages ou moins : tous, complétés par les Bases fixes de complementDe ;
  * - plus de 7 : 7 tirés avec `rng` (au moins 3 Bases de la série), pour que chaque personnage soit joué.
- * null si la série n'a aucun Base à elle (ses Éveillés ne pourraient jamais entrer en jeu).
+ * null si la série n'a aucun Base ni Héros à elle (ses Éveillés ne pourraient jamais entrer en jeu).
  */
 export function deckStandard(serie: string, bib: Bibliotheque, rng: Rng): Deck | null {
   const persos = [...bib.personnages.values()].filter((p) => p.serie === serie).sort((a, b) => a.id.localeCompare(b.id));
-  if (!persos.some((p) => p.type === 'base')) return null;
+  if (!persos.some((p) => p.type !== 'eveille')) return null;
   let choisis: Personnage[];
   if (persos.length <= PERSONNAGES_STANDARD) choisis = [...persos, ...complementDe(serie, bib)];
   else {
-    const bases = melangerAvec(rng, persos.filter((p) => p.type === 'base'));
+    const bases = melangerAvec(rng, persos.filter((p) => p.type !== 'eveille'));
     const obligatoires = bases.slice(0, BASES_MIN);
     const reste = melangerAvec(rng, persos.filter((p) => !obligatoires.includes(p)));
     choisis = [...obligatoires, ...reste.slice(0, PERSONNAGES_STANDARD - obligatoires.length)];

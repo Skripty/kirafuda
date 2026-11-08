@@ -11,7 +11,7 @@ describe('extension de lancement (système TCG Pocket)', () => {
     for (const p of extension.personnages) {
       expect(p.attaques.length, `personnage ${p.id}`).toBeGreaterThanOrEqual(1);
       expect(p.attaques.length, `personnage ${p.id}`).toBeLessThanOrEqual(2);
-      expect(['base', 'eveille']).toContain(p.type);
+      expect(['base', 'eveille', 'heros']).toContain(p.type);
     }
   });
 

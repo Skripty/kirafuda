@@ -153,6 +153,43 @@ describe('Relève', () => {
   });
 });
 
+describe('Héros', () => {
+  const MOB = 'per-056'; // Héros de Mob Psycho 100 (Base B devenu Héros), 120 PV
+  it('les 8 Héros des fiches', () => {
+    expect([...bib.personnages.values()].filter((p) => p.type === 'heros').map((p) => p.nom).sort()).toEqual(
+      ['Caiman', 'Kim Dokja', 'Shigeo Kageyama (Mob)', 'Taro Sakamoto', 'Thorfinn', 'Twenty-Fifth Bam', 'Yoichi Isagi', 'Yu']);
+  });
+
+  it('se pose depuis la main comme un Base (banc, mise en place) ; 2 points s’il est mis K.-O.', () => {
+    const p = partie({ actif: EINAR, main: [MOB] }, { actif: EINAR });
+    expect(jouer(p, { type: 'poser', joueur: 0, carte: 'A-per-056' }).p.joueurs[0].banc.map((x) => x.id)).toEqual([MOB]);
+    const deck: Deck = { nom: 'Héros seul', cartes: [MOB, ...['sou-onigiri', 'sou-fumigene', 'sou-antidote', 'sou-talisman', 'sou-boussole', 'sou-kunai', 'sou-bandage', 'sou-entrainement-intensif', 'sou-reperage', 'sou-mentor'].flatMap((s) => [s, s]).slice(0, 19)], elements: ['lumiere'] };
+    expect(validerDeck(deck, bib)).toEqual([]);
+    const { partie: q } = creerPartie(bib, [deck, deck], 'heros');
+    expect(legales(q).some((a) => a.type === 'mise-en-place' && q.cartes[a.actif] === MOB)).toBe(true);
+    const r = attaque(partie({ actif: EINAR, energies: [['feu', 'feu']] }, { actif: MOB, banc: [EINAR], degats: [90] }), 0).p;
+    expect(r.joueurs[0].points).toBe(2);
+  });
+
+  it('peut être relevé par un Éveillé de sa série ; un Héros ne fait pas de Relève', () => {
+    // Un Éveillé d'une autre série ne peut pas relever Mob.
+    const p = partie({ actif: MOB, main: ['per-008'] }, { actif: EINAR });
+    expect(types(p)).not.toContain('releve');
+    // Aucun Éveillé de Mob Psycho 100 n'existe : on vérifie la règle avec un Éveillé de test de cette série.
+    const ev = { ...bib.personnages.get('per-008')!, id: 'test-eveille-mob', serie: 'Mob Psycho 100' };
+    bib.personnages.set(ev.id, ev);
+    try {
+      const q = partie({ actif: MOB, main: [ev.id] }, { actif: EINAR });
+      expect(legales(q).filter((a) => a.type === 'releve').map((a) => (a as { cible: string }).cible)).toEqual(['A-per-056']);
+    } finally { bib.personnages.delete(ev.id); }
+  });
+
+  it('validation : un Héros est de rang C ou B', async () => {
+    const { validerCombat } = await import('../src/core/combat/fiches');
+    expect(validerCombat({ ...bib.personnages.get(MOB)!, rang: 'A' }, 'x').join(' ')).toMatch(/Héros doit être de rang C ou B/);
+  });
+});
+
 describe('repli', () => {
   it('défausse autant d’énergies que le Repli, une fois par tour', () => {
     const p = partie({ actif: 'per-016', banc: [EINAR], energies: [['feu', 'eau', 'vent']] }, { actif: EINAR }); // Nanami : Repli 2

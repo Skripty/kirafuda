@@ -1,5 +1,5 @@
 // Fonction Supabase « soumettre-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : e886527bf88cfdd4
+// Empreinte des sources : b4cc47168460cc08
 // Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/combat/fiches.ts, src/core/draft.ts, src/core/extension.ts, src/core/regles.ts, src/core/rng.ts, src/core/tirage.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/soumettre-draft.ts
 // @ts-nocheck
 const id$2 = "booster-lancement";
@@ -477,7 +477,7 @@ const personnages$1 = [
           "z",
           "q"
         ],
-        degats: 90,
+        degats: 80,
         effet: "pile : +60.",
         effets: [
           {
@@ -863,7 +863,7 @@ const personnages$1 = [
     rang: "A",
     element: "feu",
     type: "eveille",
-    pv: 140,
+    pv: 130,
     repli: 1,
     talent: {
       nom: "Pochita",
@@ -895,7 +895,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 130,
+        degats: 120,
         effet: "Denji subit 20 dégâts.",
         effets: [
           {
@@ -936,7 +936,7 @@ const personnages$1 = [
           "n",
           "q"
         ],
-        degats: 40,
+        degats: 30,
         effet: "à n'importe quel personnage adverse.",
         effets: [
           {
@@ -980,7 +980,7 @@ const personnages$1 = [
           "n",
           "q"
         ],
-        degats: 60,
+        degats: 50,
         effet: "Power subit 10 dégâts.",
         effets: [
           {
@@ -1567,7 +1567,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 120,
+        degats: 110,
         effet: "la cible est Brûlée.",
         effets: [
           {
@@ -1899,12 +1899,12 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 120,
-        effet: "+20 par personnage sur ton banc.",
+        degats: 100,
+        effet: "+10 par personnage sur ton banc.",
         effets: [
           {
             type: "bonus-par-banc",
-            valeur: 20
+            valeur: 10
           }
         ]
       }
@@ -2194,7 +2194,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 40,
+        degats: 30,
         effet: "à chaque personnage adverse.",
         effets: [
           {
@@ -2416,8 +2416,8 @@ const personnages$1 = [
     serie: "Mob Psycho 100",
     rang: "B",
     element: "lumiere",
-    type: "base",
-    pv: 90,
+    type: "heros",
+    pv: 120,
     repli: 1,
     talent: {
       nom: "100 %",
@@ -2441,6 +2441,18 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
+        effet: "",
+        effets: []
+      },
+      {
+        nom: "???%",
+        cout: [
+          "l",
+          "l",
+          "q",
+          "q"
+        ],
+        degats: 110,
         effet: "",
         effets: []
       }
@@ -2621,9 +2633,9 @@ const personnages$1 = [
     serie: "Vinland Saga",
     rang: "B",
     element: "vent",
-    type: "base",
-    pv: 90,
-    repli: 0,
+    type: "heros",
+    pv: 120,
+    repli: 1,
     talent: {
       nom: "Je n'ai pas d'ennemis",
       texte: "si Thorfinn n'a pas attaqué à ton tour précédent, il subit 30 dégâts de moins.",
@@ -2656,6 +2668,17 @@ const personnages$1 = [
             }
           }
         ]
+      },
+      {
+        nom: "Fureur de jeunesse",
+        cout: [
+          "v",
+          "v",
+          "q"
+        ],
+        degats: 90,
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2814,8 +2837,8 @@ const personnages$1 = [
     serie: "Tower of God",
     rang: "B",
     element: "eau",
-    type: "base",
-    pv: 100,
+    type: "heros",
+    pv: 130,
     repli: 1,
     talent: {
       nom: "Irrégulier",
@@ -2835,10 +2858,21 @@ const personnages$1 = [
         nom: "Shinsu noir",
         cout: [
           "e",
+          "q"
+        ],
+        degats: 50,
+        effet: "",
+        effets: []
+      },
+      {
+        nom: "Lance de Thorn",
+        cout: [
+          "e",
+          "e",
           "q",
           "q"
         ],
-        degats: 70,
+        degats: 110,
         effet: "",
         effets: []
       }
@@ -3020,8 +3054,8 @@ const personnages$1 = [
     serie: "Omniscient Reader's Viewpoint",
     rang: "B",
     element: "neutre",
-    type: "base",
-    pv: 100,
+    type: "heros",
+    pv: 120,
     repli: 1,
     talent: {
       nom: "Lecteur omniscient",
@@ -3046,7 +3080,19 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 60,
+        degats: 50,
+        effet: "",
+        effets: []
+      },
+      {
+        nom: "Le Démon-Roi du Salut",
+        cout: [
+          "q",
+          "q",
+          "q",
+          "q"
+        ],
+        degats: 110,
         effet: "",
         effets: []
       }
@@ -3243,8 +3289,8 @@ const personnages$1 = [
     serie: "Sakamoto Days",
     rang: "B",
     element: "neutre",
-    type: "base",
-    pv: 110,
+    type: "heros",
+    pv: 130,
     repli: 2,
     talent: {
       nom: "Retraité",
@@ -3263,7 +3309,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 70,
+        degats: 60,
         effet: "+20 si tu as joué un Objet ce tour.",
         effets: [
           {
@@ -3274,6 +3320,18 @@ const personnages$1 = [
             }
           }
         ]
+      },
+      {
+        nom: "Sakamoto en forme",
+        cout: [
+          "q",
+          "q",
+          "q",
+          "q"
+        ],
+        degats: 110,
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -3426,8 +3484,8 @@ const personnages$1 = [
     serie: "Dorohedoro",
     rang: "B",
     element: "terre",
-    type: "base",
-    pv: 120,
+    type: "heros",
+    pv: 130,
     repli: 2,
     talent: {
       nom: "Mâchoire",
@@ -3449,10 +3507,21 @@ const personnages$1 = [
         nom: "Baïonnette",
         cout: [
           "t",
+          "q"
+        ],
+        degats: 50,
+        effet: "",
+        effets: []
+      },
+      {
+        nom: "Mâchoire du Lézard",
+        cout: [
+          "t",
+          "t",
           "q",
           "q"
         ],
-        degats: 70,
+        degats: 110,
         effet: "",
         effets: []
       }
@@ -3622,9 +3691,9 @@ const personnages$1 = [
     serie: "The Boxer",
     rang: "C",
     element: "glace",
-    type: "base",
-    pv: 80,
-    repli: 0,
+    type: "heros",
+    pv: 120,
+    repli: 1,
     talent: null,
     attaques: [
       {
@@ -3644,6 +3713,17 @@ const personnages$1 = [
             }
           }
         ]
+      },
+      {
+        nom: "Combinaison du Monstre",
+        cout: [
+          "g",
+          "g",
+          "q"
+        ],
+        degats: 90,
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -6138,8 +6218,8 @@ const personnages = [
     serie: "Blue Lock",
     rang: "B",
     element: "eau",
-    type: "base",
-    pv: 90,
+    type: "heros",
+    pv: 120,
     repli: 1,
     talent: {
       nom: "Méta-vision",
@@ -6177,6 +6257,18 @@ const personnages = [
             }
           }
         ]
+      },
+      {
+        nom: "But décisif",
+        cout: [
+          "e",
+          "e",
+          "q",
+          "q"
+        ],
+        degats: 110,
+        effet: "",
+        effets: []
       }
     ]
   },

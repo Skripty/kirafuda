@@ -21,6 +21,11 @@
   border-color: color-mix(in srgb, var(--aff) 80%, var(--carte-clair));
   background: color-mix(in srgb, var(--aff) 60%, transparent);
 }
+/* Héros : posé depuis la main comme un Base, mais 2 points s'il est mis K.-O. */
+.cc-type-heros {
+  border-color: var(--carte-or);
+  background: color-mix(in srgb, var(--carte-or) 30%, transparent);
+}
 .cc-serie {
   min-width: 0;
   font-size: calc(8.5 * var(--u));
@@ -93,7 +98,12 @@
 /* ---------- Cartes ★ et plus : panneau translucide du bas, à la hauteur de son contenu ---------- */
 .carte.pleine-carte .carte-texte { height: auto; max-height: 62%; overflow: hidden; gap: calc(4 * var(--u)); }
 .carte.pleine-carte .cc-identite { flex: none; }
-.carte.pleine-carte .cc-serie { font-size: calc(9.5 * var(--u)); font-style: italic; opacity: 0.85; }
+.carte.pleine-carte /* Héros : posé depuis la main comme un Base, mais 2 points s'il est mis K.-O. */
+.cc-type-heros {
+  border-color: var(--carte-or);
+  background: color-mix(in srgb, var(--carte-or) 30%, transparent);
+}
+.cc-serie { font-size: calc(9.5 * var(--u)); font-style: italic; opacity: 0.85; }
 .carte.pleine-carte .cc-attaque { border-color: var(--carte-trait-clair); }
 .carte.pleine-carte .cc-energie { box-shadow: 0 0 0 calc(1 * var(--u)) color-mix(in srgb, var(--carte-clair) 45%, transparent); }
 .carte-pied .cc-repli { font-size: inherit; }

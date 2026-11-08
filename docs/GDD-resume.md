@@ -35,7 +35,7 @@ Projet personnel, gratuit, non commercial. Aucun paiement, aucune publicité. Le
 
 ## Données de combat (voir `docs/COMBAT.md`)
 
-- Chaque personnage a une fiche dans `src/data/fiches-combat.json` (fichier d'équilibrage) : type **Base** (rangs C et B) ou **Éveillé** (rangs A et S, entre en jeu par Relève sur un personnage de la même série), PV, Repli (énergies à défausser pour se replier), talent éventuel, 1 ou 2 attaques.
+- Chaque personnage a une fiche dans `src/data/fiches-combat.json` (fichier d'équilibrage) : type **Base** (rangs C et B), **Éveillé** (rangs A et S, entre en jeu par Relève sur un personnage de la même série) ou **Héros** (rangs C et B, posé comme un Base, 2 points), PV, Repli (énergies à défausser pour se replier), talent éventuel, 1 ou 2 attaques.
 - Coût d'une attaque : 1 à 4 énergies de l'élément du personnage ou ◇ (quelconque) ; un Neutre paie en ◇. Dégâts : un nombre, « 30× » (30 par face), « 50 / 0 » (pile ou face) ou aucun.
 - `npm run fiches` recopie les fiches dans les personnages des extensions ; le jeu refuse de démarrer si un personnage sorti n'a pas de données de combat valides.
 - Les attaques, talents et cartes Soutien portent aussi des effets structurés (champ `effets`), lus par le moteur de combat.
@@ -111,8 +111,8 @@ Projet personnel, gratuit, non commercial. Aucun paiement, aucune publicité. Le
 
 ## Combat, decks et cartes Soutien (règles complètes : `docs/COMBAT.md`)
 
-- Combat contre l'IA : un actif et jusqu'à 3 personnages sur le banc ; 1 point par Base mis K.-O., 2 par Éveillé ; 3 points pour gagner (ou l'adversaire n'a plus de personnage en jeu).
-- Éveillés (rangs A et S) : entrent en jeu par **Relève** sur un personnage de la même série. Énergies : 1 par tour, tirée parmi les 1 à 3 éléments du deck. Faiblesse +20. États : Brûlure, Gel, Étourdi, Malédiction.
+- Combat contre l'IA : un actif et jusqu'à 3 personnages sur le banc ; 1 point par Base mis K.-O., 2 par Éveillé ou Héros ; 3 points pour gagner (ou l'adversaire n'a plus de personnage en jeu).
+- Éveillés (rangs A et S) : entrent en jeu par **Relève** sur un personnage de la même série. Héros (rangs C et B) : se posent depuis la main comme un Base, mais valent 2 points. Énergies : 1 par tour, tirée parmi les 1 à 3 éléments du deck. Faiblesse +20. États : Brûlure, Gel, Étourdi, Malédiction.
 - Cartes Soutien (`src/data/soutiens.json`) : Objets (autant que voulu), Soutien (un par tour), Terrain (un seul en jeu).
 - Decks de 20 cartes, au moins 1 Base, 2 exemplaires maximum par personnage et par carte Soutien, 1 à 3 éléments d'énergie ; on ne joue que ses cartes, sauf les decks de départ.
 - La rareté ne change rien en combat (règle 5). Combat entre joueurs : plus tard.

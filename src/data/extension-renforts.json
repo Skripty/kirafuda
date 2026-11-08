@@ -397,8 +397,8 @@
       "serie": "Blue Lock",
       "rang": "B",
       "element": "eau",
-      "type": "base",
-      "pv": 90,
+      "type": "heros",
+      "pv": 120,
       "repli": 1,
       "talent": {
         "nom": "Méta-vision",
@@ -436,6 +436,18 @@
               }
             }
           ]
+        },
+        {
+          "nom": "But décisif",
+          "cout": [
+            "e",
+            "e",
+            "q",
+            "q"
+          ],
+          "degats": 110,
+          "effet": "",
+          "effets": []
         }
       ]
     },

@@ -5,7 +5,7 @@
 //   appliquer(partie, action, bib)   → nouvel état (la partie reçue n'est pas modifiée) + journal des événements.
 import { FAIBLESSE, ELEMENTS } from '../regles';
 import type { Attaque, ElementId, Personnage } from '../types';
-import { ENERGIES, valeurDegats } from './fiches';
+import { ENERGIES, TYPES_PERSONNAGE, valeurDegats } from './fiches';
 import type { Condition, EffetAction, EffetAttaque, EffetTalent, EtatCombat } from './effets';
 import { ETATS } from './effets';
 import {
@@ -104,7 +104,13 @@ const prochainTourDe = (p: Partie, proprietaire: IdJoueur): number => (p.joueurA
 
 // ---------- Création de la partie ----------
 
-/** Vérifie un deck : 20 cartes connues, au moins 1 Base, 2 exemplaires au plus par personnage et par Soutien, 1 à 3 éléments. */
+/** Carte qui se pose depuis la main (Base, Héros). */
+const posable = (bib: Bibliotheque, id: string): boolean => {
+  const f = bib.personnages.get(id);
+  return !!f && TYPES_PERSONNAGE[f.type].posable;
+};
+
+/** Vérifie un deck : 20 cartes connues, au moins 1 Base (ou Héros), 2 exemplaires au plus par personnage et par Soutien, 1 à 3 éléments. */
 export function validerDeck(deck: Deck, bib: Bibliotheque): string[] {
   const e: string[] = [];
   if (deck.cartes.length !== TAILLE_DECK) e.push(`Deck « ${deck.nom} » : ${deck.cartes.length} cartes au lieu de ${TAILLE_DECK}.`);
@@ -114,7 +120,7 @@ export function validerDeck(deck: Deck, bib: Bibliotheque): string[] {
     compte.set(id, (compte.get(id) ?? 0) + 1);
   }
   for (const [id, n] of compte) if (n > 2) e.push(`Deck « ${deck.nom} » : ${n} exemplaires de « ${id} » (2 au plus).`);
-  if (!deck.cartes.some((id) => bib.personnages.get(id)?.type === 'base')) e.push(`Deck « ${deck.nom} » : au moins un Base est nécessaire.`);
+  if (!deck.cartes.some((id) => posable(bib, id))) e.push(`Deck « ${deck.nom} » : au moins un Base (ou un Héros) est nécessaire.`);
   if (deck.elements.length < 1 || deck.elements.length > 3 || new Set(deck.elements).size !== deck.elements.length) {
     e.push(`Deck « ${deck.nom} » : 1 à 3 éléments d'énergie différents attendus.`);
   }
@@ -149,7 +155,7 @@ export function creerPartie(bib: Bibliotheque, decks: [Deck, Deck], graine: stri
       J.main = [];
       melanger(p, J.deck);
       J.main = J.deck.splice(0, MAIN_DE_DEPART);
-      if (J.main.some((u) => bib.personnages.get(cartes[u]!)?.type === 'base')) break;
+      if (J.main.some((u) => posable(bib, cartes[u]!))) break;
       dire(c, 'main-sans-base', `${J.nom} montre une main sans Base, remélange et repioche.`, { joueur: i });
       if (essai > 50) throw new Error('Mise en place impossible : aucun Base pioché.');
     }
@@ -371,7 +377,7 @@ function resoudreKO(c: Ctx, suite: 'continuer' | 'fin-de-tour' | 'debut-de-tour'
       // Retrait du jeu.
       if (J.actif?.uid === perso.uid) J.actif = null;
       J.banc = J.banc.filter((y) => y.uid !== perso.uid);
-      const points = f.type === 'eveille' ? 2 : 1;
+      const points = TYPES_PERSONNAGE[f.type].points; // Base 1, Éveillé et Héros 2
       p.joueurs[autre(joueur)].points += points;
       dire(c, 'ko', `${f.nom} est mis K.-O. : +${points} point${points > 1 ? 's' : ''} pour ${p.joueurs[autre(joueur)].nom}.`, { joueur, cible: perso.uid, valeur: points });
       const cleRetour = `retour:${perso.id}`;
@@ -489,7 +495,9 @@ function finDeTour(c: Ctx): void {
 // ---------- Effets d'action (cartes Soutien, talents utilisables) ----------
 
 const estBase = (c: Ctx, uid: string): boolean => c.bib.personnages.get(c.p.cartes[uid]!)?.type === 'base';
-const typeCarte = (bib: Bibliotheque, id: string): 'base' | 'eveille' | 'objet' | 'soutien' | 'terrain' =>
+/** Se pose depuis la main (mise en place, banc) : Base ou Héros. */
+const estPosable = (c: Ctx, uid: string): boolean => posable(c.bib, c.p.cartes[uid]!);
+const typeCarte = (bib: Bibliotheque, id: string): 'base' | 'eveille' | 'heros' | 'objet' | 'soutien' | 'terrain' =>
   bib.personnages.get(id)?.type ?? soutien(bib, id)!.type;
 
 /** Cartes (uid) d'une zone correspondant à une recherche. */
@@ -937,7 +945,7 @@ export function actionsLegales(partie: Partie, bib: Bibliotheque): Action[] {
   if (p.phase === 'mise-en-place') {
     const j = (p.joueurs[0].pret ? 1 : 0) as IdJoueur;
     const J = p.joueurs[j];
-    const bases = J.main.filter((u) => estBase(c, u));
+    const bases = J.main.filter((u) => estPosable(c, u));
     const r: Action[] = [];
     // Actif : chaque Base ; banc : les combinaisons des autres Bases (3 au plus), sans doublon de personnage identique.
     for (const actif of memesCartes(c, bases)) {
@@ -968,7 +976,7 @@ export function actionsLegales(partie: Partie, bib: Bibliotheque): Action[] {
   // Énergie du tour.
   if (J.energie && !J.tour.energieAttachee) for (const x of enJeu(J)) r.push({ type: 'attacher', joueur: j, cible: x.uid });
   // Bases sur le banc.
-  if (J.banc.length < BANC_MAX) for (const u of memesCartes(c, J.main.filter((u) => estBase(c, u)))) r.push({ type: 'poser', joueur: j, carte: u });
+  if (J.banc.length < BANC_MAX) for (const u of memesCartes(c, J.main.filter((u) => estPosable(c, u)))) r.push({ type: 'poser', joueur: j, carte: u });
   // Relèves (pas au premier tour de chaque joueur).
   if (!premierTour) {
     for (const u of memesCartes(c, J.main.filter((u) => bib.personnages.get(p.cartes[u]!)?.type === 'eveille'))) {

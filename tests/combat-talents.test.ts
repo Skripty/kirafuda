@@ -94,8 +94,8 @@ describe('talents', () => {
   });
   // ---------- Chainsaw Man ----------
   t('per-017', 'Pochita : une fois par partie, face, Denji reste à 10 PV', () => {
-    const p = partie({ actif: EINAR, energies: [['feu', 'feu']] }, { actif: 'per-017', banc: [EINAR], degats: [130] });
-    expect(degats(attaque(avecPieces(p, ['face']), 0).p, 'B-per-017')).toBe(130);
+    const p = partie({ actif: EINAR, energies: [['feu', 'feu']] }, { actif: 'per-017', banc: [EINAR], degats: [100] }); // Denji : 130 PV
+    expect(degats(attaque(avecPieces(p, ['face']), 0).p, 'B-per-017')).toBe(120);
     expect(attaque(avecPieces(p, ['pile']), 0).p.joueurs[0].points).toBe(2);
   });
   t('per-018', 'Contrôle : quand Makima entre par Relève, retire 1 énergie de l’actif adverse', () => {
@@ -196,8 +196,10 @@ describe('talents', () => {
     expect(talent(partie({ actif: 'per-054', deck: ['sou-mentor', 'sou-kunai'] }, { actif: EINAR }), 'A-per-054').p.joueurs[0].main).toEqual(['A-sou-kunai']);
   });
   // ---------- Mob Psycho 100 ----------
-  t('per-056', '100 % : +60 si Mob a 30 PV ou moins', () => {
-    expect(inflige(attaque(partie({ actif: 'per-056', energies: [['lumiere', 'feu']], degats: [60] }, { actif: 'ren-per-002' }), 0).journal, 'B-ren-per-002')).toBe(100);
+  t('per-056', '100 % : +60 si Mob a 40 PV ou moins', () => {
+    const p = (d: number) => partie({ actif: 'per-056', energies: [['lumiere', 'feu']], degats: [d] }, { actif: 'ren-per-002' }); // Mob : 120 PV
+    expect(inflige(attaque(p(70), 0).journal, 'B-ren-per-002')).toBe(40);
+    expect(inflige(attaque(p(80), 0).journal, 'B-ren-per-002')).toBe(100);
   });
   t('per-057', 'Baratin : regarde les 3 premières cartes et choisit leur ordre', () => {
     const q = talent(partie({ actif: 'per-057', deck: [EINAR, THOMAS, ASK, 'per-010'] }, { actif: EINAR }), 'A-per-057', { ordre: [2, 0, 1] }).p;
@@ -222,7 +224,7 @@ describe('talents', () => {
   });
   // ---------- Tower of God ----------
   t('per-068', 'Irrégulier : si tu as moins de points, ses attaques coûtent 1 ◇ de moins', () => {
-    const p = (pts: number) => partie({ actif: 'per-068', energies: [['eau', 'feu']] }, { actif: EINAR, points: pts });
+    const p = (pts: number) => partie({ actif: 'per-068', energies: [['eau']] }, { actif: EINAR, points: pts }); // Shinsu noir : Eau ◇
     expect(types(p(0))).not.toContain('attaquer');
     expect(types(p(1))).toContain('attaquer');
   });
@@ -251,7 +253,7 @@ describe('talents', () => {
   t('per-082', 'Retraité : une attaque qui devrait mettre K.-O. une cible à plus de 10 PV la laisse à 10 PV', () => {
     const p = (d: number) => partie({ actif: 'per-082', energies: [['feu', 'feu']] }, { actif: EINAR, banc: [EINAR], degats: [d] });
     expect(degats(attaque(p(50), 0).p, 'B-per-066')).toBe(70); // 30 PV restants : reste à 10
-    expect(degats(attaque(p(0), 0).p, 'B-per-066')).toBe(70); // 70 dégâts ne mettent pas K.-O. : inchangé
+    expect(degats(attaque(p(0), 0).p, 'B-per-066')).toBe(60); // 60 dégâts ne mettent pas K.-O. : inchangé
     expect(attaque(p(70), 0).p.joueurs[0].points).toBe(1); // à 10 PV : K.-O. (plus de blocage)
   });
   t('per-083', 'Télépathie : regarde la main de l’adversaire', () => {
