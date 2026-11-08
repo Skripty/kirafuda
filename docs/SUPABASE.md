@@ -174,35 +174,47 @@ Le classement est vérifié par le serveur : le jeu n'envoie que la semaine et l
 | `soumettre-draft` | Vérifie que les 5 cartes font partie des 15 de la semaine et sont différentes, recalcule le score, enregistre l'équipe. Refuse après le dimanche 23 h 59 (heure de Paris). |
 | `reclamer-draft` | Après la fermeture de la semaine, lit le classement figé et donne les récompenses (1er +5, 2e +4, 3e +3, puis +2), une seule fois. |
 
-Leurs sources sont dans `supabase/fonctions/` ; le fichier déployé de chacune, `supabase/functions/<nom>/index.ts`, est **généré** par `npm run fonctions` (code du jeu et données regroupés en un seul fichier).
+Leurs sources sont dans `supabase/fonctions/` ; le fichier déployé de chacune, `supabase/functions/<nom>/index.ts`, est **généré** par `npm run fonctions` (code du jeu et données du draft regroupés en un seul fichier) ; `npm run deployer-fonctions` le régénère et le déploie.
 
 ### 10.1 Créer les tables
 
 SQL Editor → New query → colle tout `supabase/migrations/20261108000000_classement_draft.sql` → **Run** (« Success. No rows returned »).
 Elle crée la table `drafts` (lisible par tous, aucune écriture par les joueurs), la vue `classement_draft` (rang, pseudo, score, cartes) et la table `recompenses_draft`.
 
-### 10.2 Déployer les deux fonctions
+### 10.2 Déployer les deux fonctions : `npm run deployer-fonctions`
 
-**Avec la ligne de commande (recommandé).** Rien à installer : `npx` télécharge l'outil Supabase.
+Une seule commande régénère les deux fonctions depuis le code du jeu, puis les déploie sur ton projet Supabase :
 
 ```sh
-npx supabase login
-npx supabase functions deploy soumettre-draft --project-ref <ref> --no-verify-jwt --use-api
-npx supabase functions deploy reclamer-draft --project-ref <ref> --no-verify-jwt --use-api
+npm run deployer-fonctions
 ```
 
-`--no-verify-jwt` : chaque fonction vérifie elle-même le joueur connecté (auprès de Supabase Auth), ce qui marche avec tous les types de clés du projet.
+- **La première fois sur un ordinateur**, connecte l'outil Supabase à ton compte (une fenêtre du navigateur s'ouvre) :
 
-**Ou depuis le tableau de bord** : Edge Functions → *Deploy a new function* → *Via Editor* → nom `soumettre-draft` → remplace tout le code par le contenu de `supabase/functions/soumettre-draft/index.ts` → *Deploy*. Puis, dans les réglages de la fonction, désactive *Enforce JWT verification* (*Verify JWT*). Même chose pour `reclamer-draft`.
+  ```sh
+  npx supabase@3.0.0 login
+  ```
+
+  Rien à installer : `npx` télécharge l'outil Supabase (version fixée à 3.0.0, pour que la commande ne change pas d'elle-même).
+- **Le projet** est lu dans `.env` (`VITE_SUPABASE_URL=https://<ref>.supabase.co`). Pour un autre projet : `npm run deployer-fonctions -- --projet <ref>`.
+- Pour chaque fonction, la commande lance `npx supabase@3.0.0 functions deploy <nom> --remote=<ref> --no-verify-jwt --use-api --yes` :
+  - `--no-verify-jwt` : chaque fonction vérifie elle-même le joueur connecté (auprès de Supabase Auth), ce qui marche avec tous les types de clés du projet ;
+  - `--use-api` : Supabase prépare la fonction de son côté (pas besoin de Docker) ;
+  - `--yes` : confirme la mise à jour du projet en ligne.
+- Résultat attendu : « ✓ Les deux fonctions sont déployées. » Elles apparaissent dans Supabase → **Edge Functions**.
 
 Aucune clé à fournir : Supabase donne lui-même à ses fonctions `SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` (la clé secrète reste chez Supabase, jamais dans le jeu ni dans le dépôt).
 
-### 10.3 Après une modification du jeu
+**Sans la ligne de commande** : `npm run fonctions` (régénère seulement), puis Supabase → Edge Functions → *Deploy a new function* → *Via Editor* → nom `soumettre-draft` → remplace tout le code par le contenu de `supabase/functions/soumettre-draft/index.ts` → *Deploy*, et désactive *Enforce JWT verification* (*Verify JWT*) dans ses réglages. Même chose pour `reclamer-draft`.
 
-Le serveur doit calculer exactement comme le jeu. Après un changement dans `src/core` ou `src/data` (barème du draft, thèmes, extensions, récompenses de `quetes.json`) :
+### 10.3 Quand faut-il redéployer ?
 
-1. `npm run fonctions` (régénère les deux fichiers ; `npm test` échoue tant que ce n'est pas fait) ;
-2. redéploie les deux fonctions (10.2) en même temps que le site (`git push`).
+Le serveur doit calculer exactement comme le jeu. En tête de chaque fichier généré figurent la liste des fichiers réellement utilisés par la fonction et leur empreinte. `npm test` échoue (« n'est plus à jour : lance npm run deployer-fonctions ») dès que l'un d'eux change :
+
+- **oblige à redéployer** : le code du draft et du score (`src/core/draft.ts`, `classement.ts`, `tirage.ts`, `rng.ts`, `regles.ts`…), les cartes et boosters (`extension-*.json`, `booster-*.json`, `extensions.json`), les thèmes (`themes-draft.json`), les récompenses du classement (`quetes.json` → `hebdomadaire.recompensesDraft` uniquement) ;
+- **n'oblige pas** : la cote (`popularite*.json`), les autres réglages de `quetes.json`, l'interface, les images.
+
+Après un changement qui l'oblige : `npm run deployer-fonctions`, en même temps que la mise en ligne du site (`git push`). Pour seulement vérifier : `npm run fonctions -- --verifier`.
 
 ### 10.4 Vérifier
 

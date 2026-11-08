@@ -15,7 +15,7 @@ Kirafuda est un jeu de collection de cartes de personnages d'anime, jouable dans
 - TypeScript strict, Vite, HTML et CSS. **Pas de framework** (ni React, ni Vue) et pas de nouvelle dépendance sans demande explicite.
 - Tests avec Vitest, dans `tests/`.
 - Le jeu reste **jouable sans compte** : sauvegarde dans `localStorage`, avec export et import d'un fichier JSON. La sauvegarde locale est toujours la référence pendant la partie.
-- Depuis la tâche 23 : compte **facultatif** (Supabase, connexion Discord, dépendance `@supabase/supabase-js` autorisée) et sauvegarde en ligne. Seule la clé publique (`VITE_SUPABASE_ANON_KEY`) est dans le jeu ; jamais de clé secrète. Tables et règles d'accès (Row Level Security) dans `supabase/migrations/`. Depuis la tâche 24 : classement du draft vérifié par des fonctions serveur (`supabase/fonctions/`, qui réutilisent `src/core`) ; après un changement de `src/core` ou `src/data`, lancer `npm run fonctions` et redéployer. Voir `docs/SUPABASE.md`.
+- Depuis la tâche 23 : compte **facultatif** (Supabase, connexion Discord, dépendance `@supabase/supabase-js` autorisée) et sauvegarde en ligne. Seule la clé publique (`VITE_SUPABASE_ANON_KEY`) est dans le jeu ; jamais de clé secrète. Tables et règles d'accès (Row Level Security) dans `supabase/migrations/`. Depuis la tâche 24 : classement du draft vérifié par des fonctions serveur (`supabase/fonctions/`, qui réutilisent `src/core`) ; si `npm test` signale une fonction qui n’est plus à jour (fichiers du draft modifiés), lancer `npm run deployer-fonctions`. Voir `docs/SUPABASE.md`.
 
 ## Structure
 

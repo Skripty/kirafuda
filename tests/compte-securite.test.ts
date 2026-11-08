@@ -151,13 +151,40 @@ describe('classement du draft (tâche 24)', () => {
     expect(fs.readFileSync(path.join(dossier, 'contexte.ts'), 'utf8')).toMatch(/Deno\.env\.get\('SUPABASE_SERVICE_ROLE_KEY'\)/);
   });
 
-  it('les fichiers déployés (supabase/functions) sont regénérés depuis src/core : npm run fonctions', async () => {
-    const { empreinteFonctions, enTete, FONCTIONS } = await charger(path.join(projet, 'outils', 'empreinte-fonctions.ts'));
-    const empreinte = empreinteFonctions(projet);
+  it('les fonctions déployées (supabase/functions) sont à jour : sinon, npm run deployer-fonctions', async () => {
+    const { verifierFonction, lireEnTete, FONCTIONS } = await charger(path.join(projet, 'outils', 'empreinte-fonctions.ts'));
     for (const nom of FONCTIONS as string[]) {
       const fichier = path.join(projet, 'supabase', 'functions', nom, 'index.ts');
-      expect(fs.existsSync(fichier), `${nom} : lance npm run fonctions`).toBe(true);
-      expect((fs.readFileSync(fichier, 'utf8') as string).startsWith(enTete(nom, empreinte)), `${nom} n'est plus à jour : lance npm run fonctions, puis redéploie`).toBe(true);
+      expect(fs.existsSync(fichier), `${nom} : lance npm run deployer-fonctions`).toBe(true);
+      const texte: string = fs.readFileSync(fichier, 'utf8');
+      expect(verifierFonction(projet, texte), `${nom} n'est plus à jour : lance npm run deployer-fonctions`).toBeNull();
+      // Seuls les fichiers qui servent au draft comptent : ni la cote, ni l'interface, ni les autres données.
+      const sources: string[] = lireEnTete(texte).sources;
+      expect(sources).toContain('src/core/draft.ts');
+      expect(sources).toContain('src/data/themes-draft.json');
+      expect(sources.filter((s) => /popularite|attaques\.json|src\/ui\/|src\/en-ligne\/|src\/core\/(cote|economie|boutique|collection)\.ts/.test(s))).toEqual([]);
+    }
+  });
+
+  it('changer popularite.json ou une quête du jour n’oblige pas à redéployer ; changer le barème, oui', async () => {
+    const { empreinteDe } = await charger(path.join(projet, 'outils', 'empreinte-fonctions.ts'));
+    const os = await charger('node:os');
+    const copie: string = fs.mkdtempSync(path.join(os.tmpdir(), 'kirafuda-empreinte-'));
+    const sources = ['src/data/quetes.json', 'src/data/popularite.json', 'src/core/draft.ts'];
+    for (const s of sources) { fs.mkdirSync(path.dirname(path.join(copie, s)), { recursive: true }); fs.copyFileSync(path.join(projet, s), path.join(copie, s)); }
+    const utilisees = ['src/data/quetes.json', 'src/core/draft.ts'];
+    const avant = empreinteDe(copie, utilisees);
+    try {
+      fs.writeFileSync(path.join(copie, 'src/data/popularite.json'), '{}');
+      const q = JSON.parse(fs.readFileSync(path.join(copie, 'src/data/quetes.json'), 'utf8'));
+      q.connexion.sceauxParJour = 99;
+      fs.writeFileSync(path.join(copie, 'src/data/quetes.json'), JSON.stringify(q, null, 2));
+      expect(empreinteDe(copie, utilisees)).toBe(avant);
+      q.hebdomadaire.recompensesDraft.podium = [6, 4, 3];
+      fs.writeFileSync(path.join(copie, 'src/data/quetes.json'), JSON.stringify(q));
+      expect(empreinteDe(copie, utilisees)).not.toBe(avant);
+    } finally {
+      fs.rmSync(copie, { recursive: true, force: true });
     }
   });
 });

@@ -1,5 +1,5 @@
 // Contexte commun aux deux fonctions : extensions (les mêmes fichiers JSON que le jeu), thèmes, récompenses, base.
-import { catalogue, erreursCatalogue } from '../../src/catalogue';
+import { catalogue, erreursCatalogue } from './donnees';
 import { disponiblesPourDraft } from '../../src/core/catalogue';
 import { lundiSemaineIso, type Theme } from '../../src/core/draft';
 import themesDraft from '../../src/data/themes-draft.json';

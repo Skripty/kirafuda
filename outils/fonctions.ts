@@ -1,28 +1,19 @@
-// npm run fonctions            : regroupe chaque fonction serveur (supabase/fonctions/<nom>.ts) avec src/core et
-//                                les données du jeu en un seul fichier, supabase/functions/<nom>/index.ts (déployé).
+// npm run fonctions              : regroupe chaque fonction serveur (supabase/fonctions/<nom>.ts) avec le code de
+//                                  src/core et les données du draft en un seul fichier, supabase/functions/<nom>/index.ts.
 // npm run fonctions -- --verifier : ne change rien ; échoue si un fichier déployable n'est plus à jour.
-// Le serveur recalcule le draft et le score avec exactement le code du jeu : après une modification de src/core
-// ou de src/data, relancer `npm run fonctions` puis redéployer (docs/SUPABASE.md, section 10).
+// npm run deployer-fonctions     : régénère, puis déploie les deux fonctions sur Supabase (docs/SUPABASE.md, 10.2).
+//                                  Projet : --projet <ref>, sinon lu dans VITE_SUPABASE_URL (.env).
 import { build, type Rollup } from 'vite';
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { empreinteFonctions, FONCTIONS, enTete } from './empreinte-fonctions';
+import { FONCTIONS, empreinteDe, enTete, verifierFonction } from './empreinte-fonctions';
 
 const racine = process.cwd();
-const verifier = process.argv.includes('--verifier');
-const empreinte = empreinteFonctions(racine);
-let enRetard = 0;
+const args = process.argv.slice(2);
+const fichierDe = (nom: string): string => path.join(racine, 'supabase', 'functions', nom, 'index.ts');
 
-for (const nom of FONCTIONS) {
-  const cible = path.join(racine, 'supabase', 'functions', nom, 'index.ts');
-  if (verifier) {
-    const actuel = existsSync(cible) ? readFileSync(cible, 'utf8') : '';
-    if (!actuel.startsWith(enTete(nom, empreinte))) {
-      console.error(`✗ ${path.relative(racine, cible)} n'est pas à jour : lance npm run fonctions, puis redéploie la fonction.`);
-      enRetard++;
-    } else console.log(`✓ ${nom} à jour (${empreinte})`);
-    continue;
-  }
+async function generer(nom: string): Promise<void> {
   const sortie = (await build({
     configFile: false,
     logLevel: 'warn',
@@ -36,9 +27,61 @@ for (const nom of FONCTIONS) {
       rollupOptions: { output: { inlineDynamicImports: true } },
     },
   })) as Rollup.RollupOutput[];
-  const code = sortie.flatMap((s) => s.output).filter((o): o is Rollup.OutputChunk => o.type === 'chunk').map((o) => o.code).join('\n');
+  const morceaux = sortie.flatMap((s) => s.output).filter((o): o is Rollup.OutputChunk => o.type === 'chunk');
+  const code = morceaux.map((o) => o.code).join('\n');
+  // Fichiers réellement regroupés (relevés par le build) : seuls eux comptent pour l'empreinte.
+  const sources = [...new Set(morceaux.flatMap((o) => o.moduleIds))]
+    .filter((id) => !id.startsWith('\0') && path.isAbsolute(id.split('?')[0]!))
+    .map((id) => path.relative(racine, id.split('?')[0]!).split(path.sep).join('/'))
+    .filter((r) => !r.startsWith('..') && !r.startsWith('node_modules/'))
+    .sort();
+  const cible = fichierDe(nom);
   mkdirSync(path.dirname(cible), { recursive: true });
-  writeFileSync(cible, `${enTete(nom, empreinte)}// @ts-nocheck\n${code}`);
-  console.log(`${path.relative(racine, cible)} : ${(Buffer.byteLength(code) / 1024).toFixed(0)} Ko`);
+  writeFileSync(cible, `${enTete(nom, empreinteDe(racine, sources), sources)}// @ts-nocheck\n${code}`);
+  console.log(`${path.relative(racine, cible)} : ${(Buffer.byteLength(code) / 1024).toFixed(0)} Ko, ${sources.length} fichiers sources`);
 }
-if (enRetard > 0) process.exit(1);
+
+/** Outil Supabase, version fixée (ses options changent d'une version majeure à l'autre). */
+const CLI_SUPABASE = 'supabase@3.0.0';
+
+/** Identifiant du projet : --projet <ref>, sinon https://<ref>.supabase.co dans .env. */
+function projet(): string {
+  const i = args.indexOf('--projet');
+  if (i >= 0 && args[i + 1]) return args[i + 1]!;
+  const env = existsSync(path.join(racine, '.env')) ? readFileSync(path.join(racine, '.env'), 'utf8') : '';
+  const ref = /^VITE_SUPABASE_URL\s*=\s*https:\/\/([a-z0-9]+)\.supabase\.co/m.exec(env)?.[1];
+  if (!ref) {
+    console.error('Projet Supabase introuvable : ajoute VITE_SUPABASE_URL dans .env, ou lance npm run deployer-fonctions -- --projet <ref>.');
+    process.exit(1);
+  }
+  return ref;
+}
+
+if (args.includes('--verifier')) {
+  let enRetard = 0;
+  for (const nom of FONCTIONS) {
+    const cible = fichierDe(nom);
+    const raison = existsSync(cible) ? verifierFonction(racine, readFileSync(cible, 'utf8')) : 'fichier absent';
+    if (raison) { enRetard++; console.error(`✗ ${nom} n'est pas à jour (${raison}) : lance npm run deployer-fonctions.`); }
+    else console.log(`✓ ${nom} à jour`);
+  }
+  process.exit(enRetard > 0 ? 1 : 0);
+}
+
+for (const nom of FONCTIONS) await generer(nom);
+
+if (args.includes('--deployer')) {
+  const ref = projet();
+  for (const nom of FONCTIONS) {
+    console.log(`\nDéploiement de ${nom} sur le projet ${ref}…`);
+    // --no-verify-jwt : la fonction vérifie elle-même le joueur (Supabase Auth). --use-api : sans Docker.
+    // --yes : confirme le changement sur le projet en ligne (c'est la raison de cette commande).
+    const r = spawnSync('npx', ['--yes', CLI_SUPABASE, 'functions', 'deploy', nom, `--remote=${ref}`, '--no-verify-jwt', '--use-api', '--yes'],
+      { cwd: racine, stdio: 'inherit', shell: process.platform === 'win32' });
+    if (r.status !== 0) {
+      console.error(`\n✗ Échec du déploiement de ${nom}. Première fois sur cet ordinateur ? Lance d'abord : npx ${CLI_SUPABASE} login`);
+      process.exit(r.status ?? 1);
+    }
+  }
+  console.log('\n✓ Les deux fonctions sont déployées.');
+}

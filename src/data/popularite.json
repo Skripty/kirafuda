@@ -1,257 +1,1002 @@
 {
+  "_note": "Généré par l’admin (onglet Popularité) : ne pas modifier à la main. Popularité = base (popularite-base.json) + ajustement ; voir docs/GDD-resume.md, section Cote.",
   "semaine": "2026-S45",
   "semainePrecedente": "2026-S44",
   "courante": {
-    "per-001": 73,
-    "per-002": 41,
-    "per-003": 94,
-    "per-004": 23,
-    "per-005": 35,
-    "per-006": 69,
-    "per-007": 91,
-    "per-008": 22,
-    "per-009": 83,
-    "per-010": 49,
-    "per-011": 28,
-    "per-012": 69,
-    "per-013": 89,
-    "per-014": 46,
-    "per-015": 93,
-    "per-016": 47,
-    "per-017": 60,
-    "per-018": 68,
-    "per-019": 45,
-    "per-020": 95,
-    "per-021": 39,
-    "per-022": 78,
-    "per-023": 81,
-    "per-024": 36,
-    "per-025": 24,
-    "per-026": 38,
-    "per-027": 79,
-    "per-028": 38,
-    "per-029": 65,
-    "per-030": 85,
-    "per-031": 53,
-    "per-032": 86,
-    "per-033": 90,
-    "per-034": 43,
-    "per-035": 56,
-    "per-036": 28,
-    "per-037": 90,
-    "per-038": 34,
-    "per-039": 73,
-    "per-040": 66,
-    "per-041": 55,
-    "per-042": 74,
-    "per-043": 82,
-    "per-044": 50,
-    "per-045": 59,
-    "per-046": 52,
-    "per-047": 31,
-    "per-048": 90,
-    "per-049": 54,
-    "per-050": 25,
-    "per-051": 68,
-    "per-052": 59,
-    "per-053": 87,
-    "per-054": 30,
-    "per-055": 81,
-    "per-056": 84,
-    "per-057": 91,
-    "per-058": 52,
-    "per-059": 47,
-    "per-060": 84,
-    "per-061": 71,
-    "per-062": 40,
-    "per-063": 67,
-    "per-064": 87,
-    "per-065": 63,
-    "per-066": 48,
-    "per-067": 76,
-    "per-068": 20,
-    "per-069": 37,
-    "per-070": 23,
-    "per-071": 43,
-    "per-072": 37,
-    "per-073": 71,
-    "per-074": 59,
-    "per-075": 24,
-    "per-076": 87,
-    "per-077": 28,
-    "per-078": 90,
-    "per-079": 49,
-    "per-080": 69,
-    "per-081": 69,
-    "per-082": 66,
-    "per-083": 40,
-    "per-084": 23,
-    "per-085": 36,
-    "per-086": 46,
-    "per-087": 59,
-    "per-088": 38,
-    "per-089": 84,
-    "per-090": 63,
-    "per-091": 38,
-    "per-092": 59,
-    "per-093": 73,
-    "per-094": 52,
-    "per-095": 39,
-    "per-096": 74,
-    "per-097": 79,
-    "per-098": 79,
-    "per-099": 25,
-    "per-100": 86,
-    "ren-per-001": 50,
-    "ren-per-002": 50,
-    "ren-per-003": 50,
-    "ren-per-004": 50,
-    "ren-per-005": 50,
-    "ren-per-006": 50,
-    "ren-per-007": 50,
-    "ren-per-008": 50,
-    "ren-per-009": 50,
-    "ren-per-010": 50,
-    "ren-per-011": 50,
-    "ren-per-012": 50,
-    "ren-per-013": 50,
-    "ren-per-014": 50,
-    "ren-per-015": 50,
-    "ren-per-016": 50,
-    "ren-per-017": 50,
-    "ren-per-018": 50,
-    "ren-per-019": 50,
-    "ren-per-020": 50,
-    "ren-per-021": 50,
-    "ren-per-022": 50,
-    "ren-per-023": 50,
-    "ren-per-024": 50
+    "per-001": {
+      "popularite": 95,
+      "ajustement": 0
+    },
+    "per-002": {
+      "popularite": 88,
+      "ajustement": 0
+    },
+    "per-003": {
+      "popularite": 66,
+      "ajustement": 0
+    },
+    "per-004": {
+      "popularite": 86,
+      "ajustement": 0
+    },
+    "per-005": {
+      "popularite": 82,
+      "ajustement": 0
+    },
+    "per-006": {
+      "popularite": 90,
+      "ajustement": 0
+    },
+    "per-007": {
+      "popularite": 96,
+      "ajustement": 0
+    },
+    "per-008": {
+      "popularite": 78,
+      "ajustement": 0
+    },
+    "per-009": {
+      "popularite": 70,
+      "ajustement": 0
+    },
+    "per-010": {
+      "popularite": 60,
+      "ajustement": 0
+    },
+    "per-011": {
+      "popularite": 86,
+      "ajustement": 0
+    },
+    "per-012": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "per-013": {
+      "popularite": 64,
+      "ajustement": 0
+    },
+    "per-014": {
+      "popularite": 68,
+      "ajustement": 0
+    },
+    "per-015": {
+      "popularite": 58,
+      "ajustement": 0
+    },
+    "per-016": {
+      "popularite": 64,
+      "ajustement": 0
+    },
+    "per-017": {
+      "popularite": 80,
+      "ajustement": 0
+    },
+    "per-018": {
+      "popularite": 78,
+      "ajustement": 0
+    },
+    "per-019": {
+      "popularite": 76,
+      "ajustement": 0
+    },
+    "per-020": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "per-021": {
+      "popularite": 72,
+      "ajustement": 0
+    },
+    "per-022": {
+      "popularite": 48,
+      "ajustement": 0
+    },
+    "per-023": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "per-024": {
+      "popularite": 42,
+      "ajustement": 0
+    },
+    "per-025": {
+      "popularite": 82,
+      "ajustement": 0
+    },
+    "per-026": {
+      "popularite": 76,
+      "ajustement": 0
+    },
+    "per-027": {
+      "popularite": 92,
+      "ajustement": 0
+    },
+    "per-028": {
+      "popularite": 60,
+      "ajustement": 0
+    },
+    "per-029": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "per-030": {
+      "popularite": 52,
+      "ajustement": 0
+    },
+    "per-031": {
+      "popularite": 46,
+      "ajustement": 0
+    },
+    "per-032": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "per-033": {
+      "popularite": 82,
+      "ajustement": 0
+    },
+    "per-034": {
+      "popularite": 80,
+      "ajustement": 0
+    },
+    "per-035": {
+      "popularite": 64,
+      "ajustement": 0
+    },
+    "per-036": {
+      "popularite": 60,
+      "ajustement": 0
+    },
+    "per-037": {
+      "popularite": 66,
+      "ajustement": 0
+    },
+    "per-038": {
+      "popularite": 64,
+      "ajustement": 0
+    },
+    "per-039": {
+      "popularite": 58,
+      "ajustement": 0
+    },
+    "per-040": {
+      "popularite": 76,
+      "ajustement": 0
+    },
+    "per-041": {
+      "popularite": 90,
+      "ajustement": 0
+    },
+    "per-042": {
+      "popularite": 50,
+      "ajustement": 0
+    },
+    "per-043": {
+      "popularite": 54,
+      "ajustement": 0
+    },
+    "per-044": {
+      "popularite": 56,
+      "ajustement": 0
+    },
+    "per-045": {
+      "popularite": 34,
+      "ajustement": 0
+    },
+    "per-046": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-047": {
+      "popularite": 38,
+      "ajustement": 0
+    },
+    "per-048": {
+      "popularite": 32,
+      "ajustement": 0
+    },
+    "per-049": {
+      "popularite": 84,
+      "ajustement": 0
+    },
+    "per-050": {
+      "popularite": 66,
+      "ajustement": 0
+    },
+    "per-051": {
+      "popularite": 52,
+      "ajustement": 0
+    },
+    "per-052": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "per-053": {
+      "popularite": 46,
+      "ajustement": 0
+    },
+    "per-054": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "per-055": {
+      "popularite": 34,
+      "ajustement": 0
+    },
+    "per-056": {
+      "popularite": 60,
+      "ajustement": 0
+    },
+    "per-057": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "per-058": {
+      "popularite": 42,
+      "ajustement": 0
+    },
+    "per-059": {
+      "popularite": 34,
+      "ajustement": 0
+    },
+    "per-060": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-061": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "per-062": {
+      "popularite": 58,
+      "ajustement": 0
+    },
+    "per-063": {
+      "popularite": 56,
+      "ajustement": 0
+    },
+    "per-064": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "per-065": {
+      "popularite": 38,
+      "ajustement": 0
+    },
+    "per-066": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-067": {
+      "popularite": 32,
+      "ajustement": 0
+    },
+    "per-068": {
+      "popularite": 48,
+      "ajustement": 0
+    },
+    "per-069": {
+      "popularite": 42,
+      "ajustement": 0
+    },
+    "per-070": {
+      "popularite": 34,
+      "ajustement": 0
+    },
+    "per-071": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-072": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-073": {
+      "popularite": 32,
+      "ajustement": 0
+    },
+    "per-074": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "per-075": {
+      "popularite": 52,
+      "ajustement": 0
+    },
+    "per-076": {
+      "popularite": 44,
+      "ajustement": 0
+    },
+    "per-077": {
+      "popularite": 36,
+      "ajustement": 0
+    },
+    "per-078": {
+      "popularite": 28,
+      "ajustement": 0
+    },
+    "per-079": {
+      "popularite": 24,
+      "ajustement": 0
+    },
+    "per-080": {
+      "popularite": 24,
+      "ajustement": 0
+    },
+    "per-081": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "per-082": {
+      "popularite": 56,
+      "ajustement": 0
+    },
+    "per-083": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "per-084": {
+      "popularite": 32,
+      "ajustement": 0
+    },
+    "per-085": {
+      "popularite": 44,
+      "ajustement": 0
+    },
+    "per-086": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-087": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "per-088": {
+      "popularite": 42,
+      "ajustement": 0
+    },
+    "per-089": {
+      "popularite": 36,
+      "ajustement": 0
+    },
+    "per-090": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-091": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-092": {
+      "popularite": 32,
+      "ajustement": 0
+    },
+    "per-093": {
+      "popularite": 24,
+      "ajustement": 0
+    },
+    "per-094": {
+      "popularite": 36,
+      "ajustement": 0
+    },
+    "per-095": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "per-096": {
+      "popularite": 22,
+      "ajustement": 0
+    },
+    "per-097": {
+      "popularite": 22,
+      "ajustement": 0
+    },
+    "per-098": {
+      "popularite": 20,
+      "ajustement": 0
+    },
+    "per-099": {
+      "popularite": 22,
+      "ajustement": 0
+    },
+    "per-100": {
+      "popularite": 20,
+      "ajustement": 0
+    },
+    "ren-per-001": {
+      "popularite": 88,
+      "ajustement": 0
+    },
+    "ren-per-002": {
+      "popularite": 80,
+      "ajustement": 0
+    },
+    "ren-per-003": {
+      "popularite": 72,
+      "ajustement": 0
+    },
+    "ren-per-004": {
+      "popularite": 66,
+      "ajustement": 0
+    },
+    "ren-per-005": {
+      "popularite": 78,
+      "ajustement": 0
+    },
+    "ren-per-006": {
+      "popularite": 70,
+      "ajustement": 0
+    },
+    "ren-per-007": {
+      "popularite": 66,
+      "ajustement": 0
+    },
+    "ren-per-008": {
+      "popularite": 64,
+      "ajustement": 0
+    },
+    "ren-per-009": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "ren-per-010": {
+      "popularite": 70,
+      "ajustement": 0
+    },
+    "ren-per-011": {
+      "popularite": 58,
+      "ajustement": 0
+    },
+    "ren-per-012": {
+      "popularite": 46,
+      "ajustement": 0
+    },
+    "ren-per-013": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "ren-per-014": {
+      "popularite": 46,
+      "ajustement": 0
+    },
+    "ren-per-015": {
+      "popularite": 38,
+      "ajustement": 0
+    },
+    "ren-per-016": {
+      "popularite": 36,
+      "ajustement": 0
+    },
+    "ren-per-017": {
+      "popularite": 38,
+      "ajustement": 0
+    },
+    "ren-per-018": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "ren-per-019": {
+      "popularite": 36,
+      "ajustement": 0
+    },
+    "ren-per-020": {
+      "popularite": 44,
+      "ajustement": 0
+    },
+    "ren-per-021": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "ren-per-022": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "ren-per-023": {
+      "popularite": 42,
+      "ajustement": 0
+    },
+    "ren-per-024": {
+      "popularite": 48,
+      "ajustement": 0
+    }
   },
   "precedente": {
-    "per-001": 78,
-    "per-002": 48,
-    "per-003": 100,
-    "per-004": 21,
-    "per-005": 32,
-    "per-006": 76,
-    "per-007": 91,
-    "per-008": 28,
-    "per-009": 78,
-    "per-010": 51,
-    "per-011": 23,
-    "per-012": 63,
-    "per-013": 94,
-    "per-014": 48,
-    "per-015": 88,
-    "per-016": 44,
-    "per-017": 60,
-    "per-018": 62,
-    "per-019": 50,
-    "per-020": 98,
-    "per-021": 33,
-    "per-022": 71,
-    "per-023": 80,
-    "per-024": 40,
-    "per-025": 28,
-    "per-026": 35,
-    "per-027": 83,
-    "per-028": 31,
-    "per-029": 65,
-    "per-030": 80,
-    "per-031": 48,
-    "per-032": 91,
-    "per-033": 96,
-    "per-034": 41,
-    "per-035": 49,
-    "per-036": 28,
-    "per-037": 84,
-    "per-038": 38,
-    "per-039": 74,
-    "per-040": 72,
-    "per-041": 50,
-    "per-042": 76,
-    "per-043": 87,
-    "per-044": 44,
-    "per-045": 60,
-    "per-046": 58,
-    "per-047": 29,
-    "per-048": 91,
-    "per-049": 62,
-    "per-050": 24,
-    "per-051": 61,
-    "per-052": 64,
-    "per-053": 84,
-    "per-054": 34,
-    "per-055": 82,
-    "per-056": 85,
-    "per-057": 90,
-    "per-058": 50,
-    "per-059": 53,
-    "per-060": 90,
-    "per-061": 78,
-    "per-062": 40,
-    "per-063": 72,
-    "per-064": 81,
-    "per-065": 70,
-    "per-066": 49,
-    "per-067": 71,
-    "per-068": 15,
-    "per-069": 41,
-    "per-070": 27,
-    "per-071": 40,
-    "per-072": 38,
-    "per-073": 74,
-    "per-074": 60,
-    "per-075": 29,
-    "per-076": 90,
-    "per-077": 21,
-    "per-078": 98,
-    "per-079": 50,
-    "per-080": 64,
-    "per-081": 63,
-    "per-082": 65,
-    "per-083": 34,
-    "per-084": 25,
-    "per-085": 33,
-    "per-086": 53,
-    "per-087": 60,
-    "per-088": 41,
-    "per-089": 81,
-    "per-090": 57,
-    "per-091": 40,
-    "per-092": 65,
-    "per-093": 76,
-    "per-094": 54,
-    "per-095": 37,
-    "per-096": 74,
-    "per-097": 73,
-    "per-098": 81,
-    "per-099": 25,
-    "per-100": 84,
-    "ren-per-001": 50,
-    "ren-per-002": 50,
-    "ren-per-003": 50,
-    "ren-per-004": 50,
-    "ren-per-005": 50,
-    "ren-per-006": 50,
-    "ren-per-007": 50,
-    "ren-per-008": 50,
-    "ren-per-009": 50,
-    "ren-per-010": 50,
-    "ren-per-011": 50,
-    "ren-per-012": 50,
-    "ren-per-013": 50,
-    "ren-per-014": 50,
-    "ren-per-015": 50,
-    "ren-per-016": 50,
-    "ren-per-017": 50,
-    "ren-per-018": 50,
-    "ren-per-019": 50,
-    "ren-per-020": 50,
-    "ren-per-021": 50,
-    "ren-per-022": 50,
-    "ren-per-023": 50,
-    "ren-per-024": 50
+    "per-001": {
+      "popularite": 95,
+      "ajustement": 0
+    },
+    "per-002": {
+      "popularite": 88,
+      "ajustement": 0
+    },
+    "per-003": {
+      "popularite": 66,
+      "ajustement": 0
+    },
+    "per-004": {
+      "popularite": 86,
+      "ajustement": 0
+    },
+    "per-005": {
+      "popularite": 82,
+      "ajustement": 0
+    },
+    "per-006": {
+      "popularite": 90,
+      "ajustement": 0
+    },
+    "per-007": {
+      "popularite": 96,
+      "ajustement": 0
+    },
+    "per-008": {
+      "popularite": 78,
+      "ajustement": 0
+    },
+    "per-009": {
+      "popularite": 70,
+      "ajustement": 0
+    },
+    "per-010": {
+      "popularite": 60,
+      "ajustement": 0
+    },
+    "per-011": {
+      "popularite": 86,
+      "ajustement": 0
+    },
+    "per-012": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "per-013": {
+      "popularite": 64,
+      "ajustement": 0
+    },
+    "per-014": {
+      "popularite": 68,
+      "ajustement": 0
+    },
+    "per-015": {
+      "popularite": 58,
+      "ajustement": 0
+    },
+    "per-016": {
+      "popularite": 64,
+      "ajustement": 0
+    },
+    "per-017": {
+      "popularite": 80,
+      "ajustement": 0
+    },
+    "per-018": {
+      "popularite": 78,
+      "ajustement": 0
+    },
+    "per-019": {
+      "popularite": 76,
+      "ajustement": 0
+    },
+    "per-020": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "per-021": {
+      "popularite": 72,
+      "ajustement": 0
+    },
+    "per-022": {
+      "popularite": 48,
+      "ajustement": 0
+    },
+    "per-023": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "per-024": {
+      "popularite": 42,
+      "ajustement": 0
+    },
+    "per-025": {
+      "popularite": 82,
+      "ajustement": 0
+    },
+    "per-026": {
+      "popularite": 76,
+      "ajustement": 0
+    },
+    "per-027": {
+      "popularite": 92,
+      "ajustement": 0
+    },
+    "per-028": {
+      "popularite": 60,
+      "ajustement": 0
+    },
+    "per-029": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "per-030": {
+      "popularite": 52,
+      "ajustement": 0
+    },
+    "per-031": {
+      "popularite": 46,
+      "ajustement": 0
+    },
+    "per-032": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "per-033": {
+      "popularite": 82,
+      "ajustement": 0
+    },
+    "per-034": {
+      "popularite": 80,
+      "ajustement": 0
+    },
+    "per-035": {
+      "popularite": 64,
+      "ajustement": 0
+    },
+    "per-036": {
+      "popularite": 60,
+      "ajustement": 0
+    },
+    "per-037": {
+      "popularite": 66,
+      "ajustement": 0
+    },
+    "per-038": {
+      "popularite": 64,
+      "ajustement": 0
+    },
+    "per-039": {
+      "popularite": 58,
+      "ajustement": 0
+    },
+    "per-040": {
+      "popularite": 76,
+      "ajustement": 0
+    },
+    "per-041": {
+      "popularite": 90,
+      "ajustement": 0
+    },
+    "per-042": {
+      "popularite": 50,
+      "ajustement": 0
+    },
+    "per-043": {
+      "popularite": 54,
+      "ajustement": 0
+    },
+    "per-044": {
+      "popularite": 56,
+      "ajustement": 0
+    },
+    "per-045": {
+      "popularite": 34,
+      "ajustement": 0
+    },
+    "per-046": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-047": {
+      "popularite": 38,
+      "ajustement": 0
+    },
+    "per-048": {
+      "popularite": 32,
+      "ajustement": 0
+    },
+    "per-049": {
+      "popularite": 84,
+      "ajustement": 0
+    },
+    "per-050": {
+      "popularite": 66,
+      "ajustement": 0
+    },
+    "per-051": {
+      "popularite": 52,
+      "ajustement": 0
+    },
+    "per-052": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "per-053": {
+      "popularite": 46,
+      "ajustement": 0
+    },
+    "per-054": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "per-055": {
+      "popularite": 34,
+      "ajustement": 0
+    },
+    "per-056": {
+      "popularite": 60,
+      "ajustement": 0
+    },
+    "per-057": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "per-058": {
+      "popularite": 42,
+      "ajustement": 0
+    },
+    "per-059": {
+      "popularite": 34,
+      "ajustement": 0
+    },
+    "per-060": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-061": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "per-062": {
+      "popularite": 58,
+      "ajustement": 0
+    },
+    "per-063": {
+      "popularite": 56,
+      "ajustement": 0
+    },
+    "per-064": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "per-065": {
+      "popularite": 38,
+      "ajustement": 0
+    },
+    "per-066": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-067": {
+      "popularite": 32,
+      "ajustement": 0
+    },
+    "per-068": {
+      "popularite": 48,
+      "ajustement": 0
+    },
+    "per-069": {
+      "popularite": 42,
+      "ajustement": 0
+    },
+    "per-070": {
+      "popularite": 34,
+      "ajustement": 0
+    },
+    "per-071": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-072": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-073": {
+      "popularite": 32,
+      "ajustement": 0
+    },
+    "per-074": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "per-075": {
+      "popularite": 52,
+      "ajustement": 0
+    },
+    "per-076": {
+      "popularite": 44,
+      "ajustement": 0
+    },
+    "per-077": {
+      "popularite": 36,
+      "ajustement": 0
+    },
+    "per-078": {
+      "popularite": 28,
+      "ajustement": 0
+    },
+    "per-079": {
+      "popularite": 24,
+      "ajustement": 0
+    },
+    "per-080": {
+      "popularite": 24,
+      "ajustement": 0
+    },
+    "per-081": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "per-082": {
+      "popularite": 56,
+      "ajustement": 0
+    },
+    "per-083": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "per-084": {
+      "popularite": 32,
+      "ajustement": 0
+    },
+    "per-085": {
+      "popularite": 44,
+      "ajustement": 0
+    },
+    "per-086": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-087": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "per-088": {
+      "popularite": 42,
+      "ajustement": 0
+    },
+    "per-089": {
+      "popularite": 36,
+      "ajustement": 0
+    },
+    "per-090": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-091": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "per-092": {
+      "popularite": 32,
+      "ajustement": 0
+    },
+    "per-093": {
+      "popularite": 24,
+      "ajustement": 0
+    },
+    "per-094": {
+      "popularite": 36,
+      "ajustement": 0
+    },
+    "per-095": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "per-096": {
+      "popularite": 22,
+      "ajustement": 0
+    },
+    "per-097": {
+      "popularite": 22,
+      "ajustement": 0
+    },
+    "per-098": {
+      "popularite": 20,
+      "ajustement": 0
+    },
+    "per-099": {
+      "popularite": 22,
+      "ajustement": 0
+    },
+    "per-100": {
+      "popularite": 20,
+      "ajustement": 0
+    },
+    "ren-per-001": {
+      "popularite": 88,
+      "ajustement": 0
+    },
+    "ren-per-002": {
+      "popularite": 80,
+      "ajustement": 0
+    },
+    "ren-per-003": {
+      "popularite": 72,
+      "ajustement": 0
+    },
+    "ren-per-004": {
+      "popularite": 66,
+      "ajustement": 0
+    },
+    "ren-per-005": {
+      "popularite": 78,
+      "ajustement": 0
+    },
+    "ren-per-006": {
+      "popularite": 70,
+      "ajustement": 0
+    },
+    "ren-per-007": {
+      "popularite": 66,
+      "ajustement": 0
+    },
+    "ren-per-008": {
+      "popularite": 64,
+      "ajustement": 0
+    },
+    "ren-per-009": {
+      "popularite": 62,
+      "ajustement": 0
+    },
+    "ren-per-010": {
+      "popularite": 70,
+      "ajustement": 0
+    },
+    "ren-per-011": {
+      "popularite": 58,
+      "ajustement": 0
+    },
+    "ren-per-012": {
+      "popularite": 46,
+      "ajustement": 0
+    },
+    "ren-per-013": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "ren-per-014": {
+      "popularite": 46,
+      "ajustement": 0
+    },
+    "ren-per-015": {
+      "popularite": 38,
+      "ajustement": 0
+    },
+    "ren-per-016": {
+      "popularite": 36,
+      "ajustement": 0
+    },
+    "ren-per-017": {
+      "popularite": 38,
+      "ajustement": 0
+    },
+    "ren-per-018": {
+      "popularite": 30,
+      "ajustement": 0
+    },
+    "ren-per-019": {
+      "popularite": 36,
+      "ajustement": 0
+    },
+    "ren-per-020": {
+      "popularite": 44,
+      "ajustement": 0
+    },
+    "ren-per-021": {
+      "popularite": 40,
+      "ajustement": 0
+    },
+    "ren-per-022": {
+      "popularite": 26,
+      "ajustement": 0
+    },
+    "ren-per-023": {
+      "popularite": 42,
+      "ajustement": 0
+    },
+    "ren-per-024": {
+      "popularite": 48,
+      "ajustement": 0
+    }
   },
-  "_note": "Popularité de 0 à 100 par personnage (per-xxx), mise à jour à la main chaque semaine : copier « courante » dans « precedente », puis saisir les nouvelles valeurs. Valeurs de départ d’exemple. Renforts (ren-per-xxx) : valeurs provisoires à 50 pour les deux semaines, à remplacer à la prochaine mise à jour."
+  "coupsDePouce": []
 }

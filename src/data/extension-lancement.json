@@ -2532,7 +2532,13 @@
       "personnage": "per-005",
       "finition": "holo",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-006",
@@ -2540,7 +2546,13 @@
       "personnage": "per-006",
       "finition": "holo-integrale",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 26
+        }
+      }
     },
     {
       "id": "lan-007",
@@ -2550,7 +2562,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 10
         }
@@ -2564,7 +2576,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 36
         }
@@ -2578,7 +2590,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 34
         }
@@ -2592,7 +2604,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 20
         }
@@ -2606,9 +2618,9 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
-          "y": 16
+          "y": 11
         }
       }
     },
@@ -2620,7 +2632,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 22
         }
@@ -2634,9 +2646,9 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
-          "y": 0
+          "y": 1
         }
       }
     },
@@ -2648,7 +2660,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 8
         }
@@ -2662,7 +2674,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 26
         }
@@ -2676,9 +2688,9 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
-          "y": 17
+          "y": 13
         }
       }
     },
@@ -2690,7 +2702,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 25
         }
@@ -2704,7 +2716,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 27
         }
@@ -2718,7 +2730,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 24
         }
@@ -2732,7 +2744,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 17
         }
@@ -2746,7 +2758,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 25
         }
@@ -2760,7 +2772,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 21
         }
@@ -2774,9 +2786,9 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
-          "y": 0
+          "y": 2
         }
       }
     },
@@ -2788,7 +2800,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 14
         }
@@ -2802,7 +2814,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 67
         }
@@ -2816,7 +2828,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 23
         }
@@ -2830,7 +2842,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 42
         }
@@ -2844,7 +2856,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 54
         }
@@ -2858,7 +2870,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 14
         }
@@ -2872,7 +2884,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 23
         }
@@ -2886,7 +2898,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 12
         }
@@ -2914,7 +2926,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 11
         }
@@ -2928,7 +2940,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 20
         }
@@ -2942,7 +2954,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 29
         }
@@ -2956,7 +2968,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 22
         }
@@ -2970,7 +2982,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 17
         }
@@ -2984,7 +2996,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 18
         }
@@ -2998,7 +3010,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 35
         }
@@ -3012,7 +3024,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 20
         }
@@ -3026,7 +3038,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 29
         }
@@ -3040,7 +3052,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 18
         }
@@ -3054,7 +3066,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 18
         }
@@ -3068,7 +3080,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 5
         }
@@ -3082,7 +3094,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 25
         }
@@ -3096,7 +3108,7 @@
       "secrete": false,
       "images": {
         "illustration": {
-          "zoom": 100,
+          "zoom": 102,
           "x": 50,
           "y": 25
         }
@@ -3906,7 +3918,13 @@
       "personnage": "per-008",
       "finition": "pleine",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-105",
@@ -3914,7 +3932,13 @@
       "personnage": "per-014",
       "finition": "pleine",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-106",
@@ -3922,7 +3946,13 @@
       "personnage": "per-017",
       "finition": "pleine",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-107",
@@ -3930,7 +3960,13 @@
       "personnage": "per-021",
       "finition": "pleine",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-108",
@@ -3938,7 +3974,13 @@
       "personnage": "per-022",
       "finition": "pleine",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-109",
@@ -3946,7 +3988,13 @@
       "personnage": "per-026",
       "finition": "pleine",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-110",
@@ -3962,7 +4010,13 @@
       "personnage": "per-033",
       "finition": "pleine",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-112",
@@ -3970,7 +4024,13 @@
       "personnage": "per-038",
       "finition": "pleine",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-113",
@@ -4142,7 +4202,13 @@
       "personnage": "per-006",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-127",
@@ -4150,7 +4216,13 @@
       "personnage": "per-007",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-128",
@@ -4158,7 +4230,13 @@
       "personnage": "per-011",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-129",
@@ -4166,7 +4244,13 @@
       "personnage": "per-018",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-130",
@@ -4174,7 +4258,13 @@
       "personnage": "per-025",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-131",
@@ -4182,7 +4272,13 @@
       "personnage": "per-027",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-132",
@@ -4190,7 +4286,13 @@
       "personnage": "per-040",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-133",
@@ -4198,7 +4300,13 @@
       "personnage": "per-041",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-134",
@@ -4206,7 +4314,13 @@
       "personnage": "per-049",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-135",
@@ -4238,7 +4352,13 @@
       "personnage": "per-006",
       "finition": "couronne",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-139",
@@ -4246,7 +4366,13 @@
       "personnage": "per-007",
       "finition": "couronne",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "lan-140",
@@ -4254,7 +4380,13 @@
       "personnage": "per-027",
       "finition": "couronne",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     }
   ]
 }

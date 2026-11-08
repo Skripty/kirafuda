@@ -601,7 +601,13 @@
       "personnage": "ren-per-001",
       "finition": "holo-integrale",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 46
+        }
+      }
     },
     {
       "id": "ren-002",
@@ -609,7 +615,13 @@
       "personnage": "ren-per-002",
       "finition": "holo",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "ren-003",
@@ -617,7 +629,13 @@
       "personnage": "ren-per-003",
       "finition": "holo",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 15
+        }
+      }
     },
     {
       "id": "ren-004",
@@ -625,7 +643,13 @@
       "personnage": "ren-per-004",
       "finition": "holo",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 25
+        }
+      }
     },
     {
       "id": "ren-005",
@@ -633,7 +657,13 @@
       "personnage": "ren-per-005",
       "finition": "holo",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 25
+        }
+      }
     },
     {
       "id": "ren-006",
@@ -641,7 +671,13 @@
       "personnage": "ren-per-006",
       "finition": "peu-commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 27
+        }
+      }
     },
     {
       "id": "ren-007",
@@ -649,7 +685,13 @@
       "personnage": "ren-per-007",
       "finition": "peu-commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "ren-008",
@@ -657,7 +699,13 @@
       "personnage": "ren-per-008",
       "finition": "peu-commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 25
+        }
+      }
     },
     {
       "id": "ren-009",
@@ -665,7 +713,13 @@
       "personnage": "ren-per-009",
       "finition": "peu-commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 39
+        }
+      }
     },
     {
       "id": "ren-010",
@@ -673,7 +727,13 @@
       "personnage": "ren-per-010",
       "finition": "peu-commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 26
+        }
+      }
     },
     {
       "id": "ren-011",
@@ -681,7 +741,13 @@
       "personnage": "ren-per-011",
       "finition": "peu-commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 34
+        }
+      }
     },
     {
       "id": "ren-012",
@@ -689,7 +755,13 @@
       "personnage": "ren-per-012",
       "finition": "peu-commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 11
+        }
+      }
     },
     {
       "id": "ren-013",
@@ -697,7 +769,13 @@
       "personnage": "ren-per-013",
       "finition": "commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 41
+        }
+      }
     },
     {
       "id": "ren-014",
@@ -705,7 +783,13 @@
       "personnage": "ren-per-014",
       "finition": "commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 46
+        }
+      }
     },
     {
       "id": "ren-015",
@@ -713,7 +797,13 @@
       "personnage": "ren-per-015",
       "finition": "commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 26
+        }
+      }
     },
     {
       "id": "ren-016",
@@ -721,7 +811,13 @@
       "personnage": "ren-per-016",
       "finition": "commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 22
+        }
+      }
     },
     {
       "id": "ren-017",
@@ -729,7 +825,13 @@
       "personnage": "ren-per-017",
       "finition": "commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 16
+        }
+      }
     },
     {
       "id": "ren-018",
@@ -737,7 +839,13 @@
       "personnage": "ren-per-018",
       "finition": "commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 32
+        }
+      }
     },
     {
       "id": "ren-019",
@@ -745,7 +853,13 @@
       "personnage": "ren-per-019",
       "finition": "commune",
       "secrete": false,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 17
+        }
+      }
     },
     {
       "id": "ren-020",
@@ -793,7 +907,13 @@
       "personnage": "ren-per-006",
       "finition": "pleine",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "ren-026",
@@ -801,7 +921,13 @@
       "personnage": "ren-per-010",
       "finition": "pleine",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "ren-027",
@@ -825,7 +951,13 @@
       "personnage": "ren-per-003",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "ren-030",
@@ -833,7 +965,13 @@
       "personnage": "ren-per-005",
       "finition": "alternative",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "ren-031",
@@ -849,7 +987,13 @@
       "personnage": "ren-per-001",
       "finition": "couronne",
       "secrete": true,
-      "images": {}
+      "images": {
+        "illustration": {
+          "zoom": 102,
+          "x": 50,
+          "y": 50
+        }
+      }
     }
   ]
 }
