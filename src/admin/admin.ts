@@ -5,7 +5,7 @@
 import '../styles/tokens.css';
 import './admin.css';
 import { ELEMENTS, FAIBLESSE, FINITIONS, ORDRE_FINITIONS } from '../core/regles';
-import { TYPES_PERSONNAGE, texteDegats } from '../core/combat';
+import { TYPES_PERSONNAGE, texteDegats } from '../core/combat/fiches';
 import { CADRAGE_DEFAUT, calquesDeLaFinition, cheminImage } from '../core/images';
 import { LIMITES_CADRAGE, TAILLE_MAX_IMAGE, nomFichierImage, planMigrationImages } from '../core/edition';
 import { indexer } from '../core/extension';

@@ -4,7 +4,7 @@
 // npm run fiches -- --verifier : ne change rien ; échoue si une extension n'est pas à jour.
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { appliquerFiches, validerFiches, type FichierFiches } from '../src/core/combat';
+import { appliquerFiches, validerFiches, type FichierFiches } from '../src/core/combat/fiches';
 import { serialiserExtension } from '../src/core/edition';
 import type { Extension } from '../src/core/types';
 

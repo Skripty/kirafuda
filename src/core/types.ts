@@ -1,3 +1,5 @@
+import type { EffetAttaque, EffetTalent } from './combat/effets';
+
 // Modèle de données de Kirafuda (version 1).
 // Les noms suivent le vocabulaire du GDD, en français.
 
@@ -25,6 +27,8 @@ export type TypePersonnage = 'base' | 'eveille';
 export interface Talent {
   nom: string;
   texte: string;
+  /** Effets structurés lus par le moteur de combat (src/core/combat/effets.ts). */
+  effets?: EffetTalent[];
 }
 
 /** Attaque d'une fiche de combat (src/data/fiches-combat.json). */
@@ -36,6 +40,8 @@ export interface Attaque {
   degats: number | string;
   /** Texte de l'effet ('' s'il n'y en a pas). */
   effet: string;
+  /** Effets structurés lus par le moteur de combat (src/core/combat/effets.ts). */
+  effets?: EffetAttaque[];
 }
 
 /** Cadrage d'une image, en pourcentages (comme dans l'Atelier des cartes). */

@@ -38,7 +38,7 @@ Projet personnel, gratuit, non commercial. Aucun paiement, aucune publicité. Le
 - Chaque personnage a une fiche dans `src/data/fiches-combat.json` (fichier d'équilibrage) : type **Base** (rangs C et B) ou **Éveillé** (rangs A et S, entre en jeu par Relève sur un personnage de la même série), PV, Repli (énergies à défausser pour se replier), talent éventuel, 1 ou 2 attaques.
 - Coût d'une attaque : 1 à 4 énergies de l'élément du personnage ou ◇ (quelconque) ; un Neutre paie en ◇. Dégâts : un nombre, « 30× » (30 par face), « 50 / 0 » (pile ou face) ou aucun.
 - `npm run fiches` recopie les fiches dans les personnages des extensions ; le jeu refuse de démarrer si un personnage sorti n'a pas de données de combat valides.
-- Le combat lui-même n'est pas encore codé (tâche 26) : en attendant, les cartes affichent les fiches.
+- Les attaques, talents et cartes Soutien portent aussi des effets structurés (champ `effets`), lus par le moteur de combat.
 
 ## Boosters (voir `src/data/booster-lancement.json`)
 
@@ -109,6 +109,14 @@ Projet personnel, gratuit, non commercial. Aucun paiement, aucune publicité. Le
 - À la connexion : si une seule sauvegarde existe (locale ou en ligne), on la garde ; si les deux existent et diffèrent, le joueur choisit (date, cartes, boosters de chacune).
 - Seule la clé publique est dans le jeu ; les règles d'accès de la base (Row Level Security) protègent les données. Détails : `docs/SUPABASE.md`.
 
+## Combat, decks et cartes Soutien (règles complètes : `docs/COMBAT.md`)
+
+- Combat contre l'IA : un actif et jusqu'à 3 personnages sur le banc ; 1 point par Base mis K.-O., 2 par Éveillé ; 3 points pour gagner (ou l'adversaire n'a plus de personnage en jeu).
+- Éveillés (rangs A et S) : entrent en jeu par **Relève** sur un personnage de la même série. Énergies : 1 par tour, tirée parmi les 1 à 3 éléments du deck. Faiblesse +20. États : Brûlure, Gel, Étourdi, Malédiction.
+- Cartes Soutien (`src/data/soutiens.json`) : Objets (autant que voulu), Soutien (un par tour), Terrain (un seul en jeu).
+- Decks de 20 cartes, au moins 1 Base, 2 exemplaires maximum par personnage et par carte Soutien, 1 à 3 éléments d'énergie ; on ne joue que ses cartes, sauf les decks de départ.
+- La rareté ne change rien en combat (règle 5). Combat entre joueurs : plus tard.
+
 ## Hors version 1
 
-Combat, Wonder Pick, échanges, ouverture ×10, son.
+Combat entre joueurs (plus tard, via Supabase), Wonder Pick, échanges, ouverture ×10, son.

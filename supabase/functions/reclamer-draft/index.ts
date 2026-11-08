@@ -1,5 +1,5 @@
 // Fonction Supabase « reclamer-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : edf93f266c85edce
+// Empreinte des sources : 11a5086d7c448ec9
 // Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/draft.ts, src/core/regles.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/reclamer-draft.ts
 // @ts-nocheck
 const id$2 = "booster-lancement";
@@ -91,7 +91,18 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Haki des rois",
-      texte: "quand Luffy entre par Relève, chaque personnage du banc adverse subit 10 dégâts."
+      texte: "quand Luffy entre par Relève, chaque personnage du banc adverse subit 10 dégâts.",
+      effets: [
+        {
+          type: "entree-releve",
+          effets: [
+            {
+              type: "degats-banc-adverse",
+              valeur: 10
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -100,7 +111,8 @@ const personnages$1 = [
           "l"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Gear Fifth : Bajrang Gun",
@@ -111,7 +123,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 180,
-        effet: "Luffy ne peut pas attaquer au tour suivant."
+        effet: "Luffy ne peut pas attaquer au tour suivant.",
+        effets: [
+          {
+            type: "repos",
+            quoi: "toutes"
+          }
+        ]
       }
     ]
   },
@@ -126,7 +144,17 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Bras droit",
-      texte: "si Luffy est en jeu, ses attaques font +30."
+      texte: "si Luffy est en jeu, ses attaques font +30.",
+      effets: [
+        {
+          type: "bonus-attaque",
+          valeur: 30,
+          si: {
+            si: "perso-en-jeu",
+            personnage: "per-001"
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -136,7 +164,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Asura",
@@ -147,7 +176,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 130,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -162,7 +192,21 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Archéologue",
-      texte: "une fois par tour, regarde les 2 premières cartes de ton deck, prends-en 1, l'autre va sous le deck."
+      texte: "une fois par tour, regarde les 2 premières cartes de ton deck, prends-en 1, l'autre va sous le deck.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "regarder",
+              nombre: 2,
+              garder: 1,
+              reste: "dessous"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -172,7 +216,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "+20 si la cible est Étourdie."
+        effet: "+20 si la cible est Étourdie.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 20,
+            si: {
+              si: "cible-etat",
+              etat: "etourdi"
+            }
+          }
+        ]
       }
     ]
   },
@@ -187,7 +241,17 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Multiclonage",
-      texte: "quand Naruto entre par Relève, pose un Base de Naruto de ton deck sur ton banc."
+      texte: "quand Naruto entre par Relève, pose un Base de Naruto de ton deck sur ton banc.",
+      effets: [
+        {
+          type: "entree-releve",
+          effets: [
+            {
+              type: "poser-base-serie"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -197,7 +261,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Orbe Rasen-shuriken",
@@ -208,7 +273,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 120,
-        effet: "pas utilisable au tour suivant."
+        effet: "pas utilisable au tour suivant.",
+        effets: [
+          {
+            type: "repos",
+            quoi: "attaque"
+          }
+        ]
       }
     ]
   },
@@ -223,7 +294,13 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Sharingan",
-      texte: "la première attaque qu'il subit à chaque tour adverse échoue sur un pile."
+      texte: "la première attaque qu'il subit à chaque tour adverse échoue sur un pile.",
+      effets: [
+        {
+          type: "esquive-premiere",
+          cote: "pile"
+        }
+      ]
     },
     attaques: [
       {
@@ -233,7 +310,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: "ignore les boucliers."
+        effet: "ignore les boucliers.",
+        effets: [
+          {
+            type: "ignore",
+            quoi: "boucliers"
+          }
+        ]
       },
       {
         nom: "Amaterasu",
@@ -243,7 +326,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: "la cible est Brûlée."
+        effet: "la cible est Brûlée.",
+        effets: [
+          {
+            type: "etat",
+            etat: "brulure"
+          }
+        ]
       }
     ]
   },
@@ -258,7 +347,12 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Genjutsu des corbeaux",
-      texte: "quand l'adversaire fait une Relève, le personnage qui entre est Étourdi."
+      texte: "quand l'adversaire fait une Relève, le personnage qui entre est Étourdi.",
+      effets: [
+        {
+          type: "releve-adverse-etourdie"
+        }
+      ]
     },
     attaques: [
       {
@@ -268,7 +362,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "la cible est Étourdie."
+        effet: "la cible est Étourdie.",
+        effets: [
+          {
+            type: "etat",
+            etat: "etourdi"
+          }
+        ]
       },
       {
         nom: "Susano'o : épée de Totsuka",
@@ -279,7 +379,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 150,
-        effet: "défausse ensuite 2 énergies d'Itachi."
+        effet: "défausse ensuite 2 énergies d'Itachi.",
+        effets: [
+          {
+            type: "defausse-energies-soi",
+            nombre: 2
+          }
+        ]
       }
     ]
   },
@@ -294,7 +400,17 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Infini",
-      texte: "tant qu'il a 2 énergies ou plus, il subit 30 dégâts de moins."
+      texte: "tant qu'il a 2 énergies ou plus, il subit 30 dégâts de moins.",
+      effets: [
+        {
+          type: "reduction",
+          valeur: 30,
+          si: {
+            si: "soi-energies-min",
+            nombre: 2
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -303,7 +419,12 @@ const personnages$1 = [
           "l"
         ],
         degats: 30,
-        effet: "l'adversaire doit mettre un personnage de son banc en actif."
+        effet: "l'adversaire doit mettre un personnage de son banc en actif.",
+        effets: [
+          {
+            type: "forcer-echange-adverse"
+          }
+        ]
       },
       {
         nom: "Violet creux",
@@ -314,7 +435,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 180,
-        effet: "défausse ensuite toutes ses énergies."
+        effet: "défausse ensuite toutes ses énergies.",
+        effets: [
+          {
+            type: "defausse-energies-soi",
+            nombre: "toutes"
+          }
+        ]
       }
     ]
   },
@@ -335,7 +462,13 @@ const personnages$1 = [
           "z"
         ],
         degats: 30,
-        effet: "au tour suivant, la cible subit encore 30."
+        effet: "au tour suivant, la cible subit encore 30.",
+        effets: [
+          {
+            type: "degats-differes",
+            valeur: 30
+          }
+        ]
       },
       {
         nom: "Black Flash",
@@ -345,7 +478,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 90,
-        effet: "pile : +60."
+        effet: "pile : +60.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 60,
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   },
@@ -360,7 +503,21 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Dix ombres",
-      texte: "une fois par tour, cherche un Base de Jujutsu Kaisen dans ton deck et pose-le sur ton banc."
+      texte: "une fois par tour, cherche un Base de Jujutsu Kaisen dans ton deck et pose-le sur ton banc.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "chercher",
+              quoi: "base",
+              vers: "banc",
+              serie: "la-sienne"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -370,7 +527,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Mahoraga",
@@ -381,7 +539,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 140,
-        effet: "Megumi subit 50 dégâts."
+        effet: "Megumi subit 50 dégâts.",
+        effets: [
+          {
+            type: "degats-soi",
+            valeur: 50
+          }
+        ]
       }
     ]
   },
@@ -402,7 +566,8 @@ const personnages$1 = [
           "t"
         ],
         degats: 20,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Résonance",
@@ -411,7 +576,16 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: "+40 si l'actif adverse est déjà blessé."
+        effet: "+40 si l'actif adverse est déjà blessé.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 40,
+            si: {
+              si: "cible-blessee"
+            }
+          }
+        ]
       }
     ]
   },
@@ -426,7 +600,13 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Roi des fléaux",
-      texte: "peut relever Itadori au tour même où Itadori est entré."
+      texte: "peut relever Itadori au tour même où Itadori est entré.",
+      effets: [
+        {
+          type: "special",
+          code: "roi-des-fleaux"
+        }
+      ]
     },
     attaques: [
       {
@@ -436,7 +616,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: "à un personnage du banc adverse."
+        effet: "à un personnage du banc adverse.",
+        effets: [
+          {
+            type: "cible",
+            quoi: "banc-adverse"
+          }
+        ]
       },
       {
         nom: "Sanctuaire malveillant",
@@ -446,7 +632,16 @@ const personnages$1 = [
           "n"
         ],
         degats: 50,
-        effet: "à chaque personnage adverse, puis défausse toutes ses énergies."
+        effet: "à chaque personnage adverse, puis défausse toutes ses énergies.",
+        effets: [
+          {
+            type: "zone"
+          },
+          {
+            type: "defausse-energies-soi",
+            nombre: "toutes"
+          }
+        ]
       }
     ]
   },
@@ -461,7 +656,21 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Manipulation des fléaux",
-      texte: "une fois par tour, défausse une carte de ta main pour infliger 10 dégâts à un personnage adverse."
+      texte: "une fois par tour, défausse une carte de ta main pour infliger 10 dégâts à un personnage adverse.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          cout: "defausse-carte",
+          effets: [
+            {
+              type: "degats",
+              valeur: 10,
+              cible: "adverse"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -472,7 +681,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -487,7 +697,13 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Rika",
-      texte: "la première fois de la partie où Yuta devrait être mis K.-O., il reste à 10 PV."
+      texte: "la première fois de la partie où Yuta devrait être mis K.-O., il reste à 10 PV.",
+      effets: [
+        {
+          type: "special",
+          code: "rika"
+        }
+      ]
     },
     attaques: [
       {
@@ -498,7 +714,13 @@ const personnages$1 = [
           "q"
         ],
         degats: "",
-        effet: "utilise une attaque de l'actif adverse, sans payer son coût."
+        effet: "utilise une attaque de l'actif adverse, sans payer son coût.",
+        effets: [
+          {
+            type: "special",
+            code: "copie"
+          }
+        ]
       }
     ]
   },
@@ -513,7 +735,18 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Restriction céleste",
-      texte: "Toji n'est jamais touché par les états (Brûlure, Gel, Étourdi, Malédiction)."
+      texte: "Toji n'est jamais touché par les états (Brûlure, Gel, Étourdi, Malédiction).",
+      effets: [
+        {
+          type: "immunite",
+          etats: [
+            "brulure",
+            "gel",
+            "etourdi",
+            "malediction"
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -523,7 +756,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "ignore les boucliers et réductions de dégâts de la cible."
+        effet: "ignore les boucliers et réductions de dégâts de la cible.",
+        effets: [
+          {
+            type: "ignore",
+            quoi: "boucliers-et-reductions"
+          }
+        ]
       }
     ]
   },
@@ -538,7 +777,20 @@ const personnages$1 = [
     repli: 0,
     talent: {
       nom: "Arsenal maudit",
-      texte: "une fois par tour, défausse un Objet de ta main pour piocher 2 cartes."
+      texte: "une fois par tour, défausse un Objet de ta main pour piocher 2 cartes.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          cout: "defausse-objet",
+          effets: [
+            {
+              type: "pioche",
+              valeur: 2
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -548,7 +800,16 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: "+30 si Maki a déjà subi des dégâts."
+        effet: "+30 si Maki a déjà subi des dégâts.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 30,
+            si: {
+              si: "soi-blesse"
+            }
+          }
+        ]
       }
     ]
   },
@@ -563,7 +824,16 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Heures supplémentaires",
-      texte: "si tu as moins de points que l'adversaire, ses attaques font +20."
+      texte: "si tu as moins de points que l'adversaire, ses attaques font +20.",
+      effets: [
+        {
+          type: "bonus-attaque",
+          valeur: 20,
+          si: {
+            si: "moins-de-points"
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -573,7 +843,16 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "+40 si la cible a la moitié de ses PV ou moins."
+        effet: "+40 si la cible a la moitié de ses PV ou moins.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 40,
+            si: {
+              si: "cible-moitie-pv"
+            }
+          }
+        ]
       }
     ]
   },
@@ -588,7 +867,14 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Pochita",
-      texte: "une fois par partie, quand Denji devrait être mis K.-O., lance une pièce : face, il reste à 10 PV."
+      texte: "une fois par partie, quand Denji devrait être mis K.-O., lance une pièce : face, il reste à 10 PV.",
+      effets: [
+        {
+          type: "survie",
+          pv: 10,
+          piece: "face"
+        }
+      ]
     },
     attaques: [
       {
@@ -598,7 +884,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Chainsaw Man",
@@ -609,7 +896,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 130,
-        effet: "Denji subit 20 dégâts."
+        effet: "Denji subit 20 dégâts.",
+        effets: [
+          {
+            type: "degats-soi",
+            valeur: 20
+          }
+        ]
       }
     ]
   },
@@ -624,7 +917,18 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Contrôle",
-      texte: "une fois par tour, retire 1 énergie de l'actif adverse."
+      texte: "une fois par tour, retire 1 énergie de l'actif adverse.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "retirer-energie-adverse"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -634,7 +938,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "à n'importe quel personnage adverse."
+        effet: "à n'importe quel personnage adverse.",
+        effets: [
+          {
+            type: "cible",
+            quoi: "n-importe"
+          }
+        ]
       },
       {
         nom: "Contrat",
@@ -644,7 +954,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 90,
-        effet: "si la cible est mise K.-O., soigne 30 Makima."
+        effet: "si la cible est mise K.-O., soigne 30 Makima.",
+        effets: [
+          {
+            type: "soin-soi-si-ko",
+            valeur: 30
+          }
+        ]
       }
     ]
   },
@@ -666,7 +982,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: "Power subit 10 dégâts."
+        effet: "Power subit 10 dégâts.",
+        effets: [
+          {
+            type: "degats-soi",
+            valeur: 10
+          }
+        ]
       },
       {
         nom: "Lance de sang",
@@ -676,7 +998,16 @@ const personnages$1 = [
           "q"
         ],
         degats: 100,
-        effet: "+40 si Power a la moitié de ses PV ou moins."
+        effet: "+40 si Power a la moitié de ses PV ou moins.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 40,
+            si: {
+              si: "soi-moitie-pv"
+            }
+          }
+        ]
       }
     ]
   },
@@ -691,7 +1022,21 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Démon du Futur",
-      texte: "une fois par tour, regarde la carte du dessus de ton deck ; tu peux la mettre sous le deck."
+      texte: "une fois par tour, regarde la carte du dessus de ton deck ; tu peux la mettre sous le deck.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "regarder",
+              nombre: 1,
+              garder: 0,
+              reste: "choix-dessous"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -702,7 +1047,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: "la cible est Maudite."
+        effet: "la cible est Maudite.",
+        effets: [
+          {
+            type: "etat",
+            etat: "malediction"
+          }
+        ]
       }
     ]
   },
@@ -717,7 +1068,18 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Démon Bombe",
-      texte: "quand Reze est mise K.-O., l'actif adverse subit 30 dégâts."
+      texte: "quand Reze est mise K.-O., l'actif adverse subit 30 dégâts.",
+      effets: [
+        {
+          type: "si-ko-subi",
+          effets: [
+            {
+              type: "degats-actif-adverse",
+              valeur: 30
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -727,7 +1089,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -748,7 +1111,12 @@ const personnages$1 = [
           "v"
         ],
         degats: 20,
-        effet: "l'actif adverse ne peut pas se replier au prochain tour."
+        effet: "l'actif adverse ne peut pas se replier au prochain tour.",
+        effets: [
+          {
+            type: "bloque-repli-cible"
+          }
+        ]
       }
     ]
   },
@@ -770,7 +1138,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "pile : +20."
+        effet: "pile : +20.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 20,
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   },
@@ -785,7 +1163,20 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Démon de la Guerre",
-      texte: "une fois par tour, défausse une carte de ta main : la prochaine attaque d'Asa ce tour fait +30."
+      texte: "une fois par tour, défausse une carte de ta main : la prochaine attaque d'Asa ce tour fait +30.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          cout: "defausse-carte",
+          effets: [
+            {
+              type: "bonus-prochaine-attaque",
+              valeur: 30
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -795,7 +1186,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -810,7 +1202,21 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Durcissement",
-      texte: "une fois par tour, défausse 1 énergie d'Eren : il subit 40 dégâts de moins jusqu'à ton prochain tour."
+      texte: "une fois par tour, défausse 1 énergie d'Eren : il subit 40 dégâts de moins jusqu'à ton prochain tour.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          cout: "defausse-energie",
+          effets: [
+            {
+              type: "bouclier",
+              valeur: 40,
+              cible: "soi"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -820,7 +1226,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Titan Originel",
@@ -831,7 +1238,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 110,
-        effet: "+40 si tu as 2 personnages de L'Attaque des Titans ou plus sur ton banc."
+        effet: "+40 si tu as 2 personnages de L'Attaque des Titans ou plus sur ton banc.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 40,
+            si: {
+              si: "banc-serie-min",
+              nombre: 2
+            }
+          }
+        ]
       }
     ]
   },
@@ -846,7 +1263,17 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Lien Ackerman",
-      texte: "si Eren est en jeu, Mikasa subit 20 dégâts de moins."
+      texte: "si Eren est en jeu, Mikasa subit 20 dégâts de moins.",
+      effets: [
+        {
+          type: "reduction",
+          valeur: 20,
+          si: {
+            si: "perso-en-jeu",
+            personnage: "per-025"
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -855,7 +1282,12 @@ const personnages$1 = [
           "v"
         ],
         degats: 30,
-        effet: "échange ensuite Mikasa avec un de tes personnages du banc."
+        effet: "échange ensuite Mikasa avec un de tes personnages du banc.",
+        effets: [
+          {
+            type: "echange-soi"
+          }
+        ]
       },
       {
         nom: "Lames jumelles",
@@ -865,7 +1297,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 100,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -880,7 +1313,18 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Nettoyage",
-      texte: "quand une attaque de Levi met un personnage K.-O., soigne 30 Levi."
+      texte: "quand une attaque de Levi met un personnage K.-O., soigne 30 Levi.",
+      effets: [
+        {
+          type: "si-ko-inflige",
+          effets: [
+            {
+              type: "soin-soi",
+              valeur: 30
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -890,7 +1334,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Massacre du Titan Bestial",
@@ -901,7 +1346,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 120,
-        effet: "+60 contre un Éveillé."
+        effet: "+60 contre un Éveillé.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 60,
+            si: {
+              si: "cible-type",
+              type: "eveille"
+            }
+          }
+        ]
       }
     ]
   },
@@ -916,7 +1371,18 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Stratège",
-      texte: "une fois par tour, regarde la main de l'adversaire."
+      texte: "une fois par tour, regarde la main de l'adversaire.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "voir-main-adverse"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -927,7 +1393,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 100,
-        effet: "Armin subit 40 dégâts."
+        effet: "Armin subit 40 dégâts.",
+        effets: [
+          {
+            type: "degats-soi",
+            valeur: 40
+          }
+        ]
       }
     ]
   },
@@ -942,7 +1414,13 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Consacrez vos cœurs",
-      texte: "tes autres personnages de L'Attaque des Titans font +10 avec leurs attaques."
+      texte: "tes autres personnages de L'Attaque des Titans font +10 avec leurs attaques.",
+      effets: [
+        {
+          type: "bonus-serie",
+          valeur: 10
+        }
+      ]
     },
     attaques: [
       {
@@ -952,7 +1430,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -967,7 +1446,16 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Titan Féminin",
-      texte: "Annie subit 20 dégâts de moins de la part des Éveillés."
+      texte: "Annie subit 20 dégâts de moins de la part des Éveillés.",
+      effets: [
+        {
+          type: "reduction",
+          valeur: 20,
+          si: {
+            si: "source-eveille"
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -977,7 +1465,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -999,7 +1488,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: "Reiner subit 20 dégâts de moins jusqu'à ton prochain tour."
+        effet: "Reiner subit 20 dégâts de moins jusqu'à ton prochain tour.",
+        effets: [
+          {
+            type: "bouclier-soi",
+            valeur: 20
+          }
+        ]
       }
     ]
   },
@@ -1020,7 +1515,15 @@ const personnages$1 = [
           "l"
         ],
         degats: "",
-        effet: "soigne 30 un de tes personnages de L'Attaque des Titans."
+        effet: "soigne 30 un de tes personnages de L'Attaque des Titans.",
+        effets: [
+          {
+            type: "soin",
+            valeur: 30,
+            cible: "allie",
+            serie: "L'Attaque des Titans"
+          }
+        ]
       }
     ]
   },
@@ -1035,7 +1538,16 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Fil de l'ouverture",
-      texte: "ses attaques font +20 contre un personnage déjà blessé."
+      texte: "ses attaques font +20 contre un personnage déjà blessé.",
+      effets: [
+        {
+          type: "bonus-attaque",
+          valeur: 20,
+          si: {
+            si: "cible-blessee"
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -1045,7 +1557,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Danse du Dieu du Feu",
@@ -1056,7 +1569,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 120,
-        effet: "la cible est Brûlée."
+        effet: "la cible est Brûlée.",
+        effets: [
+          {
+            type: "etat",
+            etat: "brulure"
+          }
+        ]
       }
     ]
   },
@@ -1071,7 +1590,13 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Régénération",
-      texte: "à la fin de chacun de tes tours, soigne 20 Nezuko."
+      texte: "à la fin de chacun de tes tours, soigne 20 Nezuko.",
+      effets: [
+        {
+          type: "fin-de-tour",
+          soin: 20
+        }
+      ]
     },
     attaques: [
       {
@@ -1080,7 +1605,8 @@ const personnages$1 = [
           "f"
         ],
         degats: 30,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Sang explosif",
@@ -1090,7 +1616,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 80,
-        effet: "la cible est Brûlée."
+        effet: "la cible est Brûlée.",
+        effets: [
+          {
+            type: "etat",
+            etat: "brulure"
+          }
+        ]
       }
     ]
   },
@@ -1105,7 +1637,16 @@ const personnages$1 = [
     repli: 0,
     talent: {
       nom: "Endormi",
-      texte: "ses attaques font +40 s'il a déjà subi des dégâts."
+      texte: "ses attaques font +40 s'il a déjà subi des dégâts.",
+      effets: [
+        {
+          type: "bonus-attaque",
+          valeur: 40,
+          si: {
+            si: "soi-blesse"
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -1115,7 +1656,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1137,7 +1679,16 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: "+20 si l'actif adverse a plus de PV restants qu'Inosuke."
+        effet: "+20 si l'actif adverse a plus de PV restants qu'Inosuke.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 20,
+            si: {
+              si: "cible-plus-de-pv"
+            }
+          }
+        ]
       }
     ]
   },
@@ -1152,7 +1703,13 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Calme plat",
-      texte: "la première attaque qu'il subit à chaque tour adverse fait 30 dégâts de moins."
+      texte: "la première attaque qu'il subit à chaque tour adverse fait 30 dégâts de moins.",
+      effets: [
+        {
+          type: "reduction-premiere",
+          valeur: 30
+        }
+      ]
     },
     attaques: [
       {
@@ -1163,7 +1720,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1185,7 +1743,21 @@ const personnages$1 = [
           "q"
         ],
         degats: 20,
-        effet: "la cible est Brûlée ; +30 contre un personnage Ténèbres."
+        effet: "la cible est Brûlée ; +30 contre un personnage Ténèbres.",
+        effets: [
+          {
+            type: "etat",
+            etat: "brulure"
+          },
+          {
+            type: "bonus",
+            valeur: 30,
+            si: {
+              si: "cible-element",
+              element: "tenebres"
+            }
+          }
+        ]
       }
     ]
   },
@@ -1200,7 +1772,21 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Roi des démons",
-      texte: "une fois par tour, défausse une carte de ta main pour soigner 30 Muzan."
+      texte: "une fois par tour, défausse une carte de ta main pour soigner 30 Muzan.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          cout: "defausse-carte",
+          effets: [
+            {
+              type: "soin",
+              valeur: 30,
+              cible: "soi"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -1211,7 +1797,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: "et 10 à chaque personnage du banc adverse."
+        effet: "et 10 à chaque personnage du banc adverse.",
+        effets: [
+          {
+            type: "degats-banc-adverse",
+            valeur: 10
+          }
+        ]
       }
     ]
   },
@@ -1226,7 +1818,18 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Cœur ardent",
-      texte: "quand Rengoku est mis K.-O., soigne 50 chacun de tes personnages de Demon Slayer."
+      texte: "quand Rengoku est mis K.-O., soigne 50 chacun de tes personnages de Demon Slayer.",
+      effets: [
+        {
+          type: "si-ko-subi",
+          effets: [
+            {
+              type: "soin-serie",
+              valeur: 50
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -1236,7 +1839,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Neuvième forme : Purgatoire",
@@ -1247,7 +1851,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 140,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1262,7 +1867,19 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Arise",
-      texte: "une fois par tour, remets sur ton banc un Base de Solo Leveling de ta défausse, avec 30 PV."
+      texte: "une fois par tour, remets sur ton banc un Base de Solo Leveling de ta défausse, avec 30 PV.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "special",
+              code: "arise"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -1272,7 +1889,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Monarque des Ombres",
@@ -1283,7 +1901,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 120,
-        effet: "+20 par personnage sur ton banc."
+        effet: "+20 par personnage sur ton banc.",
+        effets: [
+          {
+            type: "bonus-par-banc",
+            valeur: 20
+          }
+        ]
       }
     ]
   },
@@ -1305,7 +1929,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: "+30 si Jin-Woo est en jeu."
+        effet: "+30 si Jin-Woo est en jeu.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 30,
+            si: {
+              si: "perso-en-jeu",
+              personnage: "per-041"
+            }
+          }
+        ]
       }
     ]
   },
@@ -1320,7 +1954,15 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Chevalier de l'ombre",
-      texte: "tant qu'Igris est sur ton banc, ton actif de Solo Leveling subit 10 dégâts de moins."
+      texte: "tant qu'Igris est sur ton banc, ton actif de Solo Leveling subit 10 dégâts de moins.",
+      effets: [
+        {
+          type: "protection",
+          valeur: 10,
+          depuis: "banc",
+          pour: "actif-serie"
+        }
+      ]
     },
     attaques: [
       {
@@ -1331,7 +1973,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1353,7 +1996,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Rugissement du roi",
@@ -1363,7 +2007,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 80,
-        effet: "pile : la cible est Étourdie."
+        effet: "pile : la cible est Étourdie.",
+        effets: [
+          {
+            type: "etat",
+            etat: "etourdi",
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   },
@@ -1386,7 +2040,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1401,7 +2056,22 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Président de l'Association",
-      texte: "une fois par tour, si tu as moins de cartes en main que l'adversaire, pioche 1 carte."
+      texte: "une fois par tour, si tu as moins de cartes en main que l'adversaire, pioche 1 carte.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          si: {
+            si: "moins-de-cartes-en-main"
+          },
+          effets: [
+            {
+              type: "pioche",
+              valeur: 1
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -1411,7 +2081,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1433,7 +2104,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: "récupère un Objet de ta défausse."
+        effet: "récupère un Objet de ta défausse.",
+        effets: [
+          {
+            type: "recuperer-defausse",
+            quoi: "objet"
+          }
+        ]
       }
     ]
   },
@@ -1455,7 +2132,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "+20 si Jin-Woo est en jeu."
+        effet: "+20 si Jin-Woo est en jeu.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 20,
+            si: {
+              si: "perso-en-jeu",
+              personnage: "per-041"
+            }
+          }
+        ]
       }
     ]
   },
@@ -1470,7 +2157,19 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Mille ans de magie",
-      texte: "une fois par tour, récupère un Objet de ta défausse."
+      texte: "une fois par tour, récupère un Objet de ta défausse.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "recuperer-defausse",
+              quoi: "objet"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -1480,7 +2179,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: "ignore les boucliers et réductions de dégâts."
+        effet: "ignore les boucliers et réductions de dégâts.",
+        effets: [
+          {
+            type: "ignore",
+            quoi: "boucliers-et-reductions"
+          }
+        ]
       },
       {
         nom: "Catastravia",
@@ -1491,7 +2196,12 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "à chaque personnage adverse."
+        effet: "à chaque personnage adverse.",
+        effets: [
+          {
+            type: "zone"
+          }
+        ]
       }
     ]
   },
@@ -1512,7 +2222,8 @@ const personnages$1 = [
           "v"
         ],
         degats: 20,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Rafale",
@@ -1522,7 +2233,14 @@ const personnages$1 = [
           "q"
         ],
         degats: "30×",
-        effet: "lance 3 pièces : 30 dégâts par face."
+        effet: "lance 3 pièces : 30 dégâts par face.",
+        effets: [
+          {
+            type: "pieces",
+            nombre: 3,
+            parFace: 30
+          }
+        ]
       }
     ]
   },
@@ -1537,7 +2255,13 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Peureux mais solide",
-      texte: "Stark subit 20 dégâts de moins."
+      texte: "Stark subit 20 dégâts de moins.",
+      effets: [
+        {
+          type: "reduction",
+          valeur: 20
+        }
+      ]
     },
     attaques: [
       {
@@ -1548,7 +2272,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1563,7 +2288,15 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Le héros",
-      texte: "tant qu'Himmel est en jeu, tes autres personnages de Frieren subissent 10 dégâts de moins."
+      texte: "tant qu'Himmel est en jeu, tes autres personnages de Frieren subissent 10 dégâts de moins.",
+      effets: [
+        {
+          type: "protection",
+          valeur: 10,
+          depuis: "jeu",
+          pour: "autres-serie"
+        }
+      ]
     },
     attaques: [
       {
@@ -1573,7 +2306,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1595,7 +2329,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "ignore les boucliers et réductions de dégâts."
+        effet: "ignore les boucliers et réductions de dégâts.",
+        effets: [
+          {
+            type: "ignore",
+            quoi: "boucliers-et-reductions"
+          }
+        ]
       }
     ]
   },
@@ -1610,7 +2350,20 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Grande mage",
-      texte: "une fois par tour, cherche un Objet dans ton deck."
+      texte: "une fois par tour, cherche un Objet dans ton deck.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "chercher",
+              quoi: "objet",
+              vers: "main"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -1621,7 +2374,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1643,7 +2397,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "À mains nues",
@@ -1651,7 +2406,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 20,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1666,7 +2422,17 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "100 %",
-      texte: "si Mob a 30 PV ou moins, ses attaques font +60."
+      texte: "si Mob a 30 PV ou moins, ses attaques font +60.",
+      effets: [
+        {
+          type: "bonus-attaque",
+          valeur: 60,
+          si: {
+            si: "soi-pv-max",
+            valeur: 30
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -1676,7 +2442,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1691,7 +2458,21 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Baratin",
-      texte: "une fois par tour, regarde les 3 premières cartes de ton deck et remets-les dans l'ordre de ton choix."
+      texte: "une fois par tour, regarde les 3 premières cartes de ton deck et remets-les dans l'ordre de ton choix.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "regarder",
+              nombre: 3,
+              garder: 0,
+              reste: "ordre"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -1700,7 +2481,14 @@ const personnages$1 = [
           "q"
         ],
         degats: "",
-        effet: "soigne 30 un de tes personnages."
+        effet: "soigne 30 un de tes personnages.",
+        effets: [
+          {
+            type: "soin",
+            valeur: 30,
+            cible: "allie"
+          }
+        ]
       },
       {
         nom: "Sel spécial",
@@ -1709,7 +2497,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1724,7 +2513,16 @@ const personnages$1 = [
     repli: 0,
     talent: {
       nom: "Esprit flottant",
-      texte: "Dimple n'est jamais Gelé ni Étourdi."
+      texte: "Dimple n'est jamais Gelé ni Étourdi.",
+      effets: [
+        {
+          type: "immunite",
+          etats: [
+            "gel",
+            "etourdi"
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -1733,7 +2531,8 @@ const personnages$1 = [
           "n"
         ],
         degats: 20,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1755,7 +2554,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1777,7 +2577,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: "pile : la cible est Gelée."
+        effet: "pile : la cible est Gelée.",
+        effets: [
+          {
+            type: "etat",
+            etat: "gel",
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   },
@@ -1801,7 +2611,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 100,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1816,7 +2627,16 @@ const personnages$1 = [
     repli: 0,
     talent: {
       nom: "Je n'ai pas d'ennemis",
-      texte: "si Thorfinn n'a pas attaqué à ton tour précédent, il subit 30 dégâts de moins."
+      texte: "si Thorfinn n'a pas attaqué à ton tour précédent, il subit 30 dégâts de moins.",
+      effets: [
+        {
+          type: "reduction",
+          valeur: 30,
+          si: {
+            si: "soi-pas-attaque-tour-precedent"
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -1826,7 +2646,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "pile : +20."
+        effet: "pile : +20.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 20,
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   },
@@ -1841,7 +2671,13 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Chef mercenaire",
-      texte: "quand tu poses un Base de Vinland Saga, pioche 1 carte."
+      texte: "quand tu poses un Base de Vinland Saga, pioche 1 carte.",
+      effets: [
+        {
+          type: "pose-base-serie",
+          pioche: 1
+        }
+      ]
     },
     attaques: [
       {
@@ -1851,7 +2687,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1866,7 +2703,13 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Roi",
-      texte: "tes autres personnages de Vinland Saga font +10 avec leurs attaques."
+      texte: "tes autres personnages de Vinland Saga font +10 avec leurs attaques.",
+      effets: [
+        {
+          type: "bonus-serie",
+          valeur: 10
+        }
+      ]
     },
     attaques: [
       {
@@ -1875,7 +2718,8 @@ const personnages$1 = [
           "g"
         ],
         degats: 10,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1898,7 +2742,16 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: "+30 si Thorkell a déjà subi des dégâts."
+        effet: "+30 si Thorkell a déjà subi des dégâts.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 30,
+            si: {
+              si: "soi-blesse"
+            }
+          }
+        ]
       }
     ]
   },
@@ -1920,7 +2773,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1942,7 +2796,16 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "pile : la cible ne peut pas attaquer au prochain tour."
+        effet: "pile : la cible ne peut pas attaquer au prochain tour.",
+        effets: [
+          {
+            type: "bloque-attaque-cible",
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   },
@@ -1957,7 +2820,16 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Irrégulier",
-      texte: "si tu as moins de points que l'adversaire, ses attaques coûtent 1 énergie ◇ de moins."
+      texte: "si tu as moins de points que l'adversaire, ses attaques coûtent 1 énergie ◇ de moins.",
+      effets: [
+        {
+          type: "cout-reduit",
+          valeur: 1,
+          si: {
+            si: "moins-de-points"
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -1968,7 +2840,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -1983,7 +2856,18 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Stratège de la Tour",
-      texte: "une fois par tour, pioche 1 carte, puis remets 1 carte de ta main sous ton deck."
+      texte: "une fois par tour, pioche 1 carte, puis remets 1 carte de ta main sous ton deck.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "pioche-puis-sous-deck"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -1992,7 +2876,8 @@ const personnages$1 = [
           "g"
         ],
         degats: 20,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2014,7 +2899,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: "Rak subit 10 dégâts."
+        effet: "Rak subit 10 dégâts.",
+        effets: [
+          {
+            type: "degats-soi",
+            valeur: 10
+          }
+        ]
       }
     ]
   },
@@ -2029,7 +2920,13 @@ const personnages$1 = [
     repli: 0,
     talent: {
       nom: "Trahison",
-      texte: "tant que Rachel est sur ton banc, l'actif adverse subit 10 dégâts de plus."
+      texte: "tant que Rachel est sur ton banc, l'actif adverse subit 10 dégâts de plus.",
+      effets: [
+        {
+          type: "vulnerabilite-adverse",
+          valeur: 10
+        }
+      ]
     },
     attaques: [
       {
@@ -2038,7 +2935,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 10,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2060,7 +2958,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2083,7 +2982,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2105,7 +3005,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "la cible est Brûlée."
+        effet: "la cible est Brûlée.",
+        effets: [
+          {
+            type: "etat",
+            etat: "brulure"
+          }
+        ]
       }
     ]
   },
@@ -2120,7 +3026,19 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Lecteur omniscient",
-      texte: "une fois par tour, regarde les 2 premières cartes du deck adverse."
+      texte: "une fois par tour, regarde les 2 premières cartes du deck adverse.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "voir-deck-adverse",
+              nombre: 2
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -2130,7 +3048,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2145,7 +3064,12 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Régression",
-      texte: "une fois par partie, quand il est mis K.-O., il retourne dans ton deck au lieu de la défausse."
+      texte: "une fois par partie, quand il est mis K.-O., il retourne dans ton deck au lieu de la défausse.",
+      effets: [
+        {
+          type: "retour-deck"
+        }
+      ]
     },
     attaques: [
       {
@@ -2156,7 +3080,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2177,7 +3102,13 @@ const personnages$1 = [
           "v"
         ],
         degats: "",
-        effet: "pioche 2 cartes."
+        effet: "pioche 2 cartes.",
+        effets: [
+          {
+            type: "pioche",
+            valeur: 2
+          }
+        ]
       }
     ]
   },
@@ -2199,7 +3130,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "+30 contre un personnage Ténèbres."
+        effet: "+30 contre un personnage Ténèbres.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 30,
+            si: {
+              si: "cible-element",
+              element: "tenebres"
+            }
+          }
+        ]
       }
     ]
   },
@@ -2214,7 +3155,15 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Bouclier d'acier",
-      texte: "tes autres personnages d'Omniscient Reader's Viewpoint subissent 10 dégâts de moins."
+      texte: "tes autres personnages d'Omniscient Reader's Viewpoint subissent 10 dégâts de moins.",
+      effets: [
+        {
+          type: "protection",
+          valeur: 10,
+          depuis: "jeu",
+          pour: "autres-serie"
+        }
+      ]
     },
     attaques: [
       {
@@ -2224,7 +3173,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2246,7 +3196,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: "pile : la cible est Étourdie."
+        effet: "pile : la cible est Étourdie.",
+        effets: [
+          {
+            type: "etat",
+            etat: "etourdi",
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   },
@@ -2268,7 +3228,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: "l'adversaire défausse une carte au hasard de sa main."
+        effet: "l'adversaire défausse une carte au hasard de sa main.",
+        effets: [
+          {
+            type: "defausse-main-adverse-hasard",
+            nombre: 1
+          }
+        ]
       }
     ]
   },
@@ -2283,7 +3249,16 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Retraité",
-      texte: "ses attaques ne descendent jamais la cible sous 10 PV, sauf si tu as moins de points que l'adversaire."
+      texte: "ses attaques ne descendent jamais la cible sous 10 PV, sauf si tu as moins de points que l'adversaire.",
+      effets: [
+        {
+          type: "plancher",
+          valeur: 10,
+          sauf: {
+            si: "moins-de-points"
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -2293,7 +3268,16 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: "+20 si tu as joué un Objet ce tour."
+        effet: "+20 si tu as joué un Objet ce tour.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 20,
+            si: {
+              si: "objet-joue-ce-tour"
+            }
+          }
+        ]
       }
     ]
   },
@@ -2308,7 +3292,18 @@ const personnages$1 = [
     repli: 0,
     talent: {
       nom: "Télépathie",
-      texte: "une fois par tour, regarde la main de l'adversaire."
+      texte: "une fois par tour, regarde la main de l'adversaire.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "voir-main-adverse"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -2317,7 +3312,8 @@ const personnages$1 = [
           "z"
         ],
         degats: 20,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2339,7 +3335,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2361,7 +3358,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: "à n'importe quel personnage adverse."
+        effet: "à n'importe quel personnage adverse.",
+        effets: [
+          {
+            type: "cible",
+            quoi: "n-importe"
+          }
+        ]
       }
     ]
   },
@@ -2384,7 +3387,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2406,7 +3410,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: "+20 contre un Base."
+        effet: "+20 contre un Base.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 20,
+            si: {
+              si: "cible-type",
+              type: "base"
+            }
+          }
+        ]
       }
     ]
   },
@@ -2421,7 +3435,18 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Mâchoire",
-      texte: "quand une attaque de Caiman met un personnage K.-O., pioche 2 cartes."
+      texte: "quand une attaque de Caiman met un personnage K.-O., pioche 2 cartes.",
+      effets: [
+        {
+          type: "si-ko-inflige",
+          effets: [
+            {
+              type: "pioche",
+              valeur: 2
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -2432,7 +3457,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2447,7 +3473,18 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Magie du temps",
-      texte: "une fois par partie, soigne un de tes personnages de tous les dégâts subis au dernier tour adverse."
+      texte: "une fois par partie, soigne un de tes personnages de tous les dégâts subis au dernier tour adverse.",
+      effets: [
+        {
+          type: "activable",
+          limite: "partie",
+          effets: [
+            {
+              type: "soin-degats-dernier-tour-adverse"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -2457,7 +3494,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2480,7 +3518,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: "la cible est Maudite."
+        effet: "la cible est Maudite.",
+        effets: [
+          {
+            type: "etat",
+            etat: "malediction"
+          }
+        ]
       }
     ]
   },
@@ -2502,7 +3546,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2517,7 +3562,21 @@ const personnages$1 = [
     repli: 2,
     talent: {
       nom: "Magie de soin",
-      texte: "une fois par tour, soigne 20 un de tes personnages de Dorohedoro."
+      texte: "une fois par tour, soigne 20 un de tes personnages de Dorohedoro.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "soin",
+              valeur: 20,
+              cible: "allie",
+              serie: "Dorohedoro"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -2528,7 +3587,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2549,7 +3609,14 @@ const personnages$1 = [
           "q"
         ],
         degats: "50 / 0",
-        effet: "lance une pièce : face 50, pile rien."
+        effet: "lance une pièce : face 50, pile rien.",
+        effets: [
+          {
+            type: "pile-ou-face",
+            face: 50,
+            pile: 0
+          }
+        ]
       }
     ]
   },
@@ -2571,7 +3638,16 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: "+30 si Yu a subi des dégâts au dernier tour adverse."
+        effet: "+30 si Yu a subi des dégâts au dernier tour adverse.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 30,
+            si: {
+              si: "soi-blesse-dernier-tour-adverse"
+            }
+          }
+        ]
       }
     ]
   },
@@ -2586,7 +3662,13 @@ const personnages$1 = [
     repli: 1,
     talent: {
       nom: "Entraîneur",
-      texte: "tes autres personnages de The Boxer font +10 avec leurs attaques."
+      texte: "tes autres personnages de The Boxer font +10 avec leurs attaques.",
+      effets: [
+        {
+          type: "bonus-serie",
+          valeur: 10
+        }
+      ]
     },
     attaques: [
       {
@@ -2595,7 +3677,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 20,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2617,7 +3700,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2640,7 +3724,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2662,7 +3747,13 @@ const personnages$1 = [
           "q"
         ],
         degats: 30,
-        effet: "il subit 20 dégâts de moins jusqu'à ton prochain tour."
+        effet: "il subit 20 dégâts de moins jusqu'à ton prochain tour.",
+        effets: [
+          {
+            type: "bouclier-soi",
+            valeur: 20
+          }
+        ]
       }
     ]
   },
@@ -2684,7 +3775,8 @@ const personnages$1 = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -2707,7 +3799,17 @@ const personnages$1 = [
           "q"
         ],
         degats: 60,
-        effet: "pile : la cible est Étourdie."
+        effet: "pile : la cible est Étourdie.",
+        effets: [
+          {
+            type: "etat",
+            etat: "etourdi",
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   }
@@ -4660,7 +5762,13 @@ const personnages = [
     repli: 1,
     talent: {
       nom: "Vitesse divine",
-      texte: "une fois par tour, Killua peut se replier sans payer le Repli."
+      texte: "une fois par tour, Killua peut se replier sans payer le Repli.",
+      effets: [
+        {
+          type: "repli-gratuit",
+          limite: "tour"
+        }
+      ]
     },
     attaques: [
       {
@@ -4670,7 +5778,13 @@ const personnages = [
           "q"
         ],
         degats: 40,
-        effet: "la cible est Étourdie."
+        effet: "la cible est Étourdie.",
+        effets: [
+          {
+            type: "etat",
+            etat: "etourdi"
+          }
+        ]
       },
       {
         nom: "Narukami",
@@ -4681,7 +5795,8 @@ const personnages = [
           "q"
         ],
         degats: 140,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -4704,7 +5819,8 @@ const personnages = [
           "q"
         ],
         degats: 80,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Gon adulte",
@@ -4715,7 +5831,13 @@ const personnages = [
           "q"
         ],
         degats: 200,
-        effet: "Gon subit 80 dégâts."
+        effet: "Gon subit 80 dégâts.",
+        effets: [
+          {
+            type: "degats-soi",
+            valeur: 80
+          }
+        ]
       }
     ]
   },
@@ -4730,7 +5852,18 @@ const personnages = [
     repli: 1,
     talent: {
       nom: "Psychokinésie",
-      texte: "une fois par tour, échange l'actif adverse avec un personnage de son banc."
+      texte: "une fois par tour, échange l'actif adverse avec un personnage de son banc.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "echanger-actif-adverse"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -4740,7 +5873,8 @@ const personnages = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Prise psychique",
@@ -4750,7 +5884,12 @@ const personnages = [
           "q"
         ],
         degats: 90,
-        effet: "la cible ne peut pas se replier au prochain tour."
+        effet: "la cible ne peut pas se replier au prochain tour.",
+        effets: [
+          {
+            type: "bloque-repli-cible"
+          }
+        ]
       }
     ]
   },
@@ -4772,7 +5911,8 @@ const personnages = [
           "q"
         ],
         degats: 60,
-        effet: ""
+        effet: "",
+        effets: []
       },
       {
         nom: "Pleine puissance",
@@ -4783,7 +5923,13 @@ const personnages = [
           "q"
         ],
         degats: 140,
-        effet: "Kafka subit 30 dégâts."
+        effet: "Kafka subit 30 dégâts.",
+        effets: [
+          {
+            type: "degats-soi",
+            valeur: 30
+          }
+        ]
       }
     ]
   },
@@ -4798,7 +5944,18 @@ const personnages = [
     repli: 1,
     talent: {
       nom: "Télépathie",
-      texte: "une fois par tour, regarde la main de l'adversaire et choisis une carte : il la remet sous son deck."
+      texte: "une fois par tour, regarde la main de l'adversaire et choisis une carte : il la remet sous son deck.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "main-adverse-sous-deck"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -4808,7 +5965,8 @@ const personnages = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -4823,7 +5981,12 @@ const personnages = [
     repli: 1,
     talent: {
       nom: "Bungee Gum",
-      texte: "quand Hisoka attaque, l'actif adverse ne peut pas se replier au prochain tour."
+      texte: "quand Hisoka attaque, l'actif adverse ne peut pas se replier au prochain tour.",
+      effets: [
+        {
+          type: "attaque-bloque-repli"
+        }
+      ]
     },
     attaques: [
       {
@@ -4833,7 +5996,8 @@ const personnages = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -4848,7 +6012,17 @@ const personnages = [
     repli: 1,
     talent: {
       nom: "Chaîne du Jugement",
-      texte: "ses attaques font +40 contre un Éveillé."
+      texte: "ses attaques font +40 contre un Éveillé.",
+      effets: [
+        {
+          type: "bonus-attaque",
+          valeur: 40,
+          si: {
+            si: "cible-type",
+            type: "eveille"
+          }
+        }
+      ]
     },
     attaques: [
       {
@@ -4858,7 +6032,8 @@ const personnages = [
           "q"
         ],
         degats: 40,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -4873,7 +6048,13 @@ const personnages = [
     repli: 0,
     talent: {
       nom: "Mode Turbo",
-      texte: "la première attaque qu'il subit à chaque tour adverse échoue sur un pile."
+      texte: "la première attaque qu'il subit à chaque tour adverse échoue sur un pile.",
+      effets: [
+        {
+          type: "esquive-premiere",
+          cote: "pile"
+        }
+      ]
     },
     attaques: [
       {
@@ -4883,7 +6064,8 @@ const personnages = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -4898,7 +6080,20 @@ const personnages = [
     repli: 1,
     talent: {
       nom: "Opération Strix",
-      texte: "une fois par tour, cherche un Soutien dans ton deck."
+      texte: "une fois par tour, cherche un Soutien dans ton deck.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "chercher",
+              quoi: "soutien",
+              vers: "main"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -4908,7 +6103,8 @@ const personnages = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -4930,7 +6126,13 @@ const personnages = [
           "q"
         ],
         degats: 60,
-        effet: "Yor subit 10 dégâts."
+        effet: "Yor subit 10 dégâts.",
+        effets: [
+          {
+            type: "degats-soi",
+            valeur: 10
+          }
+        ]
       }
     ]
   },
@@ -4945,7 +6147,21 @@ const personnages = [
     repli: 1,
     talent: {
       nom: "Méta-vision",
-      texte: "une fois par tour, regarde les 2 premières cartes de ton deck et choisis leur ordre."
+      texte: "une fois par tour, regarde les 2 premières cartes de ton deck et choisis leur ordre.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "regarder",
+              nombre: 2,
+              garder: 0,
+              reste: "ordre"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -4955,7 +6171,16 @@ const personnages = [
           "q"
         ],
         degats: 50,
-        effet: "+20 si un autre personnage de Blue Lock est en jeu."
+        effet: "+20 si un autre personnage de Blue Lock est en jeu.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 20,
+            si: {
+              si: "autre-serie-en-jeu"
+            }
+          }
+        ]
       }
     ]
   },
@@ -4978,7 +6203,8 @@ const personnages = [
           "q"
         ],
         degats: 90,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -5000,7 +6226,13 @@ const personnages = [
           "q"
         ],
         degats: 30,
-        effet: "à un personnage du banc adverse."
+        effet: "à un personnage du banc adverse.",
+        effets: [
+          {
+            type: "cible",
+            quoi: "banc-adverse"
+          }
+        ]
       }
     ]
   },
@@ -5021,7 +6253,13 @@ const personnages = [
           "n"
         ],
         degats: 20,
-        effet: "la cible est Maudite."
+        effet: "la cible est Maudite.",
+        effets: [
+          {
+            type: "etat",
+            etat: "malediction"
+          }
+        ]
       }
     ]
   },
@@ -5036,7 +6274,19 @@ const personnages = [
     repli: 1,
     talent: {
       nom: "Médium",
-      texte: "une fois par tour, retire un état d'un de tes personnages."
+      texte: "une fois par tour, retire un état d'un de tes personnages.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "retirer-etats",
+              nombre: "un"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -5046,7 +6296,8 @@ const personnages = [
           "q"
         ],
         degats: 30,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -5068,7 +6319,17 @@ const personnages = [
           "q"
         ],
         degats: 30,
-        effet: "pile : +30."
+        effet: "pile : +30.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 30,
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   },
@@ -5091,7 +6352,13 @@ const personnages = [
           "q"
         ],
         degats: 60,
-        effet: "Jiji subit 10 dégâts."
+        effet: "Jiji subit 10 dégâts.",
+        effets: [
+          {
+            type: "degats-soi",
+            valeur: 10
+          }
+        ]
       }
     ]
   },
@@ -5113,7 +6380,17 @@ const personnages = [
           "q"
         ],
         degats: 40,
-        effet: "pile : la cible est Gelée."
+        effet: "pile : la cible est Gelée.",
+        effets: [
+          {
+            type: "etat",
+            etat: "gel",
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   },
@@ -5135,7 +6412,17 @@ const personnages = [
           "q"
         ],
         degats: 40,
-        effet: "+20 contre un Éveillé."
+        effet: "+20 contre un Éveillé.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 20,
+            si: {
+              si: "cible-type",
+              type: "eveille"
+            }
+          }
+        ]
       }
     ]
   },
@@ -5157,7 +6444,8 @@ const personnages = [
           "q"
         ],
         degats: 50,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -5172,7 +6460,21 @@ const personnages = [
     repli: 1,
     talent: {
       nom: "Prémonition",
-      texte: "une fois par tour, regarde la carte du dessus de ton deck ; tu peux la mettre sous le deck."
+      texte: "une fois par tour, regarde la carte du dessus de ton deck ; tu peux la mettre sous le deck.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "regarder",
+              nombre: 1,
+              garder: 0,
+              reste: "choix-dessous"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -5181,7 +6483,8 @@ const personnages = [
           "q"
         ],
         degats: 20,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -5196,7 +6499,21 @@ const personnages = [
     repli: 1,
     talent: {
       nom: "Informateur",
-      texte: "une fois par tour, si tu as un autre personnage de Spy x Family en jeu, pioche 1 carte puis défausse 1 carte."
+      texte: "une fois par tour, si tu as un autre personnage de Spy x Family en jeu, pioche 1 carte puis défausse 1 carte.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          si: {
+            si: "autre-serie-en-jeu"
+          },
+          effets: [
+            {
+              type: "pioche-puis-defausse"
+            }
+          ]
+        }
+      ]
     },
     attaques: [
       {
@@ -5205,7 +6522,8 @@ const personnages = [
           "q"
         ],
         degats: 10,
-        effet: ""
+        effet: "",
+        effets: []
       }
     ]
   },
@@ -5226,7 +6544,12 @@ const personnages = [
           "e"
         ],
         degats: 20,
-        effet: "échange ensuite Bachira avec un de tes personnages du banc."
+        effet: "échange ensuite Bachira avec un de tes personnages du banc.",
+        effets: [
+          {
+            type: "echange-soi"
+          }
+        ]
       }
     ]
   },
@@ -5248,7 +6571,17 @@ const personnages = [
           "q"
         ],
         degats: 40,
-        effet: "pile : la cible est Gelée."
+        effet: "pile : la cible est Gelée.",
+        effets: [
+          {
+            type: "etat",
+            etat: "gel",
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
       }
     ]
   }

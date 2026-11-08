@@ -1,11 +1,12 @@
 # AGENTS.md — règles pour travailler sur Kirafuda
 
-Kirafuda est un jeu de collection de cartes de personnages d'anime, jouable dans le navigateur : ouverture de boosters façon TCG Pocket, cartes à la Pokémon avec 8 raretés fixes par carte (système TCG Pocket), 9 éléments, une cote qui suit la popularité, un draft hebdomadaire. Le résumé complet des règles est dans `docs/GDD-resume.md`. **Lis-le avant toute tâche.**
+Kirafuda est un jeu de collection de cartes de personnages d'anime, jouable dans le navigateur : ouverture de boosters façon TCG Pocket, cartes à la Pokémon avec 8 raretés fixes par carte (système TCG Pocket), 9 éléments, une cote qui suit la popularité, un draft hebdomadaire, et un combat de cartes contre l'IA avec des decks et des cartes Soutien (règles : `docs/COMBAT.md`). Le résumé complet des règles est dans `docs/GDD-resume.md`. **Lis-le avant toute tâche.**
 
 ## Façon de travailler
 
 - **Une tâche à la fois**, dans l'ordre de `docs/TACHES.md`. Ne commence pas la tâche suivante sans qu'on te le demande.
-- **N'ajoute aucune mécanique** absente du GDD (pas de combat, pas d’échanges, pas de Wonder Pick en version 1 ; le serveur se limite aux comptes, à la sauvegarde en ligne et au classement du draft). Si une tâche semble en demander, arrête-toi et pose la question.
+- **N'ajoute aucune mécanique** absente du GDD ou de `docs/COMBAT.md` (pas d’échanges, pas de Wonder Pick ; le combat entre joueurs viendra plus tard ; le serveur se limite aux comptes, à la sauvegarde en ligne et au classement du draft). Si une tâche semble en demander, arrête-toi et pose la question.
+- **Combat** : contre l'IA, avec des decks de 20 cartes et des cartes Soutien, exactement selon `docs/COMBAT.md`. Le moteur (`src/core/combat/`) est pur et déterministe : tout l'aléatoire (pioche, pile ou face, énergie) passe par `src/core/rng.ts`.
 - Avant de terminer une tâche : `npm run typecheck` et `npm test` doivent passer, sans erreur.
 - Explique en quelques lignes ce que tu as changé et comment le vérifier dans le navigateur.
 - Petits commits, un par tâche, message en français.
@@ -22,6 +23,7 @@ Kirafuda est un jeu de collection de cartes de personnages d'anime, jouable dans
 ```
 src/
   core/   logique pure, sans DOM : types, règles, tirage, économie, cote, draft
+  core/combat/ moteur de combat (état, actions légales, effets, IA de simulation)
   data/   données du jeu en JSON (extension, booster, attaques) — ne pas modifier à la main sans raison
   ui/     écrans et composants (DOM, CSS, animations)
   en-ligne/ compte et synchronisation (Supabase) ; les règles de décision sont dans core/synchro.ts

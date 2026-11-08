@@ -3,7 +3,7 @@
 // Le score est déterministe et ne dépend jamais de la finition ni du rang (règle 5).
 // Les cartes du draft n'entrent pas dans la collection : seule la récompense en sceaux est gagnée.
 import { ELEMENTS, FAIBLESSE, ORDRE_RANGS } from './regles';
-import { TYPES_PERSONNAGE, texteDegats, valeurDegats } from './combat';
+import { TYPES_PERSONNAGE, texteDegats, valeurDegats } from './combat/fiches';
 import { rngAGraine, type Rng } from './rng';
 import { tirerBooster } from './tirage';
 import { indexer } from './extension';

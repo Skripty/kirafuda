@@ -1,9 +1,10 @@
 // Données de combat des personnages (docs/COMBAT.md) : type Base / Éveillé, PV, Repli, talent, attaques.
 // Source : src/data/fiches-combat.json (fichier d'équilibrage) ; `npm run fiches` les recopie dans les personnages
-// des fichiers d'extension. Aucune règle de combat ici (tâche 26) : lecture, validation et valeurs pour le draft.
+// des fichiers d'extension. Ici : lecture, validation et valeurs pour le draft ; les règles sont dans moteur.ts.
 // La rareté ne change rien : toutes les cartes d'un personnage ont sa fiche (règle 5).
-import { ELEMENTS } from './regles';
-import type { Attaque, CodeEnergie, ElementId, Extension, Personnage, Rang, Talent, TypePersonnage } from './types';
+import { ELEMENTS } from '../regles';
+import type { Attaque, CodeEnergie, ElementId, Extension, Personnage, Rang, Talent, TypePersonnage } from '../types';
+import { validerEffetsAttaque, validerEffetsTalent } from './effets';
 
 /** Code d'énergie → élément (null pour ◇, l'énergie quelconque). */
 export const ENERGIES: Record<CodeEnergie, ElementId | null> = {
@@ -67,7 +68,7 @@ const entier = (x: unknown, min: number, max: number): x is number => typeof x =
  * rang A et S, Bases en C et B), PV, Repli, talent, 1 ou 2 attaques aux coûts valides (énergies de son élément
  * et ◇ ; ◇ seulement pour un Neutre) et aux dégâts lisibles.
  */
-export function validerCombat(p: Partial<Personnage> & { id?: unknown }, ref: string): string[] {
+export function validerCombat(p: Partial<Personnage> & { id?: unknown }, ref: string, exigerEffets = true): string[] {
   const e: string[] = [];
   const type = p.type as unknown;
   if (type !== 'base' && type !== 'eveille') {
@@ -77,6 +78,11 @@ export function validerCombat(p: Partial<Personnage> & { id?: unknown }, ref: st
   }
   if (!entier(p.pv, 10, 400) || p.pv % 10 !== 0) e.push(`${ref} : PV entiers de 10 à 400, multiples de 10, attendus.`);
   if (!entier(p.repli, 0, 4)) e.push(`${ref} : Repli entier de 0 à 4 attendu.`);
+  // Effets structurés (moteur de combat) : un talent en a toujours ; une attaque, dès qu'elle a un texte d'effet.
+  if (estObjet(p.talent) && (p.talent.effets !== undefined || exigerEffets)) {
+    if (exigerEffets && (!Array.isArray(p.talent.effets) || p.talent.effets.length === 0)) e.push(`${ref} : talent sans effets structurés (src/core/combat/effets.ts).`);
+    else if (p.talent.effets !== undefined) e.push(...validerEffetsTalent(p.talent.effets, `${ref}, talent`));
+  }
   if (p.talent !== null && (!estObjet(p.talent) || !texte(p.talent.nom) || !texte(p.talent.texte))) {
     e.push(`${ref} : talent null, ou nom et texte attendus.`);
   }
@@ -103,6 +109,9 @@ export function validerCombat(p: Partial<Personnage> & { id?: unknown }, ref: st
     if (typeof a.degats !== 'number' && typeof a.degats !== 'string') e.push(`${ra} : dégâts attendus (nombre ou texte).`);
     else if (Number.isNaN(valeurDegats(a.degats)) || valeurDegats(a.degats) < 0) e.push(`${ra} : dégâts « ${String(a.degats)} » illisibles (ex. 40, « 30× », « 50 / 0 », ou vide).`);
     if (typeof a.effet !== 'string') e.push(`${ra} : effet texte attendu ('' s'il n'y en a pas).`);
+    if (a.effets !== undefined) e.push(...validerEffetsAttaque(a.effets, ra));
+    if (exigerEffets && typeof a.effet === 'string' && a.effet.trim() && !a.effets?.length) e.push(`${ra} : texte d'effet sans effets structurés (src/core/combat/effets.ts).`);
+    if (exigerEffets && a.effets === undefined) e.push(`${ra} : champ « effets » attendu ([] s'il n'y en a pas).`);
   });
   return e;
 }
@@ -116,7 +125,8 @@ export function validerFiches(f: unknown): string[] {
     if (!estObjet(fiche) || !texte(fiche.personnage)) { e.push(`Fiche ${i + 1} : personnage attendu.`); continue; }
     if (vus.has(fiche.personnage)) e.push(`Fiche ${fiche.personnage} : en double.`);
     vus.add(fiche.personnage);
-    e.push(...validerCombat(fiche as Partial<Personnage>, `Fiche ${fiche.personnage} (${String(fiche.nom)})`));
+    // Les fiches « nouveau » (vague 3) n'ont pas encore leurs effets structurés.
+    e.push(...validerCombat(fiche as Partial<Personnage>, `Fiche ${fiche.personnage} (${String(fiche.nom)})`, fiche.nouveau !== true));
   }
   return e;
 }
@@ -126,8 +136,8 @@ export const combatDe = (f: FicheCombat): Pick<Personnage, 'type' | 'pv' | 'repl
   type: f.type,
   pv: f.pv,
   repli: f.repli,
-  talent: f.talent ? { nom: f.talent.nom, texte: f.talent.texte } : null,
-  attaques: f.attaques.map((a) => ({ nom: a.nom, cout: [...a.cout], degats: a.degats, effet: a.effet })),
+  talent: f.talent ? { nom: f.talent.nom, texte: f.talent.texte, ...(f.talent.effets ? { effets: structuredClone(f.talent.effets) } : {}) } : null,
+  attaques: f.attaques.map((a) => ({ nom: a.nom, cout: [...a.cout], degats: a.degats, effet: a.effet, ...(a.effets ? { effets: structuredClone(a.effets) } : {}) })),
 });
 
 /**

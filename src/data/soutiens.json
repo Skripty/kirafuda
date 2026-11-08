@@ -1,5 +1,5 @@
 {
- "_note": "Cartes Soutien de départ (voir docs/COMBAT.md). 'effet' est une proposition de structure pour le moteur, à adapter. Rareté fixe par type.",
+ "_note": "Cartes Soutien de départ (voir docs/COMBAT.md). 'effets' : vocabulaire de src/core/combat/effets.ts, appliqué par le moteur. Rareté fixe par type.",
  "soutiens": [
   {
    "id": "sou-onigiri",
@@ -7,11 +7,13 @@
    "type": "objet",
    "texte": "Soigne 30 un de tes personnages.",
    "finition": "commune",
-   "effet": {
-    "type": "soin",
-    "valeur": 30,
-    "cible": "un-allie"
-   }
+   "effets": [
+    {
+     "type": "soin",
+     "valeur": 30,
+     "cible": "allie"
+    }
+   ]
   },
   {
    "id": "sou-fumigene",
@@ -19,9 +21,11 @@
    "type": "objet",
    "texte": "Ce tour, ton actif peut se replier sans payer le Repli.",
    "finition": "commune",
-   "effet": {
-    "type": "repli-gratuit"
-   }
+   "effets": [
+    {
+     "type": "repli-gratuit"
+    }
+   ]
   },
   {
    "id": "sou-parchemin-invocation",
@@ -29,11 +33,14 @@
    "type": "objet",
    "texte": "Ajoute à ta main un Base au hasard de ton deck.",
    "finition": "commune",
-   "effet": {
-    "type": "chercher",
-    "quoi": "base",
-    "hasard": true
-   }
+   "effets": [
+    {
+     "type": "chercher",
+     "quoi": "base",
+     "vers": "main",
+     "hasard": true
+    }
+   ]
   },
   {
    "id": "sou-relique-maudite",
@@ -41,11 +48,14 @@
    "type": "objet",
    "texte": "Attache 1 énergie Ténèbres de ta zone à un de tes personnages Ténèbres ; il subit 10 dégâts.",
    "finition": "commune",
-   "effet": {
-    "type": "energie",
-    "element": "tenebres",
-    "degats_soi": 10
-   }
+   "effets": [
+    {
+     "type": "energie-supplementaire",
+     "element": "tenebres",
+     "cible": "meme-element",
+     "degatsCible": 10
+    }
+   ]
   },
   {
    "id": "sou-antidote",
@@ -53,9 +63,12 @@
    "type": "objet",
    "texte": "Retire tous les états d'un de tes personnages.",
    "finition": "commune",
-   "effet": {
-    "type": "retirer-etats"
-   }
+   "effets": [
+    {
+     "type": "retirer-etats",
+     "nombre": "tous"
+    }
+   ]
   },
   {
    "id": "sou-talisman",
@@ -63,10 +76,13 @@
    "type": "objet",
    "texte": "Jusqu'à ton prochain tour, ton actif subit 20 dégâts de moins.",
    "finition": "commune",
-   "effet": {
-    "type": "reduction",
-    "valeur": 20
-   }
+   "effets": [
+    {
+     "type": "bouclier",
+     "valeur": 20,
+     "cible": "actif"
+    }
+   ]
   },
   {
    "id": "sou-boussole",
@@ -74,10 +90,14 @@
    "type": "objet",
    "texte": "Cherche un Objet dans ton deck et ajoute-le à ta main (pas une Boussole).",
    "finition": "commune",
-   "effet": {
-    "type": "chercher",
-    "quoi": "objet"
-   }
+   "effets": [
+    {
+     "type": "chercher",
+     "quoi": "objet",
+     "vers": "main",
+     "sauf": "sou-boussole"
+    }
+   ]
   },
   {
    "id": "sou-kunai",
@@ -85,11 +105,13 @@
    "type": "objet",
    "texte": "Inflige 10 dégâts à un personnage du banc adverse.",
    "finition": "commune",
-   "effet": {
-    "type": "degats",
-    "valeur": 10,
-    "cible": "banc-adverse"
-   }
+   "effets": [
+    {
+     "type": "degats",
+     "valeur": 10,
+     "cible": "banc-adverse"
+    }
+   ]
   },
   {
    "id": "sou-pierre-energie",
@@ -97,9 +119,13 @@
    "type": "objet",
    "texte": "Une fois par tour : attache 1 énergie de ta zone à un personnage de ton banc (en plus de l'énergie normale), puis défausse une carte de ta main.",
    "finition": "commune",
-   "effet": {
-    "type": "energie-bonus"
-   }
+   "effets": [
+    {
+     "type": "energie-supplementaire",
+     "cible": "banc",
+     "puisDefausse": true
+    }
+   ]
   },
   {
    "id": "sou-bandage",
@@ -107,12 +133,14 @@
    "type": "objet",
    "texte": "Soigne 20 ton actif et retire sa Brûlure.",
    "finition": "commune",
-   "effet": {
-    "type": "soin",
-    "valeur": 20,
-    "cible": "actif",
-    "retire": "brulure"
-   }
+   "effets": [
+    {
+     "type": "soin",
+     "valeur": 20,
+     "cible": "actif",
+     "retire": "brulure"
+    }
+   ]
   },
   {
    "id": "sou-entrainement-intensif",
@@ -120,10 +148,12 @@
    "type": "soutien",
    "texte": "Pioche 2 cartes.",
    "finition": "peu-commune",
-   "effet": {
-    "type": "pioche",
-    "valeur": 2
-   }
+   "effets": [
+    {
+     "type": "pioche",
+     "valeur": 2
+    }
+   ]
   },
   {
    "id": "sou-reperage",
@@ -131,11 +161,14 @@
    "type": "soutien",
    "texte": "Regarde les 4 premières cartes de ton deck, ajoute-en 1 à ta main, remets les autres sous ton deck dans l'ordre de ton choix.",
    "finition": "peu-commune",
-   "effet": {
-    "type": "regarder",
-    "valeur": 4,
-    "garder": 1
-   }
+   "effets": [
+    {
+     "type": "regarder",
+     "nombre": 4,
+     "garder": 1,
+     "reste": "dessous"
+    }
+   ]
   },
   {
    "id": "sou-appel-renfort",
@@ -143,10 +176,12 @@
    "type": "soutien",
    "texte": "Échange ton actif avec un personnage de ton banc, puis soigne 20 le nouvel actif.",
    "finition": "peu-commune",
-   "effet": {
-    "type": "echange-soin",
-    "valeur": 20
-   }
+   "effets": [
+    {
+     "type": "echange-actif-soin",
+     "valeur": 20
+    }
+   ]
   },
   {
    "id": "sou-briefing-tactique",
@@ -154,10 +189,12 @@
    "type": "soutien",
    "texte": "L'adversaire mélange sa main dans son deck et pioche 3 cartes.",
    "finition": "peu-commune",
-   "effet": {
-    "type": "perturbation",
-    "valeur": 3
-   }
+   "effets": [
+    {
+     "type": "melange-main-adverse",
+     "pioche": 3
+    }
+   ]
   },
   {
    "id": "sou-mentor",
@@ -165,10 +202,13 @@
    "type": "soutien",
    "texte": "Cherche un Éveillé dans ton deck et ajoute-le à ta main.",
    "finition": "peu-commune",
-   "effet": {
-    "type": "chercher",
-    "quoi": "eveille"
-   }
+   "effets": [
+    {
+     "type": "chercher",
+     "quoi": "eveille",
+     "vers": "main"
+    }
+   ]
   },
   {
    "id": "sou-infirmerie",
@@ -176,11 +216,14 @@
    "type": "soutien",
    "texte": "Soigne 40 un de tes personnages et retire tous ses états.",
    "finition": "peu-commune",
-   "effet": {
-    "type": "soin",
-    "valeur": 40,
-    "retire": "tous"
-   }
+   "effets": [
+    {
+     "type": "soin",
+     "valeur": 40,
+     "cible": "allie",
+     "retire": "tous"
+    }
+   ]
   },
   {
    "id": "sou-shibuya-nuit",
@@ -188,11 +231,13 @@
    "type": "terrain",
    "texte": "Les attaques des personnages Ténèbres font +10.",
    "finition": "holo",
-   "effet": {
-    "type": "bonus-element",
-    "element": "tenebres",
-    "valeur": 10
-   }
+   "effets": [
+    {
+     "type": "terrain",
+     "bonusAttaque": 10,
+     "element": "tenebres"
+    }
+   ]
   },
   {
    "id": "sou-mur-maria",
@@ -200,10 +245,12 @@
    "type": "terrain",
    "texte": "Le Repli de tous les personnages coûte 1 énergie de plus.",
    "finition": "holo",
-   "effet": {
-    "type": "repli",
-    "valeur": 1
-   }
+   "effets": [
+    {
+     "type": "terrain",
+     "repli": 1
+    }
+   ]
   },
   {
    "id": "sou-mont-sagiri",
@@ -211,14 +258,16 @@
    "type": "terrain",
    "texte": "Entre les tours, soigne 10 chaque personnage Eau et Vent en jeu.",
    "finition": "holo",
-   "effet": {
-    "type": "soin-element",
-    "elements": [
-     "eau",
-     "vent"
-    ],
-    "valeur": 10
-   }
+   "effets": [
+    {
+     "type": "terrain",
+     "soin": 10,
+     "elements": [
+      "eau",
+      "vent"
+     ]
+    }
+   ]
   },
   {
    "id": "sou-arene-boxe",
@@ -226,11 +275,13 @@
    "type": "terrain",
    "texte": "Les attaques des Bases font +10.",
    "finition": "holo",
-   "effet": {
-    "type": "bonus-type",
-    "quoi": "base",
-    "valeur": 10
-   }
+   "effets": [
+    {
+     "type": "terrain",
+     "bonusAttaque": 10,
+     "typePerso": "base"
+    }
+   ]
   }
  ]
 }

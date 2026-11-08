@@ -18,7 +18,12 @@ export const PARTIES_UTILISEES: [RegExp, (donnees: any) => unknown][] = [
   [/^src\/data\/quetes\.json$/, (q) => q.hebdomadaire?.recompensesDraft ?? null],
   [/^src\/data\/extension-[^/]+\.json$/, (e) => ({
     id: e.id, total: e.total, totalAvecSecretes: e.totalAvecSecretes,
-    personnages: e.personnages,
+    // Sans les effets structurés du combat (le draft ne les lit pas) : rééquilibrer le combat n'oblige pas à redéployer.
+    personnages: Array.isArray(e.personnages) ? e.personnages.map(({ talent, attaques, ...p }: any) => ({
+      ...p,
+      talent: talent ? { nom: talent.nom, texte: talent.texte } : talent,
+      attaques: Array.isArray(attaques) ? attaques.map(({ effets: _effets, ...a }: any) => a) : attaques,
+    })) : e.personnages,
     cartes: Array.isArray(e.cartes)
       ? e.cartes.map((c: any) => ({ id: c.id, numero: c.numero, personnage: c.personnage, finition: c.finition, secrete: c.secrete }))
       : e.cartes,

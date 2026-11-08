@@ -3,7 +3,7 @@
 import { CALQUES_PAR_FINITION, ELEMENTS, FINITIONS, ORDRE_RANGS, POPULARITE_MAX, TOTAL_POIDS } from './regles';
 import type { Booster, Extension, Popularite } from './types';
 import { validerThemes, type Theme } from './draft';
-import { validerCombat } from './combat';
+import { validerCombat } from './combat/fiches';
 
 const estRang = (cle: string): boolean => (ORDRE_RANGS as string[]).includes(cle);
 const estFinition = (cle: string): boolean => Object.hasOwn(FINITIONS, cle);

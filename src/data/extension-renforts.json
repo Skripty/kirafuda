@@ -17,7 +17,13 @@
       "repli": 1,
       "talent": {
         "nom": "Vitesse divine",
-        "texte": "une fois par tour, Killua peut se replier sans payer le Repli."
+        "texte": "une fois par tour, Killua peut se replier sans payer le Repli.",
+        "effets": [
+          {
+            "type": "repli-gratuit",
+            "limite": "tour"
+          }
+        ]
       },
       "attaques": [
         {
@@ -27,7 +33,13 @@
             "q"
           ],
           "degats": 40,
-          "effet": "la cible est Étourdie."
+          "effet": "la cible est Étourdie.",
+          "effets": [
+            {
+              "type": "etat",
+              "etat": "etourdi"
+            }
+          ]
         },
         {
           "nom": "Narukami",
@@ -38,7 +50,8 @@
             "q"
           ],
           "degats": 140,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -61,7 +74,8 @@
             "q"
           ],
           "degats": 80,
-          "effet": ""
+          "effet": "",
+          "effets": []
         },
         {
           "nom": "Gon adulte",
@@ -72,7 +86,13 @@
             "q"
           ],
           "degats": 200,
-          "effet": "Gon subit 80 dégâts."
+          "effet": "Gon subit 80 dégâts.",
+          "effets": [
+            {
+              "type": "degats-soi",
+              "valeur": 80
+            }
+          ]
         }
       ]
     },
@@ -87,7 +107,18 @@
       "repli": 1,
       "talent": {
         "nom": "Psychokinésie",
-        "texte": "une fois par tour, échange l'actif adverse avec un personnage de son banc."
+        "texte": "une fois par tour, échange l'actif adverse avec un personnage de son banc.",
+        "effets": [
+          {
+            "type": "activable",
+            "limite": "tour",
+            "effets": [
+              {
+                "type": "echanger-actif-adverse"
+              }
+            ]
+          }
+        ]
       },
       "attaques": [
         {
@@ -97,7 +128,8 @@
             "q"
           ],
           "degats": 50,
-          "effet": ""
+          "effet": "",
+          "effets": []
         },
         {
           "nom": "Prise psychique",
@@ -107,7 +139,12 @@
             "q"
           ],
           "degats": 90,
-          "effet": "la cible ne peut pas se replier au prochain tour."
+          "effet": "la cible ne peut pas se replier au prochain tour.",
+          "effets": [
+            {
+              "type": "bloque-repli-cible"
+            }
+          ]
         }
       ]
     },
@@ -129,7 +166,8 @@
             "q"
           ],
           "degats": 60,
-          "effet": ""
+          "effet": "",
+          "effets": []
         },
         {
           "nom": "Pleine puissance",
@@ -140,7 +178,13 @@
             "q"
           ],
           "degats": 140,
-          "effet": "Kafka subit 30 dégâts."
+          "effet": "Kafka subit 30 dégâts.",
+          "effets": [
+            {
+              "type": "degats-soi",
+              "valeur": 30
+            }
+          ]
         }
       ]
     },
@@ -155,7 +199,18 @@
       "repli": 1,
       "talent": {
         "nom": "Télépathie",
-        "texte": "une fois par tour, regarde la main de l'adversaire et choisis une carte : il la remet sous son deck."
+        "texte": "une fois par tour, regarde la main de l'adversaire et choisis une carte : il la remet sous son deck.",
+        "effets": [
+          {
+            "type": "activable",
+            "limite": "tour",
+            "effets": [
+              {
+                "type": "main-adverse-sous-deck"
+              }
+            ]
+          }
+        ]
       },
       "attaques": [
         {
@@ -165,7 +220,8 @@
             "q"
           ],
           "degats": 50,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -180,7 +236,12 @@
       "repli": 1,
       "talent": {
         "nom": "Bungee Gum",
-        "texte": "quand Hisoka attaque, l'actif adverse ne peut pas se replier au prochain tour."
+        "texte": "quand Hisoka attaque, l'actif adverse ne peut pas se replier au prochain tour.",
+        "effets": [
+          {
+            "type": "attaque-bloque-repli"
+          }
+        ]
       },
       "attaques": [
         {
@@ -190,7 +251,8 @@
             "q"
           ],
           "degats": 40,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -205,7 +267,17 @@
       "repli": 1,
       "talent": {
         "nom": "Chaîne du Jugement",
-        "texte": "ses attaques font +40 contre un Éveillé."
+        "texte": "ses attaques font +40 contre un Éveillé.",
+        "effets": [
+          {
+            "type": "bonus-attaque",
+            "valeur": 40,
+            "si": {
+              "si": "cible-type",
+              "type": "eveille"
+            }
+          }
+        ]
       },
       "attaques": [
         {
@@ -215,7 +287,8 @@
             "q"
           ],
           "degats": 40,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -230,7 +303,13 @@
       "repli": 0,
       "talent": {
         "nom": "Mode Turbo",
-        "texte": "la première attaque qu'il subit à chaque tour adverse échoue sur un pile."
+        "texte": "la première attaque qu'il subit à chaque tour adverse échoue sur un pile.",
+        "effets": [
+          {
+            "type": "esquive-premiere",
+            "cote": "pile"
+          }
+        ]
       },
       "attaques": [
         {
@@ -240,7 +319,8 @@
             "q"
           ],
           "degats": 50,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -255,7 +335,20 @@
       "repli": 1,
       "talent": {
         "nom": "Opération Strix",
-        "texte": "une fois par tour, cherche un Soutien dans ton deck."
+        "texte": "une fois par tour, cherche un Soutien dans ton deck.",
+        "effets": [
+          {
+            "type": "activable",
+            "limite": "tour",
+            "effets": [
+              {
+                "type": "chercher",
+                "quoi": "soutien",
+                "vers": "main"
+              }
+            ]
+          }
+        ]
       },
       "attaques": [
         {
@@ -265,7 +358,8 @@
             "q"
           ],
           "degats": 50,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -287,7 +381,13 @@
             "q"
           ],
           "degats": 60,
-          "effet": "Yor subit 10 dégâts."
+          "effet": "Yor subit 10 dégâts.",
+          "effets": [
+            {
+              "type": "degats-soi",
+              "valeur": 10
+            }
+          ]
         }
       ]
     },
@@ -302,7 +402,21 @@
       "repli": 1,
       "talent": {
         "nom": "Méta-vision",
-        "texte": "une fois par tour, regarde les 2 premières cartes de ton deck et choisis leur ordre."
+        "texte": "une fois par tour, regarde les 2 premières cartes de ton deck et choisis leur ordre.",
+        "effets": [
+          {
+            "type": "activable",
+            "limite": "tour",
+            "effets": [
+              {
+                "type": "regarder",
+                "nombre": 2,
+                "garder": 0,
+                "reste": "ordre"
+              }
+            ]
+          }
+        ]
       },
       "attaques": [
         {
@@ -312,7 +426,16 @@
             "q"
           ],
           "degats": 50,
-          "effet": "+20 si un autre personnage de Blue Lock est en jeu."
+          "effet": "+20 si un autre personnage de Blue Lock est en jeu.",
+          "effets": [
+            {
+              "type": "bonus",
+              "valeur": 20,
+              "si": {
+                "si": "autre-serie-en-jeu"
+              }
+            }
+          ]
         }
       ]
     },
@@ -335,7 +458,8 @@
             "q"
           ],
           "degats": 90,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -357,7 +481,13 @@
             "q"
           ],
           "degats": 30,
-          "effet": "à un personnage du banc adverse."
+          "effet": "à un personnage du banc adverse.",
+          "effets": [
+            {
+              "type": "cible",
+              "quoi": "banc-adverse"
+            }
+          ]
         }
       ]
     },
@@ -378,7 +508,13 @@
             "n"
           ],
           "degats": 20,
-          "effet": "la cible est Maudite."
+          "effet": "la cible est Maudite.",
+          "effets": [
+            {
+              "type": "etat",
+              "etat": "malediction"
+            }
+          ]
         }
       ]
     },
@@ -393,7 +529,19 @@
       "repli": 1,
       "talent": {
         "nom": "Médium",
-        "texte": "une fois par tour, retire un état d'un de tes personnages."
+        "texte": "une fois par tour, retire un état d'un de tes personnages.",
+        "effets": [
+          {
+            "type": "activable",
+            "limite": "tour",
+            "effets": [
+              {
+                "type": "retirer-etats",
+                "nombre": "un"
+              }
+            ]
+          }
+        ]
       },
       "attaques": [
         {
@@ -403,7 +551,8 @@
             "q"
           ],
           "degats": 30,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -425,7 +574,17 @@
             "q"
           ],
           "degats": 30,
-          "effet": "pile : +30."
+          "effet": "pile : +30.",
+          "effets": [
+            {
+              "type": "bonus",
+              "valeur": 30,
+              "si": {
+                "si": "piece",
+                "cote": "pile"
+              }
+            }
+          ]
         }
       ]
     },
@@ -448,7 +607,13 @@
             "q"
           ],
           "degats": 60,
-          "effet": "Jiji subit 10 dégâts."
+          "effet": "Jiji subit 10 dégâts.",
+          "effets": [
+            {
+              "type": "degats-soi",
+              "valeur": 10
+            }
+          ]
         }
       ]
     },
@@ -470,7 +635,17 @@
             "q"
           ],
           "degats": 40,
-          "effet": "pile : la cible est Gelée."
+          "effet": "pile : la cible est Gelée.",
+          "effets": [
+            {
+              "type": "etat",
+              "etat": "gel",
+              "si": {
+                "si": "piece",
+                "cote": "pile"
+              }
+            }
+          ]
         }
       ]
     },
@@ -492,7 +667,17 @@
             "q"
           ],
           "degats": 40,
-          "effet": "+20 contre un Éveillé."
+          "effet": "+20 contre un Éveillé.",
+          "effets": [
+            {
+              "type": "bonus",
+              "valeur": 20,
+              "si": {
+                "si": "cible-type",
+                "type": "eveille"
+              }
+            }
+          ]
         }
       ]
     },
@@ -514,7 +699,8 @@
             "q"
           ],
           "degats": 50,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -529,7 +715,21 @@
       "repli": 1,
       "talent": {
         "nom": "Prémonition",
-        "texte": "une fois par tour, regarde la carte du dessus de ton deck ; tu peux la mettre sous le deck."
+        "texte": "une fois par tour, regarde la carte du dessus de ton deck ; tu peux la mettre sous le deck.",
+        "effets": [
+          {
+            "type": "activable",
+            "limite": "tour",
+            "effets": [
+              {
+                "type": "regarder",
+                "nombre": 1,
+                "garder": 0,
+                "reste": "choix-dessous"
+              }
+            ]
+          }
+        ]
       },
       "attaques": [
         {
@@ -538,7 +738,8 @@
             "q"
           ],
           "degats": 20,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -553,7 +754,21 @@
       "repli": 1,
       "talent": {
         "nom": "Informateur",
-        "texte": "une fois par tour, si tu as un autre personnage de Spy x Family en jeu, pioche 1 carte puis défausse 1 carte."
+        "texte": "une fois par tour, si tu as un autre personnage de Spy x Family en jeu, pioche 1 carte puis défausse 1 carte.",
+        "effets": [
+          {
+            "type": "activable",
+            "limite": "tour",
+            "si": {
+              "si": "autre-serie-en-jeu"
+            },
+            "effets": [
+              {
+                "type": "pioche-puis-defausse"
+              }
+            ]
+          }
+        ]
       },
       "attaques": [
         {
@@ -562,7 +777,8 @@
             "q"
           ],
           "degats": 10,
-          "effet": ""
+          "effet": "",
+          "effets": []
         }
       ]
     },
@@ -583,7 +799,12 @@
             "e"
           ],
           "degats": 20,
-          "effet": "échange ensuite Bachira avec un de tes personnages du banc."
+          "effet": "échange ensuite Bachira avec un de tes personnages du banc.",
+          "effets": [
+            {
+              "type": "echange-soi"
+            }
+          ]
         }
       ]
     },
@@ -605,7 +826,17 @@
             "q"
           ],
           "degats": 40,
-          "effet": "pile : la cible est Gelée."
+          "effet": "pile : la cible est Gelée.",
+          "effets": [
+            {
+              "type": "etat",
+              "etat": "gel",
+              "si": {
+                "si": "piece",
+                "cote": "pile"
+              }
+            }
+          ]
         }
       ]
     }

@@ -84,3 +84,42 @@ Liste de départ : `src/data/soutiens.json`. Dans les boosters : Objets en ♦, 
 1. Combat contre l'IA (premier objectif).
 2. Combat entre amis (plus tard, via Supabase).
 3. Le draft actuel ne change pas pour l'instant.
+
+## Moteur (tâche 26)
+
+Code : `src/core/combat/` — `moteur.ts` (création de la partie, actions légales, application d'une action → nouvel état + journal), `etat.ts` (état sérialisable, aléatoire par graine), `effets.ts` (vocabulaire des effets), `ia.ts` (IA de simulation), `decks.ts` (decks de série générés). Chaque attaque, talent et carte Soutien porte un champ `effets` écrit dans ce vocabulaire (`src/data/fiches-combat.json`, `src/data/soutiens.json`) ; après une modification des fiches : `npm run fiches`. Simulation : `npm run simuler -- combat`.
+
+### Interprétations retenues
+
+Textes ambigus des fiches, et choix faits par le moteur (à corriger dans les données ou ici si une autre lecture est voulue) :
+
+- **Dégâts hors attaque** (Brûlure, talents de Geto, Reze, Luffy, Kunai, dégâts à soi, Poing divergent) : fixes, sans bonus, Faiblesse, réduction ni bouclier.
+- **Bonus** : une attaque qui fait 0 (Chaos sur pile, Rafale sans face, attaques de soin) reste à 0, les bonus ne s'ajoutent pas.
+- **Malédiction (+20) et « Trahison » de Rachel (+10)** : comptées avec les bonus, avant les réductions ; seulement sur l'actif, seulement pour les attaques.
+- **Boucliers et réductions** : un *bouclier* est temporaire (« jusqu'à ton prochain tour » : Talisman, Titan Cuirassé, Garde de fer, Durcissement) ; une *réduction* vient d'un talent permanent (Stark, Infini, Lien Ackerman, Titan Féminin, Thorfinn, Calme plat, Igris, Himmel, Lee Hyunsung). Chidori ignore les boucliers seulement ; Zoltraak, Reelseiden et Lance inverse céleste ignorent les deux.
+- **Pièces** : « pile : +X » (Black Flash, Quanxi, Thorfinn, Aira) réussit sur pile ; Chaos fait 50 sur face ; Rafale compte les faces ; Pochita sauve Denji sur face. Pile ou face à 50 %.
+- **Sharingan, Mode Turbo** : à la première attaque subie à chaque tour adverse (y compris une attaque de zone ou au banc), sur pile, toute l'attaque échoue contre lui (ni dégâts ni effet).
+- **Poing divergent** : les 30 dégâts supplémentaires tombent entre les tours, juste après le tour de l'attaque, si la cible est encore en jeu.
+- **Sanctuaire malveillant** : « défausse toutes ses énergies » = celles de Sukuna. Démantèlement et Poing à distance : la Faiblesse ne compte pas au banc.
+- **Bleu** : c'est l'adversaire qui choisit son nouvel actif ; l'ancien va sur le banc (ses états sont retirés).
+- **Roi des fléaux** : Sukuna peut relever Itadori entré ce tour-ci, mais pas au premier tour du joueur (règle générale).
+- **Multiclonage** : aucun Base de Naruto n'existe encore (vague 3) ; l'effet ne trouve rien. La série Naruto n'a donc pas de deck possible pour l'instant.
+- **Genjutsu des corbeaux** : Itachi doit être en jeu ; le personnage qui entre n'est Étourdi que s'il entre en actif (les états ne vont que sur l'actif).
+- **Contrôle (Makima)** : retire la dernière énergie attachée. **Durcissement (Eren)** : défausse la dernière énergie attachée.
+- **Manœuvre tridimensionnelle, Dribble du monstre** : l'échange après l'attaque est facultatif (le joueur peut garder son actif).
+- **Démon de la Guerre (Asa)** : le bonus ne vaut que pour la prochaine attaque de ce tour, puis disparaît.
+- **Consacrez vos cœurs, Roi, Entraîneur** : +10 par personnage portant ce talent en jeu (actif ou banc), pour tes autres personnages de sa série.
+- **Je n'ai pas d'ennemis** : « ton tour précédent » = le tour précédent de son propriétaire.
+- **Retraité (Sakamoto)** : les points sont comparés au moment de l'attaque. À égalité de points, Sakamoto ne peut jamais mettre K.-O. (risque de partie bloquée si l'adversaire ne peut pas le battre : à surveiller à l'équilibrage).
+- **Irrégulier (Bam)** : retire un ◇ du coût ; sans effet sur une attaque sans ◇.
+- **Archéologue, Repérage** : les cartes non gardées vont sous le deck dans l'ordre où elles étaient (Repérage : « dans l'ordre de ton choix » simplifié). Baratin et Méta-vision : le joueur choisit l'ordre.
+- **Stratège de la Tour (Khun), Informateur (Franky)** : la carte rendue (sous le deck ou défaussée) est choisie automatiquement : une carte Soutien de la main s'il y en a, sinon la carte piochée.
+- **Arise** : le Base revient sur le banc avec 30 PV restants (place sur le banc nécessaire).
+- **Chef mercenaire (Askeladd)** : Askeladd doit déjà être en jeu ; tout Base de Vinland Saga posé (depuis la main, le deck ou la défausse) fait piocher.
+- **Régression (Yoo)** : le K.-O. compte quand même (points) ; la carte est remélangée dans le deck.
+- **Magie du temps (Nikaido)** : une fois par partie, soigne les dégâts subis pendant le dernier tour adverse.
+- **Relique maudite** : « 1 énergie Ténèbres de ta zone » = une énergie Ténèbres en plus, seulement si Ténèbres fait partie des éléments du deck, sur un personnage Ténèbres, qui subit 10.
+- **Pierre d'énergie** : une énergie en plus (tirée parmi les éléments du deck) sur un personnage du banc, puis défausse d'une carte de la main ; une Pierre par tour.
+- **Terrains** : Mur Maria et Mont Sagiri valent pour les deux joueurs ; Mont Sagiri soigne entre chaque tour. Un Terrain remplacé va dans la défausse de son propriétaire.
+- **Gel, Étourdi** : disparaissent à la fin du prochain tour de leur propriétaire. Étourdi : la pièce est lancée avant tout le reste de l'attaque.
+- **Pile ou face du début** : le gagnant choisit de commencer ou non (les IA de simulation choisissent de commencer).

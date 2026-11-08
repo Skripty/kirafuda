@@ -4,7 +4,7 @@ import './carte.css';
 import './carte-base.css';
 import './carte-combat.css';
 import { ELEMENTS, FAIBLESSE, FINITIONS } from '../core/regles';
-import { ENERGIES, TYPES_PERSONNAGE, texteDegats } from '../core/combat';
+import { ENERGIES, TYPES_PERSONNAGE, texteDegats } from '../core/combat/fiches';
 import { iconeElement } from './element';
 import { candidatsAffichage, type CandidatImage } from '../core/images';
 import { indexer } from '../core/extension';

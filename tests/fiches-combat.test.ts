@@ -5,7 +5,7 @@ import fichesJson from '../src/data/fiches-combat.json';
 import lancementJson from '../src/data/extension-lancement.json';
 import renfortsJson from '../src/data/extension-renforts.json';
 import { catalogue } from '../src/catalogue';
-import { appliquerFiches, validerCombat, validerFiches, valeurDegats, type FichierFiches } from '../src/core/combat';
+import { appliquerFiches, validerCombat, validerFiches, valeurDegats, type FichierFiches } from '../src/core/combat/fiches';
 import { serialiserExtension } from '../src/core/edition';
 import { disponibles, toutesLesExtensions } from '../src/core/catalogue';
 import { puissance } from '../src/core/draft';
