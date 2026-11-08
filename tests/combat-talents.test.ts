@@ -250,11 +250,12 @@ describe('talents', () => {
     expect(degats(attaque(partie({ actif: EINAR, energies: [['feu', 'feu']] }, { actif: 'per-078', banc: ['per-079'] }), 0).p, 'B-per-078')).toBe(30);
   });
   // ---------- Sakamoto Days ----------
-  t('per-082', 'Retraité : une attaque qui devrait mettre K.-O. une cible à plus de 10 PV la laisse à 10 PV', () => {
-    const p = (d: number) => partie({ actif: 'per-082', energies: [['feu', 'feu']] }, { actif: EINAR, banc: [EINAR], degats: [d] });
-    expect(degats(attaque(p(50), 0).p, 'B-per-066')).toBe(70); // 30 PV restants : reste à 10
-    expect(degats(attaque(p(0), 0).p, 'B-per-066')).toBe(60); // 60 dégâts ne mettent pas K.-O. : inchangé
-    expect(attaque(p(70), 0).p.joueurs[0].points).toBe(1); // à 10 PV : K.-O. (plus de blocage)
+  t('per-082', 'Ancien tueur : une fois par tour, cherche un Objet dans le deck et l’ajoute à la main', () => {
+    const q = talent(partie({ actif: 'per-082', deck: ['sou-mentor', 'sou-kunai', EINAR] }, { actif: EINAR }), 'A-per-082').p;
+    expect(q.joueurs[0].main).toEqual(['A-sou-kunai']);
+    expect(types(q)).not.toContain('talent');
+    // Ses attaques mettent K.-O. normalement (plus de « Retraité »).
+    expect(attaque(partie({ actif: 'per-082', energies: [['feu', 'feu']] }, { actif: EINAR, banc: [EINAR], degats: [50] }), 0).p.joueurs[0].points).toBe(1);
   });
   t('per-083', 'Télépathie : regarde la main de l’adversaire', () => {
     expect(texte(talent(partie({ actif: 'per-083' }, { actif: EINAR }), 'A-per-083').journal)).toMatch(/regarde la main de Bruno/);

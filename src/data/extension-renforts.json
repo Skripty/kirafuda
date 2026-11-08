@@ -165,7 +165,7 @@
             "f",
             "q"
           ],
-          "degats": 60,
+          "degats": 50,
           "effet": "",
           "effets": []
         },
@@ -177,7 +177,7 @@
             "q",
             "q"
           ],
-          "degats": 140,
+          "degats": 120,
           "effet": "Kafka subit 30 dégâts.",
           "effets": [
             {
@@ -220,6 +220,17 @@
             "q"
           ],
           "degats": 50,
+          "effet": "",
+          "effets": []
+        },
+        {
+          "nom": "Mission Strix",
+          "cout": [
+            "q",
+            "q",
+            "q"
+          ],
+          "degats": 90,
           "effet": "",
           "effets": []
         }

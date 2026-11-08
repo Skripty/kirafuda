@@ -116,7 +116,7 @@ Textes ambigus des fiches, et choix faits par le moteur (à corriger dans les do
 - **Démon de la Guerre (Asa)** : le bonus ne vaut que pour la prochaine attaque de ce tour, puis disparaît.
 - **Consacrez vos cœurs, Roi, Entraîneur** : +10 par personnage portant ce talent en jeu (actif ou banc), pour tes autres personnages de sa série.
 - **Je n'ai pas d'ennemis** : « ton tour précédent » = le tour précédent de son propriétaire.
-- **Retraité (Sakamoto)** : une attaque qui devrait mettre K.-O. une cible à plus de 10 PV la laisse à 10 PV ; une cible à 10 PV ou moins peut être mise K.-O. (plus de blocage possible).
+- **Ancien tueur (Sakamoto)** : une fois par tour, cherche un Objet dans le deck et l'ajoute à la main (remplace « Retraité », retiré au dernier équilibrage).
 - **Contrôle (Makima)** : à l'entrée par Relève, retire la dernière énergie attachée à l'actif adverse.
 - **Irrégulier (Bam)** : retire un ◇ du coût ; sans effet sur une attaque sans ◇.
 - **Archéologue, Repérage** : les cartes non gardées vont sous le deck dans l'ordre où elles étaient (Repérage : « dans l'ordre de ton choix » simplifié). Baratin et Méta-vision : le joueur choisit l'ordre.

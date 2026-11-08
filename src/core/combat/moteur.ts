@@ -321,14 +321,7 @@ function calculerDegats(
     }
   }
   if (ignore === null) for (const b of cible.boucliers) d -= b.valeur;
-  d = Math.max(0, d);
-  // « Retraité » : une attaque qui devrait mettre K.-O. une cible à plus de 10 PV la laisse à 10 PV
-  // (une cible à 10 PV ou moins peut être mise K.-O. : jamais de blocage).
-  for (const t of aTalent(c, source, 'plancher')) {
-    const reste = pvRestants(c, cible);
-    if (reste > t.valeur && d >= reste && (!t.sauf || !condition(c, t.sauf, ctxSoi))) d = reste - t.valeur;
-  }
-  return d;
+  return Math.max(0, d);
 }
 
 // ---------- K.-O. et fin de partie ----------

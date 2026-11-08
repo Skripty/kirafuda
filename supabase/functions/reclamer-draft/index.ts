@@ -1,5 +1,5 @@
 // Fonction Supabase « reclamer-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : 2019f8cdb4ebf2b5
+// Empreinte des sources : 48d7a46e4d2a18bf
 // Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/draft.ts, src/core/regles.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/reclamer-draft.ts
 // @ts-nocheck
 const id$2 = "booster-lancement";
@@ -1237,11 +1237,11 @@ const personnages$1 = [
           "q"
         ],
         degats: 110,
-        effet: "+40 si tu as 2 personnages de L'Attaque des Titans ou plus sur ton banc.",
+        effet: "+20 si tu as 2 personnages de L'Attaque des Titans ou plus sur ton banc.",
         effets: [
           {
             type: "bonus",
-            valeur: 40,
+            valeur: 20,
             si: {
               si: "banc-serie-min",
               nombre: 2
@@ -1345,11 +1345,11 @@ const personnages$1 = [
           "q"
         ],
         degats: 120,
-        effet: "+60 contre un Éveillé.",
+        effet: "+40 contre un Éveillé.",
         effets: [
           {
             type: "bonus",
-            valeur: 60,
+            valeur: 40,
             si: {
               si: "cible-type",
               type: "eveille"
@@ -1887,7 +1887,7 @@ const personnages$1 = [
           "n",
           "q"
         ],
-        degats: 60,
+        degats: 50,
         effet: "",
         effets: []
       },
@@ -2452,7 +2452,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 110,
+        degats: 120,
         effet: "",
         effets: []
       }
@@ -2507,7 +2507,7 @@ const personnages$1 = [
           "q",
           "q"
         ],
-        degats: 40,
+        degats: 50,
         effet: "",
         effets: []
       }
@@ -2838,7 +2838,7 @@ const personnages$1 = [
     rang: "B",
     element: "eau",
     type: "heros",
-    pv: 130,
+    pv: 140,
     repli: 1,
     talent: {
       nom: "Irrégulier",
@@ -2860,7 +2860,7 @@ const personnages$1 = [
           "e",
           "q"
         ],
-        degats: 50,
+        degats: 60,
         effet: "",
         effets: []
       },
@@ -3293,12 +3293,19 @@ const personnages$1 = [
     pv: 130,
     repli: 2,
     talent: {
-      nom: "Retraité",
-      texte: "si une attaque de Sakamoto devait mettre K.-O. une cible qui a plus de 10 PV, elle reste à 10 PV.",
+      nom: "Ancien tueur",
+      texte: "une fois par tour, cherche un Objet dans ton deck et ajoute-le à ta main.",
       effets: [
         {
-          type: "plancher",
-          valeur: 10
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "chercher",
+              quoi: "objet",
+              vers: "main"
+            }
+          ]
         }
       ]
     },
@@ -5986,7 +5993,7 @@ const personnages = [
           "f",
           "q"
         ],
-        degats: 60,
+        degats: 50,
         effet: "",
         effets: []
       },
@@ -5998,7 +6005,7 @@ const personnages = [
           "q",
           "q"
         ],
-        degats: 140,
+        degats: 120,
         effet: "Kafka subit 30 dégâts.",
         effets: [
           {
@@ -6041,6 +6048,17 @@ const personnages = [
           "q"
         ],
         degats: 50,
+        effet: "",
+        effets: []
+      },
+      {
+        nom: "Mission Strix",
+        cout: [
+          "q",
+          "q",
+          "q"
+        ],
+        degats: 90,
         effet: "",
         effets: []
       }

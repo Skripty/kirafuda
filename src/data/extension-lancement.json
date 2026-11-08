@@ -1163,11 +1163,11 @@
             "q"
           ],
           "degats": 110,
-          "effet": "+40 si tu as 2 personnages de L'Attaque des Titans ou plus sur ton banc.",
+          "effet": "+20 si tu as 2 personnages de L'Attaque des Titans ou plus sur ton banc.",
           "effets": [
             {
               "type": "bonus",
-              "valeur": 40,
+              "valeur": 20,
               "si": {
                 "si": "banc-serie-min",
                 "nombre": 2
@@ -1271,11 +1271,11 @@
             "q"
           ],
           "degats": 120,
-          "effet": "+60 contre un Éveillé.",
+          "effet": "+40 contre un Éveillé.",
           "effets": [
             {
               "type": "bonus",
-              "valeur": 60,
+              "valeur": 40,
               "si": {
                 "si": "cible-type",
                 "type": "eveille"
@@ -1813,7 +1813,7 @@
             "n",
             "q"
           ],
-          "degats": 60,
+          "degats": 50,
           "effet": "",
           "effets": []
         },
@@ -2378,7 +2378,7 @@
             "q",
             "q"
           ],
-          "degats": 110,
+          "degats": 120,
           "effet": "",
           "effets": []
         }
@@ -2433,7 +2433,7 @@
             "q",
             "q"
           ],
-          "degats": 40,
+          "degats": 50,
           "effet": "",
           "effets": []
         }
@@ -2764,7 +2764,7 @@
       "rang": "B",
       "element": "eau",
       "type": "heros",
-      "pv": 130,
+      "pv": 140,
       "repli": 1,
       "talent": {
         "nom": "Irrégulier",
@@ -2786,7 +2786,7 @@
             "e",
             "q"
           ],
-          "degats": 50,
+          "degats": 60,
           "effet": "",
           "effets": []
         },
@@ -3219,12 +3219,19 @@
       "pv": 130,
       "repli": 2,
       "talent": {
-        "nom": "Retraité",
-        "texte": "si une attaque de Sakamoto devait mettre K.-O. une cible qui a plus de 10 PV, elle reste à 10 PV.",
+        "nom": "Ancien tueur",
+        "texte": "une fois par tour, cherche un Objet dans ton deck et ajoute-le à ta main.",
         "effets": [
           {
-            "type": "plancher",
-            "valeur": 10
+            "type": "activable",
+            "limite": "tour",
+            "effets": [
+              {
+                "type": "chercher",
+                "quoi": "objet",
+                "vers": "main"
+              }
+            ]
           }
         ]
       },
