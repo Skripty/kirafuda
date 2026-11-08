@@ -4,14 +4,16 @@
 // en une seule écriture, sous une seule clé : jamais d'état à moitié enregistré.
 // Le stockage est injecté (localStorage dans le navigateur, un faux stockage dans les tests).
 import { FINITIONS, PRIX_BOUTIQUE } from './regles';
+import { DEFIS_COMBAT } from './combat/defis';
 import { indexer } from './extension';
 import { etatQuetesInitial, lireEtatQuetes } from './quetes';
-import type { CarteTiree, DraftJoue, Extension, FinitionId, Ouverture, Sauvegarde } from './types';
+import type { Partie } from './combat/etat';
+import type { CarteTiree, DraftJoue, Extension, FinitionId, Ouverture, ProgressionCombat, Sauvegarde, SessionCombat } from './types';
 
 export const CLE_SAUVEGARDE = 'kirafuda:sauvegarde';
 /** Copie d'une sauvegarde illisible, mise de côté au lieu d'être écrasée. */
 export const CLE_SAUVEGARDE_ILLISIBLE = 'kirafuda:sauvegarde-illisible';
-export const VERSION_SAUVEGARDE = 8;
+export const VERSION_SAUVEGARDE = 9;
 
 /** Le sous-ensemble de `Storage` dont on a besoin. */
 export interface Stockage {
@@ -34,7 +36,7 @@ export type ResultatValidation =
 
 export function sauvegardeParDefaut(): Sauvegarde {
   return {
-    version: 8,
+    version: 9,
     sceaux: 0,
     derniereRecompenseQuotidienne: null,
     collection: {},
@@ -42,6 +44,7 @@ export function sauvegardeParDefaut(): Sauvegarde {
     historique: [],
     dernierDraft: null,
     quetes: etatQuetesInitial(),
+    combat: { defisGagnes: [], enCours: null },
   };
 }
 
@@ -68,6 +71,8 @@ export const MIGRATIONS: Record<number, Migration> = {
   6: (d) => (estObjet(d.quetes) ? { ...d, quetes: { ...d.quetes, lancementsRecus: {} } } : d),
   // Version 8 : Renforts devient une vague de Lancement (un seul booster).
   7: (d) => fusionnerVaguesLancement(d),
+  // Version 9 : progression des défis et partie de combat à reprendre.
+  8: (d) => ({ ...d, combat: { defisGagnes: [], enCours: null } }),
 };
 
 /** Anciennes extensions devenues des vagues : id → extension qui les accueille, et leur ancien booster. */
@@ -223,6 +228,58 @@ function estJourIso(x: unknown): x is string {
 }
 const estDateIso = (x: unknown): x is string => typeof x === 'string' && x.length > 0 && !Number.isNaN(Date.parse(x));
 
+function lireProgressionCombat(x: unknown): { progression: ProgressionCombat } | { erreurs: string[] } {
+  const erreurs: string[] = [];
+  if (!estObjet(x) || !Array.isArray(x.defisGagnes)) return { erreurs: ['Combat : progression invalide.'] };
+  const defis = new Set(DEFIS_COMBAT.map((d) => d.id));
+  const defisGagnes = x.defisGagnes.filter((id): id is string => typeof id === 'string' && defis.has(id));
+  if (defisGagnes.length !== x.defisGagnes.length || new Set(defisGagnes).size !== defisGagnes.length) {
+    erreurs.push('Combat : la liste des défis gagnés contient un identifiant invalide ou en double.');
+  }
+  let enCours: SessionCombat | null = null;
+  if (x.enCours !== null) {
+    const session = x.enCours;
+    if (!estObjet(session) || typeof session.defiId !== 'string' || !defis.has(session.defiId)
+      || !Array.isArray(session.journalIA) || !session.journalIA.every((m) => typeof m === 'string')
+      || !partieValide(session.partie)) {
+      erreurs.push('Combat : la partie à reprendre est invalide.');
+    } else {
+      enCours = { defiId: session.defiId, partie: session.partie as unknown as Partie, journalIA: [...session.journalIA].slice(-12) };
+    }
+  }
+  return erreurs.length ? { erreurs } : { progression: { defisGagnes, enCours } };
+}
+
+function partieValide(x: unknown): x is Record<string, unknown> {
+  if (!estObjet(x) || typeof x.graine !== 'string' || x.graine.length === 0
+    || !estEntier(x.tirages, 0) || !estEntier(x.tour, 0)
+    || (x.joueurActif !== 0 && x.joueurActif !== 1) || (x.gagnantPiece !== 0 && x.gagnantPiece !== 1)
+    || !(x.premier === null || x.premier === 0 || x.premier === 1)
+    || !['mise-en-place', 'choix-premier', 'jeu', 'fin'].includes(String(x.phase))
+    || !Array.isArray(x.joueurs) || x.joueurs.length !== 2 || !estObjet(x.cartes)
+    || !(x.terrain === null || estObjet(x.terrain))
+    || !(x.attente === null || estObjet(x.attente))
+    || !(x.gagnant === null || x.gagnant === 0 || x.gagnant === 1)
+    || !(x.raisonFin === null || typeof x.raisonFin === 'string')) return false;
+  const joueurValide = (j: unknown): boolean => estObjet(j)
+    && typeof j.nom === 'string' && Array.isArray(j.deck) && j.deck.every((u) => typeof u === 'string')
+    && Array.isArray(j.main) && j.main.every((u) => typeof u === 'string')
+    && Array.isArray(j.defausse) && j.defausse.every((u) => typeof u === 'string')
+    && (j.actif === null || persoEnJeuValide(j.actif)) && Array.isArray(j.banc) && j.banc.every(persoEnJeuValide)
+    && estEntier(j.points, 0) && Array.isArray(j.elements) && j.elements.every((e) => typeof e === 'string')
+    && (j.energie === null || typeof j.energie === 'string') && estObjet(j.tour)
+    && Array.isArray(j.unique) && j.unique.every((u) => typeof u === 'string')
+    && estEntier(j.toursJoues, 0) && typeof j.pret === 'boolean';
+  return x.joueurs.every(joueurValide);
+}
+
+function persoEnJeuValide(x: unknown): boolean {
+  return estObjet(x) && typeof x.uid === 'string' && typeof x.id === 'string'
+    && estEntier(x.degats, 0) && Array.isArray(x.energies) && x.energies.every((e) => typeof e === 'string')
+    && Array.isArray(x.etats) && Array.isArray(x.boucliers) && Array.isArray(x.differes)
+    && estEntier(x.entreAuTour, 0) && typeof x.bonusProchaineAttaque === 'number';
+}
+
 /** Lit une valeur au format de la sauvegarde ; renvoie une copie propre (sans champ inconnu) ou les erreurs. */
 function lire(d: Record<string, unknown>, contexte: ContexteValidation): { sauvegarde: Sauvegarde } | { erreurs: string[] } {
   const erreurs: string[] = [];
@@ -332,11 +389,13 @@ function lire(d: Record<string, unknown>, contexte: ContexteValidation): { sauve
 
   const quetes = lireEtatQuetes(d.quetes);
   if (Array.isArray(quetes)) erreurs.push(...quetes);
+  const combat = lireProgressionCombat(d.combat);
+  if ('erreurs' in combat) erreurs.push(...combat.erreurs);
 
-  if (erreurs.length > 0 || Array.isArray(quetes)) return { erreurs };
+  if (erreurs.length > 0 || Array.isArray(quetes) || 'erreurs' in combat) return { erreurs };
   return {
     sauvegarde: {
-      version: 8,
+      version: 9,
       sceaux: d.sceaux as number,
       derniereRecompenseQuotidienne: jour as string | null,
       collection,
@@ -344,6 +403,7 @@ function lire(d: Record<string, unknown>, contexte: ContexteValidation): { sauve
       historique,
       dernierDraft,
       quetes,
+      combat: combat.progression,
     },
   };
 }

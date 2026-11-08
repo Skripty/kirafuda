@@ -1,4 +1,5 @@
 import type { EffetAttaque, EffetTalent } from './combat/effets';
+import type { Partie } from './combat/etat';
 
 // Modèle de données de Kirafuda (version 1).
 // Les noms suivent le vocabulaire du GDD, en français.
@@ -199,8 +200,19 @@ export interface EtatQuetes {
  * État du joueur, sauvegardé localement. Version 2 : draft ; 3 : collection par carte ; 4 : quêtes ;
  * 5 et 6 : quêtes de débutant renommées ; 7 : calendriers de sortie des vagues ; 8 : Renforts devient une vague de Lancement.
  */
+export interface SessionCombat {
+  defiId: string;
+  partie: Partie;
+  journalIA: string[];
+}
+
+export interface ProgressionCombat {
+  defisGagnes: string[];
+  enCours: SessionCombat | null;
+}
+
 export interface Sauvegarde {
-  version: 8;
+  version: 9;
   sceaux: number;
   derniereRecompenseQuotidienne: string | null; // date ISO (jour)
   /** Clé : id de carte (« lan-041 ») → nombre d'exemplaires. */
@@ -210,4 +222,6 @@ export interface Sauvegarde {
   /** Dernier draft joué (null si aucun). */
   dernierDraft: DraftJoue | null;
   quetes: EtatQuetes;
+  /** Progression des défis contre l'IA et partie à reprendre, le cas échéant. */
+  combat: ProgressionCombat;
 }

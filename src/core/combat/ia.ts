@@ -4,8 +4,9 @@
 //    qui fait le plus de dégâts (simulée sur une copie de la partie).
 // Aléatoire : rng.ts avec une graine (règle 2 d’AGENTS.md).
 import { rngAGraine, type Rng } from '../rng';
-import type { ElementId } from '../types';
+import type { CodeEnergie, ElementId } from '../types';
 import type { Bibliotheque, Partie, PersoEnJeu } from './etat';
+import { valeurDegats } from './fiches';
 import { autre } from './etat';
 import { actionsLegales, appliquer, peutPayer, type Action } from './moteur';
 
@@ -70,17 +71,11 @@ export function iaGloutonne(graine: string): IA {
       const utile = (x: PersoEnJeu): boolean => bib.personnages.get(x.id)!.attaques
         .some((a) => fait(a) && a.cout.every((c) => codesDuDeck.has(c)) && a.cout.some((c) => c === 'q' || c === CODE[el]));
       const debloque = (x: PersoEnJeu): boolean => bib.personnages.get(x.id)!.attaques.some((a) => fait(a) && !peutPayer(x.energies, a.cout) && peutPayer([...x.energies, el], a.cout));
-      // Actif bloqué (aucune attaque payable avec les éléments du deck) : juste assez d'énergie pour pouvoir se replier.
-      const actif = J.actif;
-      if (actif && bloque(bib, actif, J.elements) && J.banc.length && actif.energies.length < bib.personnages.get(actif.id)!.repli) {
-        const a = attaches.find((x) => x.cible === actif.uid);
-        if (a) return a;
-      }
-      return attaches.find((a) => a.cible === J.actif?.uid && debloque(persoDe(a.cible)))
+      const utileAction = attaches.find((a) => a.cible === J.actif?.uid && debloque(persoDe(a.cible)))
         ?? attaches.find((a) => debloque(persoDe(a.cible)))
         ?? attaches.find((a) => a.cible === J.actif?.uid && utile(persoDe(a.cible)))
-        ?? attaches.find((a) => utile(persoDe(a.cible)))
-        ?? attaches[0]!;
+        ?? attaches.find((a) => utile(persoDe(a.cible)));
+      if (utileAction) return utileAction;
     }
     const jouer = de('jouer');
     for (const id of PRIORITE_SOUTIENS) { const a = jouer.find((x) => partie.cartes[x.carte] === id); if (a) return a; }
@@ -129,7 +124,7 @@ export function iaGloutonne(graine: string): IA {
   };
 }
 
-const CODE: Record<ElementId, string> = { feu: 'f', eau: 'e', glace: 'g', foudre: 'z', vent: 'v', terre: 't', lumiere: 'l', tenebres: 'n', neutre: 'q' };
+const CODE: Record<ElementId, CodeEnergie> = { feu: 'f', eau: 'e', glace: 'g', foudre: 'z', vent: 'v', terre: 't', lumiere: 'l', tenebres: 'n', neutre: 'q' };
 const payable = (bib: Bibliotheque, x: PersoEnJeu, energies: ElementId[]): boolean =>
   bib.personnages.get(x.id)!.attaques.some((a) => peutPayer(energies, a.cout));
 /** Aucune attaque du personnage n'est payable avec les éléments du deck (il ne pourra jamais attaquer). */
@@ -139,3 +134,142 @@ const bloque = (bib: Bibliotheque, x: PersoEnJeu, elements: ElementId[]): boolea
 };
 /** L'attaque fait-elle des dégâts ? (Réécriture, Massage spécial, Reine des murs : non) */
 const fait = (a: { degats: number | string }): boolean => (typeof a.degats === 'number' ? a.degats > 0 : a.degats.trim() !== '');
+
+/**
+ * IA « normale » de l'écran de combat : compare l'effet immédiat de chaque action et la qualité de la position
+ * qui en résulte. Elle reste déterministe et n'emploie pas un talent payant simplement parce qu'il est disponible.
+ */
+export function iaNormale(): IA {
+  return (partie, bib) => {
+    const actions = actionsLegales(partie, bib);
+    if (actions.length <= 1) return actions[0]!;
+    const de = <T extends Action['type']>(t: T): Extract<Action, { type: T }>[] =>
+      actions.filter((a): a is Extract<Action, { type: T }> => a.type === t);
+
+    const mep = de('mise-en-place');
+    if (mep.length) {
+      const pvDe = (uid: string): number => bib.personnages.get(partie.cartes[uid]!)?.pv ?? 0;
+      return mep.reduce((best, a) => {
+        if (a.banc.length > best.banc.length) return a;
+        return a.banc.length === best.banc.length && pvDe(a.actif) > pvDe(best.actif) ? a : best;
+      }, mep[0]!);
+    }
+    const commencer = de('commencer');
+    if (commencer.length) return commencer.find((a) => a.premier) ?? commencer[0]!;
+
+    const j = actions[0]!.joueur;
+    const J = partie.joueurs[j];
+    const nouveaus = de('nouvel-actif');
+    if (nouveaus.length) {
+      const valeur = (uid: string): number => {
+        const x = J.banc.find((p) => p.uid === uid)!;
+        return pvRestants(bib, x) + x.energies.length * 16 + meilleurDegats(bib, x, x.energies) * 0.45;
+      };
+      return nouveaus.reduce((best, a) => valeur(a.cible) > valeur(best.cible) ? a : best, nouveaus[0]!);
+    }
+
+    // Comme l'IA gloutonne de simulation : une énergie ne va qu'à un personnage qui peut réellement préparer une
+    // attaque à dégâts avec les éléments du deck. Les attaques de soin et de préparation ne justifient pas l'énergie.
+    const avant = evaluation(partie, bib, j);
+    let meilleur: { action: Action; score: number } | null = null;
+    for (const action of actions) {
+      if (action.type === 'attacher' && J.energie) {
+        const x = personnage(J, action.cible);
+        const codes = new Set(['q', ...J.elements.map((e) => CODE[e])]);
+        if (!bib.personnages.get(x.id)!.attaques.some((a) => fait(a) && a.cout.every((c) => codes.has(c))
+          && (a.cout.includes('q') || a.cout.includes(CODE[J.energie!]!)))) continue;
+      }
+      let apres: Partie;
+      try { apres = appliquer(partie, action, bib).partie; }
+      catch { continue; }
+      let score = evaluation(apres, bib, j) - avant;
+      if (action.type === 'repli' && partie.joueurs[j].actif) {
+        const actif = partie.joueurs[j].actif;
+        const meilleurActif = meilleurDegats(bib, actif, actif.energies);
+        const bancPeutFrapper = partie.joueurs[j].banc.some((x) => x.uid === action.cible && meilleurDegats(bib, x, x.energies) > 0);
+        if (meilleurActif <= 0 && bancPeutFrapper) score += 180;
+      }
+      if (action.type === 'talent' && talentPayant(partie, bib, action) && score < 18) continue;
+      if (meilleur === null || score > meilleur.score) meilleur = { action, score };
+    }
+
+    if (meilleur && meilleur.action.type !== 'passer' && meilleur.score > 0) return meilleur.action;
+    const replis = de('repli');
+    if (replis.length && J.actif) {
+      const peutFrapper = replis.find((r) => {
+        const x = J.banc.find((p) => p.uid === r.cible)!;
+        return bib.personnages.get(x.id)!.attaques.some((a) => fait(a) && peutPayer(x.energies, a.cout));
+      });
+      const attaques = de('attaquer');
+      const meilleureAttaque = attaques.map((a) => ({ a, gain: gain(partie, bib, a) })).sort((a, b) => b.gain - a.gain)[0];
+      if ((!meilleureAttaque || meilleureAttaque.gain <= 0) && peutFrapper
+        && (!meilleur || meilleur.score <= 0 || meilleur.action.type === 'passer')) return peutFrapper;
+    }
+    return de('passer')[0] ?? meilleur?.action ?? actions[0]!;
+  };
+}
+
+function personnage(joueur: Partie['joueurs'][number], uid: string): PersoEnJeu {
+  return joueur.actif?.uid === uid ? joueur.actif : joueur.banc.find((x) => x.uid === uid)!;
+}
+
+function pvRestants(bib: Bibliotheque, x: PersoEnJeu): number {
+  return (bib.personnages.get(x.id)?.pv ?? 0) - x.degats;
+}
+
+function meilleurDegats(bib: Bibliotheque, x: PersoEnJeu, energies: ElementId[]): number {
+  return Math.max(0, ...((bib.personnages.get(x.id)?.attaques ?? [])
+    .filter((a) => fait(a) && peutPayer(energies, a.cout)).map((a) => valeurDegats(a.degats))));
+}
+
+function evaluation(partie: Partie, bib: Bibliotheque, joueur: 0 | 1): number {
+  return scoreJoueur(partie, bib, joueur) - scoreJoueur(partie, bib, autre(joueur));
+}
+
+function scoreJoueur(partie: Partie, bib: Bibliotheque, j: 0 | 1): number {
+  const J = partie.joueurs[j];
+  let score = J.points * 1800;
+  const enJeu = [...(J.actif ? [J.actif] : []), ...J.banc];
+  for (const x of enJeu) {
+    const fiche = bib.personnages.get(x.id);
+    if (!fiche) continue;
+    const restant = Math.max(0, fiche.pv - x.degats);
+    score += restant * (x === J.actif ? 0.72 : 0.48) + x.energies.length * 9;
+    score += meilleurDegats(bib, x, x.energies) * (x === J.actif ? 0.85 : 0.28);
+    if (x.etats.includes('brulure')) score -= 13;
+    if (x.etats.includes('gel')) score -= 12;
+    if (x.etats.includes('etourdi')) score -= 8;
+    if (x.etats.includes('malediction')) score -= 6;
+  }
+  for (const uid of J.main) {
+    const id = partie.cartes[uid]!;
+    const fiche = bib.personnages.get(id);
+    if (fiche) score += fiche.type === 'eveille' ? 7 : 11;
+    else if (bib.soutiens.has(id)) score += 4;
+  }
+  const ennemi = partie.joueurs[autre(j)];
+  if (J.actif && ennemi.actif) {
+    const menace = meilleurDegats(bib, ennemi.actif, ennemi.actif.energies);
+    const restant = pvRestants(bib, J.actif);
+    if (menace >= restant && restant > 0) score -= 95;
+    else if (menace >= restant * 0.7) score -= 38;
+  }
+  // Une Base de la même série que l'Éveillé en main prépare une Relève au tour suivant.
+  for (const uid of J.main) {
+    const ev = bib.personnages.get(partie.cartes[uid]!);
+    if (!ev || ev.type !== 'eveille') continue;
+    if (enJeu.some((x) => {
+      const base = bib.personnages.get(x.id);
+      return base?.serie === ev.serie && base.type !== 'eveille' && x.entreAuTour < partie.tour;
+    })) score += 14;
+  }
+  return score;
+}
+
+function talentPayant(partie: Partie, bib: Bibliotheque, action: Action): boolean {
+  if (action.type !== 'talent') return false;
+  const x = partie.joueurs[action.joueur].actif?.uid === action.source
+    ? partie.joueurs[action.joueur].actif
+    : partie.joueurs[action.joueur].banc.find((p) => p.uid === action.source);
+  return !!x && !!bib.personnages.get(x.id)?.talent?.effets?.some((e) => e.type === 'activable' && !!e.cout);
+}

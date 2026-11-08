@@ -136,7 +136,7 @@ export function creerHub(o: OptionsHub): HTMLElement {
   nav.setAttribute('aria-label', 'Navigation principale');
   const accueil = lien('#/', '', 'Accueil');
   accueil.setAttribute('aria-current', 'page');
-  nav.append(accueil, lien(`#/collection`, '', 'Collection'), lien(`#/boutique`, '', 'Boutique'), lien('#/draft', '', 'Draft'), lien('#/classement', '', 'Classement'), lien('#/quetes', '', o.quetes.aReclamer > 0 ? `Quêtes (${o.quetes.aReclamer})` : 'Quêtes'), lien('#/historique', '', 'Historique'));
+  nav.append(accueil, lien(`#/collection`, '', 'Collection'), lien(`#/boutique`, '', 'Boutique'), lien('#/combat', '', 'Combat'), lien('#/draft', '', 'Draft'), lien('#/classement', '', 'Classement'), lien('#/quetes', '', o.quetes.aReclamer > 0 ? `Quêtes (${o.quetes.aReclamer})` : 'Quêtes'), lien('#/historique', '', 'Historique'));
   const soldes = el('div', 'acc-soldes');
   const puceSceaux = el('div', 'acc-puce');
   puceSceaux.append(icone('sceau'), el('strong', undefined, String(s.sceaux)), el('span', 'bureau-seul', `/ ${PLAFOND_SCEAUX} sceaux`), el('span', 'mobile-seul', s.sceaux > 1 ? 'sceaux' : 'sceau'));
@@ -407,6 +407,7 @@ export function creerHub(o: OptionsHub): HTMLElement {
   fermerMenu.type = 'button';
   fermerMenu.addEventListener('click', () => menuPlus.close());
   menuPlus.append(
+    lien('#/combat', 'acc-menu-ligne', '⚔', 'Combat contre l’IA'),
     lien('#/quetes', 'acc-menu-ligne', icone('quetes', 20), 'Quêtes'),
     lien('#/classement', 'acc-menu-ligne', icone('classement', 20), 'Classement du draft'),
     lien('#/historique', 'acc-menu-ligne', icone('historique', 20), 'Historique'),

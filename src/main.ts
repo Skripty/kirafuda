@@ -3,6 +3,7 @@ import populariteJson from './data/popularite.json';
 import populariteBaseJson from './data/popularite-base.json';
 import themesDraft from './data/themes-draft.json';
 import quetesJson from './data/quetes.json';
+import soutiensJson from './data/soutiens.json';
 import { catalogue, erreursCatalogue } from './catalogue';
 import type { Ouverture, Popularite, Sauvegarde } from './core/types';
 import {
@@ -15,6 +16,8 @@ import { creerDraftEnLigne, type DraftEnLigne, type ServeurClassement } from './
 import { creerClassement } from './ui/classement';
 import { semaineDraft } from './core/classement';
 import { indexer } from './core/extension';
+import { fusionner } from './core/catalogue';
+import { bibliotheque, type CarteSoutien } from './core/combat/etat';
 import { installerDialoguesCompte } from './ui/compte';
 import {
   appliquerConnexion, appliquerEvenements, appliquerLancements, evenementsOuverture, reclamer, validerConfigQuetes, vueLancements, vueQuetes,
@@ -35,6 +38,7 @@ import { lundiSemaineIso, regulariserDraft, type Theme } from './core/draft';
 import { lireFichierPopularite, versPopularite, type BasePopularite } from './core/popularite';
 import { lancerOuverture } from './ui/ouverture/scene';
 import { marquerVue, ouvertureNonVue } from './core/revelation';
+import { creerEcranCombat } from './ui/combat';
 
 const basePopularite = populariteBaseJson as BasePopularite;
 /** Popularité de la semaine (base + ajustement) ; un ancien fichier est migré en mémoire (base + 0). Les erreurs sont signalées au démarrage. */
@@ -49,6 +53,9 @@ const app = document.querySelector<HTMLDivElement>('#app')!;
 const sourcesDraft = (semaine: string): ExtensionSortie[] => disponiblesPourDraft(catalogue, lundiSemaineIso(semaine));
 
 /** Toutes les cartes du jeu (classement : équipes des autres joueurs, semaines passées). */
+const extensionsCombat = toutesLesExtensions(catalogue);
+const personnagesCombat = fusionner(toutesLesExtensions(catalogue)).personnages;
+const bibliothequeCombat = bibliotheque(personnagesCombat, soutiensJson.soutiens as unknown as CarteSoutien[]);
 const indexToutes = toutesLesExtensions(catalogue).map((extension) => ({ extension, index: indexer(extension) }));
 const carteDe = (id: string) => {
   for (const { extension, index } of indexToutes) { const carte = index.carte(id); if (carte) return { carte, extension }; }
@@ -202,6 +209,8 @@ function demarrer(): void {
     } else if (ecran === 'classement') {
       app.replaceChildren(creerClassement({ serveur: serveurClassement, compte, semaine: route.split('/')[1] ?? null, maintenant: new Date(),
         carteDe, recompenses: recompensesDraft }));
+    } else if (ecran === 'combat') {
+      app.replaceChildren(creerEcranCombat({ sauvegarde, bib: bibliothequeCombat, extensions: extensionsCombat, enregistrer }));
     } else if (ecran === 'boutique') {
       app.replaceChildren(creerBoutique({ sauvegarde, extension: courante.extension, popularite: pop, enregistrer }));
     } else if (ecran === 'collection') {
