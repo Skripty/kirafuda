@@ -1,5 +1,5 @@
 import type { EffetAttaque, EffetTalent } from './combat/effets';
-import type { Partie } from './combat/etat';
+import type { Deck, Partie } from './combat/etat';
 
 // Modèle de données de Kirafuda (version 1).
 // Les noms suivent le vocabulaire du GDD, en français.
@@ -204,6 +204,8 @@ export interface SessionCombat {
   defiId: string;
   partie: Partie;
   journalIA: string[];
+  /** Deck choisi au lancement (les anciennes parties n'ont pas ce champ). */
+  deckJoueur?: Deck;
 }
 
 export interface ProgressionCombat {
@@ -211,8 +213,18 @@ export interface ProgressionCombat {
   enCours: SessionCombat | null;
 }
 
+/** Deck construit par le joueur ; les cartes sont des ids de personnages ou de cartes Soutien. */
+export interface DeckEnregistre {
+  id: string;
+  nom: string;
+  /** Id de la carte illustrée en couverture. */
+  couverture: string;
+  cartes: string[];
+  elements: ElementId[];
+}
+
 export interface Sauvegarde {
-  version: 9;
+  version: 10;
   sceaux: number;
   derniereRecompenseQuotidienne: string | null; // date ISO (jour)
   /** Clé : id de carte (« lan-041 ») → nombre d'exemplaires. */
@@ -224,4 +236,7 @@ export interface Sauvegarde {
   quetes: EtatQuetes;
   /** Progression des défis contre l'IA et partie à reprendre, le cas échéant. */
   combat: ProgressionCombat;
+  /** Decks construits par le joueur (10 maximum) et dernier deck choisi. */
+  decks: DeckEnregistre[];
+  deckSelectionne: string | null;
 }

@@ -39,6 +39,7 @@ import { lireFichierPopularite, versPopularite, type BasePopularite } from './co
 import { lancerOuverture } from './ui/ouverture/scene';
 import { marquerVue, ouvertureNonVue } from './core/revelation';
 import { creerEcranCombat } from './ui/combat';
+import { creerEcranDecks } from './ui/decks';
 
 const basePopularite = populariteBaseJson as BasePopularite;
 /** Popularité de la semaine (base + ajustement) ; un ancien fichier est migré en mémoire (base + 0). Les erreurs sont signalées au démarrage. */
@@ -211,6 +212,8 @@ function demarrer(): void {
         carteDe, recompenses: recompensesDraft }));
     } else if (ecran === 'combat') {
       app.replaceChildren(creerEcranCombat({ sauvegarde, bib: bibliothequeCombat, extensions: extensionsCombat, enregistrer }));
+    } else if (ecran === 'decks') {
+      app.replaceChildren(creerEcranDecks({ sauvegarde, bib: bibliothequeCombat, extensions: extensionsCombat, enregistrer }));
     } else if (ecran === 'boutique') {
       app.replaceChildren(creerBoutique({ sauvegarde, extension: courante.extension, popularite: pop, enregistrer }));
     } else if (ecran === 'collection') {

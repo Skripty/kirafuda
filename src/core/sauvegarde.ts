@@ -8,12 +8,12 @@ import { DEFIS_COMBAT } from './combat/defis';
 import { indexer } from './extension';
 import { etatQuetesInitial, lireEtatQuetes } from './quetes';
 import type { Partie } from './combat/etat';
-import type { CarteTiree, DraftJoue, Extension, FinitionId, Ouverture, ProgressionCombat, Sauvegarde, SessionCombat } from './types';
+import type { CarteTiree, DeckEnregistre, DraftJoue, ElementId, Extension, FinitionId, Ouverture, ProgressionCombat, Sauvegarde, SessionCombat } from './types';
 
 export const CLE_SAUVEGARDE = 'kirafuda:sauvegarde';
 /** Copie d'une sauvegarde illisible, mise de côté au lieu d'être écrasée. */
 export const CLE_SAUVEGARDE_ILLISIBLE = 'kirafuda:sauvegarde-illisible';
-export const VERSION_SAUVEGARDE = 9;
+export const VERSION_SAUVEGARDE = 10;
 
 /** Le sous-ensemble de `Storage` dont on a besoin. */
 export interface Stockage {
@@ -36,7 +36,7 @@ export type ResultatValidation =
 
 export function sauvegardeParDefaut(): Sauvegarde {
   return {
-    version: 9,
+    version: 10,
     sceaux: 0,
     derniereRecompenseQuotidienne: null,
     collection: {},
@@ -45,6 +45,8 @@ export function sauvegardeParDefaut(): Sauvegarde {
     dernierDraft: null,
     quetes: etatQuetesInitial(),
     combat: { defisGagnes: [], enCours: null },
+    decks: [],
+    deckSelectionne: null,
   };
 }
 
@@ -73,6 +75,8 @@ export const MIGRATIONS: Record<number, Migration> = {
   7: (d) => fusionnerVaguesLancement(d),
   // Version 9 : progression des défis et partie de combat à reprendre.
   8: (d) => ({ ...d, combat: { defisGagnes: [], enCours: null } }),
+  // Version 10 : decks du joueur et sélection du dernier deck utilisé.
+  9: (d) => ({ ...d, decks: [], deckSelectionne: null }),
 };
 
 /** Anciennes extensions devenues des vagues : id → extension qui les accueille, et leur ancien booster. */
@@ -220,6 +224,8 @@ const estObjet = (x: unknown): x is Record<string, unknown> =>
 const estEntier = (x: unknown, min: number): x is number =>
   typeof x === 'number' && Number.isInteger(x) && x >= min;
 const estFinition = (x: unknown): x is FinitionId => typeof x === 'string' && Object.hasOwn(FINITIONS, x);
+const ELEMENT_IDS: ElementId[] = ['feu', 'eau', 'glace', 'foudre', 'vent', 'terre', 'lumiere', 'tenebres', 'neutre'];
+const estElement = (x: unknown): x is ElementId => typeof x === 'string' && ELEMENT_IDS.includes(x as ElementId);
 
 function estJourIso(x: unknown): x is string {
   if (typeof x !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(x)) return false;
@@ -244,7 +250,15 @@ function lireProgressionCombat(x: unknown): { progression: ProgressionCombat } |
       || !partieValide(session.partie)) {
       erreurs.push('Combat : la partie à reprendre est invalide.');
     } else {
-      enCours = { defiId: session.defiId, partie: session.partie as unknown as Partie, journalIA: [...session.journalIA].slice(-12) };
+      let deckJoueur: SessionCombat['deckJoueur'];
+      if (session.deckJoueur !== undefined) {
+        if (!estObjet(session.deckJoueur) || typeof session.deckJoueur.nom !== 'string'
+          || !Array.isArray(session.deckJoueur.cartes) || !session.deckJoueur.cartes.every((id) => typeof id === 'string')
+          || !Array.isArray(session.deckJoueur.elements) || !session.deckJoueur.elements.every(estElement)) {
+          erreurs.push('Combat : deck choisi dans la partie à reprendre invalide.');
+        } else deckJoueur = { nom: session.deckJoueur.nom, cartes: [...session.deckJoueur.cartes], elements: [...session.deckJoueur.elements] };
+      }
+      enCours = { defiId: session.defiId, partie: session.partie as unknown as Partie, journalIA: [...session.journalIA].slice(-12), ...(deckJoueur ? { deckJoueur } : {}) };
     }
   }
   return erreurs.length ? { erreurs } : { progression: { defisGagnes, enCours } };
@@ -391,11 +405,13 @@ function lire(d: Record<string, unknown>, contexte: ContexteValidation): { sauve
   if (Array.isArray(quetes)) erreurs.push(...quetes);
   const combat = lireProgressionCombat(d.combat);
   if ('erreurs' in combat) erreurs.push(...combat.erreurs);
+  const decks = lireDecks(d.decks, erreurs);
+  const deckSelectionne = lireDeckSelectionne(d.deckSelectionne, d.decks, erreurs);
 
   if (erreurs.length > 0 || Array.isArray(quetes) || 'erreurs' in combat) return { erreurs };
   return {
     sauvegarde: {
-      version: 9,
+      version: 10,
       sceaux: d.sceaux as number,
       derniereRecompenseQuotidienne: jour as string | null,
       collection,
@@ -404,8 +420,45 @@ function lire(d: Record<string, unknown>, contexte: ContexteValidation): { sauve
       dernierDraft,
       quetes,
       combat: combat.progression,
+      decks,
+      deckSelectionne,
     },
   };
+}
+
+function lireDecks(x: unknown, erreurs: string[]): DeckEnregistre[] {
+  if (!Array.isArray(x)) { erreurs.push('Decks : une liste est attendue.'); return []; }
+  if (x.length > 10) erreurs.push('Decks : 10 decks maximum.');
+  const ids = new Set<string>();
+  const decks: DeckEnregistre[] = [];
+  x.forEach((item: unknown, i) => {
+    const ref = `Deck ${i + 1}`;
+    if (!estObjet(item) || typeof item.id !== 'string' || !item.id || typeof item.nom !== 'string' || !item.nom.trim()
+      || typeof item.couverture !== 'string' || !Array.isArray(item.cartes) || !item.cartes.every((id) => typeof id === 'string')
+      || !Array.isArray(item.elements) || !item.elements.every(estElement)) {
+      erreurs.push(`${ref} : id, nom, couverture, cartes et éléments invalides.`); return;
+    }
+    if (ids.has(item.id)) erreurs.push(`${ref} : identifiant de deck en double.`);
+    ids.add(item.id);
+    if (item.cartes.length > 20) erreurs.push(`${ref} : 20 cartes maximum.`);
+    const compte = new Map<string, number>();
+    for (const id of item.cartes as string[]) compte.set(id, (compte.get(id) ?? 0) + 1);
+    if ([...compte.values()].some((n) => n > 2)) erreurs.push(`${ref} : deux exemplaires maximum par personnage ou carte Soutien.`);
+    if (item.elements.length > 3 || new Set(item.elements).size !== item.elements.length || item.elements.includes('neutre')) {
+      erreurs.push(`${ref} : de 1 à 3 éléments d'énergie différents (hors Neutre) attendus.`);
+    }
+    decks.push({ id: item.id, nom: item.nom.trim().slice(0, 40), couverture: item.couverture, cartes: [...item.cartes] as string[], elements: [...item.elements] as ElementId[] });
+  });
+  return decks;
+}
+
+function lireDeckSelectionne(x: unknown, decks: unknown, erreurs: string[]): string | null {
+  if (x === null) return null;
+  if (typeof x !== 'string' || !Array.isArray(decks) || !decks.some((d) => estObjet(d) && d.id === x)) {
+    erreurs.push('Deck sélectionné : identifiant inconnu (ou null attendu).');
+    return null;
+  }
+  return x;
 }
 
 /**

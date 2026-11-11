@@ -28,6 +28,11 @@
   background: var(--surface-panneau);
   color: var(--texte-doux);
 }
+.combat-choix-deck { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(180px, .75fr) auto; align-items: center; gap: 12px; margin: 0 0 20px; padding: 15px 18px; border: 1px solid var(--bordure); border-radius: var(--rayon-panneau); background: var(--surface-panneau); }
+.combat-choix-deck > div { display: grid; gap: 4px; }
+.combat-choix-deck > div strong { color: var(--texte); font-size: 13px; }
+.combat-choix-deck > div span { color: var(--texte-secondaire); font-size: 11px; }
+.combat-select-deck { min-height: 42px; padding: 8px 10px; border: 1px solid var(--bordure-forte); border-radius: 10px; background: var(--surface); color: var(--texte); font: inherit; font-size: 12px; }
 .combat-note strong { color: var(--texte); }
 .combat-reprise { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 0 0 16px; padding: 14px 16px; border: 1px solid var(--bordure-forte); border-radius: var(--rayon); background: var(--surface-panneau); color: var(--texte-clair); }
 .combat-reprise .combat-bouton-principal { width: auto; margin: 0; }
@@ -210,6 +215,7 @@
   .combat-defis { grid-template-columns: 1fr; gap: 9px; }
   .combat-defi { min-height: 190px; padding: 16px; }
   .combat-note { align-items: flex-start; flex-direction: column; }
+  .combat-choix-deck { grid-template-columns: minmax(0, 1fr); padding: 12px; }
   .combat-reprise { align-items: stretch; flex-direction: column; }
   .combat-reprise .combat-bouton-principal { width: 100%; }
   .combat-barre { flex-wrap: wrap; gap: 8px; }

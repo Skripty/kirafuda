@@ -1,12 +1,13 @@
 import './combat.css';
 import type { Bibliotheque, Deck, Partie, PersoEnJeu } from '../core/combat/etat';
-import { DEFIS_COMBAT, SERIE_DECK_DEPART } from '../core/combat/defis';
+import { DECKS_DEPART, DEFIS_COMBAT } from '../core/combat/defis';
 import { deckStandard } from '../core/combat/decks';
+import { exemplairesParPersonnage, validerDeckPossede } from '../core/combat/decks-joueur';
 import { iaNormale } from '../core/combat/ia';
 import { actionsLegales, appliquer, creerPartie, type Action, type Evenement } from '../core/combat/moteur';
 import { rngAGraine, rngSecurise } from '../core/rng';
 import { ELEMENTS } from '../core/regles';
-import type { Extension, Personnage, ProgressionCombat, Sauvegarde } from '../core/types';
+import type { DeckEnregistre, Extension, Personnage, ProgressionCombat, Sauvegarde } from '../core/types';
 
 const BASE = import.meta.env.BASE_URL;
 const CODE: Record<string, string> = { feu: 'f', eau: 'e', glace: 'g', foudre: 'z', vent: 'v', terre: 't', lumiere: 'l', tenebres: 'n', neutre: 'q' };
@@ -61,13 +62,32 @@ function coutManquant(energies: string[], cout: string[]): string[] {
 function texteChoix(action: Action, bib: Bibliotheque, partie: Partie): string {
   if (!('choix' in action)) return '';
   const choix = action.choix;
+  const nomCarte = (uid: string): string => bib.personnages.get(partie.cartes[uid]!)?.nom ?? bib.soutiens.get(partie.cartes[uid]!)?.nom ?? 'une carte';
+  const enJeu = partie.joueurs.flatMap((j) => [...(j.actif ? [j.actif] : []), ...j.banc]);
+  const morceaux: string[] = [];
   if (choix.cible) {
-    const perso = [...partie.joueurs.flatMap((j) => [...(j.actif ? [j.actif] : []), ...j.banc])].find((p) => p.uid === choix.cible);
-    if (perso) return ` · ${bib.personnages.get(perso.id)?.nom ?? 'personnage'}`;
+    const perso = enJeu.find((p) => p.uid === choix.cible);
+    if (perso) morceaux.push(`sur ${bib.personnages.get(perso.id)?.nom ?? 'un personnage'}`);
   }
-  if (choix.defausse) return ` · défausser ${bib.personnages.get(partie.cartes[choix.defausse]!)?.nom ?? bib.soutiens.get(partie.cartes[choix.defausse]!)?.nom ?? 'une carte'}`;
-  if (choix.garder !== undefined) return ` · garder la carte ${choix.garder + 1}`;
-  return '';
+  if (choix.carte) morceaux.push(nomCarte(choix.carte));
+  if (choix.defausse) morceaux.push(`défausser ${nomCarte(choix.defausse)}`);
+  if (choix.echange) {
+    const perso = enJeu.find((p) => p.uid === choix.echange);
+    morceaux.push(`puis échanger avec ${perso ? bib.personnages.get(perso.id)?.nom : 'le banc'}`);
+  } else if (action.type === 'attaquer' && bib.personnages.get(partie.joueurs[action.joueur].actif?.id ?? '')?.attaques[action.attaque]?.effets?.some((e) => e.type === 'echange-soi')) {
+    morceaux.push('sans échanger');
+  }
+  if (choix.copie !== undefined) {
+    const adverse = partie.joueurs[action.joueur === 0 ? 1 : 0].actif;
+    morceaux.push(`copier ${adverse ? bib.personnages.get(adverse.id)?.attaques[choix.copie]?.nom ?? 'une attaque' : 'une attaque'}`);
+  }
+  if (choix.garder !== undefined) {
+    const uid = partie.joueurs[action.joueur].deck[choix.garder];
+    morceaux.push(`garder ${uid ? nomCarte(uid) : `la carte ${choix.garder + 1}`}`);
+  }
+  if (choix.dessous !== undefined) morceaux.push(choix.dessous ? 'la mettre sous le deck' : 'la laisser dessus');
+  if (choix.ordre) morceaux.push(`ordre ${choix.ordre.map((i) => { const uid = partie.joueurs[action.joueur].deck[i]; return uid ? nomCarte(uid) : String(i + 1); }).join(' › ')}`);
+  return morceaux.length ? ` · ${morceaux.join(' · ')}` : '';
 }
 
 export function creerEcranCombat(options: OptionsCombat): HTMLElement {
@@ -81,6 +101,14 @@ export function creerEcranCombat(options: OptionsCombat): HTMLElement {
   let iaEnCours = false;
   const root = el('main', 'combat-page');
   const choisirIA = iaNormale();
+  const possedeesParPersonnage = exemplairesParPersonnage(sauvegarde, options.extensions);
+  const possedees = new Set<string>([
+    ...[...options.bib.personnages.keys()].filter((id) => (possedeesParPersonnage.get(id) ?? 0) > 0),
+    ...[...options.bib.soutiens.keys()].filter((id) => (sauvegarde.collection[id] ?? 0) > 0),
+  ]);
+  const decksUtilisables = (): DeckEnregistre[] => sauvegarde.decks.filter((d) => validerDeckPossede(d, options.bib, possedees).length === 0);
+  let deckChoisi = sauvegarde.deckSelectionne && decksUtilisables().some((d) => d.id === sauvegarde.deckSelectionne)
+    ? `deck:${sauvegarde.deckSelectionne}` : `depart:${DECKS_DEPART[0]!.id}`;
   const cartesBase = new Map<string, string>();
   for (const extension of options.extensions) {
     for (const c of extension.cartes) if (!c.secrete && !cartesBase.has(c.personnage)) cartesBase.set(c.personnage, c.id);
@@ -175,10 +203,10 @@ export function creerEcranCombat(options: OptionsCombat): HTMLElement {
     const enTete = el('header', 'combat-entete');
     enTete.append(bouton('‹ Accueil', 'combat-bouton-retour', () => { window.location.hash = '#/'; }),
       el('p', 'combat-surtitre', 'COMBAT • DÉFIS'), el('h1', undefined, 'Combat contre l’IA'));
-    enTete.append(el('p', 'combat-intro', 'Choisis un adversaire. Ton deck de départ est prêt et ne dépend pas de ta collection.'));
+    enTete.append(el('p', 'combat-intro', 'Choisis ton deck puis un adversaire. Les decks de départ restent jouables sans posséder leurs cartes.'));
     const liste = el('section', 'combat-defis');
     liste.setAttribute('aria-label', 'Défis disponibles');
-    root.append(enTete);
+    root.append(enTete, selecteurDeck());
     const partieEnCours = session();
     if (partieEnCours) {
       const defiEnCours = DEFIS_COMBAT.find((d) => d.id === partieEnCours.defiId);
@@ -203,18 +231,48 @@ export function creerEcranCombat(options: OptionsCombat): HTMLElement {
       actionDefi.disabled = !!partieEnCours && !partieEnCoursIci;
       liste.append(carte);
     }
-    const note = el('aside', 'combat-note');
-    note.append(el('strong', undefined, 'Deck de départ imposé'), el('span', undefined, `${SERIE_DECK_DEPART} · 20 cartes · identique pour tous les défis`));
-    root.append(note, liste);
+    root.append(liste);
+  }
+
+  function selecteurDeck(): HTMLElement {
+    const cadre = el('section', 'combat-choix-deck');
+    const texte = el('div');
+    texte.append(el('strong', undefined, 'Deck utilisé'), el('span', undefined, 'Sélectionne le deck joueur avant de lancer un défi.'));
+    const select = el('select', 'combat-select-deck');
+    for (const d of DECKS_DEPART) { const depart = el('option', undefined, d.nom); depart.value = `depart:${d.id}`; select.append(depart); }
+    for (const deck of decksUtilisables()) {
+      const option = el('option', undefined, `${deck.nom} · ${deck.cartes.length} cartes`); option.value = `deck:${deck.id}`; select.append(option);
+    }
+    if (![...select.options].some((o) => o.value === deckChoisi)) deckChoisi = `depart:${DECKS_DEPART[0]!.id}`;
+    select.value = deckChoisi;
+    select.addEventListener('change', () => {
+      deckChoisi = select.value;
+      const id = deckChoisi.startsWith('deck:') ? deckChoisi.slice(5) : null;
+      const resultat = options.enregistrer({ ...sauvegarde, deckSelectionne: id });
+      if (resultat) sauvegarde = resultat;
+      message = resultat ? null : 'La sélection du deck n’a pas été sauvegardée.';
+      afficher();
+    });
+    cadre.append(texte, select, bouton('Gérer mes decks', 'combat-bouton-secondaire', () => { window.location.hash = '#/decks'; }));
+    return cadre;
+  }
+
+  function deckSelectionne(): Deck | null {
+    if (deckChoisi.startsWith('deck:')) {
+      const enregistre = decksUtilisables().find((d) => d.id === deckChoisi.slice(5));
+      return enregistre ? { nom: enregistre.nom, cartes: [...enregistre.cartes], elements: [...enregistre.elements] } : null;
+    }
+    const depart = DECKS_DEPART.find((d) => `depart:${d.id}` === deckChoisi) ?? DECKS_DEPART[0]!;
+    return { nom: depart.nom, cartes: [...depart.cartes], elements: [...depart.elements] };
   }
 
   function lancerDefi(defiId: string): void {
     const defi = DEFIS_COMBAT.find((d) => d.id === defiId);
     if (!defi) return;
-    const deckJoueur = deckStandard(SERIE_DECK_DEPART, options.bib, rngAGraine(`deck-depart:${SERIE_DECK_DEPART}`));
+    const deckJoueur = deckSelectionne();
     const deckIA = deckStandard(defi.serie, options.bib, rngAGraine(`deck-defi:${defi.id}`));
-    if (!deckJoueur || !deckIA) { message = `Le deck du défi « ${defi.nom} » ne peut pas être créé.`; afficher(); return; }
-    const deckDepart: Deck = { ...deckJoueur, nom: 'Ton deck de départ' };
+    if (!deckJoueur || !deckIA) { message = `Le deck choisi ou le deck du défi « ${defi.nom} » ne peut pas être créé.`; afficher(); return; }
+    const deckDepart: Deck = { ...deckJoueur };
     const adversaire: Deck = { ...deckIA, nom: `IA · ${defi.nom}` };
     const partie = creerPartie(options.bib, [deckDepart, adversaire], nouvelleGraine());
     choixActif = null;
@@ -223,7 +281,7 @@ export function creerEcranCombat(options: OptionsCombat): HTMLElement {
     afficherMenu = false;
     dernierJournal = partie.journal;
     message = null;
-    if (enregistrerCombat({ ...sauvegarde.combat, enCours: { defiId, partie: partie.partie, journalIA: [] } })) afficher();
+    if (enregistrerCombat({ ...sauvegarde.combat, enCours: { defiId, partie: partie.partie, journalIA: [], deckJoueur: deckDepart } })) afficher();
   }
 
   function afficherPartie(courante: NonNullable<ProgressionCombat['enCours']>): void {
@@ -474,6 +532,16 @@ export function creerEcranCombat(options: OptionsCombat): HTMLElement {
     const panneau = el('section', 'combat-actions');
     panneau.append(el('h2', undefined, partie.joueurActif === 0 ? 'À toi de jouer' : 'Prépare ton équipe'));
     const zone = el('div', 'combat-actions-grille');
+    const nouveaux = actions.filter((a): a is Extract<Action, { type: 'nouvel-actif' }> => a.type === 'nouvel-actif');
+    if (nouveaux.length) {
+      panneau.querySelector('h2')!.textContent = 'Choisis ton nouvel actif';
+      panneau.append(el('p', 'combat-guide-energie', 'Ton actif a quitté le combat : choisis le personnage du banc qui le remplace.'));
+      for (const action of nouveaux) {
+        const perso = joueur.banc.find((x) => x.uid === action.cible);
+        const fiche = perso && options.bib.personnages.get(perso.id);
+        zone.append(bouton(`${fiche?.nom ?? 'Personnage'} · ${fiche && perso ? `${fiche.pv - perso.degats} PV` : ''}`, 'combat-action-attaque', () => faireAction(partie, action)));
+      }
+    }
     const poser = actions.filter((a): a is Extract<Action, { type: 'poser' }> => a.type === 'poser');
     for (const action of poser) zone.append(bouton(`Poser au banc · ${options.bib.personnages.get(partie.cartes[action.carte]!)?.nom ?? 'Base'}`, 'combat-action-secondaire', () => faireAction(partie, action)));
     const releves = actions.filter((a): a is Extract<Action, { type: 'releve' }> => a.type === 'releve');

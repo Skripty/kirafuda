@@ -35,8 +35,10 @@ class StockageMemoire implements Stockage {
 }
 
 const exemple = (): Sauvegarde => ({
-  version: 9,
+  version: 10,
   combat: { defisGagnes: [], enCours: null },
+  decks: [],
+  deckSelectionne: null,
   quetes: {
     ...etatQuetesInitial(), jour: '2026-11-05', progresJour: { 'ouvrir-2': 1 }, cumuls: { 'booster-ouvert': 1, 'carte-obtenue': 5 },
     debutantReclamees: ['premier-booster'], semaine: '2026-11-02', progresSemaine: 1,
@@ -71,7 +73,7 @@ describe('valeurs par défaut et lecture', () => {
   it('stockage vide : sauvegarde par défaut, sans avertissement', () => {
     const { sauvegarde, avertissement } = chargerSauvegarde(new StockageMemoire());
     expect(sauvegarde).toEqual(sauvegardeParDefaut());
-    expect(sauvegarde).toEqual({ version: 9, sceaux: 0, derniereRecompenseQuotidienne: null, collection: {}, points: {}, historique: [], dernierDraft: null, quetes: etatQuetesInitial(), combat: { defisGagnes: [], enCours: null } });
+    expect(sauvegarde).toEqual({ version: 10, sceaux: 0, derniereRecompenseQuotidienne: null, collection: {}, points: {}, historique: [], dernierDraft: null, quetes: etatQuetesInitial(), combat: { defisGagnes: [], enCours: null }, decks: [], deckSelectionne: null });
     expect(avertissement).toBeNull();
   });
 
@@ -85,7 +87,7 @@ describe('valeurs par défaut et lecture', () => {
     const v8 = { ...exemple(), version: 8 } as Record<string, unknown>;
     delete v8.combat;
     const r = validerSauvegarde(v8);
-    expect(r).toMatchObject({ ok: true, migreeDepuis: 8, sauvegarde: { version: 9, combat: { defisGagnes: [], enCours: null }, sceaux: 7 } });
+    expect(r).toMatchObject({ ok: true, migreeDepuis: 8, sauvegarde: { version: 10, combat: { defisGagnes: [], enCours: null }, decks: [], deckSelectionne: null, sceaux: 7 } });
   });
 
   it('sauvegarde puis relit une partie de défi en cours et ses messages IA', () => {
@@ -94,6 +96,18 @@ describe('valeurs par défaut et lecture', () => {
     const etat = { ...exemple(), combat: { defisGagnes: ['one-piece'], enCours: { defiId: 'demon-slayer', partie, journalIA: ['L’IA pose une Base.'] } } };
     const r = validerSauvegarde(etat);
     expect(r).toMatchObject({ ok: true, sauvegarde: { combat: { defisGagnes: ['one-piece'], enCours: { defiId: 'demon-slayer', journalIA: ['L’IA pose une Base.'] } } } });
+  });
+
+  it('sauvegarde les decks du joueur et leur sélection', () => {
+    const deck = { id: 'deck-1', nom: 'Mon deck', couverture: 'lan-001', cartes: ['per-001'], elements: ['feu'] as const };
+    const sauvegarde = { ...exemple(), decks: [deck], deckSelectionne: deck.id };
+    const resultat = validerSauvegarde(sauvegarde);
+    expect(resultat).toMatchObject({ ok: true, sauvegarde: { decks: [deck], deckSelectionne: 'deck-1' } });
+  });
+
+  it('refuse plus de deux copies d’une carte dans un deck sauvegardé', () => {
+    const deck = { id: 'deck-1', nom: 'Mon deck', couverture: '', cartes: ['per-001', 'per-001', 'per-001'], elements: ['feu'] };
+    expect(erreursDe({ ...exemple(), decks: [deck], deckSelectionne: 'deck-1' }).join(' ')).toMatch(/deux exemplaires maximum/);
   });
 
   it('stockage inaccessible : valeurs par défaut et avertissement', () => {
@@ -151,7 +165,7 @@ describe('écriture atomique', () => {
 
 describe('migration par numéro de version', () => {
   it('version actuelle : aucune migration', () => {
-    expect(migrer({ version: 9 })).toEqual({ donnees: { version: 9 }, depuis: null });
+    expect(migrer({ version: 10 })).toEqual({ donnees: { version: 10 }, depuis: null });
   });
 
   /** Ancienne sauvegarde (modèle « personnage + finition ») : Luffy (lan-001) a une carte de base ♦♦♦♦,
@@ -176,7 +190,7 @@ describe('migration par numéro de version', () => {
     const r = validerSauvegarde(ancienne(2), { extension });
     if (!r.ok) throw new Error(r.erreurs.join(' '));
     expect(r.migreeDepuis).toBe(2);
-    expect(r.sauvegarde.version).toBe(9);
+    expect(r.sauvegarde.version).toBe(10);
     expect(r.sauvegarde.collection).toEqual({ 'lan-001': 1, 'lan-125': 1 });
     // 2 communes (35) + 1 couronne (2500) sans carte équivalente → 2570 points, en plus des 10 gardés.
     expect(r.sauvegarde.points).toEqual({ lancement: 10 + 2 * 35 + 2500 });
@@ -190,26 +204,26 @@ describe('migration par numéro de version', () => {
     expect(r.sauvegarde.historique[0]!.cartes.map((c) => [c.carteId, c.finition])).toEqual([['lan-125', 'alternative'], ['lan-001', 'commune']]);
   });
 
-  it('version 1 → 9 : les migrations s’enchaînent (draft ajouté, collection convertie, quêtes et combat ajoutés)', () => {
+  it('version 1 → 10 : les migrations s’enchaînent (draft, collection, quêtes, combat et decks ajoutés)', () => {
     const r = validerSauvegarde(ancienne(1), { extension });
     if (!r.ok) throw new Error(r.erreurs.join(' '));
-    expect(r).toMatchObject({ migreeDepuis: 1, sauvegarde: { version: 9, dernierDraft: null, collection: { 'lan-001': 1, 'lan-125': 1 }, combat: { defisGagnes: [], enCours: null } } });
+    expect(r).toMatchObject({ migreeDepuis: 1, sauvegarde: { version: 10, dernierDraft: null, collection: { 'lan-001': 1, 'lan-125': 1 }, combat: { defisGagnes: [], enCours: null }, decks: [], deckSelectionne: null } });
   });
 
   it('sans les données de l’extension, la migration vers la version 3 est refusée avec un message', () => {
     expect(erreursDe(ancienne(2))[0]).toMatch(/impossible sans les données de l’extension/);
   });
 
-  it('une ancienne sauvegarde est réécrite en version 9 dès le chargement', () => {
+  it('une ancienne sauvegarde est réécrite en version 10 dès le chargement', () => {
     const st = new StockageMemoire();
     st.donnees.set(CLE_SAUVEGARDE, JSON.stringify(ancienne(2)));
     const c = chargerSauvegarde(st, { extension });
     expect(c.migreeDepuis).toBe(2);
-    expect(c.sauvegarde.version).toBe(9);
+    expect(c.sauvegarde.version).toBe(10);
     expect(JSON.parse(st.getItem(CLE_SAUVEGARDE)!).collection).toEqual({ 'lan-001': 1, 'lan-125': 1 });
   });
 
-  it('version 3 → 9 : rien n’est perdu, les compteurs de débutant reprennent ce qui a déjà été fait', () => {
+  it('version 3 → 10 : rien n’est perdu, les compteurs de débutant reprennent ce qui a déjà été fait', () => {
     const v3 = { ...exemple(), version: 3 } as Record<string, unknown>;
     delete v3.quetes;
     const r = validerSauvegarde(v3, { extension });
@@ -217,7 +231,7 @@ describe('migration par numéro de version', () => {
     expect(r.migreeDepuis).toBe(3);
     const { quetes, ...reste } = r.sauvegarde;
     const { quetes: _q, ...attendu } = exemple();
-    expect(reste).toEqual({ ...attendu, version: 9, combat: { defisGagnes: [], enCours: null } });
+    expect(reste).toEqual({ ...attendu, version: 10, combat: { defisGagnes: [], enCours: null }, decks: [], deckSelectionne: null });
     expect(quetes).toEqual({ ...etatQuetesInitial(), cumuls: { 'booster-ouvert': 1, 'carte-obtenue': 1, 'draft-joue': 1 } });
   });
 
@@ -327,7 +341,7 @@ describe('migration par numéro de version', () => {
   });
 
   it('refuse une sauvegarde d’une version plus récente ou sans version', () => {
-    expect(erreursDe({ ...exemple(), version: 10 })[0]).toMatch(/plus récente/);
+    expect(erreursDe({ ...exemple(), version: 11 })[0]).toMatch(/plus récente/);
     expect(erreursDe({ ...exemple(), version: undefined })[0]).toMatch(/version absent/);
     expect(erreursDe({ ...exemple(), version: '1' })[0]).toMatch(/version absent/);
   });
@@ -392,7 +406,7 @@ describe('export et import', () => {
   });
 
   it('import d’un JSON qui n’est pas une sauvegarde : refusé avec les erreurs', () => {
-    const r = importerSauvegarde(JSON.stringify({ version: 9, nom: 'autre chose' }));
+    const r = importerSauvegarde(JSON.stringify({ version: 10, nom: 'autre chose' }));
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.erreurs.length).toBeGreaterThan(1);
   });

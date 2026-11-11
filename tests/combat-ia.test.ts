@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { iaGloutonne, iaNormale } from '../src/core/combat/ia';
-import { DEFIS_COMBAT, SERIE_DECK_DEPART } from '../src/core/combat/defis';
+import { DECKS_DEPART, DEFIS_COMBAT } from '../src/core/combat/defis';
 import { deckStandard } from '../src/core/combat/decks';
 import { actionsLegales, appliquer, creerPartie, validerDeck } from '../src/core/combat/moteur';
 import { rngAGraine } from '../src/core/rng';
@@ -28,11 +28,16 @@ describe('IA de combat', () => {
     expect(iaGloutonne('test-talent')(p, bib).type).not.toBe('talent');
   });
 
-  it('génère six défis et des decks de 20 cartes valides, plus le deck de départ', () => {
+  it('génère six défis et des decks de 20 cartes valides ; deux decks de départ figés et valides', () => {
     expect(DEFIS_COMBAT.map((d) => d.serie)).toEqual([
       'Jujutsu Kaisen', 'One Piece', 'Demon Slayer', 'Solo Leveling', "L'Attaque des Titans", 'Chainsaw Man',
     ]);
-    for (const serie of [...DEFIS_COMBAT.map((d) => d.serie), SERIE_DECK_DEPART]) {
+    expect(DECKS_DEPART.map((d) => d.id)).toEqual(['the-boxer', 'spy-x-family']);
+    for (const d of DECKS_DEPART) {
+      expect(d.cartes).toHaveLength(20);
+      expect(validerDeck(d, bib)).toEqual([]);
+    }
+    for (const serie of DEFIS_COMBAT.map((d) => d.serie)) {
       const deck = deckStandard(serie, bib, rngAGraine(`validation:${serie}`));
       expect(deck?.cartes).toHaveLength(20);
       expect(validerDeck(deck!, bib)).toEqual([]);
@@ -51,7 +56,7 @@ describe('IA de combat', () => {
   });
 
   it('termine une partie complète contre une autre IA normale', () => {
-    const a = deckStandard(SERIE_DECK_DEPART, bib, rngAGraine('partie-complete-joueur'))!;
+    const a = DECKS_DEPART[0]!;
     const b = deckStandard('Demon Slayer', bib, rngAGraine('partie-complete-ia'))!;
     let p = creerPartie(bib, [a, b], 'partie-complete-ia-normale').partie;
     const ias = [iaNormale(), iaNormale()];

@@ -6965,7 +6965,13 @@ const cartes = [
     personnage: "ren-per-020",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 23
+      }
+    }
   },
   {
     id: "ren-021",
@@ -6973,7 +6979,13 @@ const cartes = [
     personnage: "ren-per-021",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 11
+      }
+    }
   },
   {
     id: "ren-022",
@@ -6981,7 +6993,13 @@ const cartes = [
     personnage: "ren-per-022",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 46
+      }
+    }
   },
   {
     id: "ren-023",
@@ -7003,7 +7021,13 @@ const cartes = [
     personnage: "ren-per-024",
     finition: "commune",
     secrete: false,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 31
+      }
+    }
   },
   {
     id: "ren-025",
@@ -7047,7 +7071,13 @@ const cartes = [
     personnage: "ren-per-020",
     finition: "pleine",
     secrete: true,
-    images: {}
+    images: {
+      illustration: {
+        zoom: 102,
+        x: 50,
+        y: 50
+      }
+    }
   },
   {
     id: "ren-029",
