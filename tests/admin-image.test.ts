@@ -43,7 +43,7 @@ beforeAll(async () => {
   const projet = path.resolve(new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
   racine = await fs.mkdtemp(path.join(os.tmpdir(), 'kirafuda-admin-'));
   await fs.mkdir(path.join(racine, 'src', 'data'), { recursive: true });
-  for (const f of ['extensions.json', 'extension-lancement.json', 'extension-renforts.json', 'booster-lancement.json', 'soutiens.json']) {
+  for (const f of ['extensions.json', 'extension-lancement.json', 'extension-renforts.json', 'extension-vague3.json', 'booster-lancement.json', 'soutiens.json']) {
     await fs.copyFile(path.join(projet, 'src', 'data', f), path.join(racine, 'src', 'data', f));
   }
   const { adminImages } = await charger(new URL('../outils/vite-admin.ts', import.meta.url).href);
@@ -59,9 +59,9 @@ afterAll(async () => {
 describe('admin : image d’une carte Renforts, de bout en bout', () => {
   it('l’admin liste toutes les cartes de Lancement, Renforts compris, avec leur vague', async () => {
     const vagues = await requete('GET', '/__admin/vagues');
-    expect(vagues.corps.map((v: any) => [v.id, v.cartes])).toEqual([['lancement', 140], ['renforts', 32]]);
+    expect(vagues.corps.map((v: any) => [v.id, v.cartes])).toEqual([['lancement', 140], ['renforts', 32], ['vague-3', 8]]);
     const ext = await requete('GET', '/__admin/extension');
-    expect(ext.corps.cartes).toHaveLength(172);
+    expect(ext.corps.cartes).toHaveLength(180);
     expect(ext.corps.cartes.find((c: any) => c.id === 'ren-001')).toMatchObject({ vague: 'renforts', numero: 101 });
   });
 

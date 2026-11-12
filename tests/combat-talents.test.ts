@@ -332,12 +332,53 @@ describe('talents', () => {
     expect(talent(partie({ actif: 'ren-per-011', deck: [EINAR, THOMAS, ASK] }, { actif: EINAR }), 'A-ren-per-011', { ordre: [1, 0] }).p.joueurs[0].deck)
       .toEqual(['A-per-045', 'A-per-066', 'A-per-063']);
   });
+  // ---------- Vague 3 : Naruto ----------
+  t('ren-per-025', 'Invocation : Pakkun : regarde 3 cartes, ne peut prendre qu’un Base de Naruto ; les autres vont sous le deck', () => {
+    const p = partie({ actif: 'ren-per-025', deck: [EINAR, 'ren-per-028', 'per-004', THOMAS] }, { actif: EINAR });
+    // Rock Lee (Base de Naruto) est le seul choix : ni Einar (autre série), ni Naruto (Éveillé).
+    expect(legales(p).filter((a) => a.type === 'talent').map((a) => (a as { choix: { garder?: number } }).choix.garder)).toEqual([1]);
+    const q = talent(p, 'A-ren-per-025', { garder: 1 }).p;
+    expect(q.joueurs[0].main).toEqual(['A-ren-per-028']);
+    expect(q.joueurs[0].deck).toEqual(['A-per-045', 'A-per-066', 'A-per-004']);
+    expect(types(q)).not.toContain('talent');
+    // Aucun Base de Naruto parmi les 3 : rien n'est pris.
+    const sans = talent(partie({ actif: 'ren-per-025', deck: [EINAR, THOMAS, ASK] }, { actif: EINAR }), 'A-ren-per-025').p;
+    expect(sans.joueurs[0].main).toEqual([]);
+    expect(sans.joueurs[0].deck).toHaveLength(3);
+  });
+  t('ren-per-026', 'Ninjutsu médical : soigne 20 un personnage de Naruto, une fois par tour', () => {
+    const p = partie({ actif: 'ren-per-026', banc: ['ren-per-028', EINAR], degats: [30, 30, 30] }, { actif: EINAR });
+    expect(legales(p).filter((a) => a.type === 'talent').map((a) => (a as { choix: { cible?: string } }).choix.cible)).toEqual(['A-ren-per-026', 'A-ren-per-028']);
+    const q = talent(p, 'A-ren-per-026', { cible: 'A-ren-per-028' }).p;
+    expect(degats(q, 'A-ren-per-028')).toBe(10);
+    expect(types(q)).not.toContain('talent');
+  });
+  t('ren-per-027', 'Armure de sable : Gaara subit 20 dégâts de moins', () => {
+    const q = attaque(partie({ actif: EINAR, energies: [['feu', 'feu']] }, { actif: 'ren-per-027' }), 0);
+    expect(inflige(q.journal, 'B-ren-per-027')).toBe(inflige(attaque(partie({ actif: EINAR, energies: [['feu', 'feu']] }, { actif: ASK }), 0).journal, 'B-per-063') - 20);
+  });
+  // ---------- Vague 3 : One Piece ----------
+  t('ren-per-029', 'Cuisinier de bord : les Objets de soin soignent 20 de plus (pas les cartes Soutien)', () => {
+    const cote = (banc: string[], main: string[]) => partie({ actif: EINAR, banc, degats: [60], main }, { actif: EINAR });
+    const onigiri = (banc: string[]) => jouer(cote(banc, ['sou-onigiri']), { type: 'jouer', joueur: 0, carte: 'A-sou-onigiri', choix: { cible: 'A-per-066' } }).p;
+    expect(degats(onigiri([THOMAS]), 'A-per-066')).toBe(40);
+    expect(degats(onigiri(['ren-per-029']), 'A-per-066')).toBe(20);
+    const infirmerie = jouer(cote(['ren-per-029'], ['sou-infirmerie']), { type: 'jouer', joueur: 0, carte: 'A-sou-infirmerie', choix: { cible: 'A-per-066' } }).p;
+    expect(degats(infirmerie, 'A-per-066')).toBe(20); // 60 − 40 : l'Infirmerie est un Soutien, pas un Objet
+  });
+  t('ren-per-030', 'Navigatrice : échange l’actif avec un personnage du banc sans payer le Repli, une fois par tour', () => {
+    const p = partie({ actif: EINAR, banc: ['ren-per-030', THOMAS] }, { actif: EINAR });
+    const q = talent(p, 'A-ren-per-030', { cible: 'A-per-045' }).p;
+    expect(q.joueurs[0].actif!.uid).toBe('A-per-045');
+    expect(q.joueurs[0].banc.map((x) => x.uid).sort()).toEqual(['A-per-066', 'A-ren-per-030']);
+    expect(types(q)).not.toContain('talent');
+  });
 });
 
 describe('couverture', () => {
   it('chaque talent des fiches actuelles a au moins un test', () => {
     const avecTalent = [...bib.personnages.values()].filter((p) => p.talent).map((p) => p.id).sort();
-    expect(avecTalent).toHaveLength(67);
+    expect(avecTalent).toHaveLength(72);
     expect([...testes].sort()).toEqual(avecTalent);
   });
 });

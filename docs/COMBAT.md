@@ -108,7 +108,7 @@ Textes ambigus des fiches, et choix faits par le moteur (à corriger dans les do
 - **Sanctuaire malveillant** : « défausse toutes ses énergies » = celles de Sukuna. Démantèlement et Poing à distance : la Faiblesse ne compte pas au banc.
 - **Bleu** : c'est l'adversaire qui choisit son nouvel actif ; l'ancien va sur le banc (ses états sont retirés).
 - **Roi des fléaux** : Sukuna peut relever Itadori entré ce tour-ci, mais pas au premier tour du joueur (règle générale).
-- **Multiclonage** : aucun Base de Naruto n'existe encore (vague 3) ; l'effet ne trouve rien. La série Naruto n'a donc pas de deck possible pour l'instant.
+- **Multiclonage** : cherche un Base de Naruto (Kakashi, Sakura, Gaara, Rock Lee depuis la vague 3).
 - **Héros et « Base »** : un effet qui parle d'un Base (Parchemin d'invocation, Dix ombres, Arise, Chef mercenaire, Arène de boxe, +20 contre un Base) ne concerne pas les Héros.
 - **Genjutsu des corbeaux** : Itachi doit être en jeu ; le personnage qui entre n'est Étourdi que s'il entre en actif (les états ne vont que sur l'actif).
 - **Durcissement (Eren)** : défausse la dernière énergie attachée.
@@ -128,5 +128,8 @@ Textes ambigus des fiches, et choix faits par le moteur (à corriger dans les do
 - **Relique maudite** : « 1 énergie Ténèbres de ta zone » = une énergie Ténèbres en plus, seulement si Ténèbres fait partie des éléments du deck, sur un personnage Ténèbres, qui subit 10.
 - **Pierre d'énergie** : une énergie en plus (tirée parmi les éléments du deck) sur un personnage du banc, puis défausse d'une carte de la main ; une Pierre par tour.
 - **Terrains** : Mur Maria et Mont Sagiri valent pour les deux joueurs ; Mont Sagiri soigne entre chaque tour. Un Terrain remplacé va dans la défausse de son propriétaire.
+- **Invocation : Pakkun (Kakashi)** : regarde les 3 premières cartes ; seul un Base de Naruto peut être pris (aucun : rien n'est pris) ; les autres cartes vont sous le deck.
+- **Cuisinier de bord (Sanji)** : +20 aux soins des cartes Objet (Onigiri, Bandage) tant que Sanji est en jeu, actif ou banc ; pas aux cartes Soutien (Infirmerie) ni aux talents.
+- **Navigatrice (Nami)** : une fois par tour, échange l'actif avec un personnage du banc, sans énergie et sans compter comme le Repli du tour ; marche depuis le banc.
 - **Gel, Étourdi** : disparaissent à la fin du prochain tour de leur propriétaire. Étourdi : la pièce est lancée avant tout le reste de l'attaque.
 - **Pile ou face du début** : le gagnant choisit de commencer ou non (les IA de simulation choisissent de commencer).

@@ -61,7 +61,7 @@ Identité visuelle « Graphite » : #121316, #2A2C31, #8B8F98, #F2F2F0 ; dégrad
 - **Lancement est fait de vagues** :
   - vague 1 : 100 personnages, 140 cartes (100 de base + 40 secrètes) ;
   - vague 2, « Renforts » : 24 personnages, 32 cartes (Hunter x Hunter, Dandadan, Kaiju No. 8, Spy x Family, Blue Lock). **Sa date de sortie dans `src/data/extensions.json` doit être remise environ deux semaines après le début du test entre amis** ;
-  - vague 3 (tâche 30, à faire) : 8 Bases pour Naruto (Kakashi, Sakura, Gaara, Rock Lee) et One Piece (Sanji, Nami, Usopp, Chopper), sortie avec le combat.
+  - vague 3 (tâche 30, faite ; `extension-vague3.json`, ids ren-per-025 à 032 et ren-033 à 040, sortie le 2026-11-13) : 8 Bases pour Naruto (Kakashi, Sakura, Gaara, Rock Lee) et One Piece (Sanji, Nami, Usopp, Chopper), sortie avec le combat.
 - Cartes Soutien (tâche 29) : 20 cartes dans `src/data/soutiens.json`, dans les mêmes boosters (Objets ♦, Soutiens ♦♦, Terrains ♦♦♦).
 
 ## 5. Économie et quêtes (réglages dans `src/data/quetes.json`)
@@ -91,14 +91,14 @@ Identité visuelle « Graphite » : #121316, #2A2C31, #8B8F98, #F2F2F0 ; dégrad
 - Faiblesse +20 (cycle Feu ← Eau ← Foudre ← Terre ← Vent ← Glace ← Feu ; Lumière et Ténèbres l'une contre l'autre ; Neutre sans faiblesse). États : Brûlure, Gel, Étourdi, Malédiction.
 - Cartes Soutien : Objets (illimités par tour), Soutien (1 par tour), Terrain (1 en jeu).
 - Decks : 20 cartes, 2 exemplaires maximum par personnage et par carte Soutien, au moins 1 Base ou Héros ; 2 decks de départ jouables par tous.
-- Chaque personnage a des attaques et talents **uniques, nommés d'après sa série**. Source de vérité : `src/data/fiches-combat.json` (132 fiches, dont 8 de la vague 3 marquées `nouveau`). Après modification : `npm run fiches`, puis `npm run deployer-fonctions` si des PV ou dégâts changent.
+- Chaque personnage a des attaques et talents **uniques, nommés d'après sa série**. Source de vérité : `src/data/fiches-combat.json` (132 fiches, vague 3 comprise). Après modification : `npm run fiches`, puis `npm run deployer-fonctions` si des PV ou dégâts changent.
 
 ### Équilibrage (fait, par simulation)
 
 4 tours d'équilibrage avec 5 000 parties IA gloutonne contre IA gloutonne et des decks standardisés. Dernier rapport : 17 séries sur 19 entre 40 et 64 % de victoires. À surveiller en jeu réel :
 - **L'Attaque des Titans** (69,5 %) : toute la série monte ensemble, piste principale = le talent d'Erwin (+10 à tous les personnages de la série) ;
 - **Tower of God** (36,6 %) ;
-- Naruto n'a pas encore de deck possible (vague 3).
+- Depuis la vague 3, Naruto et One Piece ont leurs Bases : leurs decks standardisés gagnent environ 66 % en simulation (à équilibrer).
 
 On a décidé d'**arrêter l'équilibrage par simulation** et de passer aux vraies parties.
 
@@ -114,7 +114,7 @@ On a décidé d'**arrêter l'équilibrage par simulation** et de passer aux vrai
 | 27 | Combat contre l’IA (fait) |
 | 28 | Constructeur de decks et decks de départ (fait : The Boxer et Spy x Family) |
 | 29 | Cartes Soutien dans le jeu (fait) |
-| 30 | Vague 3 (Naruto, One Piece) |
+| 30 | Vague 3 (Naruto, One Piece) (fait) |
 | plus tard | Combat entre amis (Supabase temps réel), classement de collection (demanderait des tirages côté serveur) |
 
 ## 10. Reprendre maintenant

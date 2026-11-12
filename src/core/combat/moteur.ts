@@ -530,7 +530,10 @@ function appliquerEffetsAction(c: Ctx, j: IdJoueur, effets: EffetAction[], choix
       case 'soin': {
         const x = e.cible === 'soi' ? soi : e.cible === 'actif' ? J.actif : cible?.perso ?? null;
         if (!x) break;
-        soigner(c, x, e.valeur);
+        // Cuisinier de bord (Sanji) : les Objets de soin soignent davantage tant qu'il est en jeu.
+        const objet = carteJouee !== undefined && soutien(c.bib, p.cartes[carteJouee]!)?.type === 'objet';
+        const bonusObjet = objet ? enJeu(J).reduce((n, y) => n + aTalent(c, y, 'soin-objets').reduce((m, t) => m + t.valeur, 0), 0) : 0;
+        soigner(c, x, e.valeur + bonusObjet);
         if (e.retire === 'tous') retirerEtats(x);
         if (e.retire === 'brulure') x.etats = x.etats.filter((y) => y !== 'brulure');
         break;
@@ -581,7 +584,12 @@ function appliquerEffetsAction(c: Ctx, j: IdJoueur, effets: EffetAction[], choix
         if (!dessus.length) break;
         J.deck = J.deck.slice(dessus.length);
         let reste = dessus;
-        if (e.garder > 0) {
+        const gardable = (u: string): boolean => {
+          if (!e.filtre) return true;
+          const f = c.bib.personnages.get(p.cartes[u]!);
+          return f?.type === 'base' && f.serie === e.filtre.serie;
+        };
+        if (e.garder > 0 && (!e.filtre || (choix.garder !== undefined && dessus[choix.garder] !== undefined && gardable(dessus[choix.garder]!)))) {
           const k = Math.min(choix.garder ?? 0, dessus.length - 1);
           J.main.push(dessus[k]!);
           reste = dessus.filter((_, i) => i !== k);
@@ -831,7 +839,16 @@ function choixAction(c: Ctx, j: IdJoueur, effets: EffetAction[], soi: PersoEnJeu
       case 'regarder': {
         const n = Math.min(e.nombre, J.deck.length);
         if (n === 0) break;
-        if (e.garder > 0) produit(Array.from({ length: n }, (_, i) => ({ garder: i })));
+        if (e.garder > 0) {
+          const filtre = e.filtre;
+          const index = Array.from({ length: n }, (_, i) => i).filter((i) => {
+            if (!filtre) return true;
+            const f = c.bib.personnages.get(p.cartes[J.deck[i]!]!);
+            return f?.type === 'base' && f.serie === filtre.serie;
+          });
+          // Avec un filtre et aucune carte du bon genre : on regarde quand même, sans rien garder.
+          if (index.length || !filtre) produit(index.map((i) => ({ garder: i })));
+        }
         if (e.reste === 'choix-dessous') produit([{ dessous: false }, { dessous: true }]);
         if (e.reste === 'ordre') produit(permutations(n).map((ordre) => ({ ordre })));
         break;

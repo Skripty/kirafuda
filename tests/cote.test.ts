@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import extensionJson from '../src/data/extension-lancement.json';
 import renfortsJson from '../src/data/extension-renforts.json';
+import vague3Json from '../src/data/extension-vague3.json';
 import { fusionner } from '../src/core/catalogue';
 import boosterJson from '../src/data/booster-lancement.json';
 import populariteJson from '../src/data/popularite.json';
@@ -24,7 +25,7 @@ import { validerPopularite } from '../src/core/validation';
 const extension = extensionJson as unknown as Extension;
 const renforts = renfortsJson as unknown as Extension;
 /** Toutes les extensions du jeu (popularite.json en contient les personnages). */
-const toutes = fusionner([extension, renforts]);
+const toutes = fusionner([extension, renforts, vague3Json as unknown as Extension]);
 const booster = boosterJson as unknown as Booster;
 const avec = (s: Partial<Sauvegarde>): Sauvegarde => ({ ...sauvegardeParDefaut(), ...s });
 const carte = (id: string): Carte => extension.cartes.find((c) => c.id === id)!;

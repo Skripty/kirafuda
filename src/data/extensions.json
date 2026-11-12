@@ -1,5 +1,5 @@
 {
-  "_note": "Extensions du jeu. Une extension a un seul booster et se compose de vagues, dans l'ordre de sortie. Une vague rejoint le booster à sa date « disponibleLe » (AAAA-MM-JJ, heure locale) ; ses cartes gardent leurs ids. Numérotation affichée recalculée sur les vagues sorties : cartes de base d'abord (vague après vague), puis cartes secrètes par rareté. Chaque vague après la première a un calendrier de sortie (quetes.json, calendrierLancementExtension).",
+  "_note": "Extensions du jeu. Une extension a un seul booster et se compose de vagues, dans l'ordre de sortie. Une vague rejoint le booster à sa date « disponibleLe » (AAAA-MM-JJ, heure locale) ; ses cartes gardent leurs ids. Numérotation affichée recalculée sur les vagues sorties : cartes de base d'abord (vague après vague), puis cartes secrètes par rareté. Vague 3 (tâche 30) : 8 Bases de Naruto et One Piece, ids à la suite de Renforts. Chaque vague après la première a un calendrier de sortie (quetes.json, calendrierLancementExtension).",
   "extensions": [
     {
       "id": "lancement",
@@ -9,7 +9,8 @@
       "soutiens": "soutiens.json",
       "vagues": [
         { "id": "lancement", "nom": "Lancement", "fichier": "extension-lancement.json", "disponibleLe": "2026-11-01" },
-        { "id": "renforts", "nom": "Renforts", "fichier": "extension-renforts.json", "disponibleLe": "2026-11-06" }
+        { "id": "renforts", "nom": "Renforts", "fichier": "extension-renforts.json", "disponibleLe": "2026-11-06" },
+        { "id": "vague-3", "nom": "Vague 3", "fichier": "extension-vague3.json", "disponibleLe": "2026-11-13" }
       ]
     }
   ]

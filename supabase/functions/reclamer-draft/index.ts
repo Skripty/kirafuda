@@ -1,10 +1,10 @@
 // Fonction Supabase « reclamer-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : da3ce6e29c3c7fce
-// Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/draft.ts, src/core/regles.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/reclamer-draft.ts
+// Empreinte des sources : a5f4c838ce9304f4
+// Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/draft.ts, src/core/regles.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extension-vague3.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/reclamer-draft.ts
 // @ts-nocheck
-const id$2 = "booster-lancement";
+const id$3 = "booster-lancement";
 const extension = "lancement";
-const nom$2 = "Booster Lancement";
+const nom$3 = "Booster Lancement";
 const cartesParBooster = 5;
 const cout = {
   ressource: "sceaux",
@@ -60,26 +60,26 @@ const tableExceptionnelle = {
     couronne: 3e3
   }
 };
-const _note$2 = "Poids entiers sur 100000. Chaque emplacement tire une finition (rareté), puis une carte de cette rareté à poids égaux. Emplacements 4 et 5 = taux de Pokémon TCG Pocket.";
+const _note$3 = "Poids entiers sur 100000. Chaque emplacement tire une finition (rareté), puis une carte de cette rareté à poids égaux. Emplacements 4 et 5 = taux de Pokémon TCG Pocket.";
 const __vite_glob_0_0 = {
-  id: id$2,
+  id: id$3,
   extension,
-  nom: nom$2,
+  nom: nom$3,
   cartesParBooster,
   cout,
   pointsParOuverture,
   tauxExceptionnel,
   emplacements,
   tableExceptionnelle,
-  _note: _note$2
+  _note: _note$3
 };
-const id$1 = "lancement";
-const nom$1 = "Lancement";
-const edition$1 = 1;
-const total$1 = 100;
-const totalAvecSecretes$1 = 140;
-const _note$1 = "Une carte = un personnage dans une rareté fixe (système TCG Pocket). Les PV et attaques sont ceux du personnage, identiques sur toutes ses cartes.";
-const personnages$1 = [
+const id$2 = "lancement";
+const nom$2 = "Lancement";
+const edition$2 = 1;
+const total$2 = 100;
+const totalAvecSecretes$2 = 140;
+const _note$2 = "Une carte = un personnage dans une rareté fixe (système TCG Pocket). Les PV et attaques sont ceux du personnage, identiques sur toutes ses cartes.";
+const personnages$2 = [
   {
     id: "per-001",
     nom: "Monkey D. Luffy",
@@ -3897,7 +3897,7 @@ const personnages$1 = [
     ]
   }
 ];
-const cartes$1 = [
+const cartes$2 = [
   {
     id: "lan-001",
     numero: 1,
@@ -5818,22 +5818,22 @@ const cartes$1 = [
   }
 ];
 const __vite_glob_0_1 = {
-  id: id$1,
-  nom: nom$1,
-  edition: edition$1,
-  total: total$1,
-  totalAvecSecretes: totalAvecSecretes$1,
-  _note: _note$1,
-  personnages: personnages$1,
-  cartes: cartes$1
+  id: id$2,
+  nom: nom$2,
+  edition: edition$2,
+  total: total$2,
+  totalAvecSecretes: totalAvecSecretes$2,
+  _note: _note$2,
+  personnages: personnages$2,
+  cartes: cartes$2
 };
-const id = "renforts";
-const nom = "Renforts";
-const edition = 2;
-const total = 24;
-const totalAvecSecretes = 32;
-const _note = "Mini-extension, environ un mois après le lancement, avec son propre booster. Même modèle que Lancement.";
-const personnages = [
+const id$1 = "renforts";
+const nom$1 = "Renforts";
+const edition$1 = 2;
+const total$1 = 24;
+const totalAvecSecretes$1 = 32;
+const _note$1 = "Mini-extension, environ un mois après le lancement, avec son propre booster. Même modèle que Lancement.";
+const personnages$1 = [
   {
     id: "ren-per-001",
     nom: "Killua Zoldyck",
@@ -6692,7 +6692,7 @@ const personnages = [
     ]
   }
 ];
-const cartes = [
+const cartes$1 = [
   {
     id: "ren-001",
     numero: 1,
@@ -7131,6 +7131,480 @@ const cartes = [
   }
 ];
 const __vite_glob_0_2 = {
+  id: id$1,
+  nom: nom$1,
+  edition: edition$1,
+  total: total$1,
+  totalAvecSecretes: totalAvecSecretes$1,
+  _note: _note$1,
+  personnages: personnages$1,
+  cartes: cartes$1
+};
+const id = "vague-3";
+const nom = "Vague 3";
+const edition = 1;
+const total = 8;
+const totalAvecSecretes = 8;
+const _note = "Vague 3 de Lancement (tâche 30) : 8 personnages de Naruto et de One Piece, une carte de base chacun. Les ids continuent ceux de Renforts (ren-per-025 à 032, ren-033 à 040).";
+const personnages = [
+  {
+    id: "ren-per-025",
+    nom: "Kakashi Hatake",
+    serie: "Naruto",
+    rang: "B",
+    element: "foudre",
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Invocation : Pakkun",
+      texte: "une fois par tour, regarde les 3 premières cartes de ton deck et prends-y un Base de Naruto.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "regarder",
+              nombre: 3,
+              garder: 1,
+              reste: "dessous",
+              filtre: {
+                type: "base",
+                serie: "Naruto"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    attaques: [
+      {
+        nom: "Raikiri",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 50,
+        effet: "pile : la cible est Étourdie.",
+        effets: [
+          {
+            type: "etat",
+            etat: "etourdi",
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "ren-per-026",
+    nom: "Sakura Haruno",
+    serie: "Naruto",
+    rang: "B",
+    element: "terre",
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Ninjutsu médical",
+      texte: "une fois par tour, soigne 20 un de tes personnages de Naruto.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "soin",
+              valeur: 20,
+              cible: "allie",
+              serie: "Naruto"
+            }
+          ]
+        }
+      ]
+    },
+    attaques: [
+      {
+        nom: "Poing de Tsunade",
+        cout: [
+          "t",
+          "q",
+          "q"
+        ],
+        degats: 50,
+        effet: "+30 contre un Éveillé.",
+        effets: [
+          {
+            type: "bonus",
+            valeur: 30,
+            si: {
+              si: "cible-type",
+              type: "eveille"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "ren-per-027",
+    nom: "Gaara",
+    serie: "Naruto",
+    rang: "B",
+    element: "terre",
+    type: "base",
+    pv: 110,
+    repli: 2,
+    talent: {
+      nom: "Armure de sable",
+      texte: "Gaara subit 20 dégâts de moins.",
+      effets: [
+        {
+          type: "reduction",
+          valeur: 20
+        }
+      ]
+    },
+    attaques: [
+      {
+        nom: "Tombeau du désert",
+        cout: [
+          "t",
+          "q",
+          "q"
+        ],
+        degats: 40,
+        effet: "l'actif adverse ne peut pas se replier au prochain tour.",
+        effets: [
+          {
+            type: "bloque-repli-cible"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "ren-per-028",
+    nom: "Rock Lee",
+    serie: "Naruto",
+    rang: "C",
+    element: "neutre",
+    type: "base",
+    pv: 70,
+    repli: 0,
+    talent: null,
+    attaques: [
+      {
+        nom: "Lotus primaire",
+        cout: [
+          "q"
+        ],
+        degats: 20,
+        effet: "",
+        effets: []
+      },
+      {
+        nom: "Huit Portes",
+        cout: [
+          "q",
+          "q"
+        ],
+        degats: 80,
+        effet: "Lee subit 30 dégâts.",
+        effets: [
+          {
+            type: "degats-soi",
+            valeur: 30
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "ren-per-029",
+    nom: "Sanji",
+    serie: "One Piece",
+    rang: "B",
+    element: "feu",
+    type: "base",
+    pv: 90,
+    repli: 1,
+    talent: {
+      nom: "Cuisinier de bord",
+      texte: "tes Objets de soin soignent 20 de plus.",
+      effets: [
+        {
+          type: "soin-objets",
+          valeur: 20
+        }
+      ]
+    },
+    attaques: [
+      {
+        nom: "Diable Jambe",
+        cout: [
+          "f",
+          "q"
+        ],
+        degats: 40,
+        effet: "la cible est Brûlée.",
+        effets: [
+          {
+            type: "etat",
+            etat: "brulure"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "ren-per-030",
+    nom: "Nami",
+    serie: "One Piece",
+    rang: "B",
+    element: "foudre",
+    type: "base",
+    pv: 70,
+    repli: 0,
+    talent: {
+      nom: "Navigatrice",
+      texte: "une fois par tour, échange ton actif avec un personnage de ton banc sans payer le Repli.",
+      effets: [
+        {
+          type: "activable",
+          limite: "tour",
+          effets: [
+            {
+              type: "echange-actif-soin",
+              valeur: 0
+            }
+          ]
+        }
+      ]
+    },
+    attaques: [
+      {
+        nom: "Thunderbolt Tempo",
+        cout: [
+          "z",
+          "q"
+        ],
+        degats: 40,
+        effet: "pile : la cible est Étourdie.",
+        effets: [
+          {
+            type: "etat",
+            etat: "etourdi",
+            si: {
+              si: "piece",
+              cote: "pile"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "ren-per-031",
+    nom: "Usopp",
+    serie: "One Piece",
+    rang: "C",
+    element: "neutre",
+    type: "base",
+    pv: 60,
+    repli: 0,
+    talent: null,
+    attaques: [
+      {
+        nom: "Pop Green",
+        cout: [
+          "q"
+        ],
+        degats: 20,
+        effet: "à un personnage du banc adverse.",
+        effets: [
+          {
+            type: "cible",
+            quoi: "banc-adverse"
+          }
+        ]
+      },
+      {
+        nom: "Étoile de feu",
+        cout: [
+          "q",
+          "q"
+        ],
+        degats: 30,
+        effet: "la cible est Brûlée.",
+        effets: [
+          {
+            type: "etat",
+            etat: "brulure"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "ren-per-032",
+    nom: "Tony Tony Chopper",
+    serie: "One Piece",
+    rang: "C",
+    element: "eau",
+    type: "base",
+    pv: 70,
+    repli: 1,
+    talent: null,
+    attaques: [
+      {
+        nom: "Docteur de bord",
+        cout: [
+          "q"
+        ],
+        degats: "",
+        effet: "soigne 30 un de tes personnages.",
+        effets: [
+          {
+            type: "soin",
+            valeur: 30,
+            cible: "allie"
+          }
+        ]
+      },
+      {
+        nom: "Point de garde",
+        cout: [
+          "q",
+          "q",
+          "q"
+        ],
+        degats: 50,
+        effet: "",
+        effets: []
+      }
+    ]
+  }
+];
+const cartes = [
+  {
+    id: "ren-033",
+    numero: 1,
+    personnage: "ren-per-025",
+    finition: "peu-commune",
+    secrete: false,
+    images: {
+      illustration: {
+        zoom: 100,
+        x: 50,
+        y: 50
+      }
+    }
+  },
+  {
+    id: "ren-034",
+    numero: 2,
+    personnage: "ren-per-026",
+    finition: "peu-commune",
+    secrete: false,
+    images: {
+      illustration: {
+        zoom: 100,
+        x: 50,
+        y: 50
+      }
+    }
+  },
+  {
+    id: "ren-035",
+    numero: 3,
+    personnage: "ren-per-027",
+    finition: "peu-commune",
+    secrete: false,
+    images: {
+      illustration: {
+        zoom: 100,
+        x: 50,
+        y: 50
+      }
+    }
+  },
+  {
+    id: "ren-036",
+    numero: 4,
+    personnage: "ren-per-028",
+    finition: "commune",
+    secrete: false,
+    images: {
+      illustration: {
+        zoom: 100,
+        x: 50,
+        y: 50
+      }
+    }
+  },
+  {
+    id: "ren-037",
+    numero: 5,
+    personnage: "ren-per-029",
+    finition: "peu-commune",
+    secrete: false,
+    images: {
+      illustration: {
+        zoom: 100,
+        x: 50,
+        y: 50
+      }
+    }
+  },
+  {
+    id: "ren-038",
+    numero: 6,
+    personnage: "ren-per-030",
+    finition: "peu-commune",
+    secrete: false,
+    images: {
+      illustration: {
+        zoom: 100,
+        x: 50,
+        y: 50
+      }
+    }
+  },
+  {
+    id: "ren-039",
+    numero: 7,
+    personnage: "ren-per-031",
+    finition: "commune",
+    secrete: false,
+    images: {
+      illustration: {
+        zoom: 100,
+        x: 50,
+        y: 50
+      }
+    }
+  },
+  {
+    id: "ren-040",
+    numero: 8,
+    personnage: "ren-per-032",
+    finition: "commune",
+    secrete: false,
+    images: {
+      illustration: {
+        zoom: 100,
+        x: 50,
+        y: 50
+      }
+    }
+  }
+];
+const __vite_glob_0_3 = {
   id,
   nom,
   edition,
@@ -7159,6 +7633,12 @@ const extensions = [
         nom: "Renforts",
         fichier: "extension-renforts.json",
         disponibleLe: "2026-11-06"
+      },
+      {
+        id: "vague-3",
+        nom: "Vague 3",
+        fichier: "extension-vague3.json",
+        disponibleLe: "2026-11-13"
       }
     ]
   }
@@ -7281,7 +7761,7 @@ function disponiblesAu(catalogue2, jour) {
   return catalogue2.map((ext) => ({ ext, n: vaguesSorties(ext, jour) })).filter(({ n }) => n > 0).map(({ ext, n }) => ({ extension: assembler(ext, n), booster: ext.booster, vagues: ext.vagues.slice(0, n), disponibleLe: ext.vagues[0].disponibleLe }));
 }
 const disponiblesPourDraft = (catalogue2, maintenant) => disponiblesAu(catalogue2, debutSemaine(maintenant));
-const modules = /* @__PURE__ */ Object.assign({ "../../src/data/booster-lancement.json": __vite_glob_0_0, "../../src/data/extension-lancement.json": __vite_glob_0_1, "../../src/data/extension-renforts.json": __vite_glob_0_2 });
+const modules = /* @__PURE__ */ Object.assign({ "../../src/data/booster-lancement.json": __vite_glob_0_0, "../../src/data/extension-lancement.json": __vite_glob_0_1, "../../src/data/extension-renforts.json": __vite_glob_0_2, "../../src/data/extension-vague3.json": __vite_glob_0_3 });
 const fichiers = Object.fromEntries(Object.entries(modules).map(([chemin, contenu]) => [chemin.replace("../../src/data/", ""), contenu]));
 const { catalogue, erreurs: erreursCatalogue } = construireCatalogue(
   // Sans les cartes Soutien : le draft ne tire que des personnages.

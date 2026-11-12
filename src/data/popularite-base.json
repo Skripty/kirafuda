@@ -620,6 +620,46 @@
       "nom": "Seishiro Nagi",
       "serie": "Blue Lock",
       "base": 48
+    },
+    "ren-per-025": {
+      "nom": "Kakashi Hatake",
+      "serie": "Naruto",
+      "base": 84
+    },
+    "ren-per-026": {
+      "nom": "Sakura Haruno",
+      "serie": "Naruto",
+      "base": 60
+    },
+    "ren-per-027": {
+      "nom": "Gaara",
+      "serie": "Naruto",
+      "base": 76
+    },
+    "ren-per-028": {
+      "nom": "Rock Lee",
+      "serie": "Naruto",
+      "base": 68
+    },
+    "ren-per-029": {
+      "nom": "Sanji",
+      "serie": "One Piece",
+      "base": 80
+    },
+    "ren-per-030": {
+      "nom": "Nami",
+      "serie": "One Piece",
+      "base": 76
+    },
+    "ren-per-031": {
+      "nom": "Usopp",
+      "serie": "One Piece",
+      "base": 58
+    },
+    "ren-per-032": {
+      "nom": "Tony Tony Chopper",
+      "serie": "One Piece",
+      "base": 74
     }
   }
 }

@@ -29,7 +29,7 @@ beforeAll(async () => {
   const projet = path.resolve(new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
   racine = await fs.mkdtemp(path.join(os.tmpdir(), 'kirafuda-pop-'));
   await fs.mkdir(path.join(racine, 'src', 'data'), { recursive: true });
-  for (const f of ['extensions.json', 'extension-lancement.json', 'extension-renforts.json', 'booster-lancement.json', 'popularite-base.json']) {
+  for (const f of ['extensions.json', 'extension-lancement.json', 'extension-renforts.json', 'extension-vague3.json', 'booster-lancement.json', 'popularite-base.json']) {
     await fs.copyFile(path.join(projet, 'src', 'data', f), path.join(racine, 'src', 'data', f));
   }
   // Un ancien fichier (format d'avant la tâche 21) : il doit être migré automatiquement.

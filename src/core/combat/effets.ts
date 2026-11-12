@@ -73,7 +73,8 @@ export type EffetAction =
   | { type: 'pioche-puis-defausse' }
   | { type: 'pioche-puis-sous-deck' }
   | { type: 'chercher'; quoi: 'base' | 'objet' | 'soutien' | 'eveille'; vers: 'main' | 'banc'; serie?: 'la-sienne'; hasard?: boolean; sauf?: string }
-  | { type: 'regarder'; nombre: number; garder: number; reste: 'dessous' | 'ordre' | 'choix-dessous' }
+  // filtre : seule une carte de ce genre peut être gardée (Invocation : Pakkun) ; s'il n'y en a pas, aucune n'est gardée.
+  | { type: 'regarder'; nombre: number; garder: number; reste: 'dessous' | 'ordre' | 'choix-dessous'; filtre?: { type: 'base'; serie: string } }
   | { type: 'repli-gratuit' }                                           // ce tour
   | { type: 'energie-supplementaire'; element?: ElementId; cible: 'banc' | 'meme-element'; degatsCible?: number; puisDefausse?: boolean }
   | { type: 'echange-actif-soin'; valeur: number }
@@ -110,6 +111,7 @@ export type EffetTalent =
   | { type: 'pose-base-serie'; pioche: number }                        // quand tu poses un Base de sa série
   | { type: 'attaque-bloque-repli' }                                   // quand il attaque, l'actif adverse ne peut pas se replier
   | { type: 'repli-gratuit'; limite: 'tour' }
+  | { type: 'soin-objets'; valeur: number }                            // tes Objets de soin soignent +valeur (tant que soi est en jeu)
   | { type: 'special'; code: 'rika' | 'roi-des-fleaux' };
 
 // ---------- Validation (forme des données ; le moteur sait appliquer chaque type) ----------
@@ -124,7 +126,7 @@ const TYPES_ACTION = new Set(['soin', 'soin-degats-dernier-tour-adverse', 'retir
   'bonus-prochaine-attaque', 'terrain', 'special']);
 const TYPES_TALENT = new Set(['activable', 'bonus-attaque', 'bonus-serie', 'reduction', 'reduction-premiere', 'esquive-premiere', 'protection',
   'vulnerabilite-adverse', 'immunite', 'cout-reduit', 'survie', 'retour-deck', 'si-ko-subi', 'si-ko-inflige', 'entree-releve',
-  'releve-adverse-etourdie', 'fin-de-tour', 'pose-base-serie', 'attaque-bloque-repli', 'repli-gratuit', 'special']);
+  'releve-adverse-etourdie', 'fin-de-tour', 'pose-base-serie', 'attaque-bloque-repli', 'repli-gratuit', 'soin-objets', 'special']);
 
 function verifier(liste: unknown, types: Set<string>, ref: string): string[] {
   if (!Array.isArray(liste)) return [`${ref} : liste « effets » attendue.`];

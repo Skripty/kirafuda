@@ -12,8 +12,8 @@ import { bib } from './outils-combat';
 describe('effets structurés', () => {
   const actuelles = fichesJson.fiches.filter((f) => !f.nouveau);
 
-  it('124 fiches : chaque talent et chaque attaque à texte d’effet a des effets valides', () => {
-    expect(actuelles).toHaveLength(124);
+  it('132 fiches : chaque talent et chaque attaque à texte d’effet a des effets valides', () => {
+    expect(actuelles).toHaveLength(132);
     expect(validerFiches(fichesJson)).toEqual([]);
     for (const f of actuelles) {
       if (f.talent) expect((f.talent as { effets?: unknown[] }).effets?.length, `${f.nom} : talent`).toBeGreaterThan(0);
@@ -52,7 +52,7 @@ describe('decks de série (simulation)', () => {
       if (!d) { sans.push(s); continue; }
       expect(validerDeck(d, bib), s).toEqual([]);
     }
-    expect(sans).toEqual(['Naruto']); // Naruto, Sasuke et Itachi sont tous Éveillés (Bases de Naruto : vague 3)
+    expect(sans).toEqual([]); // depuis la vague 3, Naruto a ses Bases (Kakashi, Sakura, Gaara, Rock Lee)
   });
 });
 
@@ -63,7 +63,7 @@ describe('decks standardisés (simulation d’équilibrage)', () => {
     for (const s of seriesDe(bib)) {
       for (const g of ['a', 'b', 'c']) {
         const d = deckStandard(s, bib, rngAGraine(g));
-        if (s === 'Naruto') { expect(d).toBeNull(); continue; }
+
         expect(validerDeck(d!, bib), s).toEqual([]);
         expect(d!.cartes.slice(14), s).toEqual(SOUTIENS_STANDARD);
         expect(new Set(d!.cartes.slice(0, 14)).size, s).toBe(7);

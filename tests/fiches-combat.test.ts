@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import fichesJson from '../src/data/fiches-combat.json';
 import lancementJson from '../src/data/extension-lancement.json';
 import renfortsJson from '../src/data/extension-renforts.json';
+import vague3Json from '../src/data/extension-vague3.json';
 import { catalogue } from '../src/catalogue';
 import { appliquerFiches, validerCombat, validerFiches, valeurDegats, type FichierFiches } from '../src/core/combat/fiches';
 import { serialiserExtension } from '../src/core/edition';
@@ -16,13 +17,14 @@ const fiches = fichesJson as unknown as FichierFiches;
 const extensions: [string, Extension][] = [
   ['extension-lancement.json', lancementJson as unknown as Extension],
   ['extension-renforts.json', renfortsJson as unknown as Extension],
+  ['extension-vague3.json', vague3Json as unknown as Extension],
 ];
 
 describe('fiches de combat', () => {
-  it('le fichier des fiches est valide (132 fiches, dont 8 de la vague 3 ignorées pour l’instant)', () => {
+  it('le fichier des fiches est valide (132 fiches, vague 3 comprise)', () => {
     expect(validerFiches(fiches)).toEqual([]);
     expect(fiches.fiches).toHaveLength(132);
-    expect(fiches.fiches.filter((f) => f.nouveau)).toHaveLength(8);
+    expect(fiches.fiches.filter((f) => f.nouveau)).toHaveLength(0);
   });
 
   it('les extensions sont à jour avec les fiches (sinon : npm run fiches)', () => {

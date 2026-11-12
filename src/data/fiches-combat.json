@@ -1,5 +1,5 @@
 {
- "_note": "Fiches de combat (voir GDD, onglet Combat et decks). cout : f Feu, e Eau, g Glace, z Foudre, v Vent, t Terre, l Lumière, n Ténèbres, q énergie quelconque. degats vide = pas de dégâts ; '30×' = 30 par face ; '50 / 0' = pile ou face. Les 8 fiches 'nouveau' sont la vague 3 (ids provisoires).",
+ "_note": "Fiches de combat (voir GDD, onglet Combat et decks). cout : f Feu, e Eau, g Glace, z Foudre, v Vent, t Terre, l Lumière, n Ténèbres, q énergie quelconque. degats vide = pas de dégâts ; '30×' = 30 par face ; '50 / 0' = pile ou face. Vague 3 : ren-per-025 à ren-per-032.",
  "fiches": [
   {
    "personnage": "per-010",
@@ -4799,7 +4799,7 @@
    "nouveau": false
   },
   {
-   "personnage": "v3-per-001",
+   "personnage": "ren-per-025",
    "nom": "Kakashi Hatake",
    "serie": "Naruto",
    "rang": "B",
@@ -4809,7 +4809,25 @@
    "repli": 1,
    "talent": {
     "nom": "Invocation : Pakkun",
-    "texte": "une fois par tour, regarde les 3 premières cartes de ton deck et prends-y un Base de Naruto."
+    "texte": "une fois par tour, regarde les 3 premières cartes de ton deck et prends-y un Base de Naruto.",
+    "effets": [
+     {
+      "type": "activable",
+      "limite": "tour",
+      "effets": [
+       {
+        "type": "regarder",
+        "nombre": 3,
+        "garder": 1,
+        "reste": "dessous",
+        "filtre": {
+         "type": "base",
+         "serie": "Naruto"
+        }
+       }
+      ]
+     }
+    ]
    },
    "attaques": [
     {
@@ -4819,13 +4837,22 @@
       "q"
      ],
      "degats": 50,
-     "effet": "pile : la cible est Étourdie."
+     "effet": "pile : la cible est Étourdie.",
+     "effets": [
+      {
+       "type": "etat",
+       "etat": "etourdi",
+       "si": {
+        "si": "piece",
+        "cote": "pile"
+       }
+      }
+     ]
     }
-   ],
-   "nouveau": true
+   ]
   },
   {
-   "personnage": "v3-per-002",
+   "personnage": "ren-per-026",
    "nom": "Sakura Haruno",
    "serie": "Naruto",
    "rang": "B",
@@ -4835,7 +4862,21 @@
    "repli": 1,
    "talent": {
     "nom": "Ninjutsu médical",
-    "texte": "une fois par tour, soigne 20 un de tes personnages de Naruto."
+    "texte": "une fois par tour, soigne 20 un de tes personnages de Naruto.",
+    "effets": [
+     {
+      "type": "activable",
+      "limite": "tour",
+      "effets": [
+       {
+        "type": "soin",
+        "valeur": 20,
+        "cible": "allie",
+        "serie": "Naruto"
+       }
+      ]
+     }
+    ]
    },
    "attaques": [
     {
@@ -4846,13 +4887,22 @@
       "q"
      ],
      "degats": 50,
-     "effet": "+30 contre un Éveillé."
+     "effet": "+30 contre un Éveillé.",
+     "effets": [
+      {
+       "type": "bonus",
+       "valeur": 30,
+       "si": {
+        "si": "cible-type",
+        "type": "eveille"
+       }
+      }
+     ]
     }
-   ],
-   "nouveau": true
+   ]
   },
   {
-   "personnage": "v3-per-003",
+   "personnage": "ren-per-027",
    "nom": "Gaara",
    "serie": "Naruto",
    "rang": "B",
@@ -4862,7 +4912,13 @@
    "repli": 2,
    "talent": {
     "nom": "Armure de sable",
-    "texte": "Gaara subit 20 dégâts de moins."
+    "texte": "Gaara subit 20 dégâts de moins.",
+    "effets": [
+     {
+      "type": "reduction",
+      "valeur": 20
+     }
+    ]
    },
    "attaques": [
     {
@@ -4873,13 +4929,17 @@
       "q"
      ],
      "degats": 40,
-     "effet": "l'actif adverse ne peut pas se replier au prochain tour."
+     "effet": "l'actif adverse ne peut pas se replier au prochain tour.",
+     "effets": [
+      {
+       "type": "bloque-repli-cible"
+      }
+     ]
     }
-   ],
-   "nouveau": true
+   ]
   },
   {
-   "personnage": "v3-per-004",
+   "personnage": "ren-per-028",
    "nom": "Rock Lee",
    "serie": "Naruto",
    "rang": "C",
@@ -4895,7 +4955,8 @@
       "q"
      ],
      "degats": 20,
-     "effet": ""
+     "effet": "",
+     "effets": []
     },
     {
      "nom": "Huit Portes",
@@ -4904,13 +4965,18 @@
       "q"
      ],
      "degats": 80,
-     "effet": "Lee subit 30 dégâts."
+     "effet": "Lee subit 30 dégâts.",
+     "effets": [
+      {
+       "type": "degats-soi",
+       "valeur": 30
+      }
+     ]
     }
-   ],
-   "nouveau": true
+   ]
   },
   {
-   "personnage": "v3-per-005",
+   "personnage": "ren-per-029",
    "nom": "Sanji",
    "serie": "One Piece",
    "rang": "B",
@@ -4920,7 +4986,13 @@
    "repli": 1,
    "talent": {
     "nom": "Cuisinier de bord",
-    "texte": "tes Objets de soin soignent 20 de plus."
+    "texte": "tes Objets de soin soignent 20 de plus.",
+    "effets": [
+     {
+      "type": "soin-objets",
+      "valeur": 20
+     }
+    ]
    },
    "attaques": [
     {
@@ -4930,13 +5002,18 @@
       "q"
      ],
      "degats": 40,
-     "effet": "la cible est Brûlée."
+     "effet": "la cible est Brûlée.",
+     "effets": [
+      {
+       "type": "etat",
+       "etat": "brulure"
+      }
+     ]
     }
-   ],
-   "nouveau": true
+   ]
   },
   {
-   "personnage": "v3-per-006",
+   "personnage": "ren-per-030",
    "nom": "Nami",
    "serie": "One Piece",
    "rang": "B",
@@ -4946,7 +5023,19 @@
    "repli": 0,
    "talent": {
     "nom": "Navigatrice",
-    "texte": "une fois par tour, échange ton actif avec un personnage de ton banc sans payer le Repli."
+    "texte": "une fois par tour, échange ton actif avec un personnage de ton banc sans payer le Repli.",
+    "effets": [
+     {
+      "type": "activable",
+      "limite": "tour",
+      "effets": [
+       {
+        "type": "echange-actif-soin",
+        "valeur": 0
+       }
+      ]
+     }
+    ]
    },
    "attaques": [
     {
@@ -4956,13 +5045,22 @@
       "q"
      ],
      "degats": 40,
-     "effet": "pile : la cible est Étourdie."
+     "effet": "pile : la cible est Étourdie.",
+     "effets": [
+      {
+       "type": "etat",
+       "etat": "etourdi",
+       "si": {
+        "si": "piece",
+        "cote": "pile"
+       }
+      }
+     ]
     }
-   ],
-   "nouveau": true
+   ]
   },
   {
-   "personnage": "v3-per-007",
+   "personnage": "ren-per-031",
    "nom": "Usopp",
    "serie": "One Piece",
    "rang": "C",
@@ -4978,7 +5076,13 @@
       "q"
      ],
      "degats": 20,
-     "effet": "à un personnage du banc adverse."
+     "effet": "à un personnage du banc adverse.",
+     "effets": [
+      {
+       "type": "cible",
+       "quoi": "banc-adverse"
+      }
+     ]
     },
     {
      "nom": "Étoile de feu",
@@ -4987,13 +5091,18 @@
       "q"
      ],
      "degats": 30,
-     "effet": "la cible est Brûlée."
+     "effet": "la cible est Brûlée.",
+     "effets": [
+      {
+       "type": "etat",
+       "etat": "brulure"
+      }
+     ]
     }
-   ],
-   "nouveau": true
+   ]
   },
   {
-   "personnage": "v3-per-008",
+   "personnage": "ren-per-032",
    "nom": "Tony Tony Chopper",
    "serie": "One Piece",
    "rang": "C",
@@ -5009,7 +5118,14 @@
       "q"
      ],
      "degats": "",
-     "effet": "soigne 30 un de tes personnages."
+     "effet": "soigne 30 un de tes personnages.",
+     "effets": [
+      {
+       "type": "soin",
+       "valeur": 30,
+       "cible": "allie"
+      }
+     ]
     },
     {
      "nom": "Point de garde",
@@ -5019,10 +5135,10 @@
       "q"
      ],
      "degats": 50,
-     "effet": ""
+     "effet": "",
+     "effets": []
     }
-   ],
-   "nouveau": true
+   ]
   }
  ]
 }

@@ -10,6 +10,8 @@ Projet personnel, gratuit, non commercial. Aucun paiement, aucune publicité. Le
 
 **Chaque carte de l'extension a une seule rareté, fixe.** Un personnage peut avoir plusieurs cartes distinctes (sa carte de base, parfois des versions rares), chacune avec son numéro et son image. Données : `src/data/extension-lancement.json` contient `personnages` (100, avec leurs données de combat : type, PV, Repli, talent, attaques) et `cartes` (140, chacune = un personnage + une `finition` qui est sa rareté).
 
+L’extension Lancement sort en **vagues** qui rejoignent le même booster à leur date (`src/data/extensions.json`) : Lancement (140 cartes, 2026-11-01), Renforts (32 cartes, 2026-11-06), Vague 3 (8 cartes de base de Naruto et One Piece, 2026-11-13, `extension-vague3.json`). Les ids ne changent jamais ; chaque vague après la première a un calendrier de sortie de 7 jours.
+
 | Notion | Valeurs | Rôle |
 | --- | --- | --- |
 | Rang du personnage | C, B, A, S | Décide de la rareté de sa carte de base (C ♦, B ♦♦, A ♦♦♦, S ♦♦♦♦) et des versions rares qu'il reçoit. N'intervient plus dans le tirage. |

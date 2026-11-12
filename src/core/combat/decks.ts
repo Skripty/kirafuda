@@ -48,10 +48,21 @@ export const PERSONNAGES_STANDARD = 7;
 const BASES_MIN = 3;
 
 /**
- * Compléments imposés : Spy x Family garde Fern et Kim Dokja, ceux du 1er rapport d'équilibrage, pour comparer
- * à conditions égales (Kim Dokja est devenu Héros depuis : il n'aurait plus été tiré parmi les Bases).
+ * Compléments figés : ceux des rapports d'équilibrage d'avant la vague 3, pour comparer à conditions égales
+ * (un tirage dans un ensemble de personnages plus grand les aurait tous changés). Spy x Family garde Fern et
+ * Kim Dokja depuis le 1er rapport. Une série absente de cette table tire ses compléments (graine fixe par série).
  */
-export const COMPLEMENTS_FIXES: Record<string, string[]> = { 'Spy x Family': ['per-050', 'per-075'] };
+export const COMPLEMENTS_FIXES: Record<string, string[]> = {
+  'Blue Lock': ['per-037', 'ren-per-018', 'per-080', 'per-086'], // Giyu Tomioka, Reno Ichikawa, Shin Yoosung, Osaragi
+  'Dandadan': ['per-013'], // Yuta Okkotsu
+  'Dorohedoro': ['per-076'], // Yoo Joonghyuk
+  'Hunter x Hunter': ['ren-per-017', 'per-085'], // Jin Enjoji (Jiji), Nagumo
+  'Kaiju No. 8': ['per-053', 'per-077'], // Übel, Han Sooyoung
+  'Mob Psycho 100': ['per-070'], // Rak Wraithraiser
+  'Sakamoto Days': ['per-090'], // En
+  'Spy x Family': ['per-050', 'per-075'], // Fern, Kim Dokja
+  'Vinland Saga': ['per-051'], // Stark
+};
 
 /** Mélange déterministe (Fisher-Yates). */
 function melangerAvec<T>(rng: Rng, l: T[]): T[] {

@@ -39,9 +39,9 @@ const avant = disponiblesAu(catalogue, AVANT)[0]!;
 const apres = disponiblesAu(catalogue, SORTIE_RENFORTS)[0]!;
 
 describe('src/data/extensions.json : Lancement, en vagues, un seul booster', () => {
-  it('une extension, un booster, deux vagues (Lancement puis Renforts) ; tout est valide', () => {
+  it('une extension, un booster, trois vagues (Lancement, Renforts, Vague 3) ; tout est valide', () => {
     expect(erreursCatalogue).toEqual([]);
-    expect(catalogue.map((e) => [e.id, e.booster.id, e.vagues.map((v) => v.id)])).toEqual([['lancement', 'booster-lancement', ['lancement', 'renforts']]]);
+    expect(catalogue.map((e) => [e.id, e.booster.id, e.vagues.map((v) => v.id)])).toEqual([['lancement', 'booster-lancement', ['lancement', 'renforts', 'vague-3']]]);
     expect(validerCatalogue(catalogue)).toEqual([]);
     expect(validerJeu(catalogue, pop, themes, jour(AVANT))).toEqual([]);
     expect(validerJeu(catalogue, pop, themes, jour(SORTIE_RENFORTS))).toEqual([]);
@@ -177,7 +177,7 @@ describe('un seul ensemble Lancement', () => {
 
   it('assemblage mis en cache : même objet pour les mêmes vagues', () => {
     expect(assembler(lancement, 2)).toBe(apres.extension);
-    expect(assembler(lancement)).toBe(apres.extension);
+    expect(assembler(lancement)).toBe(assembler(lancement, 3));
   });
 });
 
@@ -195,18 +195,43 @@ describe('draft et calendrier de sortie d’une vague', () => {
 
   it('calendrier de sortie : chaque vague après la première (2, 2, 1, 1, 1, 1, 2), une case par jour calendaire', () => {
     const vagues = vaguesAvecCalendrier(catalogue);
-    expect(vagues).toEqual([{ id: 'renforts', nom: 'Renforts', disponibleLe: SORTIE_RENFORTS }]);
+    expect(vagues).toEqual([{ id: 'renforts', nom: 'Renforts', disponibleLe: SORTIE_RENFORTS }, { id: 'vague-3', nom: 'Vague 3', disponibleLe: '2026-11-13' }]);
+    // La vague 3 sort 7 jours après Renforts : son calendrier est vérifié à part.
+    const tous = vagues;
+    {
     let s = sauvegardeParDefaut();
     const recus: number[] = [];
     for (const n of [-1, 0, 0, 1, 4, 6, 7]) {
-      const r = appliquerLancements(s, vagues, config, plusJours(SORTIE_RENFORTS, n));
+      const r = appliquerLancements(s, vagues.slice(0, 1), config, plusJours(SORTIE_RENFORTS, n));
       recus.push(...r.gains.map((g) => g.jour));
       s = r.sauvegarde;
     }
     expect(recus).toEqual([1, 2, 5, 7]);
     expect(s.sceaux).toBe(2 + 2 + 1 + 2);
-    expect(vueLancements(s, vagues, config, plusJours(SORTIE_RENFORTS, 7))).toEqual([]);
-    expect(vueLancements(s, vagues, config, plusJours(SORTIE_RENFORTS, 2))[0]!.nom).toBe('Renforts');
+    expect(vueLancements(s, vagues.slice(0, 1), config, plusJours(SORTIE_RENFORTS, 7))).toEqual([]);
+    expect(vueLancements(s, vagues.slice(0, 1), config, plusJours(SORTIE_RENFORTS, 2))[0]!.nom).toBe('Renforts');
+    }
+    // Vague 3 : même calendrier, à partir de sa date de sortie ; les deux calendriers se suivent sans se gêner.
+    const sortie3 = tous[1]!.disponibleLe;
+    const r3 = appliquerLancements(sauvegardeParDefaut(), tous, config, jour(sortie3));
+    expect(r3.gains.map((g) => g.jour)).toEqual([1]); // jour 1 de la vague 3 ; le calendrier de Renforts est fini la veille
+    expect(vueLancements(r3.sauvegarde, tous, config, plusJours(sortie3, 1)).map((v) => v.nom)).toEqual(['Vague 3']);
+  });
+
+  it('vague 3 (2026-11-13) : 8 cartes de base de Naruto et One Piece, ids à la suite de Renforts, numérotées après elles', () => {
+    const veille = disponibles(catalogue, plusJours('2026-11-13', -1))[0]!.extension;
+    const sortie = disponibles(catalogue, jour('2026-11-13'))[0]!.extension;
+    expect(validerJeu(catalogue, pop, themes, jour('2026-11-13'))).toEqual([]);
+    expect([veille.total, veille.totalAvecSecretes]).toEqual([124, 172]);
+    expect([sortie.total, sortie.totalAvecSecretes]).toEqual([132, 180]);
+    const nouvelles = sortie.cartes.filter((c) => !veille.cartes.some((x) => x.id === c.id));
+    expect(nouvelles.map((c) => c.id)).toEqual(['ren-033', 'ren-034', 'ren-035', 'ren-036', 'ren-037', 'ren-038', 'ren-039', 'ren-040']);
+    expect(nouvelles.map((c) => c.numero)).toEqual([125, 126, 127, 128, 129, 130, 131, 132]);
+    expect(nouvelles.every((c) => !c.secrete)).toBe(true);
+    const index = indexer(sortie);
+    expect(nouvelles.map((c) => index.personnageDe(c).serie)).toEqual(['Naruto', 'Naruto', 'Naruto', 'Naruto', 'One Piece', 'One Piece', 'One Piece', 'One Piece']);
+    // Les numéros des cartes déjà sorties ne bougent pas pour les cartes de base ; les ids ne changent jamais.
+    expect(sortie.cartes.find((c) => c.id === 'ren-001')!.numero).toBe(101);
   });
 
   it('jours depuis la sortie, en jours locaux', () => {
