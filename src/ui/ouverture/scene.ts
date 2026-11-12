@@ -89,7 +89,19 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
   voile.setAttribute('aria-hidden', 'true');
   dore.setAttribute('aria-hidden', 'true');
   flash.setAttribute('aria-hidden', 'true');
-  racine.append(voile, barre, scene, legende, actions, aide, dore, flash);
+  // Ambiance : projecteur, faisceaux lents et poussières (décor seul ; positions fixes, sans hasard).
+  const ambiance = el('div', 'ouv-ambiance');
+  ambiance.setAttribute('aria-hidden', 'true');
+  ambiance.append(el('div', 'ouv-faisceaux'));
+  for (let k = 0; k < 18; k++) {
+    const grain = el('i', 'ouv-poussiere');
+    grain.style.left = `${(k * 37 + 11) % 100}%`;
+    grain.style.top = `${(k * 53 + 7) % 100}%`;
+    grain.style.animationDuration = `${7 + (k % 5) * 2}s`;
+    grain.style.animationDelay = `${-k * 0.9}s`;
+    ambiance.append(grain);
+  }
+  racine.append(ambiance, voile, barre, scene, legende, actions, aide, dore, flash);
   conteneur.replaceChildren(racine);
 
   // ---------- Booster (3D : WebGL, ou repli CSS) ----------
@@ -108,7 +120,9 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
       aide.textContent = 'Encore un peu : glisse jusqu’au bout des pointillés.';
     },
   });
-  entree.append(booster3d.scene);
+  const flotte = el('div', 'ouv-flotte');
+  flotte.append(el('div', 'ouv-halo'), booster3d.scene);
+  entree.append(flotte, el('div', 'ouv-ombre-sol'));
   scene.append(entree);
 
   // ---------- Pile ----------
@@ -122,6 +136,7 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
   const zooms: HTMLElement[] = [];
   const retournes: HTMLElement[] = [];
   const rectos: HTMLElement[] = [];
+  const reflets: HTMLElement[] = [];
   const decalage = (i: number): string => `translateY(${i * 3}px)`;
   for (let i = 0; i < n; i++) {
     const carte = el('div', 'ouv-carte');
@@ -137,13 +152,36 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
     dos.append(k);
     const recto = el('div', 'ouv-face recto');
     retourne.append(dos, recto);
-    zoom.append(retourne);
-    carte.append(zoom);
+    // Reflet qui balaie la carte quand sa face apparaît.
+    const reflet = el('div', 'ouv-glare');
+    const bande = el('i');
+    reflet.append(bande);
+    zoom.append(retourne, reflet);
+    carte.append(el('div', 'ouv-ombre-carte'), zoom);
+    reflets.push(bande);
     pile.append(carte);
     cartesEl.push(carte);
     zooms.push(zoom);
     retournes.push(retourne);
     rectos.push(recto);
+  }
+
+  /** Étincelles qui partent du centre de la carte (holo et mieux ; plus nombreuses et holo pour les ★ et plus). */
+  function etincelles(nombre: number, holo: boolean): void {
+    if (reduit()) return;
+    for (let k = 0; k < nombre; k++) {
+      const s = el('i', `ouv-etincelle${holo && k % 2 === 0 ? ' holo' : ''}`);
+      pile.append(s);
+      const angle = (k / nombre) * Math.PI * 2 + (k % 3) * 0.21;
+      const portee = 150 + (k * 47) % 110;
+      const x = Math.cos(angle) * portee;
+      const y = Math.sin(angle) * portee;
+      void animer(s, [
+        { opacity: 0, transform: 'translate(-50%, -50%) scale(0.2)' },
+        { opacity: 1, transform: `translate(calc(-50% + ${(x * 0.55).toFixed(0)}px), calc(-50% + ${(y * 0.55).toFixed(0)}px)) scale(1.3)`, offset: 0.35 },
+        { opacity: 0, transform: `translate(calc(-50% + ${x.toFixed(0)}px), calc(-50% + ${(y + 30).toFixed(0)}px)) scale(0.3)` },
+      ], 800 + (k % 4) * 140, 'cubic-bezier(.15,.7,.3,1)').then(() => s.remove());
+    }
   }
 
   /** Prépare la face de la carte du dessus (images chargées avant le retournement). */
@@ -252,6 +290,7 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
       if (interrompu()) return;
     }
     const enCours: Promise<void>[] = [];
+    const duree = effets.tremblement ? 820 : effets.lueur ? 720 : 560;
     if (effets.cinematique) {
       enCours.push(animer(voile, [{ opacity: 0 }, { opacity: 0.8 }], 500));
       enCours.push(animer(zooms[i]!, [{ transform: 'scale(1)' }, { transform: 'scale(1.12)' }], 650, 'cubic-bezier(.2,.7,.2,1)'));
@@ -261,14 +300,27 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
     }
     if (!effets.cinematique) {
       // La carte se soulève pendant qu'elle se retourne ; plus la rareté est haute, plus elle monte.
-      const hauteur = effets.tremblement ? 1.14 : effets.lueur ? 1.09 : 1.05;
+      const hauteur = effets.tremblement ? 1.16 : effets.lueur ? 1.1 : 1.06;
       enCours.push(animerPuisLiberer(zooms[i]!, [
         { transform: 'translateY(0) scale(1)' },
-        { transform: `translateY(-16px) scale(${hauteur})`, offset: 0.5 },
+        { transform: 'translateY(4px) scale(0.97)', offset: 0.12 },
+        { transform: `translateY(-22px) scale(${hauteur})`, offset: 0.55 },
+        { transform: 'translateY(2px) scale(0.99)', offset: 0.88 },
         { transform: 'translateY(0) scale(1)' },
-      ], effets.lueur ? 700 : 520, 0, 'ease-in-out'));
+      ], duree, 0, 'ease-in-out'));
     }
-    enCours.push(animer(retournes[i]!, [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(180deg)' }], effets.lueur ? 700 : 520, 'cubic-bezier(.2,.7,.2,1)'));
+    // Le retournement dépasse un peu la position finale, puis revient : la carte a du poids.
+    enCours.push(animer(retournes[i]!, [
+      { transform: 'rotateY(0deg) rotateZ(0deg)' },
+      { transform: 'rotateY(0deg) rotateZ(-2deg)', offset: 0.12 },
+      { transform: 'rotateY(196deg) rotateZ(1.5deg)', offset: 0.72 },
+      { transform: 'rotateY(176deg) rotateZ(0deg)', offset: 0.88 },
+      { transform: 'rotateY(180deg) rotateZ(0deg)' },
+    ], duree, 'cubic-bezier(.3,.1,.3,1)'));
+    enCours.push(animerPuisLiberer(reflets[i]!, [
+      { opacity: 0, transform: 'translateX(-160%) skewX(-18deg)' }, { opacity: 0.9, offset: 0.3 }, { opacity: 0, transform: 'translateX(260%) skewX(-18deg)' },
+    ], 620, duree * 0.55, 'ease-out'));
+    if (effets.lueur) window.setTimeout(() => { if (!interrompu()) etincelles(effets.tremblement ? 26 : 12, effets.tremblement); }, reduit() ? 0 : duree * 0.6);
     // Éclat au moment où la face apparaît (holo et mieux).
     if (effets.lueur) enCours.push(animerPuisLiberer(eclat, [
       { opacity: 0, transform: 'scale(0.5)' }, { opacity: 0.95, transform: 'scale(1)', offset: 0.5 }, { opacity: 0, transform: 'scale(1.7)' },
@@ -283,6 +335,10 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
         { opacity: 0, transform: 'scale(0.2) rotate(-24deg)' }, { opacity: 1, transform: 'scale(1.25) rotate(-6deg)', offset: 0.6 }, { opacity: 1, transform: 'scale(1) rotate(-10deg)' },
       ], 380);
     }
+    // La carte suivante est prête avant qu'on la demande.
+    preparer(i + 1);
+    legende.dataset.rang = effets.tremblement ? 'rare' : effets.lueur ? 'holo' : '';
+    void animerPuisLiberer(legende, [{ opacity: 0, transform: 'translateY(8px) scale(0.92)' }, { opacity: 1, transform: 'none' }], 260);
 
     const f = FINITIONS[t.finition];
     legende.textContent = `${f.symbole} ${f.nom} · ${t.nouveau ? 'Nouvelle carte' : `×${t.exemplaires}`}`;
@@ -293,21 +349,32 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
     if (etat.etape !== 'REVELEE') return;
     const i = etat.index;
     const carte = cartesEl[i]!;
+    // Une carte ne s'envole qu'une fois : un second clic pendant son vol s'adresse déjà à la carte suivante.
+    if (carte.dataset.envol) return;
+    carte.dataset.envol = '1';
     const depart = carte.style.transform || decalage(i);
     carte.style.transition = 'none';
+    carte.style.pointerEvents = 'none';
+    carte.style.zIndex = String(n + 1);
     legende.textContent = '';
-    const sortie: Promise<void>[] = [
-      animer(carte, [
-        { opacity: 1, transform: depart },
-        { opacity: 0, transform: `translate(${direction * 130}vw, -8vh) rotate(${direction * 28}deg)` },
-      ], 380, 'ease-in'),
-    ];
-    if (effetsRevelation(tirees[i]!.finition).cinematique) sortie.push(animer(voile, [{ opacity: 0.8 }, { opacity: 0 }], 300));
-    await Promise.all(sortie);
-    if (interrompu()) return;
-    carte.remove();
+    legende.dataset.rang = '';
+    const vol = animer(carte, [
+      { opacity: 1, transform: depart },
+      { opacity: 1, transform: `translate(${direction * 38}vw, -9vh) rotate(${direction * 12}deg)`, offset: 0.45 },
+      { opacity: 0, transform: `translate(${direction * 120}vw, 4vh) rotate(${direction * 30}deg)` },
+    ], 440, 'cubic-bezier(.4,0,.7,.5)').then(() => carte.remove());
+    if (effetsRevelation(tirees[i]!.finition).cinematique) void animer(voile, [{ opacity: 0.8 }, { opacity: 0 }], 300);
     preparer(i + 1);
+    // Dernière carte : on la regarde partir avant les résultats.
+    if (i + 1 >= n) {
+      await vol;
+      if (interrompu()) return;
+      envoyer('suivante');
+      return;
+    }
+    // Sinon la carte suivante avance tout de suite, pendant que l'autre finit son vol.
     envoyer('suivante');
+    void animerPuisLiberer(zooms[i + 1]!, [{ transform: 'translateY(10px) scale(0.94)' }, { transform: 'translateY(-3px) scale(1.02)', offset: 0.7 }, { transform: 'none' }], 300);
   }
 
   // Toucher la carte du dessus : la retourner (pile) ou la lancer (révélée). Glisser : la lancer.

@@ -12,6 +12,20 @@
   overflow: hidden;
 }
 
+/* Ambiance : projecteur fixe, faisceaux qui tournent lentement, poussières qui montent. */
+.ouv-ambiance { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  background: radial-gradient(60% 42% at 50% 44%, color-mix(in srgb, var(--blanc-casse) 9%, transparent), transparent 72%); }
+.ouv-faisceaux { position: absolute; left: 50%; top: 44%; width: 160vmax; height: 160vmax; margin: -80vmax 0 0 -80vmax; opacity: 0.5;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--blanc-casse) 5%, transparent) 0deg 5deg, transparent 5deg 30deg);
+  -webkit-mask: radial-gradient(circle, #000 0%, transparent 46%); mask: radial-gradient(circle, #000 0%, transparent 46%);
+  animation: ouv-rayons 90s linear infinite; }
+.ouv-poussiere { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: var(--blanc-casse); opacity: 0; animation: ouv-poussiere 9s linear infinite; }
+@keyframes ouv-poussiere {
+  0% { opacity: 0; transform: translateY(30px) scale(0.6); }
+  25% { opacity: 0.45; }
+  100% { opacity: 0; transform: translateY(-120px) scale(1.2); }
+}
+
 .ouv-barre { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; z-index: 3; }
 .ouv-compteur { color: var(--texte-secondaire); font-size: 0.9rem; font-variant-numeric: tabular-nums; }
 .ouv-tout,
@@ -42,7 +56,10 @@
   z-index: 2;
   min-height: 380px;
 }
-.ouv-legende { margin: 0; min-height: 1.5em; font-weight: 600; text-align: center; z-index: 2; }
+.ouv-legende { margin: 0; min-height: 2.2em; padding: 6px 16px; border: 1px solid transparent; border-radius: 999px; font-weight: 600; text-align: center; z-index: 2; }
+.ouv-legende:not(:empty) { border-color: color-mix(in srgb, var(--blanc-casse) 18%, transparent); background: color-mix(in srgb, var(--surface) 80%, transparent); }
+.ouv-legende[data-rang="holo"]:not(:empty) { border-color: color-mix(in srgb, var(--blanc-casse) 55%, transparent); }
+.ouv-legende[data-rang="rare"]:not(:empty) { border-color: var(--blanc-casse); background: var(--blanc-casse); color: var(--graphite); font-weight: 700; }
 .ouv-actions { display: flex; justify-content: center; min-height: 48px; z-index: 2; }
 .ouv-aide { margin: 0; min-height: 2.6em; color: var(--texte-secondaire); font-size: 0.88rem; text-align: center; max-width: 34ch; z-index: 2; }
 
@@ -67,6 +84,18 @@
   55%, 100% { transform: translateX(330%) skewX(-12deg); }
 }
 
+/* Le booster flotte au-dessus de son ombre, devant un halo. */
+.ouv-booster-entree { position: relative; display: flex; flex-direction: column; align-items: center; }
+.ouv-flotte { position: relative; animation: ouv-flotte 4.2s ease-in-out infinite; }
+.ouv-halo { position: absolute; inset: -18% -30%; border-radius: 50%; pointer-events: none; opacity: 0.55;
+  background: radial-gradient(circle, color-mix(in srgb, var(--blanc-casse) 26%, transparent), transparent 66%); animation: ouv-halo 4.2s ease-in-out infinite; }
+.ouv-ombre-sol { width: 62%; height: 22px; margin-top: 14px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--graphite) 90%, transparent), transparent); animation: ouv-ombre-sol 4.2s ease-in-out infinite; }
+@keyframes ouv-flotte { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes ouv-halo { 0%, 100% { opacity: 0.4; transform: scale(0.96); } 50% { opacity: 0.7; transform: scale(1.04); } }
+@keyframes ouv-ombre-sol { 0%, 100% { opacity: 0.9; transform: scaleX(1); } 50% { opacity: 0.55; transform: scaleX(0.86); } }
+.ouv[data-etape="DECHIRURE"] .ouv-flotte, .ouv[data-etape="DECHIRURE"] .ouv-halo, .ouv[data-etape="DECHIRURE"] .ouv-ombre-sol { animation-play-state: paused; }
+
 /* ---------- Pile ---------- */
 .ouv-pile {
   position: relative;
@@ -75,6 +104,16 @@
 }
 .ouv-carte { position: absolute; inset: 0; touch-action: pan-y; cursor: pointer; }
 .ouv-zoom { position: absolute; inset: 0; }
+.ouv-ombre-carte { position: absolute; left: 6%; right: 6%; bottom: -5%; height: 9%; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--graphite) 95%, transparent), transparent); }
+/* Reflet de surface : une bande claire traverse la carte quand sa face apparaît. */
+.ouv-glare { position: absolute; inset: 0; border-radius: 5%; overflow: hidden; pointer-events: none; }
+.ouv-glare i { position: absolute; top: -10%; bottom: -10%; left: 0; width: 42%; opacity: 0;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--blanc-casse) 55%, transparent) 50%, transparent); }
+/* Étincelles du retournement. */
+.ouv-etincelle { position: absolute; left: 50%; top: 50%; z-index: 6; width: 9px; height: 9px; border-radius: 50%; opacity: 0; pointer-events: none;
+  background: radial-gradient(circle, var(--blanc-casse) 0%, color-mix(in srgb, var(--blanc-casse) 40%, transparent) 45%, transparent 70%); }
+.ouv-etincelle.holo { width: 12px; height: 12px; background: var(--holo); }
 .ouv-retourne { position: absolute; inset: 0; transform-style: preserve-3d; }
 .ouv-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
 .ouv-face.recto { transform: rotateY(180deg); }
@@ -87,8 +126,15 @@
     radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--blanc-casse) 8%, transparent), transparent 60%),
     linear-gradient(165deg, var(--anthracite), var(--graphite));
   border: 2px solid color-mix(in srgb, var(--gris-acier) 45%, transparent);
-  box-shadow: 0 10px 24px color-mix(in srgb, var(--graphite) 70%, transparent);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--graphite) 70%, transparent), inset 0 1px 0 color-mix(in srgb, var(--blanc-casse) 18%, transparent);
+  overflow: hidden;
 }
+/* Dos de carte : trame fine et filet intérieur. */
+.ouv-face.dos::before { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--blanc-casse) 5%, transparent) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(45deg, color-mix(in srgb, var(--blanc-casse) 5%, transparent) 0 1px, transparent 1px 9px); }
+.ouv-face.dos::after { content: ''; position: absolute; inset: 5%; border: 1px solid color-mix(in srgb, var(--blanc-casse) 22%, transparent); border-radius: 4%; pointer-events: none; }
+.ouv-face.dos img { position: relative; z-index: 1; }
 .ouv-face.dos img { width: 38%; opacity: 0.9; }
 
 /* Lueur avant le retournement (holo et mieux). */
@@ -176,5 +222,6 @@
   .ouv-reflet { animation: none !important; transform: translateX(80%) skewX(-12deg); }
   .ouv-pile.avec-lueur .ouv-lueur { animation: none !important; opacity: 0.6; }
   .ouv-pile.avec-rayons .ouv-rayons { animation: none !important; }
+  .ouv-faisceaux, .ouv-poussiere, .ouv-flotte, .ouv-halo, .ouv-ombre-sol { animation: none !important; }
   .ouv-grille li { animation: none !important; }
 }
