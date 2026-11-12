@@ -1,11 +1,11 @@
 // Deux IA simples pour la simulation (tâche 26) ; l'IA « normale » de l'écran de combat viendra à la tâche 27.
 //  - hasard : choisit uniformément parmi les actions légales ;
-//  - gloutonne : prépare son tour (Relèves, Bases, énergie, cartes qui piochent ou soignent), puis choisit l'attaque
+//  - gloutonne : prépare son tour (Relèves, Bases, énergie, cartes Soutien quand elles servent), puis choisit l'attaque
 //    qui fait le plus de dégâts (simulée sur une copie de la partie).
 // Aléatoire : rng.ts avec une graine (règle 2 d’AGENTS.md).
 import { rngAGraine, type Rng } from '../rng';
-import type { CodeEnergie, ElementId } from '../types';
-import type { Bibliotheque, Partie, PersoEnJeu } from './etat';
+import type { CodeEnergie, ElementId, Personnage } from '../types';
+import type { Bibliotheque, JoueurCombat, Partie, PersoEnJeu } from './etat';
 import { valeurDegats } from './fiches';
 import { autre } from './etat';
 import { actionsLegales, appliquer, peutPayer, type Action } from './moteur';
@@ -83,6 +83,53 @@ export function iaGloutonne(graine: string): IA {
     if (J.actif && J.actif.degats >= 30) {
       const soin = jouer.find((x) => ['sou-onigiri', 'sou-infirmerie', 'sou-bandage'].includes(partie.cartes[x.carte]!) && (!x.choix.cible || x.choix.cible === J.actif!.uid));
       if (soin) return soin;
+    }
+    // Autres cartes Soutien (tâche 29) : chacune quand elle sert, jamais à vide.
+    if (jouer.length && J.actif) {
+      const actif = J.actif;
+      const idDe = (x: { carte: string }): string => partie.cartes[x.carte]!;
+      const allies = [actif, ...J.banc];
+      const adverse = partie.joueurs[autre(partie.joueurActif)];
+      const pvRestants = (x: PersoEnJeu): number => bib.personnages.get(x.id)!.pv - x.degats;
+      const peutAttaquer = de('attaquer').length > 0;
+      const bancPret = J.banc.some((x) => payable(bib, x, x.energies));
+      // Kunaï : la cible où il fait le plus (un K.-O. d'abord).
+      const kunai = jouer.filter((x) => idDe(x) === 'sou-kunai').map((x) => ({ x, g: gain(partie, bib, x) })).sort((u, v) => v.g - u.g)[0];
+      if (kunai && kunai.g > 0) return kunai.x;
+      // Antidote : seulement sur un personnage qui a un état.
+      const antidote = jouer.find((x) => idDe(x) === 'sou-antidote' && allies.some((y) => y.uid === x.choix.cible && y.etats.length > 0));
+      if (antidote) return antidote;
+      // Énergie en plus : Relique maudite (la cible garde plus de 30 PV), Pierre d'énergie (s'il reste une autre carte à défausser).
+      const relique = jouer.find((x) => idDe(x) === 'sou-relique-maudite' && allies.some((y) => y.uid === x.choix.cible && pvRestants(y) > 30));
+      if (relique) return relique;
+      const pierre = J.main.length >= 3 ? jouer.find((x) => idDe(x) === 'sou-pierre-energie') : undefined;
+      if (pierre) return pierre;
+      // Talisman : quand l'actif va rester en place et encaisser.
+      const talisman = peutAttaquer ? jouer.find((x) => idDe(x) === 'sou-talisman') : undefined;
+      if (talisman) return talisman;
+      // Actif blessé ou incapable d'attaquer, et un personnage du banc prêt : Appel au renfort, sinon Fumigène (le Repli suit).
+      if (bancPret && (!peutAttaquer || actif.degats >= 40)) {
+        const pretUid = (uid: string | undefined): boolean => J.banc.some((x) => x.uid === uid && payable(bib, x, x.energies));
+        const appel = jouer.find((x) => idDe(x) === 'sou-appel-renfort' && pretUid(x.choix.echange ?? x.choix.cible));
+        if (appel) return appel;
+        if (!peutAttaquer && !J.tour.repliGratuit) { const fumigene = jouer.find((x) => idDe(x) === 'sou-fumigene'); if (fumigene) return fumigene; }
+      }
+      // Briefing tactique : quand l'adversaire a une grosse main.
+      if (adverse.main.length >= 5) { const briefing = jouer.find((x) => idDe(x) === 'sou-briefing-tactique'); if (briefing) return briefing; }
+      // Terrains : un terrain qui sert plus à ce joueur qu'à l'adversaire, s'il n'est pas déjà en jeu.
+      const enJeu = (j: JoueurCombat): Personnage[] => [...(j.actif ? [j.actif] : []), ...j.banc].map((x) => bib.personnages.get(x.id)!);
+      const miens = enJeu(J);
+      const siens = enJeu(adverse);
+      const avantage: Record<string, (l: Personnage[]) => number> = {
+        'sou-shibuya-nuit': (l) => l.filter((x) => x.element === 'tenebres').length,
+        'sou-arene-boxe': (l) => l.filter((x) => x.type === 'base').length,
+        'sou-mont-sagiri': (l) => l.filter((x) => x.element === 'eau' || x.element === 'vent').length,
+        // Mur Maria gêne celui qui a le plus besoin de se replier : l'actif le plus blessé.
+        'sou-mur-maria': (l) => (l === miens ? (adverse.actif?.degats ?? 0) : actif.degats) / 40,
+      };
+      const terrain = jouer.map((x) => ({ x, id: idDe(x) })).filter(({ id }) => avantage[id] && partie.terrain?.id !== id)
+        .map(({ x, id }) => ({ x, g: avantage[id]!(miens) - avantage[id]!(siens) })).sort((u, v) => v.g - u.g)[0];
+      if (terrain && terrain.g > 0) return terrain.x;
     }
     // Talents : ceux qui infligent des dégâts d'abord, sinon les autres.
     const talents = de('talent');

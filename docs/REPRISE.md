@@ -111,9 +111,9 @@ On a décidé d'**arrêter l'équilibrage par simulation** et de passer aux vrai
 | 22 à 24 | Mise en ligne, comptes Discord et sauvegarde en ligne, classement du draft |
 | 25 | Données de combat et nouvelle mise en page des cartes (fait) |
 | 26 + 4 tours d'équilibrage | Moteur de combat dans `src/core/combat/`, effets structurés, simulation (fait, dernier commit `daf8099`) |
-| **27** | **À faire : combat contre l'IA** |
-| 28 | Constructeur de decks et decks de départ |
-| 29 | Cartes Soutien dans le jeu |
+| 27 | Combat contre l’IA (fait) |
+| 28 | Constructeur de decks et decks de départ (fait : The Boxer et Spy x Family) |
+| 29 | Cartes Soutien dans le jeu (fait) |
 | 30 | Vague 3 (Naruto, One Piece) |
 | plus tard | Combat entre amis (Supabase temps réel), classement de collection (demanderait des tirages côté serveur) |
 

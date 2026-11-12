@@ -43,7 +43,7 @@ beforeAll(async () => {
   const projet = path.resolve(new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
   racine = await fs.mkdtemp(path.join(os.tmpdir(), 'kirafuda-admin-'));
   await fs.mkdir(path.join(racine, 'src', 'data'), { recursive: true });
-  for (const f of ['extensions.json', 'extension-lancement.json', 'extension-renforts.json', 'booster-lancement.json']) {
+  for (const f of ['extensions.json', 'extension-lancement.json', 'extension-renforts.json', 'booster-lancement.json', 'soutiens.json']) {
     await fs.copyFile(path.join(projet, 'src', 'data', f), path.join(racine, 'src', 'data', f));
   }
   const { adminImages } = await charger(new URL('../outils/vite-admin.ts', import.meta.url).href);

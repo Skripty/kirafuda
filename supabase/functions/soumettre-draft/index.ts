@@ -1,5 +1,5 @@
 // Fonction Supabase « soumettre-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : 516eca19804e4f41
+// Empreinte des sources : 84d6276a1c055709
 // Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/combat/fiches.ts, src/core/draft.ts, src/core/extension.ts, src/core/regles.ts, src/core/rng.ts, src/core/tirage.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/soumettre-draft.ts
 // @ts-nocheck
 const id$2 = "booster-lancement";
@@ -7146,6 +7146,7 @@ const extensions = [
     nom: "Lancement",
     edition: 1,
     booster: "booster-lancement.json",
+    soutiens: "soutiens.json",
     vagues: [
       {
         id: "lancement",
@@ -7203,7 +7204,13 @@ function indexer(extension2) {
     parPerso.set(c.personnage, [...parPerso.get(c.personnage) ?? [], c]);
     parFinition.set(c.finition, [...parFinition.get(c.finition) ?? [], c]);
   }
+  const soutiens = [...extension2.soutiens ?? []].sort((a, b) => (a.numero ?? 0) - (b.numero ?? 0));
+  const soutiensParId = new Map(soutiens.map((s) => [s.id, s]));
   const index = {
+    soutien: (id2) => soutiensParId.get(id2),
+    soutiens,
+    soutiensParFinition: (f) => soutiens.filter((s) => s.finition === f),
+    tirables: (f) => [...(parFinition.get(f) ?? []).map((c) => c.id), ...soutiens.filter((s) => s.finition === f).map((s) => s.id)],
     carte: (id2) => cartes2.get(id2),
     personnage: (id2) => personnages2.get(id2),
     personnageDe: (carte) => {
@@ -7308,12 +7315,11 @@ function tirerBooster(booster, extension2, rng, options = {}) {
   for (let emplacement = 1; emplacement <= booster.cartesParBooster; emplacement++) {
     const garantie = options.tableGarantie !== void 0 && emplacement === booster.cartesParBooster;
     const finition = rng.ponderer(garantie ? options.tableGarantie : tableDeLEmplacement(booster, emplacement, exceptionnel));
-    const candidates = index.parFinition(finition);
+    const candidates = options.avecSoutiens ? index.tirables(finition) : index.parFinition(finition).map((c) => c.id);
     if (candidates.length === 0) {
       throw new Error(`Extension « ${extension2.id} » : aucune carte de rareté « ${finition} » à tirer.`);
     }
-    const carte = candidates[rng.entier(candidates.length)];
-    cartes2.push({ carteId: carte.id, finition: carte.finition, emplacement });
+    cartes2.push({ carteId: candidates[rng.entier(candidates.length)], finition, emplacement });
   }
   return { exceptionnel, cartes: cartes2 };
 }
@@ -7594,7 +7600,13 @@ function construireCatalogue(entrees, fichiers2) {
       if (donnees.id !== v.id) erreurs.push(`${rv} : le fichier « ${v.fichier} » contient « ${donnees.id} ».`);
       vagues.push({ id: v.id, nom: v.nom, numero: j + 1, disponibleLe: v.disponibleLe, donnees });
     }
-    catalogue2.push({ id: e.id, nom: e.nom, edition: e.edition, booster, vagues });
+    let soutiens;
+    if (e.soutiens) {
+      const contenu = fichiers2[e.soutiens];
+      if (!contenu || !Array.isArray(contenu.soutiens)) erreurs.push(`${ref} : fichier de cartes Soutien « ${e.soutiens} » introuvable ou sans liste « soutiens ».`);
+      else soutiens = contenu.soutiens;
+    }
+    catalogue2.push({ id: e.id, nom: e.nom, edition: e.edition, booster, vagues, ...soutiens ? { soutiens } : {} });
   }
   return { catalogue: catalogue2, erreurs };
 }
@@ -7616,7 +7628,8 @@ function assembler(ext, n = ext.vagues.length) {
     total: bases.length,
     totalAvecSecretes: cartes2.length,
     personnages: vagues.flatMap((v) => v.donnees.personnages),
-    cartes: cartes2
+    cartes: cartes2,
+    ...ext.soutiens?.length ? { soutiens: ext.soutiens.map((s, i) => ({ ...s, numero: i + 1 })) } : {}
   };
   cache2.set(n, extension2);
   return extension2;
@@ -7639,14 +7652,19 @@ function fusionner(extensions2) {
     total: extensions2.reduce((n, e) => n + e.total, 0),
     totalAvecSecretes: extensions2.reduce((n, e) => n + e.totalAvecSecretes, 0),
     personnages: extensions2.flatMap((e) => e.personnages),
-    cartes: extensions2.flatMap((e) => e.cartes)
+    cartes: extensions2.flatMap((e) => e.cartes),
+    soutiens: extensions2.flatMap((e) => e.soutiens ?? [])
   };
   fusions.set(cle, fusion);
   return fusion;
 }
 const modules = /* @__PURE__ */ Object.assign({ "../../src/data/booster-lancement.json": __vite_glob_0_0, "../../src/data/extension-lancement.json": __vite_glob_0_1, "../../src/data/extension-renforts.json": __vite_glob_0_2 });
 const fichiers = Object.fromEntries(Object.entries(modules).map(([chemin, contenu]) => [chemin.replace("../../src/data/", ""), contenu]));
-const { catalogue, erreurs: erreursCatalogue } = construireCatalogue(liste.extensions, fichiers);
+const { catalogue, erreurs: erreursCatalogue } = construireCatalogue(
+  // Sans les cartes Soutien : le draft ne tire que des personnages.
+  liste.extensions.map(({ soutiens: _soutiens, ...e }) => e),
+  fichiers
+);
 const themes = [
   {
     id: "orage-de-feu",

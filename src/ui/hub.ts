@@ -11,10 +11,9 @@ import { delaiAvantRecompense, formaterDelai, prochaineRecompense, progressionJo
 import { genererDraft, type SourcesDraft, type Theme } from '../core/draft';
 import { semaineDraft } from '../core/classement';
 import { soldePoints } from '../core/boutique';
-import { indexer } from '../core/extension';
 import { styleAccent } from './booster';
 import { creerBooster3D } from './booster3d';
-import { creerCarte } from './carte';
+import { creerCarteDuJeu } from './carte-soutien';
 import { creerBlocQuetesDuJour, creerCalendrier } from './quetes';
 import type { CibleReclamation, VueLancement, VueQuetes } from '../core/quetes';
 import type { Compte } from '../en-ligne/compte';
@@ -298,11 +297,9 @@ export function creerHub(o: OptionsHub): HTMLElement {
   } else {
     const mini = el('div', 'acc-mini-cartes');
     const extDerniere = extension;
-    const indexDerniere = indexer(extDerniere);
     for (const t of derniere.cartes) {
-      const c = indexDerniere.carte(t.carteId);
-      if (!c) continue;
-      const v = creerCarte(c, extDerniere, { interactive: false });
+      const v = creerCarteDuJeu(t.carteId, extDerniere, { interactive: false });
+      if (!v) continue;
       v.style.setProperty('--carte-largeur', '140px');
       mini.append(v);
     }

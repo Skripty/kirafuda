@@ -10,11 +10,14 @@ import {
   series,
   versions,
   type EntreeCollection,
+  type EntreeSoutien,
   type Filtres,
+  entreesSoutiens,
 } from '../core/collection';
 import { formaterCote, formaterTendance, tendanceCote } from '../core/cote';
 import type { ElementId, Extension, FinitionId, Popularite, Sauvegarde } from '../core/types';
 import { creerCarte, numeroCarte } from './carte';
+import { TYPES_SOUTIEN, creerCarteSoutien, numeroSoutien } from './carte-soutien';
 import { iconeElement } from './element';
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, classe?: string, texte?: string): HTMLElementTagNameMap[K] {
@@ -108,6 +111,34 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
 
   main.append(entete, progression, zoneFiltres, resume, grille);
 
+  // ---------- Cartes Soutien (Objets, Soutiens, Terrains) : après les personnages, sans cote ni filtre ----------
+  const soutiens = entreesSoutiens(sauvegarde, extension);
+  if (soutiens.length > 0) {
+    const section = el('section', 'col-soutiens');
+    const possedes = soutiens.filter((e) => e.exemplaires > 0).length;
+    const titre = el('h2', undefined, 'Cartes Soutien');
+    titre.id = 'col-soutiens-titre';
+    section.setAttribute('aria-labelledby', titre.id);
+    section.append(titre, el('p', 'col-resume', `${possedes} / ${soutiens.length} possédées · Objets ♦, Soutiens ♦♦, Terrains ♦♦♦. Elles se tirent dans les boosters et se jouent en combat.`));
+    const liste = el('ul', 'col-grille');
+    for (const e of soutiens) {
+      const li = el('li');
+      const possedee = e.exemplaires > 0;
+      const tuileSoutien = el('button', `col-tuile${possedee ? '' : ' manquante'}`);
+      tuileSoutien.type = 'button';
+      tuileSoutien.setAttribute('aria-label', `${e.soutien.nom}, carte ${TYPES_SOUTIEN[e.soutien.type].nom}, ${FINITIONS[e.soutien.finition].nom}, `
+        + `${possedee ? pluriel(e.exemplaires, 'exemplaire') : 'non possédée'} : inspecter`);
+      tuileSoutien.addEventListener('click', () => inspecterSoutien(e));
+      const visuel = creerCarteSoutien(e.soutien, extension, { interactive: false });
+      visuel.style.setProperty('--carte-largeur', '100%');
+      tuileSoutien.append(visuel, el('span', 'col-tuile-legende', possedee ? `×${e.exemplaires}` : 'Non possédée'));
+      li.append(tuileSoutien);
+      liste.append(li);
+    }
+    section.append(liste);
+    main.append(section);
+  }
+
   // ---------- Inspection ----------
   const dialogue = el('dialog', 'col-inspection');
   dialogue.setAttribute('aria-labelledby', 'col-inspection-titre');
@@ -115,6 +146,32 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
   dialogue.addEventListener('click', (e) => {
     if (e.target === dialogue) dialogue.close(); // clic sur le fond
   });
+
+  /** Fiche d'une carte Soutien : la carte en grand, son type, sa règle de jeu et le nombre d'exemplaires. */
+  function inspecterSoutien(entree: EntreeSoutien): void {
+    const { soutien } = entree;
+    const type = TYPES_SOUTIEN[soutien.type];
+    const contenu = el('div', 'col-inspection-contenu');
+    const haut = el('div', 'col-inspection-haut');
+    const h2 = el('h2', undefined, soutien.nom);
+    h2.id = 'col-inspection-titre';
+    const fermer = el('button', 'col-fermer', 'Fermer');
+    fermer.type = 'button';
+    fermer.addEventListener('click', () => dialogue.close());
+    haut.append(h2, fermer);
+    const possedee = entree.exemplaires > 0;
+    const visuel = creerCarteSoutien(soutien, extension);
+    visuel.style.setProperty('--carte-largeur', 'min(300px, 72vw)');
+    const cadreVisuel = el('div', `col-inspection-visuel${possedee ? '' : ' manquante'}`);
+    cadreVisuel.append(visuel);
+    if (!possedee) cadreVisuel.append(el('span', 'col-badge-manquante', 'Non possédée'));
+    const infos = el('p', 'col-inspection-infos',
+      `${numeroSoutien(soutien, soutiens.length)} · ${type.nom} (${type.regle.toLowerCase()}) · ${libelleFinition(soutien.finition)} · ${possedee ? pluriel(entree.exemplaires, 'exemplaire') : 'non possédée'}`);
+    contenu.append(haut, cadreVisuel, infos, el('p', 'col-inspection-cote', soutien.texte));
+    dialogue.replaceChildren(contenu);
+    if (!dialogue.open) dialogue.showModal();
+    if (possedee) onInspecter();
+  }
 
   function inspecter(entree: EntreeCollection): void {
     const { carte, personnage } = entree;

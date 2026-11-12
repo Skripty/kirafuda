@@ -298,7 +298,7 @@ function persoEnJeuValide(x: unknown): boolean {
 function lire(d: Record<string, unknown>, contexte: ContexteValidation): { sauvegarde: Sauvegarde } | { erreurs: string[] } {
   const erreurs: string[] = [];
   const connues = contexte.extensions ?? (contexte.extension ? [contexte.extension] : []);
-  const ids = contexte.refuserCartesInconnues && connues.length > 0 ? new Set(connues.flatMap((e) => e.cartes.map((c) => c.id))) : null;
+  const ids = contexte.refuserCartesInconnues && connues.length > 0 ? new Set(connues.flatMap((e) => [...e.cartes.map((c) => c.id), ...(e.soutiens ?? []).map((x) => x.id)])) : null;
   const carteConnue = (id: string): boolean => !ids || ids.has(id);
 
   if (!estEntier(d.sceaux, 0)) erreurs.push('Sceaux : un entier positif ou nul est attendu.');

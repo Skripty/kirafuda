@@ -1,5 +1,5 @@
 // Fonction Supabase « reclamer-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : 48d7a46e4d2a18bf
+// Empreinte des sources : da3ce6e29c3c7fce
 // Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/draft.ts, src/core/regles.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/reclamer-draft.ts
 // @ts-nocheck
 const id$2 = "booster-lancement";
@@ -7146,6 +7146,7 @@ const extensions = [
     nom: "Lancement",
     edition: 1,
     booster: "booster-lancement.json",
+    soutiens: "soutiens.json",
     vagues: [
       {
         id: "lancement",
@@ -7241,7 +7242,13 @@ function construireCatalogue(entrees, fichiers2) {
       if (donnees.id !== v.id) erreurs.push(`${rv} : le fichier « ${v.fichier} » contient « ${donnees.id} ».`);
       vagues.push({ id: v.id, nom: v.nom, numero: j + 1, disponibleLe: v.disponibleLe, donnees });
     }
-    catalogue2.push({ id: e.id, nom: e.nom, edition: e.edition, booster, vagues });
+    let soutiens;
+    if (e.soutiens) {
+      const contenu = fichiers2[e.soutiens];
+      if (!contenu || !Array.isArray(contenu.soutiens)) erreurs.push(`${ref} : fichier de cartes Soutien « ${e.soutiens} » introuvable ou sans liste « soutiens ».`);
+      else soutiens = contenu.soutiens;
+    }
+    catalogue2.push({ id: e.id, nom: e.nom, edition: e.edition, booster, vagues, ...soutiens ? { soutiens } : {} });
   }
   return { catalogue: catalogue2, erreurs };
 }
@@ -7263,7 +7270,8 @@ function assembler(ext, n = ext.vagues.length) {
     total: bases.length,
     totalAvecSecretes: cartes2.length,
     personnages: vagues.flatMap((v) => v.donnees.personnages),
-    cartes: cartes2
+    cartes: cartes2,
+    ...ext.soutiens?.length ? { soutiens: ext.soutiens.map((s, i) => ({ ...s, numero: i + 1 })) } : {}
   };
   cache.set(n, extension2);
   return extension2;
@@ -7275,7 +7283,11 @@ function disponiblesAu(catalogue2, jour) {
 const disponiblesPourDraft = (catalogue2, maintenant) => disponiblesAu(catalogue2, debutSemaine(maintenant));
 const modules = /* @__PURE__ */ Object.assign({ "../../src/data/booster-lancement.json": __vite_glob_0_0, "../../src/data/extension-lancement.json": __vite_glob_0_1, "../../src/data/extension-renforts.json": __vite_glob_0_2 });
 const fichiers = Object.fromEntries(Object.entries(modules).map(([chemin, contenu]) => [chemin.replace("../../src/data/", ""), contenu]));
-const { catalogue, erreurs: erreursCatalogue } = construireCatalogue(liste.extensions, fichiers);
+const { catalogue, erreurs: erreursCatalogue } = construireCatalogue(
+  // Sans les cartes Soutien : le draft ne tire que des personnages.
+  liste.extensions.map(({ soutiens: _soutiens, ...e }) => e),
+  fichiers
+);
 const themes = [
   {
     id: "orage-de-feu",

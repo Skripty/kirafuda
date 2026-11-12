@@ -7,11 +7,11 @@
 // des vagues sorties : cartes de base d'abord (vague après vague), puis cartes secrètes par rareté.
 import { jourLocal } from './economie';
 import { indexer } from './extension';
-import { ORDRE_FINITIONS } from './regles';
+import { FINITIONS, ORDRE_FINITIONS } from './regles';
 import { validerBooster, validerExtension } from './validation';
 import { lireFichierPopularite, validerBase, type BasePopularite } from './popularite';
 import { debutSemaine, validerThemes, type Theme } from './draft';
-import type { Booster, Carte, Extension } from './types';
+import type { Booster, Carte, Extension, CarteSoutien } from './types';
 
 /** Une vague dans src/data/extensions.json. */
 export interface EntreeVague {
@@ -28,6 +28,8 @@ export interface EntreeExtension {
   nom: string;
   edition: number;
   booster: string;
+  /** Fichier des cartes Soutien de l'extension (facultatif) : { soutiens: [...] }. */
+  soutiens?: string;
   vagues: EntreeVague[];
 }
 
@@ -48,6 +50,8 @@ export interface ExtensionCatalogue {
   edition: number;
   booster: Booster;
   vagues: Vague[];
+  /** Cartes Soutien de l'extension (tirées dans son booster). */
+  soutiens?: CarteSoutien[];
 }
 
 export type Catalogue = ExtensionCatalogue[];
@@ -101,7 +105,13 @@ export function construireCatalogue(entrees: EntreeExtension[], fichiers: Record
       if (donnees.id !== v.id) erreurs.push(`${rv} : le fichier « ${v.fichier} » contient « ${donnees.id} ».`);
       vagues.push({ id: v.id, nom: v.nom, numero: j + 1, disponibleLe: v.disponibleLe, donnees });
     }
-    catalogue.push({ id: e.id, nom: e.nom, edition: e.edition, booster, vagues });
+    let soutiens: CarteSoutien[] | undefined;
+    if (e.soutiens) {
+      const contenu = fichiers[e.soutiens] as { soutiens?: CarteSoutien[] } | undefined;
+      if (!contenu || !Array.isArray(contenu.soutiens)) erreurs.push(`${ref} : fichier de cartes Soutien « ${e.soutiens} » introuvable ou sans liste « soutiens ».`);
+      else soutiens = contenu.soutiens;
+    }
+    catalogue.push({ id: e.id, nom: e.nom, edition: e.edition, booster, vagues, ...(soutiens ? { soutiens } : {}) });
   }
   return { catalogue, erreurs };
 }
@@ -134,6 +144,7 @@ export function assembler(ext: ExtensionCatalogue, n: number = ext.vagues.length
     totalAvecSecretes: cartes.length,
     personnages: vagues.flatMap((v) => v.donnees.personnages),
     cartes,
+    ...(ext.soutiens?.length ? { soutiens: ext.soutiens.map((s, i) => ({ ...s, numero: i + 1 })) } : {}),
   };
   cache.set(n, extension);
   return extension;
@@ -186,6 +197,17 @@ export function validerCatalogue(catalogue: Catalogue): string[] {
       for (const c of v.donnees.cartes ?? []) unique('carte', c.id, v.id);
     }
     unique('booster', ext.booster.id, ext.id);
+    // Cartes Soutien : un id unique (jamais celui d'une carte de personnage), un type et une rareté connus, un texte.
+    for (const s of ext.soutiens ?? []) {
+      const ref = `${ext.nom}, carte Soutien « ${String(s?.id)} »`;
+      if (typeof s?.id !== 'string' || !s.id) { erreurs.push(`${ext.nom} : une carte Soutien n'a pas d'id.`); continue; }
+      unique('carte', s.id, 'soutiens');
+      if (typeof s.nom !== 'string' || !s.nom.trim()) erreurs.push(`${ref} : nom manquant.`);
+      if (typeof s.texte !== 'string' || !s.texte.trim()) erreurs.push(`${ref} : texte manquant.`);
+      if (!['objet', 'soutien', 'terrain'].includes(s.type)) erreurs.push(`${ref} : type inconnu « ${String(s.type)} » (objet, soutien ou terrain).`);
+      if (!Object.hasOwn(FINITIONS, s.finition)) erreurs.push(`${ref} : rareté inconnue « ${String(s.finition)} ».`);
+      if (!Array.isArray(s.effets)) erreurs.push(`${ref} : liste « effets » manquante.`);
+    }
   }
   if (erreurs.length === 0) for (const ext of catalogue) erreurs.push(...validerExtension(assembler(ext)));
   return erreurs;
@@ -241,6 +263,7 @@ export function fusionner(extensions: Extension[]): Extension {
     totalAvecSecretes: extensions.reduce((n, e) => n + e.totalAvecSecretes, 0),
     personnages: extensions.flatMap((e) => e.personnages),
     cartes: extensions.flatMap((e) => e.cartes),
+    soutiens: extensions.flatMap((e) => e.soutiens ?? []),
   };
   fusions.set(cle, fusion);
   return fusion;

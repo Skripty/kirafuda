@@ -36,7 +36,7 @@ let exceptionnels = 0;
 const rng = rngSecurise();
 const debut = performance.now();
 for (let i = 0; i < OUVERTURES; i++) {
-  const tirage = tirerBooster(booster, extension, rng);
+  const tirage = tirerBooster(booster, extension, rng, { avecSoutiens: true });
   if (tirage.exceptionnel) exceptionnels++;
   for (const c of tirage.cartes) {
     const g = tirage.exceptionnel

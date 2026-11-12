@@ -1,6 +1,6 @@
 // Tirage d'un booster (GDD, « Boosters », système TCG Pocket).
 // Ordre : booster exceptionnel ou non, puis pour chaque emplacement : une rareté dans la table,
-// puis une carte de cette rareté à poids égaux. Aucun tirage de rang ni de finition par personnage.
+// puis une carte de cette rareté à poids égaux (personnages et, dans les boosters du jeu, cartes Soutien).
 // Logique pure : le résultat est figé avant toute animation.
 import { TOTAL_POIDS } from './regles';
 import { indexer } from './extension';
@@ -27,6 +27,11 @@ export interface OptionsTirage {
    * est tirée dans cette table (tableGarantie de quetes.json). Le reste du tirage est normal.
    */
   tableGarantie?: TablePoids<FinitionId>;
+  /**
+   * Boosters du jeu : les cartes Soutien de l'extension se tirent avec les personnages de même rareté.
+   * Le draft ne les prend pas (ses 15 cartes sont des personnages : il n'active pas cette option).
+   */
+  avecSoutiens?: boolean;
 }
 
 export function tirerBooster(booster: Booster, extension: Extension, rng: Rng, options: OptionsTirage = {}): TirageBooster {
@@ -37,12 +42,11 @@ export function tirerBooster(booster: Booster, extension: Extension, rng: Rng, o
   for (let emplacement = 1; emplacement <= booster.cartesParBooster; emplacement++) {
     const garantie = options.tableGarantie !== undefined && emplacement === booster.cartesParBooster;
     const finition = rng.ponderer(garantie ? options.tableGarantie! : tableDeLEmplacement(booster, emplacement, exceptionnel));
-    const candidates = index.parFinition(finition);
+    const candidates = options.avecSoutiens ? index.tirables(finition) : index.parFinition(finition).map((c) => c.id);
     if (candidates.length === 0) {
       throw new Error(`Extension « ${extension.id} » : aucune carte de rareté « ${finition} » à tirer.`);
     }
-    const carte = candidates[rng.entier(candidates.length)]!;
-    cartes.push({ carteId: carte.id, finition: carte.finition, emplacement });
+    cartes.push({ carteId: candidates[rng.entier(candidates.length)]!, finition, emplacement });
   }
   return { exceptionnel, cartes };
 }

@@ -1,11 +1,9 @@
 // Écran de résultats : les 5 cartes, nouveau ou ×N, points gagnés.
-import { creerCarte } from '../carte';
+import { creerCarteDuJeu } from '../carte-soutien';
 import { FINITIONS } from '../../core/regles';
-import { indexer } from '../../core/extension';
 import type { Extension, Ouverture } from '../../core/types';
 
 export function creerResultats(ouverture: Ouverture, extension: Extension, onTerminer: () => void): HTMLElement {
-  const index = indexer(extension);
   const section = document.createElement('section');
   section.className = 'ouv-resultats';
 
@@ -21,11 +19,10 @@ export function creerResultats(ouverture: Ouverture, extension: Extension, onTer
   const liste = document.createElement('ul');
   liste.className = 'ouv-grille';
   for (const tiree of ouverture.cartes) {
-    const carte = index.carte(tiree.carteId);
-    if (!carte) continue;
+    const visuel = creerCarteDuJeu(tiree.carteId, extension, { interactive: false });
+    if (!visuel) continue;
     const f = FINITIONS[tiree.finition];
     const li = document.createElement('li');
-    const visuel = creerCarte(carte, extension, { interactive: false });
     visuel.style.setProperty('--carte-largeur', '100%');
     const legende = document.createElement('p');
     legende.className = 'ouv-grille-legende';

@@ -45,7 +45,7 @@ export function ouvrir(
   // Booster garanti en attente (tout premier booster, jour 7 du calendrier) : une ★ ou plus en 5e position.
   const garanti = sauvegarde.quetes.boostersGarantis > 0;
   if (garanti && !tableGarantie) throw new Error('Booster garanti en attente : la table garantie (quetes.json) est obligatoire.');
-  const tirage = tirerBooster(booster, extension, rng, garanti ? { tableGarantie } : {});
+  const tirage = tirerBooster(booster, extension, rng, { avecSoutiens: true, ...(garanti ? { tableGarantie } : {}) });
 
   const collection = { ...sauvegarde.collection };
   const cartes: Ouverture['cartes'] = tirage.cartes.map((c) => {

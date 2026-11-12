@@ -107,6 +107,7 @@ export function adminImages(): Plugin {
         const fichierDeVague = new Map<string, string>();
         for (const e of liste.extensions) {
           fichiers[nomSur(e.booster)] = JSON.parse(await readFile(path.join(dossierDonnees, e.booster), 'utf8'));
+          if (e.soutiens) fichiers[nomSur(e.soutiens)] = JSON.parse(await readFile(path.join(dossierDonnees, nomSur(e.soutiens)), 'utf8'));
           for (const v of e.vagues) {
             const texte = await readFile(path.join(dossierDonnees, nomSur(v.fichier)), 'utf8');
             textes.set(v.fichier, texte);

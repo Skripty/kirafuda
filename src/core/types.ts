@@ -1,4 +1,4 @@
-import type { EffetAttaque, EffetTalent } from './combat/effets';
+import type { EffetAction, EffetAttaque, EffetTalent } from './combat/effets';
 import type { Deck, Partie } from './combat/etat';
 
 // Modèle de données de Kirafuda (version 1).
@@ -95,6 +95,21 @@ export interface Carte {
   vague?: string;
 }
 
+/**
+ * Carte Soutien (src/data/soutiens.json, docs/COMBAT.md) : Objet (♦), Soutien (♦♦) ou Terrain (♦♦♦).
+ * Pas de personnage, pas de PV : un texte et des effets lus par le moteur de combat.
+ */
+export interface CarteSoutien {
+  id: string;           // ex. « sou-onigiri »
+  nom: string;
+  type: 'objet' | 'soutien' | 'terrain';
+  texte: string;
+  finition: FinitionId;
+  effets: EffetAction[];
+  /** Numéro affiché (« S01/20 »), donné par l'ordre du fichier. */
+  numero?: number;
+}
+
 export interface Extension {
   id: string;
   nom: string;
@@ -105,6 +120,11 @@ export interface Extension {
   totalAvecSecretes: number;
   personnages: Personnage[];
   cartes: Carte[];
+  /**
+   * Cartes Soutien de l'extension (tâche 29) : tirées dans les boosters avec les personnages de même rareté,
+   * comptées dans la collection par leur id. Elles ne font pas partie de `cartes` (ni cote, ni draft, ni numéro /total).
+   */
+  soutiens?: CarteSoutien[];
 }
 
 /** Poids entiers sur 100 000 (1 = 0,001 %). Chaque table totalise exactement 100 000. */

@@ -19,7 +19,8 @@ export const soldePoints = (s: Sauvegarde, extension: Extension): number => s.po
 
 /** Échange des points de l'extension contre un exemplaire d'une carte, au prix de sa rareté. */
 export function acheter(s: Sauvegarde, extension: Extension, carteId: string): ResultatAchat {
-  const carte = indexer(extension).carte(carteId);
+  const index = indexer(extension);
+  const carte = index.carte(carteId) ?? index.soutien(carteId);
   if (!carte) return { ok: false, raison: 'carte-inconnue' };
   const prix = prixAchat(carte.finition);
   const solde = soldePoints(s, extension);

@@ -2,7 +2,8 @@
 // et enregistré (règle 1) : rien ici ne tire ni n'écrit de cartes.
 // Les étapes et les effets viennent de src/core/revelation.ts (machine à états testée).
 import './ouverture.css';
-import { creerCarte, prechargerImages } from '../carte';
+import { prechargerImages } from '../carte';
+import { creerCarteDuJeu } from '../carte-soutien';
 import { creerBooster3D } from '../booster3d';
 import { creerResultats } from './resultats';
 import { FINITIONS } from '../../core/regles';
@@ -128,9 +129,9 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
   /** Prépare la face de la carte du dessus (images chargées avant le retournement). */
   function preparer(i: number): void {
     const t = tirees[i];
-    const carte = t && index.carte(t.carteId);
-    if (!t || !carte || rectos[i]!.childElementCount > 0) return;
-    const face = creerCarte(carte, o.extension);
+    if (!t || rectos[i]!.childElementCount > 0) return;
+    const face = creerCarteDuJeu(t.carteId, o.extension);
+    if (!face) return;
     face.style.setProperty('--carte-largeur', '100%');
     face.style.setProperty('--carte-pivot', '10deg'); // pivot horizontal ±10°
     rectos[i]!.append(face);

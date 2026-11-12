@@ -40,7 +40,7 @@ function table(titre: string, finitions: TablePoids<FinitionId>, extension: Exte
     titre,
     finitions: ORDRE_FINITIONS.filter((f) => (finitions[f] ?? 0) > 0).map((f) => {
       const poids = finitions[f]!;
-      const n = index.parFinition(f).length;
+      const n = index.tirables(f).length; // personnages et cartes Soutien : chacune a la même chance
       return { finition: f, poids, pourcentage: formaterPourcentage(poids), cartes: n, parCarte: n > 0 ? formaterApproche((poids / 1000) / n) : '—' };
     }),
   };

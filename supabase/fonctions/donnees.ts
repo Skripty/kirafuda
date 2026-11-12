@@ -8,4 +8,6 @@ const modules = import.meta.glob<unknown>(['../../src/data/extension-*.json', '.
 /** Nom de fichier (« extension-renforts.json ») → contenu. */
 const fichiers = Object.fromEntries(Object.entries(modules).map(([chemin, contenu]) => [chemin.replace('../../src/data/', ''), contenu]));
 
-export const { catalogue, erreurs: erreursCatalogue } = construireCatalogue(liste.extensions as EntreeExtension[], fichiers);
+export const { catalogue, erreurs: erreursCatalogue } = construireCatalogue(
+  // Sans les cartes Soutien : le draft ne tire que des personnages.
+  (liste.extensions as EntreeExtension[]).map(({ soutiens: _soutiens, ...e }) => e), fichiers);

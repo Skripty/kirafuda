@@ -5,6 +5,7 @@ import { ORDRE_FINITIONS } from '../core/regles';
 import { cartesParFinition, filtrerHistorique, libelleFinition } from '../core/probabilites';
 import type { Booster, Extension, FinitionId, Ouverture, Sauvegarde } from '../core/types';
 import { numeroCarte } from './carte';
+import { numeroSoutien } from './carte-soutien';
 import { indexer } from '../core/extension';
 
 const PAR_PAGE = 20;
@@ -83,9 +84,11 @@ export function creerHistorique(o: OptionsHistorique): HTMLElement {
     const ul = el('ul', 'infos-cartes');
     for (const t of ouv.cartes) {
       const carte = index.carte(t.carteId);
+      const soutien = carte ? undefined : index.soutien(t.carteId);
       const ligne = el('li', filtre && t.finition === filtre ? 'infos-surligne' : undefined);
       ligne.append(
-        el('span', undefined, carte ? `${numeroCarte(carte.numero, o.extension.total)} ${index.personnageDe(carte).nom}` : t.carteId),
+        el('span', undefined, carte ? `${numeroCarte(carte.numero, o.extension.total)} ${index.personnageDe(carte).nom}`
+          : soutien ? `${numeroSoutien(soutien, index.soutiens.length)} ${soutien.nom}` : t.carteId),
         el('span', 'infos-finition', libelleFinition(t.finition)),
         el('strong', undefined, t.nouveau ? 'Nouveau' : `×${t.exemplaires}`),
       );

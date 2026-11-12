@@ -1,21 +1,13 @@
 // État d'une partie de combat (docs/COMBAT.md). Tout est sérialisable (JSON) : une partie peut être sauvegardée
 // et reprise. L'aléatoire vient de rng.ts avec une graine et un compteur de tirages (même graine = même partie).
 import { rngAGraine } from '../rng';
-import type { ElementId, Personnage } from '../types';
-import type { EffetAction, EtatCombat } from './effets';
+import type { CarteSoutien, ElementId, Personnage } from '../types';
+import type { EtatCombat } from './effets';
 
 export type IdJoueur = 0 | 1;
 export const autre = (j: IdJoueur): IdJoueur => (j === 0 ? 1 : 0);
 
-/** Carte Soutien (src/data/soutiens.json). */
-export interface CarteSoutien {
-  id: string;
-  nom: string;
-  type: 'objet' | 'soutien' | 'terrain';
-  texte: string;
-  finition: string;
-  effets: EffetAction[];
-}
+export type { CarteSoutien };
 
 /** Les cartes connues du moteur : personnages (avec leurs effets) et cartes Soutien. */
 export interface Bibliotheque {

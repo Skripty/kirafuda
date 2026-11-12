@@ -121,7 +121,8 @@ describe('tirage : une rareté, puis une carte parmi toutes les cartes sorties d
   it('probabilités : nombre de cartes par rareté de toutes les vagues sorties', () => {
     const avantP = probabilites(avant.booster, avant.extension).emplacements[0]!.finitions.find((l) => l.finition === 'commune')!;
     const apresP = probabilites(apres.booster, apres.extension).emplacements[0]!.finitions.find((l) => l.finition === 'commune')!;
-    expect([avantP.cartes, apresP.cartes]).toEqual([50, 62]);
+    // 10 Objets (♦) s'ajoutent aux personnages de même rareté.
+    expect([avantP.cartes, apresP.cartes]).toEqual([50 + 10, 62 + 10]);
   });
 
   it('validation : une rareté à poids non nul doit avoir au moins une carte parmi les cartes sorties', () => {

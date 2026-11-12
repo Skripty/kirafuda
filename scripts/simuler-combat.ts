@@ -135,6 +135,77 @@ const bas = persos.filter(([, v]) => taux(v) < BAS);
 lignes.push('', `Au-dessus de 60 % (${hauts.length}) : ${hauts.map(([id, v]) => `${nom(id)} ${pc(v.victoires, v.parties)}`).join(' · ') || 'aucune'}`);
 lignes.push(`En dessous de 40 % (${bas.length}) : ${bas.map(([id, v]) => `${nom(id)} ${pc(v.victoires, v.parties)}`).join(' · ') || 'aucune'}`);
 
+// ---------- Cartes Soutien (tâche 29) : mêmes decks de personnages, 6 cartes Soutien tirées parmi les 20 ----------
+// Chaque deck reçoit 6 cartes Soutien au hasard (2 exemplaires au plus de chacune) : on mesure, pour chaque carte,
+// les victoires des decks qui la contiennent et combien de fois l'IA la joue.
+const PARTIES_SOUTIENS = PARTIES;
+const tousSoutiens = [...bib.soutiens.values()];
+const parSoutien = new Map(tousSoutiens.map((s) => [s.id, { parties: 0, victoires: 0, jouees: 0, exemplaires: 0 }]));
+const rngS = rngAGraine('simulation-soutiens');
+const tirerSoutiens = (): string[] => {
+  const choisis: string[] = [];
+  while (choisis.length < 6) {
+    const s = tousSoutiens[rngS.entier(tousSoutiens.length)]!.id;
+    if (choisis.filter((x) => x === s).length < 2) choisis.push(s);
+  }
+  return choisis;
+};
+let termineesS = 0;
+const dureesS: number[] = [];
+for (let n = 0; n < PARTIES_SOUTIENS; n++) {
+  const a = jouables[rngS.entier(jouables.length)]!;
+  let b = jouables[rngS.entier(jouables.length - 1)]!;
+  if (b === a) b = jouables[jouables.length - 1]!;
+  const decks = [a, b].map((s) => {
+    const d = deckStandard(s, bib, rngS)!;
+    return { ...d, cartes: [...d.cartes.filter((x) => bib.personnages.has(x)), ...tirerSoutiens()] };
+  });
+  const ias = [iaGloutonne(`s:${n}:0`), iaGloutonne(`s:${n}:1`)];
+  let partie = creerPartie(bib, [decks[0]!, decks[1]!], `soutiens:${n}`).partie;
+  const jouees: [Map<string, number>, Map<string, number>] = [new Map(), new Map()];
+  let actions = 0;
+  let probleme: string | null = null;
+  try {
+    while (partie.phase !== 'fin') {
+      if (++actions > ACTIONS_MAX) { probleme = `plus de ${ACTIONS_MAX} actions`; break; }
+      if (partie.tour > TOURS_MAX) { probleme = `plus de ${TOURS_MAX} tours`; break; }
+      if (actionsLegales(partie, bib).length === 0) { probleme = 'aucune action possible'; break; }
+      const qui: IdJoueur = partie.phase === 'mise-en-place' ? (partie.joueurs[0].pret ? 1 : 0)
+        : partie.phase === 'choix-premier' ? partie.gagnantPiece
+          : partie.attente ? partie.attente.joueurs[0]! : partie.joueurActif;
+      const action = ias[qui]!(partie, bib);
+      if (action.type === 'jouer') {
+        const id = partie.cartes[action.carte]!;
+        jouees[qui].set(id, (jouees[qui].get(id) ?? 0) + 1);
+      }
+      partie = appliquer(partie, action, bib, { verifier: false }).partie;
+    }
+  } catch (e) {
+    probleme = `erreur : ${(e as Error).message}`;
+  }
+  if (probleme) { anomalies.push(`partie Soutiens ${n} (${a} contre ${b}) : ${probleme}`); continue; }
+  termineesS++;
+  dureesS.push(partie.tour);
+  decks.forEach((d, i) => {
+    const soutiens = d.cartes.filter((x) => bib.soutiens.has(x));
+    for (const id of new Set(soutiens)) {
+      const st = parSoutien.get(id)!;
+      st.parties++;
+      st.exemplaires += soutiens.filter((x) => x === id).length;
+      if (i === partie.gagnant) st.victoires++;
+      st.jouees += jouees[i as 0 | 1].get(id) ?? 0;
+    }
+  });
+}
+lignes.push('', `Cartes Soutien : ${PARTIES_SOUTIENS} parties de plus (${termineesS} terminées, durée moyenne ${dec(dureesS.reduce((x, y) => x + y, 0) / Math.max(1, dureesS.length))} tours), mêmes personnages,`);
+lignes.push('6 cartes Soutien tirées au hasard parmi les 20 dans chaque deck. Victoires des decks qui contiennent la carte · part des exemplaires joués par l’IA :');
+const typeSoutien = { objet: 'Objet ♦', soutien: 'Soutien ♦♦', terrain: 'Terrain ♦♦♦' };
+for (const [id, v] of [...parSoutien].sort((x, y) => taux(y[1]) - taux(x[1]))) {
+  const s = bib.soutiens.get(id)!;
+  const signal = taux(v) > 0.55 ? '  ▲ plus de 55 %' : taux(v) < 0.45 ? '  ▼ moins de 45 %' : '';
+  lignes.push(`  ${s.nom.padEnd(26)} ${typeSoutien[s.type].padEnd(12)} ${pc(v.victoires, v.parties).padStart(8)}  ${String(v.parties).padStart(5)} decks  jouée ${pc(v.jouees, v.exemplaires).padStart(8)}${signal}`);
+}
+
 lignes.push('', anomalies.length ? `Parties bloquées ou anormalement longues (plus de ${TOURS_MAX} tours) :` : 'Aucune partie bloquée ni anormale.');
 for (const x of anomalies.slice(0, 20)) lignes.push(`  ${x}`);
 if (anomalies.length > 20) lignes.push(`  … et ${anomalies.length - 20} autres.`);

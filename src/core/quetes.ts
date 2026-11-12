@@ -203,7 +203,7 @@ export function quetesDuJour(jour: string, config: ConfigQuetes, extensions: Ext
 // ---------- Événements ----------
 
 export type Evenement =
-  | { type: 'carte-obtenue'; finition: FinitionId; serie: string; element: ElementId; nouvelle: boolean }
+  | { type: 'carte-obtenue'; finition: FinitionId; serie: string | null; element: ElementId | null; nouvelle: boolean }
   | { type: Exclude<TypeEvenement, 'carte-obtenue'> };
 
 /** Événements produits par une ouverture : un booster ouvert, puis chaque carte obtenue. */
@@ -212,7 +212,12 @@ export function evenementsOuverture(ouverture: Ouverture, extension: Extension):
   const evts: Evenement[] = [{ type: 'booster-ouvert' }];
   for (const c of ouverture.cartes) {
     const carte = index.carte(c.carteId);
-    if (!carte) continue;
+    if (!carte) {
+      // Carte Soutien : ni série ni élément.
+      const soutien = index.soutien(c.carteId);
+      if (soutien) evts.push({ type: 'carte-obtenue', finition: soutien.finition, serie: null, element: null, nouvelle: c.nouveau });
+      continue;
+    }
     const p = index.personnageDe(carte);
     evts.push({ type: 'carte-obtenue', finition: carte.finition, serie: p.serie, element: p.element, nouvelle: c.nouveau });
   }
@@ -223,7 +228,10 @@ export function evenementsOuverture(ouverture: Ouverture, extension: Extension):
 export function evenementCarte(extension: Extension, carteId: string, nouvelle: boolean): Evenement | null {
   const index = indexer(extension);
   const carte = index.carte(carteId);
-  if (!carte) return null;
+  if (!carte) {
+    const soutien = index.soutien(carteId);
+    return soutien ? { type: 'carte-obtenue', finition: soutien.finition, serie: null, element: null, nouvelle } : null;
+  }
   const p = index.personnageDe(carte);
   return { type: 'carte-obtenue', finition: carte.finition, serie: p.serie, element: p.element, nouvelle };
 }

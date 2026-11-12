@@ -2,7 +2,7 @@
 // Une entrée par carte de l'extension (140) : les 100 cartes de base puis les secrètes.
 import { indexer } from './extension';
 import { FINITIONS, ORDRE_FINITIONS } from './regles';
-import type { Carte, ElementId, Extension, FinitionId, Personnage, Sauvegarde } from './types';
+import type { Carte, CarteSoutien, ElementId, Extension, FinitionId, Personnage, Sauvegarde } from './types';
 
 export interface EntreeCollection {
   carte: Carte;
@@ -22,6 +22,13 @@ export function entreesCollection(sauvegarde: Sauvegarde, extension: Extension):
 }
 
 export const estPossedee = (e: EntreeCollection): boolean => e.exemplaires > 0;
+
+export interface EntreeSoutien { soutien: CarteSoutien; exemplaires: number }
+
+/** Une entrée par carte Soutien de l'extension, dans l'ordre des numéros. */
+export function entreesSoutiens(sauvegarde: Sauvegarde, extension: Extension): EntreeSoutien[] {
+  return indexer(extension).soutiens.map((soutien) => ({ soutien, exemplaires: sauvegarde.collection[soutien.id] ?? 0 }));
+}
 
 export interface Completion {
   /** Cartes possédées (toutes). */

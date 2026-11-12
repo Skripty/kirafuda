@@ -6,6 +6,7 @@
       "nom": "Lancement",
       "edition": 1,
       "booster": "booster-lancement.json",
+      "soutiens": "soutiens.json",
       "vagues": [
         { "id": "lancement", "nom": "Lancement", "fichier": "extension-lancement.json", "disponibleLe": "2026-11-01" },
         { "id": "renforts", "nom": "Renforts", "fichier": "extension-renforts.json", "disponibleLe": "2026-11-06" }

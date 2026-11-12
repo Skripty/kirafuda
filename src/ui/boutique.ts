@@ -7,7 +7,8 @@ import { formaterCote } from '../core/cote';
 import type { Extension, FinitionId, Popularite, Sauvegarde } from '../core/types';
 import { indexer } from '../core/extension';
 import { evenementCarte, type Evenement } from '../core/quetes';
-import { creerCarte, numeroCarte } from './carte';
+import { numeroCarte } from './carte';
+import { TYPES_SOUTIEN, creerCarteDuJeu, numeroSoutien } from './carte-soutien';
 
 export interface OptionsBoutique {
   sauvegarde: Sauvegarde;
@@ -36,8 +37,12 @@ const points = (n: number): string => pluriel(n, 'point');
 export function creerBoutique(o: OptionsBoutique): HTMLElement {
   const ext = o.extension;
   const index = indexer(ext);
-  const cartes = index.cartesTriees;
-  const nomDe = (carteId: string): string => index.personnageDe(index.carte(carteId)!).nom;
+  /** Ce qui s'échange contre des points : les cartes de personnages puis les cartes Soutien, au prix de leur rareté. */
+  const cartes: { id: string; finition: FinitionId; libelle: string }[] = [
+    ...index.cartesTriees.map((c) => ({ id: c.id, finition: c.finition, libelle: `${numeroCarte(c.numero, ext.total)} · ${index.personnageDe(c).nom}` })),
+    ...index.soutiens.map((x) => ({ id: x.id, finition: x.finition, libelle: `${numeroSoutien(x, index.soutiens.length)} · ${x.nom} (${TYPES_SOUTIEN[x.type].nom})` })),
+  ];
+  const article = (id: string) => cartes.find((c) => c.id === id)!;
   let s = o.sauvegarde;
   let carteId = cartes[0]!.id;
   /** Filtre de la liste par rareté (null : toutes). */
@@ -90,7 +95,7 @@ export function creerBoutique(o: OptionsBoutique): HTMLElement {
     toutes.value = '';
     selRarete.append(toutes);
     for (const f of ORDRE_FINITIONS) {
-      const n = index.parFinition(f).length;
+      const n = cartes.filter((c) => c.finition === f).length;
       if (n === 0) continue;
       const opt = el('option', undefined, `${FINITIONS[f].symbole} ${FINITIONS[f].nom} · ${points(prixAchat(f))} · ${n} carte${n > 1 ? 's' : ''}`);
       opt.value = f;
@@ -100,7 +105,7 @@ export function creerBoutique(o: OptionsBoutique): HTMLElement {
     selRarete.addEventListener('change', () => {
       filtreRarete = (selRarete.value || null) as FinitionId | null;
       const premiere = cartes.find((c) => !filtreRarete || c.finition === filtreRarete);
-      if (premiere && filtreRarete && index.carte(carteId)!.finition !== filtreRarete) carteId = premiere.id;
+      if (premiere && filtreRarete && article(carteId).finition !== filtreRarete) carteId = premiere.id;
       annonce = '';
       rendre();
     });
@@ -110,7 +115,7 @@ export function creerBoutique(o: OptionsBoutique): HTMLElement {
     const select = el('select');
     for (const c of cartes) {
       if (filtreRarete && c.finition !== filtreRarete) continue;
-      const opt = el('option', undefined, `${numeroCarte(c.numero, ext.total)} · ${nomDe(c.id)} · ${FINITIONS[c.finition].symbole} · ${points(prixAchat(c.finition))}`);
+      const opt = el('option', undefined, `${c.libelle} · ${FINITIONS[c.finition].symbole} · ${points(prixAchat(c.finition))}`);
       opt.value = c.id;
       select.append(opt);
     }
@@ -118,9 +123,8 @@ export function creerBoutique(o: OptionsBoutique): HTMLElement {
     select.addEventListener('change', () => { carteId = select.value; annonce = ''; rendre(); });
     choixCarte.append(el('span', undefined, 'Carte'), select);
 
-    const carte = index.carte(carteId)!;
-    const finition = carte.finition;
-    const apercu = creerCarte(carte, ext);
+    const finition = article(carteId).finition;
+    const apercu = creerCarteDuJeu(carteId, ext)!;
     apercu.style.setProperty('--carte-largeur', 'min(220px, 60vw)');
 
     const prix = prixAchat(finition);
@@ -138,7 +142,7 @@ export function creerBoutique(o: OptionsBoutique): HTMLElement {
       pied.append(manque);
     }
     echanger.addEventListener('click', () => {
-      const nom = `${nomDe(carteId)}, ${numeroCarte(carte.numero, ext.total)}, ${FINITIONS[finition].symbole} ${FINITIONS[finition].nom}`;
+      const nom = `${article(carteId).libelle}, ${FINITIONS[finition].symbole} ${FINITIONS[finition].nom}`;
       confirmer('Confirmer l’échange', [
         `Carte : ${nom}`,
         `Prix : ${points(prix)} ${ext.nom}`,

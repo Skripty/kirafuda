@@ -141,7 +141,7 @@ describe('progression à partir des événements', () => {
     const e = evenementsOuverture(r.ouverture, extension);
     expect(e[0]).toEqual({ type: 'booster-ouvert' });
     expect(e.slice(1)).toHaveLength(5);
-    expect(e.slice(1).every((x) => x.type === 'carte-obtenue' && x.serie.length > 0)).toBe(true);
+    expect(e.slice(1).every((x) => x.type === 'carte-obtenue' && (x.serie?.length ?? 0) > 0)).toBe(true);
   });
 
   it('nouveau jour : la progression du jour repart de zéro, pas les compteurs de débutant ; nouvelle semaine : la quête de la semaine aussi', () => {

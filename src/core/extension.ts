@@ -1,6 +1,6 @@
 // Accès rapides aux données de l'extension : personnage d'une carte, carte de base, cartes par rareté.
 // L'index est calculé une fois par objet Extension (cache), puis réutilisé (tirages, écrans).
-import type { Carte, Extension, FinitionId, Personnage } from './types';
+import type { Carte, CarteSoutien, Extension, FinitionId, Personnage } from './types';
 
 export interface IndexExtension {
   carte(id: string): Carte | undefined;
@@ -15,6 +15,17 @@ export interface IndexExtension {
   parFinition(finition: FinitionId): Carte[];
   /** Toutes les cartes, dans l'ordre des numéros (base puis secrètes). */
   cartesTriees: Carte[];
+  /** Carte Soutien par id. */
+  soutien(id: string): CarteSoutien | undefined;
+  /** Cartes Soutien, dans l'ordre des numéros. */
+  soutiens: CarteSoutien[];
+  /** Cartes Soutien d'une rareté. */
+  soutiensParFinition(finition: FinitionId): CarteSoutien[];
+  /**
+   * Ids des cartes d'une rareté que les boosters peuvent donner : personnages puis cartes Soutien
+   * (chacune a la même chance).
+   */
+  tirables(finition: FinitionId): string[];
 }
 
 const cache = new WeakMap<Extension, IndexExtension>();
@@ -33,7 +44,13 @@ export function indexer(extension: Extension): IndexExtension {
     parFinition.set(c.finition, [...(parFinition.get(c.finition) ?? []), c]);
   }
 
+  const soutiens = [...(extension.soutiens ?? [])].sort((a, b) => (a.numero ?? 0) - (b.numero ?? 0));
+  const soutiensParId = new Map(soutiens.map((s) => [s.id, s]));
   const index: IndexExtension = {
+    soutien: (id) => soutiensParId.get(id),
+    soutiens,
+    soutiensParFinition: (f) => soutiens.filter((s) => s.finition === f),
+    tirables: (f) => [...(parFinition.get(f) ?? []).map((c) => c.id), ...soutiens.filter((s) => s.finition === f).map((s) => s.id)],
     carte: (id) => cartes.get(id),
     personnage: (id) => personnages.get(id),
     personnageDe: (carte) => {
