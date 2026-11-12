@@ -1,5 +1,6 @@
 // Écran de résultats : les 5 cartes, nouveau ou ×N, points gagnés.
 import { creerCarteDuJeu } from '../carte-soutien';
+import { badgeNouveau } from './scene';
 import { FINITIONS } from '../../core/regles';
 import type { Extension, Ouverture } from '../../core/types';
 
@@ -30,9 +31,15 @@ export function creerResultats(ouverture: Ouverture, extension: Extension, onTer
     finition.textContent = `${f.symbole} ${f.nom}`;
     const statut = document.createElement('strong');
     statut.className = tiree.nouveau ? 'ouv-nouveau' : 'ouv-doublon';
-    statut.textContent = tiree.nouveau ? 'Nouveau' : `×${tiree.exemplaires}`;
+    statut.textContent = tiree.nouveau ? 'Nouvelle carte' : `×${tiree.exemplaires}`;
     legende.append(finition, statut);
-    li.append(visuel, legende);
+    // Les cartes arrivent l'une après l'autre ; « NEW » sur celles obtenues pour la première fois.
+    const cadre = document.createElement('div');
+    cadre.className = 'ouv-grille-carte';
+    cadre.append(visuel);
+    if (tiree.nouveau) cadre.append(badgeNouveau());
+    li.style.setProperty('--rang', String(liste.childElementCount));
+    li.append(cadre, legende);
     liste.append(li);
   }
 

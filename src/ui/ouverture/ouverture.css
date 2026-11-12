@@ -108,6 +108,30 @@
   to { opacity: 0.85; }
 }
 
+/* Éclat du retournement (holo et mieux) et rayons derrière une carte ★ ou plus retournée. */
+.ouv-eclat {
+  position: absolute; inset: -30%; border-radius: 50%; opacity: 0; pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--blanc-casse) 85%, transparent) 0%, color-mix(in srgb, var(--blanc-casse) 25%, transparent) 38%, transparent 68%);
+}
+.ouv-rayons {
+  position: absolute; inset: -55%; border-radius: 50%; opacity: 0; pointer-events: none;
+  background: repeating-conic-gradient(from 0deg, color-mix(in srgb, var(--blanc-casse) 22%, transparent) 0deg 7deg, transparent 7deg 20deg);
+  -webkit-mask: radial-gradient(circle, #000 18%, transparent 66%);
+  mask: radial-gradient(circle, #000 18%, transparent 66%);
+  transition: opacity 0.5s ease-out;
+}
+.ouv-pile.avec-rayons .ouv-rayons { opacity: 0.8; animation: ouv-rayons 14s linear infinite; }
+@keyframes ouv-rayons { to { transform: rotate(360deg); } }
+.ouv-flash { position: fixed; inset: 0; opacity: 0; pointer-events: none; z-index: 4; background: radial-gradient(circle at 50% 42%, var(--blanc-casse), transparent 62%); }
+
+/* « NEW » : carte obtenue pour la première fois. */
+.ouv-new {
+  position: absolute; top: -10px; left: -12px; z-index: 5; padding: 4px 11px; border-radius: 999px;
+  background: var(--texte); color: var(--fond); font-size: 0.82rem; font-weight: 800; letter-spacing: 0.08em; line-height: 1.2;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--graphite) 70%, transparent);
+  transform: rotate(-10deg); pointer-events: none;
+}
+
 /* Agrandissement cinématique (immersive) et écran doré (couronne). */
 .ouv-voile { position: fixed; inset: 0; background: var(--graphite); opacity: 0; pointer-events: none; z-index: 1; }
 .ouv-dore {
@@ -140,7 +164,10 @@
   grid-template-columns: repeat(auto-fit, minmax(min(150px, 42vw), 1fr));
   gap: 20px 14px;
 }
-.ouv-grille li { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.ouv-grille li { display: flex; flex-direction: column; align-items: center; gap: 8px; animation: ouv-arrivee 0.45s cubic-bezier(.2,.8,.2,1) backwards; animation-delay: calc(var(--rang, 0) * 90ms); }
+.ouv-grille-carte { position: relative; width: 100%; }
+.ouv-grille-carte .ouv-new { top: -8px; left: -6px; font-size: 0.72rem; padding: 3px 9px; }
+@keyframes ouv-arrivee { from { opacity: 0; transform: translateY(22px) scale(0.86); } to { opacity: 1; transform: none; } }
 .ouv-grille-legende { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 0.85rem; color: var(--texte-secondaire); text-align: center; }
 .ouv-nouveau,
 .ouv-doublon { color: var(--texte); font-size: 0.95rem; }
@@ -148,4 +175,6 @@
 @media (prefers-reduced-motion: reduce) {
   .ouv-reflet { animation: none !important; transform: translateX(80%) skewX(-12deg); }
   .ouv-pile.avec-lueur .ouv-lueur { animation: none !important; opacity: 0.6; }
+  .ouv-pile.avec-rayons .ouv-rayons { animation: none !important; }
+  .ouv-grille li { animation: none !important; }
 }

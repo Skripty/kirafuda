@@ -36,6 +36,21 @@ function animer(el: Element, images: Keyframe[], duree: number, easing = 'ease-o
   return a.finished.then(() => undefined, () => undefined);
 }
 
+/** Animation qui rend ensuite la main au style de l'élément (qui porte déjà l'état final). */
+function animerPuisLiberer(el: Element, images: Keyframe[], duree: number, delai = 0, easing = 'cubic-bezier(.2,.8,.2,1)'): Promise<void> {
+  const a = el.animate(images, { duration: reduit() ? 0 : duree, delay: reduit() ? 0 : delai, easing, fill: 'backwards' });
+  return a.finished.then(() => undefined, () => undefined);
+}
+
+/** Badge « NEW » : la carte est obtenue pour la première fois (lu dans l'ouverture enregistrée, jamais deviné). */
+export function badgeNouveau(): HTMLElement {
+  const b = document.createElement('span');
+  b.className = 'ouv-new';
+  b.textContent = 'NEW';
+  b.setAttribute('aria-label', 'Nouvelle carte');
+  return b;
+}
+
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, classe?: string, texte?: string): HTMLElementTagNameMap[K] {
   const e = document.createElement(tag);
   if (classe) e.className = classe;
@@ -70,9 +85,11 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
   const aide = el('p', 'ouv-aide');
   const voile = el('div', 'ouv-voile');
   const dore = el('div', 'ouv-dore');
+  const flash = el('div', 'ouv-flash');
   voile.setAttribute('aria-hidden', 'true');
   dore.setAttribute('aria-hidden', 'true');
-  racine.append(voile, barre, scene, legende, actions, aide, dore);
+  flash.setAttribute('aria-hidden', 'true');
+  racine.append(voile, barre, scene, legende, actions, aide, dore, flash);
   conteneur.replaceChildren(racine);
 
   // ---------- Booster (3D : WebGL, ou repli CSS) ----------
@@ -97,7 +114,10 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
   // ---------- Pile ----------
   const pile = el('div', 'ouv-pile');
   const lueur = el('div', 'ouv-lueur');
-  pile.append(lueur);
+  // Derrière la carte : rayons (cartes ★ et plus, une fois retournées) et éclat du retournement (holo et mieux).
+  const rayons = el('div', 'ouv-rayons');
+  const eclat = el('div', 'ouv-eclat');
+  pile.append(lueur, rayons, eclat);
   const cartesEl: HTMLElement[] = [];
   const zooms: HTMLElement[] = [];
   const retournes: HTMLElement[] = [];
@@ -167,6 +187,8 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
     // Lueur avant le retournement, seulement si la carte du dessus est holo ou mieux.
     const t = tirees[index];
     pile.classList.toggle('avec-lueur', etape === 'PILE' && !!t && effetsRevelation(t.finition).lueur);
+    // Les rayons ne tournent que derrière une carte ★ ou plus déjà retournée (un indice ne ment jamais).
+    pile.classList.toggle('avec-rayons', etape === 'REVELEE' && !!t && effetsRevelation(t.finition).tremblement);
   }
 
   function envoyer(ev: Evenement): boolean {
@@ -182,7 +204,13 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
   // ---------- Présentation ----------
   async function presenter(): Promise<void> {
     majInterface();
-    await animer(entree, [{ opacity: 0, transform: 'translateY(24px) scale(0.92)' }, { opacity: 1, transform: 'none' }], 500);
+    // Le booster tombe en place, avec un léger rebond.
+    await animer(entree, [
+      { opacity: 0, transform: 'translateY(-70px) scale(0.86) rotate(-5deg)' },
+      { opacity: 1, transform: 'translateY(10px) scale(1.03) rotate(1.5deg)', offset: 0.6 },
+      { opacity: 1, transform: 'translateY(-4px) scale(0.99) rotate(-0.5deg)', offset: 0.82 },
+      { opacity: 1, transform: 'none' },
+    ], 700, 'ease-out');
     envoyer('presente');
   }
 
@@ -196,7 +224,14 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
     booster3d.detruire();
     preparer(0);
     scene.append(pile);
-    await animer(pile, [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }], 350);
+    // Les cartes sortent du sachet en éventail, puis se rangent en pile.
+    void animer(flash, [{ opacity: 0 }, { opacity: 0.55, offset: 0.25 }, { opacity: 0 }], 420);
+    const milieu = (n - 1) / 2;
+    await Promise.all(cartesEl.map((carte, i) => animerPuisLiberer(carte, [
+      { opacity: 0, transform: 'translateY(90px) scale(0.7)' },
+      { opacity: 1, transform: `translate(${(i - milieu) * 52}px, -18px) rotate(${(i - milieu) * 9}deg) scale(0.92)`, offset: 0.55 },
+      { opacity: 1, transform: decalage(i) },
+    ], 620, (n - 1 - i) * 55)));
     if (interrompu()) return;
     envoyer('pile-prete');
   }
@@ -224,12 +259,33 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
     if (effets.ecranDore) {
       enCours.push(animer(dore, [{ opacity: 0 }, { opacity: 0.9, offset: 0.35 }, { opacity: 0 }], 1100));
     }
-    enCours.push(animer(retournes[i]!, [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(180deg)' }], 600, 'cubic-bezier(.2,.7,.2,1)'));
+    if (!effets.cinematique) {
+      // La carte se soulève pendant qu'elle se retourne ; plus la rareté est haute, plus elle monte.
+      const hauteur = effets.tremblement ? 1.14 : effets.lueur ? 1.09 : 1.05;
+      enCours.push(animerPuisLiberer(zooms[i]!, [
+        { transform: 'translateY(0) scale(1)' },
+        { transform: `translateY(-16px) scale(${hauteur})`, offset: 0.5 },
+        { transform: 'translateY(0) scale(1)' },
+      ], effets.lueur ? 700 : 520, 0, 'ease-in-out'));
+    }
+    enCours.push(animer(retournes[i]!, [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(180deg)' }], effets.lueur ? 700 : 520, 'cubic-bezier(.2,.7,.2,1)'));
+    // Éclat au moment où la face apparaît (holo et mieux).
+    if (effets.lueur) enCours.push(animerPuisLiberer(eclat, [
+      { opacity: 0, transform: 'scale(0.5)' }, { opacity: 0.95, transform: 'scale(1)', offset: 0.5 }, { opacity: 0, transform: 'scale(1.7)' },
+    ], 900, 250, 'ease-out'));
     await Promise.all(enCours);
     if (interrompu()) return;
 
+    if (t.nouveau) {
+      const badge = badgeNouveau();
+      cartesEl[i]!.append(badge);
+      void animerPuisLiberer(badge, [
+        { opacity: 0, transform: 'scale(0.2) rotate(-24deg)' }, { opacity: 1, transform: 'scale(1.25) rotate(-6deg)', offset: 0.6 }, { opacity: 1, transform: 'scale(1) rotate(-10deg)' },
+      ], 380);
+    }
+
     const f = FINITIONS[t.finition];
-    legende.textContent = `${f.symbole} ${f.nom} · ${t.nouveau ? 'Nouveau' : `×${t.exemplaires}`}`;
+    legende.textContent = `${f.symbole} ${f.nom} · ${t.nouveau ? 'Nouvelle carte' : `×${t.exemplaires}`}`;
     envoyer('retournee');
   }
 
