@@ -1,5 +1,5 @@
 // Fonction Supabase « reclamer-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : a5f4c838ce9304f4
+// Empreinte des sources : 212789251bf58656
 // Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/draft.ts, src/core/regles.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extension-vague3.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/reclamer-draft.ts
 // @ts-nocheck
 const id$3 = "booster-lancement";

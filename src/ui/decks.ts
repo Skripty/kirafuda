@@ -1,9 +1,14 @@
+// Écran Decks : la liste des decks (tuiles avec leurs cartes en éventail), puis l'éditeur d'un deck.
+// Éditeur : les 20 emplacements du deck en haut (toucher une carte la retire), les cartes possédées en dessous
+// (toucher une carte l'ajoute). Tout est enregistré à chaque geste (src/core/combat/decks-joueur.ts pour les règles).
 import './decks.css';
 import type { Bibliotheque } from '../core/combat/etat';
 import { elementsDe } from '../core/combat/decks';
 import { exemplairesParPersonnage, MAX_DECKS_JOUEUR, validerDeckPossede } from '../core/combat/decks-joueur';
-import type { DeckEnregistre, Extension, Sauvegarde } from '../core/types';
+import type { DeckEnregistre, ElementId, Extension, Personnage, Sauvegarde } from '../core/types';
 import { ELEMENTS } from '../core/regles';
+import { creerVisuelsCombat } from './cartes-combat';
+import { iconeElement } from './element';
 
 export interface OptionsDecks {
   sauvegarde: Sauvegarde;
@@ -11,6 +16,11 @@ export interface OptionsDecks {
   extensions: Extension[];
   enregistrer: (sauvegarde: Sauvegarde) => Sauvegarde | null;
 }
+
+const TAILLE_DECK = 20;
+const MAX_EXEMPLAIRES = 2;
+const ELEMENTS_ENERGIE = (Object.keys(ELEMENTS) as ElementId[]).filter((id) => id !== 'neutre');
+const TYPES: Record<string, string> = { base: 'Base', eveille: 'Éveillé', heros: 'Héros', objet: 'Objet', soutien: 'Soutien', terrain: 'Terrain' };
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, classe?: string, texte?: string): HTMLElementTagNameMap[K] {
   const node = document.createElement(tag);
@@ -20,7 +30,10 @@ function el<K extends keyof HTMLElementTagNameMap>(tag: K, classe?: string, text
 }
 
 function bouton(texte: string, classe: string, action: () => void): HTMLButtonElement {
-  const b = el('button', classe, texte); b.type = 'button'; b.addEventListener('click', action); return b;
+  const b = el('button', classe, texte);
+  b.type = 'button';
+  b.addEventListener('click', action);
+  return b;
 }
 
 function creerId(): string {
@@ -28,213 +41,367 @@ function creerId(): string {
 }
 
 export function creerEcranDecks(options: OptionsDecks): HTMLElement {
+  const { bib } = options;
   let sauvegarde = options.sauvegarde;
-  const personnages = [...options.bib.personnages.values()].sort((a, b) => a.serie.localeCompare(b.serie, 'fr') || a.nom.localeCompare(b.nom, 'fr'));
-  const soutiens = [...options.bib.soutiens.values()].sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
+  const visuels = creerVisuelsCombat(bib, options.extensions);
   const exemplaires = exemplairesParPersonnage(sauvegarde, options.extensions);
+  /** Exemplaires possédés d'une carte de deck (personnage ou carte Soutien). */
+  const possedes = (id: string): number => (bib.personnages.has(id) ? exemplaires.get(id) ?? 0 : sauvegarde.collection[id] ?? 0);
   const carteBase = new Map<string, string>();
   for (const extension of options.extensions) for (const carte of extension.cartes) {
     if (!carte.secrete && !carteBase.has(carte.personnage)) carteBase.set(carte.personnage, carte.id);
   }
-  const images = new Map(options.extensions.flatMap((extension) => extension.cartes.map((carte) => [carte.id, carte.id] as const)));
-  let editionId = sauvegarde.deckSelectionne ?? sauvegarde.decks[0]?.id ?? null;
+  const personnages = [...bib.personnages.values()].filter((p) => possedes(p.id) > 0)
+    .sort((a, b) => a.serie.localeCompare(b.serie, 'fr') || a.nom.localeCompare(b.nom, 'fr'));
+  const soutiens = [...bib.soutiens.values()].filter((s) => possedes(s.id) > 0).sort((a, b) => (a.numero ?? 0) - (b.numero ?? 0));
+  const possedees = new Set<string>([...personnages.map((p) => p.id), ...soutiens.map((s) => s.id)]);
+  /** Ordre d'affichage du deck : personnages (Bases et Héros, puis Éveillés), puis cartes Soutien. */
+  const rang = (id: string): number => {
+    const p = bib.personnages.get(id);
+    return p ? (p.type === 'eveille' ? 1 : 0) : 2;
+  };
+  const trier = (cartes: string[]): string[] => [...cartes].sort((a, b) => rang(a) - rang(b) || visuels.nom(a).localeCompare(visuels.nom(b), 'fr'));
+
+  let editionId: string | null = null;
   let annonce = '';
+  let filtreNature: 'tout' | 'personnage' | 'soutien' = 'tout';
   let filtreSerie = '';
   let filtreElement = '';
-  let filtreNature = 'personnage';
-  let filtreType = '';
   const racine = el('main', 'decks-page');
+  const dialogue = el('dialog', 'decks-inspection');
+  dialogue.addEventListener('click', (e) => { if (e.target === dialogue) dialogue.close(); });
 
-  function courant(): DeckEnregistre | null { return sauvegarde.decks.find((d) => d.id === editionId) ?? null; }
+  const erreursDe = (deck: DeckEnregistre): string[] => validerDeckPossede({ nom: deck.nom, cartes: deck.cartes, elements: deck.elements }, bib, possedees);
 
-  function ecrire(nouvelle: Sauvegarde, rendre = true): boolean {
+  function ecrire(nouvelle: Sauvegarde): boolean {
     const ecrite = options.enregistrer(nouvelle);
-    if (!ecrite) { annonce = 'La sauvegarde a échoué. Vérifie le stockage puis réessaie.'; if (rendre) afficher(); return false; }
+    if (!ecrite) { annonce = 'La sauvegarde a échoué. Vérifie le stockage puis réessaie.'; return false; }
     sauvegarde = ecrite;
     annonce = '';
     return true;
   }
 
-  function modifierDeck(id: string, changer: (deck: DeckEnregistre) => DeckEnregistre, rendre = true): void {
-    const decks = sauvegarde.decks.map((deck) => deck.id === id ? changer(deck) : deck);
-    ecrire({ ...sauvegarde, decks }, rendre);
+  function modifierDeck(id: string, changer: (deck: DeckEnregistre) => DeckEnregistre): boolean {
+    return ecrire({ ...sauvegarde, decks: sauvegarde.decks.map((deck) => (deck.id === id ? changer(deck) : deck)) });
   }
 
   function creerDeck(): void {
     if (sauvegarde.decks.length >= MAX_DECKS_JOUEUR) return;
     const id = creerId();
     const deck: DeckEnregistre = { id, nom: `Deck ${sauvegarde.decks.length + 1}`, couverture: '', cartes: [], elements: ['feu'] };
-    editionId = id;
-    if (ecrire({ ...sauvegarde, decks: [...sauvegarde.decks, deck], deckSelectionne: id })) afficher();
+    if (ecrire({ ...sauvegarde, decks: [...sauvegarde.decks, deck] })) editionId = id;
+    afficher();
   }
 
   function copierDeck(id: string): void {
-    if (sauvegarde.decks.length >= MAX_DECKS_JOUEUR) return;
     const source = sauvegarde.decks.find((d) => d.id === id);
-    if (!source) return;
+    if (!source || sauvegarde.decks.length >= MAX_DECKS_JOUEUR) return;
     const copie: DeckEnregistre = { ...source, id: creerId(), nom: `${source.nom} (copie)`.slice(0, 40), cartes: [...source.cartes], elements: [...source.elements] };
-    editionId = copie.id;
-    if (ecrire({ ...sauvegarde, decks: [...sauvegarde.decks, copie], deckSelectionne: copie.id })) afficher();
+    ecrire({ ...sauvegarde, decks: [...sauvegarde.decks, copie] });
+    afficher();
   }
 
   function supprimerDeck(id: string): void {
     const deck = sauvegarde.decks.find((d) => d.id === id);
     if (!deck || !window.confirm(`Supprimer le deck « ${deck.nom} » ?`)) return;
-    const decks = sauvegarde.decks.filter((d) => d.id !== id);
-    editionId = decks[0]?.id ?? null;
-    if (ecrire({ ...sauvegarde, decks, deckSelectionne: sauvegarde.deckSelectionne === id ? editionId : sauvegarde.deckSelectionne })) afficher();
+    ecrire({ ...sauvegarde, decks: sauvegarde.decks.filter((d) => d.id !== id), deckSelectionne: sauvegarde.deckSelectionne === id ? null : sauvegarde.deckSelectionne });
+    if (editionId === id) editionId = null;
+    afficher();
   }
 
-  function choisirDeck(id: string): void {
-    editionId = id;
-    if (ecrire({ ...sauvegarde, deckSelectionne: id })) afficher();
+  function inspecter(id: string): void {
+    const p = bib.personnages.get(id);
+    const s = bib.soutiens.get(id);
+    const contenu = el('div', 'decks-inspection-contenu');
+    const carte = el('div', 'decks-inspection-carte');
+    carte.append(visuels.visuel(id, true));
+    const titre = el('h2', undefined, visuels.nom(id));
+    titre.id = 'decks-inspection-titre';
+    dialogue.setAttribute('aria-labelledby', titre.id);
+    const detail = el('p', 'decks-inspection-detail', p ? `${p.serie} · ${TYPES[p.type]} · ${ELEMENTS[p.element].nom} · ${p.pv} PV` : s ? `${TYPES[s.type]} · ${s.texte}` : '');
+    contenu.append(titre, carte, detail, el('p', 'decks-inspection-detail', `Tu en possèdes ${possedes(id)}.`), bouton('Fermer', 'decks-bouton', () => dialogue.close()));
+    dialogue.replaceChildren(contenu);
+    if (!dialogue.open) dialogue.showModal();
+  }
+
+  /** Pastilles des éléments d'énergie d'un deck. */
+  function pastillesElements(elements: ElementId[]): HTMLElement {
+    const groupe = el('span', 'decks-pastilles');
+    for (const e of elements) groupe.append(iconeElement(e, 'decks-pastille'));
+    return groupe;
+  }
+
+  // ---------- Liste des decks ----------
+  function afficherListe(): void {
+    const entete = el('header', 'decks-entete');
+    const retour = el('a', 'decks-retour', '‹ Accueil');
+    retour.href = '#/';
+    const titre = el('div', 'decks-titre');
+    titre.append(el('h1', undefined, 'Mes decks'), el('span', 'decks-compte', `${sauvegarde.decks.length} / ${MAX_DECKS_JOUEUR}`));
+    entete.append(retour, titre, el('p', 'decks-intro', 'Un deck : 20 cartes de ta collection et 1 à 3 éléments d’énergie. Touche un deck pour le modifier.'));
+
+    const grille = el('div', 'decks-grille');
+    for (const deck of sauvegarde.decks) {
+      const erreurs = erreursDe(deck);
+      const choisi = sauvegarde.deckSelectionne === deck.id;
+      const tuile = el('article', `decks-tuile${choisi ? ' choisi' : ''}`);
+      const ouvrir = bouton('', 'decks-tuile-ouvrir', () => { editionId = deck.id; afficher(); });
+      ouvrir.setAttribute('aria-label', `Modifier le deck ${deck.nom}, ${deck.cartes.length} cartes sur ${TAILLE_DECK}`);
+      // Éventail : la carte de couverture devant, deux autres personnages du deck derrière.
+      const eventail = el('span', 'decks-eventail');
+      const couverture = [...carteBase].find(([, carteId]) => carteId === deck.couverture)?.[0];
+      const distincts = [...new Set(trier(deck.cartes))].filter((id) => id !== couverture);
+      const montrees = [...distincts.slice(0, 2), ...(couverture ? [couverture] : distincts.slice(2, 3))];
+      if (!montrees.length) eventail.append(el('span', 'decks-eventail-vide', 'Deck vide'));
+      montrees.forEach((id, i) => {
+        const carte = el('span', `decks-eventail-carte pos-${montrees.length - 1 - i}`);
+        carte.append(visuels.visuel(id));
+        eventail.append(carte);
+      });
+      const infos = el('span', 'decks-tuile-infos');
+      const ligne = el('span', 'decks-tuile-ligne');
+      ligne.append(el('span', 'decks-tuile-compte', `${deck.cartes.length}/${TAILLE_DECK}`), pastillesElements(deck.elements));
+      infos.append(el('strong', undefined, deck.nom), ligne,
+        el('span', erreurs.length ? 'decks-etat incomplet' : 'decks-etat pret', erreurs.length ? 'À compléter' : choisi ? 'Prêt · utilisé en combat' : 'Prêt'));
+      ouvrir.append(eventail, infos);
+
+      const actions = el('div', 'decks-tuile-actions');
+      const utiliser = bouton(choisi ? 'Utilisé en combat' : 'Utiliser', 'decks-mini', () => {
+        ecrire({ ...sauvegarde, deckSelectionne: deck.id });
+        afficher();
+      });
+      utiliser.disabled = choisi || erreurs.length > 0;
+      if (erreurs.length) utiliser.title = 'Complète le deck pour l’utiliser en combat.';
+      const copier = bouton('Copier', 'decks-mini', () => copierDeck(deck.id));
+      copier.disabled = sauvegarde.decks.length >= MAX_DECKS_JOUEUR;
+      actions.append(utiliser, copier, bouton('Supprimer', 'decks-mini decks-supprimer', () => supprimerDeck(deck.id)));
+      tuile.append(ouvrir, actions);
+      grille.append(tuile);
+    }
+    if (sauvegarde.decks.length < MAX_DECKS_JOUEUR) {
+      const nouveau = bouton('', 'decks-tuile decks-nouveau', creerDeck);
+      nouveau.append(el('span', 'decks-nouveau-plus', '+'), el('strong', undefined, 'Nouveau deck'),
+        el('span', undefined, sauvegarde.decks.length ? 'Pars de zéro' : 'Crée ton premier deck'));
+      grille.append(nouveau);
+    }
+    const combat = el('a', 'decks-bouton decks-lien-combat', 'Aller au combat');
+    combat.href = '#/combat';
+    racine.append(entete, grille, combat);
+  }
+
+  // ---------- Éditeur d'un deck ----------
+  function afficherEditeur(deckInitial: DeckEnregistre): void {
+    const id = deckInitial.id;
+    const deck = (): DeckEnregistre => sauvegarde.decks.find((d) => d.id === id)!;
+    const nombre = (carte: string): number => deck().cartes.filter((x) => x === carte).length;
+    const maximum = (carte: string): number => Math.min(MAX_EXEMPLAIRES, possedes(carte));
+    const peutAjouter = (carte: string): boolean => deck().cartes.length < TAILLE_DECK && nombre(carte) < maximum(carte);
+
+    function ajouter(carte: string): void {
+      if (!peutAjouter(carte)) return;
+      modifierDeck(id, (d) => ({ ...d, cartes: [...d.cartes, carte], couverture: d.couverture || carteBase.get(carte) || '' }));
+      majDeck();
+    }
+    function retirer(carte: string): void {
+      modifierDeck(id, (d) => {
+        const i = d.cartes.lastIndexOf(carte);
+        if (i < 0) return d;
+        const cartes = [...d.cartes];
+        cartes.splice(i, 1);
+        // La couverture suit le deck : si son personnage n'y est plus, le premier personnage restant la remplace.
+        const garde = d.couverture && cartes.some((x) => carteBase.get(x) === d.couverture);
+        const suivante = cartes.map((x) => carteBase.get(x)).find((x) => !!x) ?? '';
+        return { ...d, cartes, couverture: garde ? d.couverture : suivante };
+      });
+      majDeck();
+    }
+
+    // En-tête : retour, nom, compteur.
+    const barre = el('header', 'decks-barre');
+    const nom = el('input', 'decks-nom');
+    nom.type = 'text';
+    nom.maxLength = 40;
+    nom.value = deckInitial.nom;
+    nom.setAttribute('aria-label', 'Nom du deck');
+    nom.addEventListener('input', () => { modifierDeck(id, (d) => ({ ...d, nom: nom.value.trimStart() || 'Deck sans nom' })); });
+    const compteur = el('span', 'decks-compteur');
+    compteur.setAttribute('aria-live', 'polite');
+    barre.append(bouton('‹ Mes decks', 'decks-bouton', () => { editionId = null; afficher(); }), nom, compteur);
+
+    // Le deck : énergies, 20 emplacements, état.
+    const panneauDeck = el('section', 'decks-panneau');
+    const energies = el('div', 'decks-energies');
+    energies.setAttribute('role', 'group');
+    energies.setAttribute('aria-label', 'Éléments d’énergie du deck, 1 à 3');
+    const emplacements = el('div', 'decks-emplacements');
+    const etat = el('div', 'decks-validation');
+    etat.setAttribute('aria-live', 'polite');
+    const couverture = el('label', 'decks-couverture-choix');
+    const selectCouverture = el('select');
+    selectCouverture.addEventListener('change', () => { modifierDeck(id, (d) => ({ ...d, couverture: selectCouverture.value })); });
+    couverture.append(el('span', undefined, 'Carte de couverture'), selectCouverture);
+    panneauDeck.append(energies, emplacements, etat, couverture);
+
+    // Les cartes possédées.
+    const panneauCartes = el('section', 'decks-panneau');
+    const titreCartes = el('h2', undefined, 'Tes cartes');
+    const filtres = el('div', 'decks-filtres');
+    const grille = el('div', 'decks-cartes');
+    panneauCartes.append(titreCartes, filtres, grille);
+    /** Ce qui change sur une carte de la collection quand le deck change. */
+    const tuiles = new Map<string, { racine: HTMLElement; ajout: HTMLButtonElement; moins: HTMLButtonElement; badge: HTMLElement }>();
+
+    function rendreFiltres(): void {
+      filtres.replaceChildren();
+      const natures = el('div', 'decks-onglets');
+      natures.setAttribute('role', 'group');
+      natures.setAttribute('aria-label', 'Catégorie de cartes');
+      for (const [valeur, texte] of [['tout', 'Tout'], ['personnage', 'Personnages'], ['soutien', 'Soutiens']] as const) {
+        const b = bouton(texte, 'decks-onglet', () => { filtreNature = valeur; rendreFiltres(); rendreCartes(); });
+        b.setAttribute('aria-pressed', String(filtreNature === valeur));
+        natures.append(b);
+      }
+      const choix = (libelle: string, valeur: string, valeurs: [string, string][], change: (v: string) => void): HTMLLabelElement => {
+        const label = el('label', 'decks-filtre');
+        const select = el('select');
+        select.setAttribute('aria-label', libelle);
+        for (const [v, t] of valeurs) { const o = el('option', undefined, t); o.value = v; select.append(o); }
+        select.value = valeur;
+        select.addEventListener('change', () => { change(select.value); rendreCartes(); });
+        label.append(select);
+        return label;
+      };
+      const series = [...new Set(personnages.map((p) => p.serie))];
+      const elements = (Object.keys(ELEMENTS) as ElementId[]).filter((e) => personnages.some((p) => p.element === e));
+      filtres.append(natures);
+      if (filtreNature !== 'soutien') filtres.append(
+        choix('Série', filtreSerie, [['', 'Toutes les séries'], ...series.map((s): [string, string] => [s, s])], (v) => { filtreSerie = v; }),
+        choix('Élément', filtreElement, [['', 'Tous les éléments'], ...elements.map((e): [string, string] => [e, ELEMENTS[e].nom])], (v) => { filtreElement = v; }),
+      );
+    }
+
+    function tuile(carte: string, sousTitre: string): HTMLElement {
+      const racineTuile = el('div', 'decks-carte');
+      const ajout = bouton('', 'decks-carte-ajout', () => ajouter(carte));
+      ajout.append(visuels.visuel(carte));
+      const badge = el('span', 'decks-carte-badge');
+      const moins = bouton('−', 'decks-carte-moins', () => retirer(carte));
+      moins.setAttribute('aria-label', `Retirer un exemplaire de ${visuels.nom(carte)}`);
+      const info = bouton('i', 'decks-carte-info', () => inspecter(carte));
+      info.setAttribute('aria-label', `Détails de ${visuels.nom(carte)}`);
+      const pied = el('div', 'decks-carte-pied');
+      pied.append(moins, badge, info);
+      racineTuile.append(ajout, el('span', 'decks-carte-nom', visuels.nom(carte)), el('span', 'decks-carte-detail', sousTitre), pied);
+      tuiles.set(carte, { racine: racineTuile, ajout, moins, badge });
+      return racineTuile;
+    }
+
+    function rendreCartes(): void {
+      tuiles.clear();
+      grille.replaceChildren();
+      if (filtreNature !== 'soutien') for (const p of personnages) {
+        if ((filtreSerie && p.serie !== filtreSerie) || (filtreElement && p.element !== filtreElement)) continue;
+        grille.append(tuile(p.id, `${p.serie} · ${TYPES[p.type]}`));
+      }
+      // Les filtres de série et d'élément ne concernent que les personnages.
+      if (filtreNature !== 'personnage' && !(filtreNature === 'tout' && (filtreSerie || filtreElement))) for (const s of soutiens) grille.append(tuile(s.id, TYPES[s.type]!));
+      if (!grille.childElementCount) {
+        grille.append(el('p', 'decks-cartes-vide', possedees.size === 0
+          ? 'Ta collection est vide : ouvre des boosters pour obtenir des cartes.'
+          : filtreNature === 'soutien' ? 'Aucune carte Soutien dans ta collection pour l’instant : elles se trouvent dans les boosters.'
+            : 'Aucune carte possédée ne correspond à ces filtres.'));
+      }
+      titreCartes.textContent = `Tes cartes · ${grille.querySelectorAll('.decks-carte').length}`;
+      majTuiles();
+    }
+
+    function majTuiles(): void {
+      for (const [carte, t] of tuiles) {
+        const n = nombre(carte);
+        const max = maximum(carte);
+        t.badge.textContent = `${n}/${max}`;
+        t.racine.classList.toggle('dans-deck', n > 0);
+        t.racine.classList.toggle('complet', !peutAjouter(carte));
+        t.moins.disabled = n === 0;
+        t.ajout.disabled = !peutAjouter(carte);
+        t.ajout.setAttribute('aria-label', `Ajouter ${visuels.nom(carte)} au deck (${n} sur ${max})`);
+      }
+    }
+
+    function majDeck(): void {
+      const d = deck();
+      compteur.textContent = `${d.cartes.length} / ${TAILLE_DECK}`;
+      compteur.classList.toggle('plein', d.cartes.length === TAILLE_DECK);
+
+      // Énergies : une pastille par élément, 3 au plus.
+      energies.replaceChildren(el('span', 'decks-energies-titre', 'Énergies'));
+      for (const e of ELEMENTS_ENERGIE) {
+        const actif = d.elements.includes(e);
+        const b = bouton('', 'decks-energie', () => {
+          const selection = new Set(deck().elements);
+          if (selection.has(e)) selection.delete(e); else selection.add(e);
+          modifierDeck(id, (x) => ({ ...x, elements: ELEMENTS_ENERGIE.filter((y) => selection.has(y)) }));
+          majDeck();
+        });
+        b.setAttribute('aria-pressed', String(actif));
+        b.setAttribute('aria-label', `Énergie ${ELEMENTS[e].nom}`);
+        b.title = ELEMENTS[e].nom;
+        b.disabled = !actif && d.elements.length >= 3;
+        b.append(iconeElement(e, 'decks-energie-icone', null), el('span', undefined, ELEMENTS[e].nom));
+        energies.append(b);
+      }
+      energies.append(bouton('Suggérer', 'decks-mini', () => {
+        const persos = deck().cartes.map((c) => bib.personnages.get(c)).filter((p): p is Personnage => !!p);
+        if (!persos.length) return;
+        modifierDeck(id, (x) => ({ ...x, elements: elementsDe(persos) }));
+        majDeck();
+      }));
+
+      // Les 20 emplacements : les cartes du deck, puis les places libres.
+      emplacements.replaceChildren();
+      const cartes = trier(d.cartes);
+      for (let i = 0; i < TAILLE_DECK; i++) {
+        const carte = cartes[i];
+        if (!carte) { emplacements.append(el('span', 'decks-emplacement vide', String(i + 1))); continue; }
+        const b = bouton('', 'decks-emplacement', () => retirer(carte));
+        b.setAttribute('aria-label', `Retirer ${visuels.nom(carte)} du deck`);
+        b.title = `${visuels.nom(carte)} — toucher pour retirer`;
+        b.append(visuels.visuel(carte));
+        emplacements.append(b);
+      }
+
+      const erreurs = erreursDe(d);
+      etat.className = erreurs.length ? 'decks-validation incomplet' : 'decks-validation pret';
+      etat.replaceChildren(el('strong', undefined, erreurs.length ? 'Deck à compléter' : 'Deck prêt pour le combat'));
+      if (erreurs.length) { const ul = el('ul'); for (const e of erreurs) ul.append(el('li', undefined, e)); etat.append(ul); }
+      else if (sauvegarde.deckSelectionne !== id) etat.append(bouton('Utiliser en combat', 'decks-mini', () => { ecrire({ ...sauvegarde, deckSelectionne: id }); majDeck(); }));
+      else etat.append(el('span', undefined, 'C’est le deck utilisé en combat.'));
+      if (annonce) etat.append(el('p', 'decks-annonce', annonce));
+
+      selectCouverture.replaceChildren();
+      const distincts = [...new Set(cartes.filter((c) => carteBase.has(c)))];
+      if (!distincts.length) { const o = el('option', undefined, 'Ajoute un personnage'); o.value = ''; selectCouverture.append(o); }
+      for (const c of distincts) { const o = el('option', undefined, visuels.nom(c)); o.value = carteBase.get(c)!; selectCouverture.append(o); }
+      selectCouverture.value = d.couverture;
+      selectCouverture.disabled = distincts.length === 0;
+      majTuiles();
+    }
+
+    racine.append(barre, panneauDeck, panneauCartes,
+      el('p', 'decks-enregistre', 'Enregistré automatiquement. Touche une carte pour l’ajouter, touche une carte du deck pour la retirer.'));
+    rendreFiltres();
+    rendreCartes();
+    majDeck();
   }
 
   function afficher(): void {
     racine.replaceChildren();
-    const entete = el('header', 'decks-entete');
-    const retour = el('a', 'decks-retour', '‹ Accueil'); retour.href = '#/';
-    entete.append(retour, el('p', 'decks-surtitre', 'COMBAT • PRÉPARATION'), el('h1', undefined, 'Decks'),
-      el('p', 'decks-intro', 'Construis et enregistre jusqu’à dix decks. Les modifications sont sauvegardées automatiquement.'));
-    const corps = el('div', 'decks-corps');
-
-    const liste = el('aside', 'decks-liste');
-    const listeTete = el('div', 'decks-liste-tete');
-    listeTete.append(el('h2', undefined, `Mes decks · ${sauvegarde.decks.length}/${MAX_DECKS_JOUEUR}`), bouton('+ Nouveau deck', 'decks-bouton decks-bouton-principal', creerDeck));
-    liste.append(listeTete);
-    if (!sauvegarde.decks.length) liste.append(el('p', 'decks-vide', 'Aucun deck enregistré. Crée ton premier deck pour commencer.'));
-    for (const deck of sauvegarde.decks) {
-      const item = el('article', deck.id === editionId ? 'decks-ligne choisi' : 'decks-ligne');
-      const ouvrir = bouton('', 'decks-ligne-ouvrir', () => choisirDeck(deck.id));
-      const image = el('span', 'decks-couverture');
-      const imgId = deck.couverture;
-      if (images.has(imgId)) { const img = el('img'); img.src = `${import.meta.env.BASE_URL}cartes/${imgId}/illustration.webp`; img.alt = ''; img.onerror = () => { img.remove(); image.textContent = 'K'; }; image.append(img); }
-      else image.textContent = 'K';
-      const info = el('span', 'decks-ligne-info');
-      info.append(el('strong', undefined, deck.nom), el('small', undefined, `${deck.cartes.length}/20 cartes${sauvegarde.deckSelectionne === deck.id ? ' · choisi en combat' : ''}`));
-      ouvrir.append(image, info);
-      const actions = el('div', 'decks-ligne-actions');
-      const copier = bouton('Copier', 'decks-mini', () => copierDeck(deck.id)); copier.disabled = sauvegarde.decks.length >= MAX_DECKS_JOUEUR;
-      const supprimer = bouton('Supprimer', 'decks-mini decks-supprimer', () => supprimerDeck(deck.id));
-      actions.append(copier, supprimer); item.append(ouvrir, actions); liste.append(item);
-    }
-
-    const contenu = el('section', 'decks-contenu');
-    const deck = courant();
-    if (!deck) {
-      const demarrer = el('div', 'decks-demarrage');
-      demarrer.append(el('h2', undefined, 'Crée un deck pour commencer'),
-        el('p', undefined, 'Ajoute des personnages possédés, choisis ses éléments d’énergie et complète les 20 cartes.'));
-      contenu.append(demarrer);
-    } else {
-      const enteteDeck = el('div', 'decks-editeur-tete');
-      const nomLabel = el('label', 'decks-champ'); nomLabel.append(el('span', undefined, 'Nom du deck'));
-      const nom = el('input'); nom.type = 'text'; nom.maxLength = 40; nom.value = deck.nom; nom.setAttribute('aria-label', 'Nom du deck');
-      nom.addEventListener('input', () => modifierDeck(deck.id, (d) => ({ ...d, nom: nom.value.trimStart() || 'Deck sans nom' }), false));
-      nomLabel.append(nom);
-
-      const couverture = el('label', 'decks-champ'); couverture.append(el('span', undefined, 'Carte de couverture'));
-      const selectCouverture = el('select');
-      const vide = el('option', undefined, 'Choisir dans les cartes du deck'); vide.value = ''; selectCouverture.append(vide);
-      const personnagesDuDeck = [...new Set(deck.cartes.filter((id) => options.bib.personnages.has(id)))];
-      for (const id of personnagesDuDeck) {
-        const carteId = carteBase.get(id); if (!carteId) continue;
-        const option = el('option', undefined, options.bib.personnages.get(id)!.nom); option.value = carteId; selectCouverture.append(option);
-      }
-      selectCouverture.value = deck.couverture;
-      selectCouverture.addEventListener('change', () => modifierDeck(deck.id, (d) => ({ ...d, couverture: selectCouverture.value }), false));
-      couverture.append(selectCouverture);
-      const sommaire = el('div', 'decks-compteur');
-      sommaire.append(el('strong', undefined, `${deck.cartes.length}/20`), el('span', undefined, 'cartes'));
-      const suggestion = bouton('Suggérer les éléments', 'decks-bouton decks-bouton-secondaire', () => {
-        const elements = elementsDe(deck.cartes.map((id) => options.bib.personnages.get(id)).filter((p): p is NonNullable<typeof p> => !!p));
-        modifierDeck(deck.id, (d) => ({ ...d, elements }));
-      });
-      enteteDeck.append(nomLabel, couverture, sommaire, suggestion);
-      contenu.append(enteteDeck);
-
-      const energie = el('fieldset', 'decks-energies'); energie.append(el('legend', undefined, 'Éléments d’énergie · 1 à 3'));
-      const choixElements = el('div', 'decks-elements');
-      const elementIds = Object.keys(ELEMENTS).filter((id) => id !== 'neutre') as import('../core/types').ElementId[];
-      for (const id of elementIds) {
-        const label = el('label', 'decks-element'); const input = el('input'); input.type = 'checkbox'; input.value = id; input.checked = deck.elements.includes(id);
-        input.disabled = !input.checked && deck.elements.length >= 3;
-        label.append(input, el('span', undefined, ELEMENTS[id].nom));
-        input.addEventListener('change', () => {
-          const selection = new Set(deck.elements); if (input.checked) selection.add(id); else selection.delete(id);
-          modifierDeck(deck.id, (d) => ({ ...d, elements: elementIds.filter((e) => selection.has(e)) }));
-        });
-        choixElements.append(label);
-      }
-      energie.append(choixElements); contenu.append(energie);
-
-      const deckMoteur = { nom: deck.nom, cartes: deck.cartes, elements: deck.elements };
-      const possedees = new Set<string>([
-        ...personnages.filter((p) => (exemplaires.get(p.id) ?? 0) > 0).map((p) => p.id),
-        ...soutiens.filter((s) => (sauvegarde.collection[s.id] ?? 0) > 0).map((s) => s.id),
-      ]);
-      const erreurs = validerDeckPossede(deckMoteur, options.bib, possedees);
-      const validation = el('div', erreurs.length ? 'decks-validation invalid' : 'decks-validation valide');
-      validation.setAttribute('aria-live', 'polite');
-      validation.append(el('strong', undefined, erreurs.length ? 'Deck à compléter' : 'Deck prêt pour le combat'));
-      if (erreurs.length) { const ul = el('ul'); for (const erreur of erreurs) ul.append(el('li', undefined, erreur)); validation.append(ul); }
-      contenu.append(validation);
-
-      const filtres = el('div', 'decks-filtres');
-      const filtre = (texte: string, valeur: string, valeurs: [string, string][], change: (val: string) => void): HTMLLabelElement => {
-        const label = el('label', 'decks-filtre'); label.append(el('span', undefined, texte)); const select = el('select');
-        for (const [id, nom] of valeurs) { const op = el('option', undefined, nom); op.value = id; select.append(op); }
-        select.value = valeur; select.addEventListener('change', () => { change(select.value); afficher(); }); label.append(select); return label;
-      };
-      const series = [...new Set(personnages.map((p) => p.serie))].sort((a, b) => a.localeCompare(b, 'fr'));
-      filtres.append(
-        filtre('Série', filtreSerie, [['', 'Toutes'], ...series.map((s): [string, string] => [s, s])], (v) => { filtreSerie = v; }),
-        filtre('Élément', filtreElement, [['', 'Tous'], ...elementIds.map((e): [string, string] => [e, ELEMENTS[e].nom])], (v) => { filtreElement = v; }),
-        filtre('Catégorie', filtreNature, [['personnage', 'Personnages'], ['soutien', 'Soutiens'], ['tout', 'Tout']], (v) => { filtreNature = v; }),
-        filtre('Type', filtreType, [['', 'Tous'], ['base', 'Base'], ['eveille', 'Éveillé'], ['heros', 'Héros'], ['objet', 'Objet'], ['soutien', 'Soutien'], ['terrain', 'Terrain']], (v) => { filtreType = v; }),
-      );
-      const resultats = el('div', 'decks-cartes');
-      const nombres = new Map<string, number>(); for (const id of deck.cartes) nombres.set(id, (nombres.get(id) ?? 0) + 1);
-      const ajouterLigne = (id: string, nomCarte: string, sousTitre: string, restant: number, type: 'personnage' | 'soutien'): void => {
-        const ligne = el('article', 'decks-carte');
-        ligne.append(el('span', 'decks-carte-symbole', type === 'personnage' ? '♙' : '✧'), el('span', 'decks-carte-nom', nomCarte), el('small', 'decks-carte-detail', sousTitre));
-        const etat = el('span', 'decks-carte-compte', `${nombres.get(id) ?? 0}/2 · possédés ${restant}`);
-        const moins = bouton('−', 'decks-ajuster', () => modifierDeck(deck.id, (d) => {
-          const i = d.cartes.lastIndexOf(id); if (i < 0) return d; const cartes = [...d.cartes]; cartes.splice(i, 1);
-          const cover = d.couverture && carteBase.get(id) === d.couverture && !cartes.includes(id) ? '' : d.couverture;
-          return { ...d, cartes, couverture: cover };
-        }));
-        moins.disabled = !(nombres.get(id) ?? 0);
-        const plus = bouton('+', 'decks-ajuster', () => modifierDeck(deck.id, (d) => {
-          if (d.cartes.length >= 20 || (nombres.get(id) ?? 0) >= 2 || (nombres.get(id) ?? 0) >= restant) return d;
-          return { ...d, cartes: [...d.cartes, id], couverture: d.couverture || (type === 'personnage' ? carteBase.get(id) ?? '' : '') };
-        }));
-        plus.disabled = deck.cartes.length >= 20 || (nombres.get(id) ?? 0) >= 2 || (nombres.get(id) ?? 0) >= restant;
-        ligne.append(etat, moins, plus); resultats.append(ligne);
-      };
-      if (filtreNature !== 'soutien') for (const p of personnages) {
-        if ((exemplaires.get(p.id) ?? 0) < 1 || (filtreSerie && p.serie !== filtreSerie) || (filtreElement && p.element !== filtreElement)
-          || (filtreType && filtreType !== p.type)) continue;
-        ajouterLigne(p.id, p.nom, `${p.serie} · ${ELEMENTS[p.element].nom} · ${p.type === 'eveille' ? 'Éveillé' : p.type === 'heros' ? 'Héros' : 'Base'}`, exemplaires.get(p.id) ?? 0, 'personnage');
-      }
-      if (filtreNature !== 'personnage') for (const soutien of soutiens) {
-        if ((sauvegarde.collection[soutien.id] ?? 0) < 1 || (filtreType && filtreType !== soutien.type)) continue;
-        ajouterLigne(soutien.id, soutien.nom, `${soutien.type} · ${soutien.texte}`, sauvegarde.collection[soutien.id] ?? 0, 'soutien');
-      }
-      if (!resultats.childElementCount) resultats.append(el('p', 'decks-cartes-vide', filtreNature === 'soutien'
-        ? 'Aucune carte Soutien possédée. Elles rejoindront la collection à l’étape Cartes Soutien.'
-        : 'Aucune carte possédée ne correspond à ces filtres.'));
-      const collection = el('section', 'decks-collection');
-      collection.append(el('h2', undefined, 'Collection possédée'), filtres, resultats);
-      contenu.append(collection);
-      const pied = el('p', 'decks-enregistre', 'Deck sauvegardé automatiquement sur cet appareil et synchronisé avec le compte si la sauvegarde en ligne est activée.');
-      contenu.append(pied);
-    }
-    corps.append(liste, contenu);
-    racine.append(entete, corps);
-    if (annonce) { const alert = el('p', 'decks-annonce', annonce); alert.setAttribute('role', 'status'); racine.prepend(alert); }
-    const nouveau = listeTete.querySelector('button');
-    if (nouveau) nouveau.disabled = sauvegarde.decks.length >= MAX_DECKS_JOUEUR;
+    const deck = editionId ? sauvegarde.decks.find((d) => d.id === editionId) : undefined;
+    if (deck) afficherEditeur(deck);
+    else { editionId = null; afficherListe(); }
+    if (annonce && !deck) { const alerte = el('p', 'decks-annonce', annonce); alerte.setAttribute('role', 'status'); racine.prepend(alerte); }
+    racine.append(dialogue);
+    window.scrollTo(0, 0);
   }
 
   afficher();

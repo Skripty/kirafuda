@@ -1,5 +1,5 @@
 // Fonction Supabase « soumettre-draft » — FICHIER GÉNÉRÉ par `npm run fonctions`, ne pas modifier à la main.
-// Empreinte des sources : 4876650d22c4fc13
+// Empreinte des sources : b2beb23af1a5aea2
 // Sources : src/core/catalogue.ts, src/core/classement.ts, src/core/combat/fiches.ts, src/core/draft.ts, src/core/extension.ts, src/core/regles.ts, src/core/rng.ts, src/core/tirage.ts, src/data/booster-lancement.json, src/data/extension-lancement.json, src/data/extension-renforts.json, src/data/extension-vague3.json, src/data/extensions.json, src/data/quetes.json, src/data/themes-draft.json, supabase/fonctions/base-rest.ts, supabase/fonctions/contexte.ts, supabase/fonctions/donnees.ts, supabase/fonctions/draft-serveur.ts, supabase/fonctions/soumettre-draft.ts
 // @ts-nocheck
 const id$3 = "booster-lancement";
