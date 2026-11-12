@@ -20,8 +20,13 @@ export const ACCENT_FOND = 0.3, ACCENT_SERTI = 0.4, ACCENT_NOM = 0.55;
 const TW = 1024, TH = Math.round(1024 * H / W);
 const COULEURS = {
   fond: ['#3b3e46', '#1c1d21', '#27292e'], sertiClair: '#4b4e56', sertiSombre: '#2a2c31',
-  dos: ['#26282d', '#17181b'], dosSertiClair: '#44474f', dosSertiSombre: '#26282d', soudure: '#2f3137',
+  dos: ['#2A1A66', '#150A33'], dosSertiClair: '#7A68D6', dosSertiSombre: '#2C1C6B', soudure: '#21134F',
   texte: '#F2F2F0', texteDoux: '#8B8F98',
+};
+/** Sachet illustré : nuit violette (couleurs du visuel, dessinées en canvas). */
+const NUIT = {
+  haut: '#1A0F45', milieu: '#3B1C82', bas: '#160A33', lune: '#FFD3EA', petale: '#FF9AD5', filet: '#F3EAFF', contour: '#1B0B4A',
+  plaque: 'rgba(18,9,48,.88)', lilas: '#C9B8FF', sertiClair: '#8E7BE6', sertiSombre: '#2C1C6B',
 };
 const POLICE = 'Poppins, sans-serif';
 
@@ -40,6 +45,8 @@ export interface ParamsTextures {
   detail: string;
   /** Couleur d'accent de l'extension (#rrggbb). */
   accent: string;
+  /** Illustrations de trois personnages du booster, déjà chargées (la première au centre). */
+  vedettes?: CanvasImageSource[];
 }
 
 export interface EtatRendu {
@@ -56,18 +63,6 @@ export interface EtatRendu {
 export interface RenduWebGL {
   image(t: number, e: EtatRendu): void;
   liberer(): void;
-}
-
-// ---------- Couleurs ----------
-const hex = (c: string): [number, number, number] => {
-  const m = /^#?([0-9a-f]{6})$/i.exec(c.trim());
-  const n = m ? parseInt(m[1]!, 16) : 0x9aa0ac;
-  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-};
-/** Mélange de deux couleurs : t = part de b. */
-function melanger(a: string, b: string, t: number): string {
-  const x = hex(a), y = hex(b);
-  return `rgb(${x.map((v, i) => Math.round(v + (y[i]! - v) * t)).join(',')})`;
 }
 
 // ---------- Textures (dessinées en 2D) ----------
@@ -89,38 +84,122 @@ function toile(): [HTMLCanvasElement, CanvasRenderingContext2D] {
 
 /** Charge Poppins avant de dessiner les textures (le texte du sachet). */
 export async function chargerPolices(): Promise<void> {
-  try { await document.fonts.load(`600 66px ${POLICE}`); await document.fonts.load(`400 36px ${POLICE}`); } catch { /* police de repli */ }
+  try { await Promise.all(['800 190px', '700 74px', '600 34px', '500 32px'].map((f) => document.fonts.load(`${f} ${POLICE}`))); } catch { /* police de repli */ }
 }
 
 function dessinerTextures(p: ParamsTextures): { avant: HTMLCanvasElement; masque: HTMLCanvasElement; arriere: HTMLCanvasElement; noir: HTMLCanvasElement } {
-  const a = (c: string, t: number): string => melanger(c, p.accent, t);
-  // Face avant
+  // Face avant : nuit violette, lune, pétales ; trois personnages du booster en vignettes inclinées ; titre et plaque.
   const [avant, c] = toile();
-  const g = c.createLinearGradient(0, 0, TW * .6, TH);
-  g.addColorStop(0, a(COULEURS.fond[0]!, ACCENT_FOND)); g.addColorStop(.52, a(COULEURS.fond[1]!, ACCENT_FOND)); g.addColorStop(1, a(COULEURS.fond[2]!, ACCENT_FOND));
+  const [titre, edition] = p.nom.split(' · ');
+  const g = c.createLinearGradient(0, 0, TW * .5, TH);
+  g.addColorStop(0, NUIT.haut); g.addColorStop(.5, NUIT.milieu); g.addColorStop(1, NUIT.bas);
   c.fillStyle = g; c.fillRect(0, 0, TW, TH);
-  sertis(c, 0, TH * SERTI, a(COULEURS.sertiClair, ACCENT_SERTI), a(COULEURS.sertiSombre, ACCENT_SERTI));
-  sertis(c, TH * (1 - SERTI), TH * SERTI, a(COULEURS.sertiClair, ACCENT_SERTI), a(COULEURS.sertiSombre, ACCENT_SERTI));
-  c.strokeStyle = 'rgba(255,255,255,.28)'; c.lineWidth = 4; c.setLineDash([18, 12]);
+  const halo = (x: number, y: number, r: number, couleur: string): void => {
+    const h = c.createRadialGradient(x, y, 0, x, y, r); h.addColorStop(0, couleur); h.addColorStop(1, 'rgba(0,0,0,0)');
+    c.fillStyle = h; c.fillRect(x - r, y - r, 2 * r, 2 * r);
+  };
+  halo(TW * .5, TH * .55, TW * .85, 'rgba(255,95,200,.42)');
+  halo(TW * .12, TH * .3, TW * .6, 'rgba(108,203,255,.3)');
+  // Lune
+  halo(TW * .74, TH * .3, TW * .34, 'rgba(255,190,225,.55)');
+  c.fillStyle = NUIT.lune; c.beginPath(); c.arc(TW * .74, TH * .3, TW * .13, 0, Math.PI * 2); c.fill();
+  // Étoiles et faisceaux (positions fixes)
+  c.fillStyle = 'rgba(255,255,255,.75)';
+  for (let i = 0; i < 70; i++) { const r = 1 + (i * 7) % 4; c.globalAlpha = .25 + ((i * 13) % 10) / 14; c.beginPath(); c.arc((i * 211) % TW, TH * SERTI + ((i * 397) % Math.round(TH * .5)), r, 0, Math.PI * 2); c.fill(); }
+  c.globalAlpha = 1;
+  c.save(); c.globalCompositeOperation = 'lighter';
+  for (let i = 0; i < 5; i++) { c.fillStyle = `rgba(190,150,255,${.05 + i * .012})`; c.beginPath(); const x = TW * (-.2 + i * .3); c.moveTo(x, TH); c.lineTo(x + TW * .16, TH); c.lineTo(x + TW * .75, 0); c.lineTo(x + TW * .66, 0); c.fill(); }
+  c.restore();
+
+  // Vignettes : parallélogrammes inclinés, image recadrée sur le haut (les visages).
+  const vignette = (img: CanvasImageSource | undefined, x0: number, x1: number, y0: number, y1: number, devant: boolean): void => {
+    const s = TW * .035;
+    const chemin = (): void => { c.beginPath(); c.moveTo(x0 + s, y0); c.lineTo(x1 + s, y0); c.lineTo(x1 - s, y1); c.lineTo(x0 - s, y1); c.closePath(); };
+    c.save(); c.shadowColor = devant ? 'rgba(255,95,200,.9)' : 'rgba(108,203,255,.6)'; c.shadowBlur = devant ? 70 : 40; chemin(); c.fillStyle = NUIT.bas; c.fill(); c.restore();
+    c.save(); chemin(); c.clip();
+    const l = x1 - x0 + 2 * s, h = y1 - y0;
+    if (img) {
+      const iw = (img as HTMLImageElement).naturalWidth || (img as HTMLCanvasElement).width, ih = (img as HTMLImageElement).naturalHeight || (img as HTMLCanvasElement).height;
+      const e = Math.max(l / iw, h / ih);
+      c.drawImage(img, x0 - s + (l - iw * e) / 2, y0 + (h - ih * e) * .25, iw * e, ih * e);
+    } else {
+      const gv = c.createLinearGradient(x0, y0, x1, y1); gv.addColorStop(0, NUIT.milieu); gv.addColorStop(1, NUIT.haut); c.fillStyle = gv; c.fillRect(x0 - s, y0, l, h);
+    }
+    // Les vignettes de côté sont fondues dans la nuit ; toutes s'assombrissent vers le bas.
+    const voile = c.createLinearGradient(0, y0, 0, y1); voile.addColorStop(0, devant ? 'rgba(30,12,70,0)' : 'rgba(40,20,110,.3)'); voile.addColorStop(1, 'rgba(22,10,51,.82)');
+    c.fillStyle = voile; c.fillRect(x0 - s, y0, l, h);
+    c.restore();
+    c.save(); chemin(); c.lineWidth = devant ? 9 : 5; c.strokeStyle = devant ? NUIT.filet : 'rgba(205,190,255,.7)'; c.stroke(); c.restore();
+  };
+  const v = p.vedettes ?? [];
+  vignette(v[1], TW * .07, TW * .43, TH * .37, TH * .71, false);
+  vignette(v[2], TW * .57, TW * .93, TH * .37, TH * .71, false);
+  vignette(v[0], TW * .25, TW * .75, TH * .33, TH * .78, true);
+  if (!v.length) {
+    const gk0 = c.createLinearGradient(TW * .45, TH * .58, TW * .66, TH * .46); ACCENT_K.forEach((x, i) => gk0.addColorStop(i / 2, x));
+    dessinerK(c, TW / 2, TH * .555, TW * .3, COULEURS.texte, gk0);
+  }
+  // Pétales
+  c.fillStyle = NUIT.petale;
+  for (let i = 0; i < 16; i++) {
+    c.save(); c.translate((i * 173 + 60) % TW, TH * .12 + ((i * 431) % Math.round(TH * .72))); c.rotate(i * 1.3); c.globalAlpha = .55 + (i % 4) * .1;
+    c.beginPath(); c.ellipse(0, 0, 20 + (i % 3) * 6, 9, 0, 0, Math.PI * 2); c.fill(); c.restore();
+  }
+
+  // Titre incliné : dégradé clair, contour sombre, lueur. Sa taille s'adapte à la largeur du sachet.
+  const ecrireTitre = (ctx: CanvasRenderingContext2D, remplissage: string | CanvasGradient, lueur: boolean): void => {
+    const texte = (titre ?? p.nom).toUpperCase();
+    ctx.save(); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    let taille = 190; ctx.font = `800 ${taille}px ${POLICE}`;
+    taille = Math.min(taille, Math.floor(taille * (TW * .8) / ctx.measureText(texte).width)); ctx.font = `800 ${taille}px ${POLICE}`;
+    ctx.translate(TW / 2, TH * .205); ctx.transform(1, 0, -.2, 1, 0, 0);
+    if (lueur) { ctx.shadowColor = 'rgba(255,95,200,.95)'; ctx.shadowBlur = 46; ctx.lineJoin = 'round'; ctx.lineWidth = 18; ctx.strokeStyle = NUIT.contour; ctx.strokeText(texte, 0, 0); ctx.shadowBlur = 0; }
+    ctx.fillStyle = remplissage; ctx.fillText(texte, 0, 0);
+    ctx.restore();
+  };
+  const gt = c.createLinearGradient(0, TH * .16, 0, TH * .25); gt.addColorStop(0, '#FFFFFF'); gt.addColorStop(.55, '#EADFFF'); gt.addColorStop(1, '#B9A0FF');
+  ecrireTitre(c, gt, true);
+  // Logo K au-dessus du titre, pastille sous le titre.
+  const gk = c.createLinearGradient(TW * .47, TH * .125, TW * .55, TH * .095); ACCENT_K.forEach((x, i) => gk.addColorStop(i / 2, x));
+  dessinerK(c, TW / 2, TH * .118, TW * .09, COULEURS.texte, gk);
+  const plaque = (y: number, l: number, h: number, bord: string): void => {
+    const x = (TW - l) / 2, b = h * .5;
+    c.beginPath(); c.moveTo(x + b, y); c.lineTo(x + l - b, y); c.lineTo(x + l, y + h / 2); c.lineTo(x + l - b, y + h); c.lineTo(x + b, y + h); c.lineTo(x, y + h / 2); c.closePath();
+    c.fillStyle = NUIT.plaque; c.fill(); c.lineWidth = 4; c.strokeStyle = bord; c.stroke();
+  };
+  c.textAlign = 'center'; c.textBaseline = 'middle';
+  plaque(TH * .262, TW * .5, 62, 'rgba(205,190,255,.8)');
+  c.fillStyle = COULEURS.texte; c.font = `600 34px ${POLICE}`; c.fillText(`BOOSTER · ${edition ?? ''}`.trim(), TW / 2, TH * .262 + 33);
+  // Plaque du bas : nombre de cartes.
+  plaque(TH * .815, TW * .68, 150, NUIT.filet);
+  c.fillStyle = COULEURS.texte; c.font = `700 74px ${POLICE}`; c.fillText(p.detail.toUpperCase(), TW / 2, TH * .815 + 58);
+  c.fillStyle = NUIT.lilas; c.font = `500 32px ${POLICE}`; c.fillText('KIRAFUDA · CARTES À COLLECTIONNER', TW / 2, TH * .815 + 114);
+  c.textBaseline = 'alphabetic';
+  // Sertissages et ligne de déchirure
+  sertis(c, 0, TH * SERTI, NUIT.sertiClair, NUIT.sertiSombre);
+  sertis(c, TH * (1 - SERTI), TH * SERTI, NUIT.sertiClair, NUIT.sertiSombre);
+  c.strokeStyle = 'rgba(255,255,255,.4)'; c.lineWidth = 4; c.setLineDash([18, 12]);
   c.beginPath(); c.moveTo(TW * .05, TH * COUPE); c.lineTo(TW * .95, TH * COUPE); c.stroke(); c.setLineDash([]);
-  const gk = c.createLinearGradient(TW * .45, TH * .42, TW * .66, TH * .30); ACCENT_K.forEach((x, i) => gk.addColorStop(i / 2, x));
-  dessinerK(c, TW / 2, TH * .42, TW * .36, COULEURS.texte, gk);
-  c.textAlign = 'center'; c.fillStyle = a(COULEURS.texte, ACCENT_NOM); c.font = `600 66px ${POLICE}`; c.fillText(p.nom, TW / 2, TH * .76);
-  c.fillStyle = COULEURS.texteDoux; c.font = `400 36px ${POLICE}`; c.fillText(p.detail, TW / 2, TH * .76 + 56);
-  // Masque du film irisé (rouge = intensité)
+
+  // Masque du film irisé (rouge = intensité) : léger partout, fort sur le titre, le K et le filet de la vignette centrale.
   const [masque, m] = toile();
-  m.fillStyle = 'rgb(18,0,0)'; m.fillRect(0, 0, TW, TH);
-  m.fillStyle = 'rgb(45,0,0)'; m.fillRect(0, 0, TW, TH * SERTI); m.fillRect(0, TH * (1 - SERTI), TW, TH * SERTI);
-  dessinerK(m, TW / 2, TH * .42, TW * .36, 'rgb(110,0,0)', 'rgb(255,0,0)');
+  m.fillStyle = 'rgb(24,0,0)'; m.fillRect(0, 0, TW, TH);
+  // Les illustrations restent nettes : presque pas de film irisé sur les vignettes.
+  m.fillStyle = 'rgb(6,0,0)'; m.fillRect(TW * .04, TH * .33, TW * .92, TH * .45);
+  m.fillStyle = 'rgb(70,0,0)'; m.fillRect(0, 0, TW, TH * SERTI); m.fillRect(0, TH * (1 - SERTI), TW, TH * SERTI);
+  ecrireTitre(m, 'rgb(210,0,0)', false);
+  dessinerK(m, TW / 2, TH * .118, TW * .09, 'rgb(140,0,0)', 'rgb(255,0,0)');
+  { const s = TW * .035, x0 = TW * .25, x1 = TW * .75, y0 = TH * .33, y1 = TH * .78;
+    m.beginPath(); m.moveTo(x0 + s, y0); m.lineTo(x1 + s, y0); m.lineTo(x1 - s, y1); m.lineTo(x0 - s, y1); m.closePath(); m.lineWidth = 12; m.strokeStyle = 'rgb(230,0,0)'; m.stroke(); }
   // Face arrière : soudure verticale au centre
   const [arriere, r] = toile();
-  const gr = r.createLinearGradient(0, 0, TW, TH); gr.addColorStop(0, a(COULEURS.dos[0]!, ACCENT_FOND)); gr.addColorStop(1, a(COULEURS.dos[1]!, ACCENT_FOND));
+  const gr = r.createLinearGradient(0, 0, TW, TH); gr.addColorStop(0, COULEURS.dos[0]!); gr.addColorStop(1, COULEURS.dos[1]!);
   r.fillStyle = gr; r.fillRect(0, 0, TW, TH);
-  sertis(r, 0, TH * SERTI, a(COULEURS.dosSertiClair, ACCENT_SERTI), a(COULEURS.dosSertiSombre, ACCENT_SERTI));
-  sertis(r, TH * (1 - SERTI), TH * SERTI, a(COULEURS.dosSertiClair, ACCENT_SERTI), a(COULEURS.dosSertiSombre, ACCENT_SERTI));
+  sertis(r, 0, TH * SERTI, COULEURS.dosSertiClair, COULEURS.dosSertiSombre);
+  sertis(r, TH * (1 - SERTI), TH * SERTI, COULEURS.dosSertiClair, COULEURS.dosSertiSombre);
   r.fillStyle = COULEURS.soudure; r.fillRect(TW * .46, TH * SERTI, TW * .08, TH * (1 - 2 * SERTI));
   r.fillStyle = 'rgba(255,255,255,.05)'; for (let y = TH * SERTI; y < TH * (1 - SERTI); y += 10) r.fillRect(TW * .46, y, TW * .08, 3);
-  r.textAlign = 'center'; r.fillStyle = COULEURS.texteDoux; r.font = `600 34px ${POLICE}`; r.fillText('KIRAFUDA', TW * .25, TH * .5);
+  r.textAlign = 'center'; r.fillStyle = NUIT.lilas; r.font = `600 34px ${POLICE}`; r.fillText('KIRAFUDA', TW * .25, TH * .5);
   const noir = document.createElement('canvas'); noir.width = 2; noir.height = 2;
   { const n = noir.getContext('2d')!; n.fillStyle = '#000'; n.fillRect(0, 0, 2, 2); }
   return { avant, masque, arriere, noir };

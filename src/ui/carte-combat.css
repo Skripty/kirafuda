@@ -90,10 +90,10 @@
 .cc-repli-zero { margin-left: calc(1 * var(--u)); }
 
 /* ---------- Cartes ♦ à ♦♦♦♦ : talent et attaques dans la place libre sous l'illustration ---------- */
-.cb-titres .cc-identite { color: var(--carte-base-attenue); margin-bottom: calc(1 * var(--u)); }
+.cb-titres .cc-identite { color: color-mix(in srgb, var(--carte-clair) 74%, transparent); margin-bottom: calc(1 * var(--u)); }
 /* Plus de place sous l'illustration que sur le panneau des cartes ★ : texte un peu plus grand. */
 .cb-combat { position: relative; flex: 1 1 auto; overflow: hidden; --taille-texte: 1.06; }
-.carte-base .cc-attaque-nom small { color: var(--carte-base-attenue); opacity: 1; }
+.carte-base .cc-attaque-nom small { color: color-mix(in srgb, var(--carte-clair) 72%, transparent); opacity: 1; }
 
 /* ---------- Cartes ★ et plus : panneau translucide du bas, à la hauteur de son contenu ---------- */
 .carte.pleine-carte .carte-texte { height: auto; max-height: 62%; overflow: hidden; gap: calc(4 * var(--u)); }

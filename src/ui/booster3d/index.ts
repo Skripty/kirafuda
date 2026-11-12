@@ -60,6 +60,39 @@ function accentDe(extensionId: string): string {
   return (css.getPropertyValue(`--booster-accent-${id}`) || css.getPropertyValue('--booster-accent-defaut') || '#9aa0ac').trim();
 }
 
+/**
+ * Illustrations des trois personnages mis en avant sur le sachet : les mieux classés (rang S d'abord), un par série,
+ * dans l'ordre de l'extension. Une image absente ou trop lente est ignorée (le sachet se dessine sans elle).
+ */
+const vedettesChargees = new Map<string, Promise<HTMLImageElement[]>>();
+function chargerVedettes(extension: OptionsBooster3D['extension']): Promise<HTMLImageElement[]> {
+  const deja = vedettesChargees.get(extension.id);
+  if (deja) return deja;
+  const base = new Map<string, string>();
+  for (const c of extension.cartes) if (!c.secrete && !base.has(c.personnage)) base.set(c.personnage, c.id);
+  const rangs = ['S', 'A', 'B', 'C'];
+  const series = new Set<string>();
+  const cartes: string[] = [];
+  for (const p of [...extension.personnages].sort((a, b) => rangs.indexOf(a.rang) - rangs.indexOf(b.rang))) {
+    const carte = base.get(p.id);
+    if (!carte || series.has(p.serie)) continue;
+    series.add(p.serie);
+    cartes.push(carte);
+    if (cartes.length === 3) break;
+  }
+  const charger = (id: string): Promise<HTMLImageElement | null> => new Promise((resoudre) => {
+    const img = new Image();
+    const fin = (ok: boolean): void => resoudre(ok && img.naturalWidth > 0 ? img : null);
+    img.onload = () => fin(true);
+    img.onerror = () => fin(false);
+    setTimeout(() => fin(false), 2500);
+    img.src = `${import.meta.env.BASE_URL}cartes/${id}/illustration.webp?v=${__VERSION_IMAGES__}`;
+  });
+  const promesse = Promise.all(cartes.map(charger)).then((l) => l.filter((x): x is HTMLImageElement => x !== null));
+  vedettesChargees.set(extension.id, promesse);
+  return promesse;
+}
+
 export function creerBooster3D(o: OptionsBooster3D): Booster3D {
   const reduit = animationsReduites();
   const edition = String(o.extension.edition).padStart(2, '0');
@@ -116,9 +149,9 @@ export function creerBooster3D(o: OptionsBooster3D): Booster3D {
   // ---------- Boucle (WebGL seulement : le repli CSS n'a rien à animer en JS) ----------
   let desinscrire: (() => void) | null = null;
   if (essaiWebgl) {
-    void chargerPolices().then(() => {
+    void Promise.all([chargerVedettes(o.extension), chargerPolices()]).then(([vedettes]) => {
       if (detruit) return;
-      webgl = creerRenduWebGL(canvas, { nom, detail, accent: accentDe(o.extension.id) });
+      webgl = creerRenduWebGL(canvas, { nom, detail, accent: accentDe(o.extension.id), vedettes });
       if (!webgl) {
         // WebGL refusé au dernier moment : repli CSS.
         canvas.remove();

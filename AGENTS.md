@@ -51,6 +51,7 @@ supabase/functions/   fichiers déployés, GÉNÉRÉS par `npm run fonctions` (n
 ## Interface
 
 - Identité **Graphite** : utiliser uniquement les variables de `src/styles/tokens.css`. Le dégradé holo est réservé au K du logo et aux effets des cartes rares.
+- Exception voulue (2026-11-12) : **le booster et les cartes sont colorés**. Le sachet est illustré (nuit violette, trois personnages du booster, dessiné en canvas dans `src/ui/booster3d/webgl.ts`) ; chaque carte de base porte la couleur de son élément sur son cadre et son fond, et le cadre monte en éclat avec la rareté. Les écrans du jeu restent en Graphite.
 - Animations uniquement avec `transform` et `opacity`. Respecter `prefers-reduced-motion`.
 - Tout geste de glissé a un équivalent par bouton. Le symbole de rareté est toujours écrit, jamais indiqué par la seule couleur.
 - Doit fonctionner sur téléphone (largeur 375 px) et ordinateur.
