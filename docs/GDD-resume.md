@@ -33,7 +33,8 @@ L’extension Lancement sort en **vagues** qui rejoignent le même booster à le
 - Alternative et immersive : personnage détouré (`perso`) sur un fond (`fond`, généré si absent). Immersive : parallaxe entre les calques, film holo animé, particules.
 - Holo intégrale (♦♦♦♦) : mise en page fenêtre, cadre argenté, film holo sur toute la carte (fond, cadre, illustration).
 - Couronne : toute la carte en monochrome doré.
-- Images : une par carte, `public/cartes/<id-carte>/illustration.webp` ; pour ★★ et ★★★ : `perso.webp` + `fond.webp`. Repli : une carte secrète sans image reprend l'image de la carte de base du même personnage, puis un visuel de remplacement.
+- Images : une par carte, `public/cartes/<id-carte>/illustration.webp` (★★★ : animation WebP en plus, facultative). Repli : une carte secrète sans image reprend l’image de la carte de base du même personnage, puis un visuel de remplacement.
+- Effets des cartes ★ (de plus en plus riches) : ★ film irisé qui suit le pointeur ; ★★ le même film, des paillettes qui scintillent et un éclat de lumière qui traverse la carte ; ★★★ film animé, profondeur, particules et reflet continu sur le cadre ; ♛ monochrome doré.
 
 ## Données de combat (voir `docs/COMBAT.md`)
 

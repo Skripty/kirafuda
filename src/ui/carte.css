@@ -217,8 +217,36 @@
   from { transform: translateX(0); }
   to { transform: translateX(calc(-200% / 3)); }
 }
+/* Effets des cartes ★, de plus en plus riches :
+   ★   film irisé qui suit le pointeur ;
+   ★★  le même film, des paillettes qui scintillent et un éclat de lumière qui traverse la carte ;
+   ★★★ film animé, profondeur, particules et reflet continu sur le cadre. */
 .carte.f-pleine .carte-film.foil,
+.carte.f-alternative .carte-film.foil,
 .carte.f-immersive .carte-film.foil { opacity: 1; }
+
+/* ★★ : paillettes (deux trames de points décalées, fondues en color-dodge), déplacées par transform avec le pointeur. */
+.carte-paillettes {
+  position: absolute; inset: -8%; z-index: 2; pointer-events: none; mix-blend-mode: color-dodge;
+  background:
+    radial-gradient(circle, var(--blanc-casse) 0 calc(0.7 * var(--u)), transparent calc(1.3 * var(--u))) 0 0 / calc(11 * var(--u)) calc(13 * var(--u)),
+    radial-gradient(circle, var(--carte-particule) 0 calc(0.6 * var(--u)), transparent calc(1.2 * var(--u))) calc(5 * var(--u)) calc(7 * var(--u)) / calc(17 * var(--u)) calc(15 * var(--u));
+  transform: translateX(calc(var(--x) * 5%));
+  animation: carte-paillettes 2.2s ease-in-out infinite alternate;
+}
+@keyframes carte-paillettes { from { opacity: 0.25; } to { opacity: 0.75; } }
+/* ★★ : éclat de lumière, une fois toutes les 4,5 s. */
+.carte-eclat { position: absolute; inset: 0; z-index: 4; overflow: hidden; pointer-events: none; }
+.carte-eclat i {
+  position: absolute; top: -20%; bottom: -20%; left: 0; width: 36%;
+  background: linear-gradient(105deg, transparent, color-mix(in srgb, var(--blanc-casse) 60%, transparent) 50%, transparent);
+  transform: translateX(-130%) skewX(-14deg);
+  animation: carte-eclat 4.5s ease-in-out infinite;
+}
+@keyframes carte-eclat {
+  0%, 62% { transform: translateX(-130%) skewX(-14deg); }
+  88%, 100% { transform: translateX(400%) skewX(-14deg); }
+}
 
 /* Immersive : l'illustration glisse légèrement avec le pointeur (profondeur), film animé, particules. */
 .carte.f-immersive .carte-calque.fond { transform: translateX(calc(var(--x) * -10 * var(--u))) scale(1.06); }
@@ -256,4 +284,6 @@
   .carte-bande { transition: none !important; transform: none !important; }
   .carte-reflet { display: none; }
   .carte-reflet-film { animation: none !important; }
+  .carte-paillettes { animation: none !important; transform: none !important; opacity: 0.5; }
+  .carte-eclat { display: none; }
 }

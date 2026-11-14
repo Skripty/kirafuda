@@ -388,6 +388,15 @@ export function creerCarte(carte: Carte, extension: Extension, options: OptionsC
     corps.append(integrale);
   }
   if (finition === 'immersive') corps.append(particules(carte));
+  if (finition === 'alternative') {
+    // ★★ : paillettes qui scintillent (elles suivent le pointeur) et éclat de lumière qui traverse la carte.
+    const paillettes = el('div', 'carte-paillettes');
+    paillettes.setAttribute('aria-hidden', 'true');
+    const eclat = el('div', 'carte-eclat');
+    eclat.setAttribute('aria-hidden', 'true');
+    eclat.append(el('i'));
+    corps.append(paillettes, eclat);
+  }
   racine.append(corps);
   // ★ à ★★★ : bande du cadre en dégradé holo (et reflet pour ★★★), dessinée par-dessus la bordure, hors de l'image.
   if (finition === 'pleine' || finition === 'alternative' || finition === 'immersive') {
