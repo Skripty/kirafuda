@@ -1,5 +1,5 @@
 /* Écran Combat : choix du deck et du défi, puis tapis de jeu (adversaire en haut, joueur en bas, main en dessous). */
-.combat-page { width: min(1180px, 100%); min-height: 100vh; margin: 0 auto; padding: 22px 16px 40px; background: var(--halo-fond); }
+.combat-page { width: min(1760px, 100%); min-height: 100vh; margin: 0 auto; padding: 22px clamp(16px, 3vw, 40px) 40px; background: var(--halo-fond); }
 .combat-page h1, .combat-page h2, .combat-page h3, .combat-page p { margin-top: 0; }
 .combat-page button { font: inherit; }
 .combat-page :focus-visible { outline: 2px solid var(--texte); outline-offset: 2px; }
@@ -46,9 +46,9 @@
 .combat-eventail-carte.pos-1 { transform: translate(-40px, 10px) rotate(-11deg); opacity: 0.85; }
 .combat-eventail-carte.pos-2 { transform: translate(40px, 10px) rotate(11deg); opacity: 0.85; }
 
-.combat-defis { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
+.combat-defis { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 14px; }
 .combat-defi { display: flex; gap: 14px; min-width: 0; padding: 12px; border: 1px solid var(--bordure); border-radius: var(--rayon-panneau); background: var(--surface-panneau); }
-.combat-defi-art { flex: 0 0 96px; pointer-events: none; }
+.combat-defi-art { flex: 0 0 clamp(96px, 8vw, 132px); pointer-events: none; }
 .combat-defi-texte { display: flex; flex: 1; flex-direction: column; align-items: flex-start; gap: 6px; min-width: 0; }
 .combat-defi-texte h3 { margin: 0; font-size: 17px; }
 .combat-defi-texte p { margin: 0; color: var(--texte-doux); font-size: 13px; }
@@ -56,48 +56,109 @@
 .combat-recompense { padding: 3px 10px; border: 1px solid var(--bordure-forte); border-radius: 999px; color: var(--texte-doux); font-size: 11px; font-weight: 600; }
 .combat-recompense.gagnee { border-color: var(--hausse); color: var(--hausse); }
 
-/* ---------- Partie ---------- */
-.combat-page.en-partie {
-  --c-actif: 136px; --c-banc: 98px; --c-main: 104px;
-  display: flex; flex-direction: column; gap: 10px; padding-top: 10px; padding-bottom: 0;
-}
-.combat-barre { display: flex; align-items: center; gap: 12px; }
-.combat-barre-titre { display: flex; flex-direction: column; min-width: 0; }
-.combat-barre-titre strong { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.combat-barre-titre span { color: var(--texte-doux); font-size: 12px; }
-.combat-corps { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 12px; align-items: start; }
 
-.combat-tapis { display: flex; flex-direction: column; gap: 6px; padding: 12px; border: 1px solid var(--bordure); border-radius: var(--rayon-panneau); background: var(--surface-profonde); }
-/* Grand écran : l'actif au centre, le banc à côté (à gauche chez l'adversaire, à droite chez le joueur). */
-.combat-camp { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px 18px; padding: 10px; border: 1px solid transparent; border-radius: 14px; }
-.combat-camp .combat-bandeau { grid-column: 1 / -1; }
-.combat-camp .combat-ligne-actif { grid-column: 2; }
-.combat-camp.ia .combat-bandeau { grid-row: 1; }
-.combat-camp.ia .combat-ligne-actif, .combat-camp.ia .combat-banc { grid-row: 2; }
-.combat-camp.ia .combat-banc { grid-column: 1; justify-self: end; }
-.combat-camp.toi .combat-ligne-actif, .combat-camp.toi .combat-banc { grid-row: 1; }
-.combat-camp.toi .combat-banc { grid-column: 3; justify-self: start; }
-.combat-camp.toi .combat-bandeau { grid-row: 2; }
-.combat-camp.joue { border-color: var(--bordure-forte); background: var(--surface-panneau); }
-.combat-bandeau { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 12px; width: 100%; font-size: 12px; }
-.combat-bandeau-nom { font-size: 13px; }
-.combat-piles { color: var(--texte-doux); font-variant-numeric: tabular-nums; }
-.combat-points { display: inline-flex; gap: 4px; }
-.combat-points i { width: 14px; height: 14px; border: 1px solid var(--bordure-forte); border-radius: 50%; }
-.combat-points i.marque { border-color: var(--texte); background: var(--texte); }
-.combat-energie-zone { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 4px; border: 1px solid var(--bordure-forte); border-radius: 999px; color: var(--texte-doux); }
-.combat-energie-zone:not(:has(img)) { padding-left: 10px; }
-.combat-energie-icone { width: 24px; height: 24px; }
+/* ====================================================================================================
+   Partie
+   Ordinateur (≥ 1100 px) : plein écran, sans défilement. Journal à gauche, tapis au centre, carte choisie et
+   commandes à droite. Les cartes sont dimensionnées sur la place disponible (hauteur de l'écran et largeur du
+   tapis) : elles grandissent avec l'écran.
+   Téléphone : une colonne (tapis, main, journal), le panneau de la carte choisie monte du bas de l'écran.
+   ==================================================================================================== */
+.combat-page.en-partie {
+  width: 100%; max-width: none; height: 100dvh; padding: 10px clamp(12px, 1.4vw, 24px) 12px;
+  display: flex; flex-direction: column; gap: 10px; overflow: hidden;
+  background:
+    radial-gradient(70% 55% at 50% 50%, color-mix(in srgb, var(--blanc-casse) 5%, transparent), transparent 70%),
+    var(--fond);
+}
+.combat-barre { display: flex; align-items: center; gap: 12px; flex: none; }
+.combat-barre-titre { display: flex; flex-direction: column; min-width: 0; }
+.combat-barre-titre strong { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.combat-barre-titre span { color: var(--texte-doux); font-size: 12px; }
+.combat-bouton.petit { min-height: 34px; padding: 4px 12px; font-size: 12px; }
+.combat-bouton.grand { min-height: 52px; padding: 10px 26px; font-size: 16px; }
+
+.combat-jeu {
+  flex: 1; min-height: 0; display: grid; gap: 14px;
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr) minmax(280px, 340px);
+}
+.combat-gauche, .combat-droite { min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+
+/* ---------- Tapis ---------- */
+.combat-tapis {
+  container-type: inline-size;
+  position: relative; min-height: 0; display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
+  padding: 10px 12px 0; border: 1px solid var(--bordure); border-radius: var(--rayon-panneau); overflow: hidden;
+  background:
+    linear-gradient(180deg, transparent calc(50% - 1px), color-mix(in srgb, var(--blanc-casse) 10%, transparent) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px)),
+    repeating-linear-gradient(0deg, color-mix(in srgb, var(--blanc-casse) 2.5%, transparent) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(90deg, color-mix(in srgb, var(--blanc-casse) 2.5%, transparent) 0 1px, transparent 1px 34px),
+    radial-gradient(60% 50% at 50% 50%, var(--surface-panneau), var(--surface-profonde));
+}
+/* Tailles des cartes : la plus petite des deux limites (largeur du tapis, hauteur de l'écran). */
+.combat-tapis > * {
+  --c-actif: max(84px, min(calc(31cqw - 56px), calc((100dvh - 262px) / 3.8)));
+  --c-banc: calc(var(--c-actif) * 0.72);
+  --c-main: calc(var(--c-actif) * 0.7);
+}
+
+.combat-camp {
+  display: grid; grid-template-columns: auto auto auto; justify-content: center; align-items: center; column-gap: 16px; row-gap: 4px;
+  padding: 6px 10px; border-radius: 16px; transition: opacity 200ms ease;
+}
+.combat-camp.ia { grid-template-areas: "bandeau bandeau bandeau" "zone actif banc"; }
+.combat-camp.toi { grid-template-areas: "zone actif banc" "bandeau bandeau bandeau"; }
+.combat-camp .combat-bandeau { grid-area: bandeau; }
+.combat-camp .combat-zone { grid-area: zone; }
+.combat-camp .combat-ligne-actif { grid-area: actif; }
+.combat-camp .combat-banc { grid-area: banc; }
+
+.combat-bandeau { display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 12px; }
+.combat-bandeau-nom { font-size: 13px; letter-spacing: 0.04em; }
+.combat-camp.joue .combat-bandeau-nom { color: var(--hausse); }
+.combat-points { display: inline-flex; gap: 5px; }
+.combat-points i { width: 15px; height: 15px; border: 2px solid var(--bordure-forte); border-radius: 50%; }
+.combat-points i.marque { border-color: var(--carte-or); background: var(--carte-or); }
+.combat-main-ia { display: inline-flex; align-items: center; padding-left: 6px; }
+.combat-main-ia i {
+  width: 12px; height: 17px; margin-left: -6px; border: 1px solid var(--bordure-forte); border-radius: 3px;
+  background: linear-gradient(165deg, var(--anthracite), var(--graphite));
+}
+.combat-main-ia b { margin-left: 6px; color: var(--texte-doux); font-variant-numeric: tabular-nums; }
+
+/* Zone : énergie du tour, deck, défausse. */
+.combat-zone { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 96px; }
+.combat-orbe {
+  position: relative; display: grid; place-items: center; width: 58px; height: 58px; border-radius: 50%;
+  border: 2px dashed var(--bordure-forte); background: var(--surface-pastille);
+}
+.combat-orbe.pleine { border-style: solid; border-color: var(--blanc-casse); }
+.combat-orbe.pleine::before {
+  content: ''; position: absolute; inset: -7px; border-radius: 50%; pointer-events: none;
+  background: conic-gradient(from 0deg, transparent, color-mix(in srgb, var(--blanc-casse) 55%, transparent), transparent 40%);
+  animation: combat-orbe 2.4s linear infinite;
+}
+.combat-orbe[data-glisse] { cursor: grab; touch-action: none; }
+.combat-orbe-icone { position: relative; width: 46px; height: 46px; }
+@keyframes combat-orbe { to { transform: rotate(360deg); } }
+.combat-orbe-legende { color: var(--texte-doux); font-size: 11px; }
+.combat-piles { display: flex; gap: 8px; }
+.combat-pile { position: relative; width: 42px; }
+.combat-pile-dos, .combat-pile-vide, .combat-pile-face { width: 100%; aspect-ratio: 5 / 7; border-radius: 5px; }
+.combat-pile-dos { display: grid; place-items: center; border: 1px solid var(--bordure-forte); background: linear-gradient(165deg, var(--anthracite), var(--graphite)); box-shadow: 2px 2px 0 var(--bordure), 4px 4px 0 var(--bordure-douce); }
+.combat-pile-dos span { color: var(--texte-doux); font-size: 14px; font-weight: 700; }
+.combat-pile-vide { border: 1px dashed var(--bordure-forte); }
+.combat-pile-face { overflow: hidden; pointer-events: none; }
+.combat-pile b { position: absolute; right: -6px; bottom: -6px; min-width: 20px; padding: 1px 5px; border-radius: 999px; background: var(--fond); border: 1px solid var(--bordure-forte); font-size: 11px; text-align: center; font-variant-numeric: tabular-nums; }
 
 .combat-ligne-actif { display: flex; justify-content: center; }
-.combat-banc { display: flex; justify-content: center; gap: 10px; padding-bottom: 8px; }
-.combat-ligne-actif { padding-bottom: 8px; }
+.combat-banc { display: flex; justify-content: center; gap: 10px; padding: 4px; border-radius: 12px; }
 .combat-case { position: relative; flex: none; width: var(--c-banc); }
 .combat-case.actif { width: var(--c-actif); }
 .combat-place-vide, .combat-dos {
-  display: grid; place-items: center; aspect-ratio: 5 / 7; border: 1px dashed var(--bordure-forte); border-radius: 8px; color: var(--texte-doux); font-size: 11px; opacity: 0.6;
+  display: grid; place-items: center; aspect-ratio: 5 / 7; border: 1px dashed var(--bordure-forte); border-radius: 8px; color: var(--texte-doux); font-size: 11px; opacity: 0.55;
 }
-.combat-dos { border-style: solid; background: var(--surface-pastille); opacity: 1; }
+.combat-dos { border-style: solid; background: linear-gradient(165deg, var(--anthracite), var(--graphite)); opacity: 1; }
 .combat-dos span { font-size: 26px; font-weight: 700; color: var(--texte-doux); }
 
 .combat-unite { position: relative; display: block; width: 100%; padding: 0; border: 0; border-radius: 8px; background: none; cursor: pointer; transition: transform 160ms ease, opacity 160ms ease; }
@@ -105,68 +166,75 @@
 .combat-unite:hover { transform: translateY(-3px); }
 .combat-unite.choisie { outline: 2px solid var(--texte); outline-offset: 3px; }
 .combat-unite.appelee { outline: 2px dashed var(--hausse); outline-offset: 3px; }
+.combat-camp.ia .combat-case.actif .combat-unite { box-shadow: 0 0 0 1px color-mix(in srgb, var(--baisse) 40%, transparent); border-radius: 9px; }
 .combat-pv {
-  position: absolute; top: -6px; right: -6px; display: inline-flex; align-items: baseline; gap: 1px; padding: 2px 7px 5px; overflow: hidden;
+  position: absolute; top: -8px; right: -8px; z-index: 2; display: inline-flex; align-items: baseline; gap: 1px; padding: 3px 8px 6px; overflow: hidden;
   border: 1px solid var(--bordure-forte); border-radius: 999px; background: var(--fond); color: var(--texte); font-variant-numeric: tabular-nums; line-height: 1.1;
 }
-.combat-pv b { font-size: 14px; }
-.combat-pv small { color: var(--texte-doux); font-size: 9px; }
+.combat-pv b { font-size: clamp(13px, calc(var(--c-banc) * 0.13), 18px); }
+.combat-pv small { color: var(--texte-doux); font-size: 10px; }
 .combat-pv i { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--hausse); transform-origin: left; }
 .combat-pv.bas i { background: var(--baisse); }
 .combat-pv.bas b { color: var(--baisse); }
-.combat-energies { position: absolute; left: -4px; bottom: -6px; display: inline-flex; }
-.combat-energie-attachee { width: 22px; height: 22px; margin-right: -6px; border-radius: 50%; background: var(--fond); }
-.combat-etats { position: absolute; top: 40%; left: -4px; display: flex; flex-direction: column; gap: 2px; }
-.combat-etat { padding: 1px 6px; border: 1px solid var(--baisse); border-radius: 999px; background: var(--fond); color: var(--baisse); font-size: 9px; font-weight: 700; }
+.combat-energies { position: absolute; left: -5px; bottom: -7px; z-index: 2; display: inline-flex; }
+.combat-energie-attachee { width: clamp(18px, calc(var(--c-banc) * 0.2), 26px); height: auto; aspect-ratio: 1; margin-right: -6px; border-radius: 50%; background: var(--fond); }
+.combat-etats { position: absolute; top: 38%; left: -6px; z-index: 2; display: flex; flex-direction: column; gap: 2px; }
+.combat-etat { padding: 1px 6px; border: 1px solid var(--baisse); border-radius: 999px; background: var(--fond); color: var(--baisse); font-size: 10px; font-weight: 700; }
 .combat-attacher {
-  position: absolute; bottom: -14px; left: 50%; z-index: 2; display: inline-flex; align-items: center; gap: 1px; min-height: 32px; margin-left: -26px; padding: 2px 4px 2px 8px;
+  position: absolute; bottom: -14px; left: 50%; z-index: 3; display: inline-flex; align-items: center; gap: 1px; min-height: 32px; margin-left: -26px; padding: 2px 4px 2px 8px;
   border: 1px solid var(--hausse); border-radius: 999px; background: var(--fond); color: var(--hausse); font-size: 15px; font-weight: 700; cursor: pointer;
   transition: transform 150ms ease, opacity 150ms ease;
 }
 .combat-attacher:hover { transform: scale(1.08); }
 .combat-attacher-icone { width: 24px; height: 24px; }
-.combat-case.touche .combat-unite { animation: combat-impact 320ms ease both; }
-.combat-degats-flottants { position: absolute; top: 34%; left: 50%; color: var(--baisse); font-size: 26px; font-weight: 800; pointer-events: none; animation: combat-degats 1100ms ease both; }
-@keyframes combat-impact { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 60% { transform: translateX(4px); } }
-@keyframes combat-degats { 0% { opacity: 0; transform: translate(-50%, 6px); } 20% { opacity: 1; transform: translate(-50%, -6px); } 100% { opacity: 0; transform: translate(-50%, -30px); } }
 
-.combat-centre { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 10px; padding: 2px 6px; text-align: center; }
-.combat-tour { padding: 4px 14px; border: 1px solid var(--bordure-forte); border-radius: 999px; color: var(--texte-doux); font-size: 12px; font-weight: 700; }
-.combat-tour.a-moi { border-color: var(--texte); color: var(--texte); }
-.combat-terrain { min-height: 28px; padding: 3px 12px; border: 1px solid var(--bordure-forte); border-radius: 999px; background: var(--surface-pastille); color: var(--texte); font-size: 12px; cursor: pointer; }
-.combat-dernier { flex-basis: 100%; margin: 0; color: var(--texte-doux); font-size: 12px; }
+.combat-centre { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 10px; padding: 0 6px; text-align: center; }
+.combat-tour { padding: 5px 16px; border: 1px solid var(--bordure-forte); border-radius: 999px; background: var(--fond); color: var(--texte-doux); font-size: 12px; font-weight: 700; }
+.combat-tour.a-moi { border-color: var(--hausse); color: var(--hausse); }
+.combat-terrain { min-height: 30px; padding: 3px 12px; border: 1px solid var(--carte-or); border-radius: 999px; background: var(--fond); color: var(--carte-or-texte); font-size: 12px; cursor: pointer; }
+.combat-dernier { flex-basis: 100%; margin: 0; color: var(--texte-doux); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* ----- Main ----- */
-.combat-main h2 { margin-bottom: 6px; color: var(--texte-doux); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; }
-.combat-main-cartes { display: flex; gap: 8px; padding: 10px 4px 12px; overflow-x: auto; }
-.combat-carte-main { flex: 0 0 var(--c-main); padding: 0; border: 0; border-radius: 8px; background: none; cursor: pointer; opacity: 0.6; transition: transform 160ms ease, opacity 160ms ease; }
-.combat-carte-main.jouable { opacity: 1; transform: translateY(-6px); }
-.combat-carte-main:hover { opacity: 1; }
-.combat-carte-main.choisie { opacity: 1; transform: translateY(-10px); outline: 2px solid var(--texte); outline-offset: 3px; }
-.combat-carte-main.placee { opacity: 0.25; }
+/* ----- Main du joueur ----- */
+.combat-main { flex: none; }
+.combat-main-cartes { display: flex; justify-content: center; padding: 14px 6px 10px; }
+.combat-carte-main {
+  position: relative; flex: 0 0 var(--c-main); padding: 0; border: 0; border-radius: 8px; background: none; cursor: pointer;
+  opacity: 0.62; transition: transform 160ms ease, opacity 160ms ease;
+}
+.combat-carte-main + .combat-carte-main { margin-left: var(--ecart-main, 10px); }
+.combat-carte-main.jouable { opacity: 1; transform: translateY(-6px); box-shadow: 0 0 0 2px color-mix(in srgb, var(--hausse) 70%, transparent); }
+.combat-carte-main[data-glisse] { cursor: grab; touch-action: none; }
+.combat-carte-main:hover, .combat-carte-main:focus-visible { z-index: 5; opacity: 1; transform: translateY(-18px) scale(1.12); }
+.combat-carte-main.choisie { z-index: 6; opacity: 1; transform: translateY(-20px) scale(1.12); outline: 2px solid var(--texte); outline-offset: 3px; }
+.combat-carte-main.en-glisse, .combat-carte-main.en-glisse:hover { opacity: 0.25; transform: none; }
 .combat-main-vide { margin: 0; color: var(--texte-doux); font-size: 13px; }
 
+/* ----- Glisser-déposer ----- */
+.combat-page.glisse [data-drop].cible-possible { outline: 2px dashed var(--hausse); outline-offset: 4px; }
+.combat-page.glisse .combat-tapis[data-drop].cible-possible { outline-offset: -4px; }
+.combat-page.glisse [data-drop].cible-survolee { outline-style: solid; transform: scale(1.04); }
+.combat-flottant { position: fixed; z-index: 70; margin: 0; opacity: 0.95; transform-origin: center; box-shadow: 0 18px 40px color-mix(in srgb, var(--graphite) 80%, transparent); }
+
 /* ----- Panneau : carte choisie, ses actions ----- */
-.combat-cote { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-.combat-panneau { padding: 14px; border: 1px solid var(--bordure); border-radius: var(--rayon-panneau); background: var(--surface-panneau); }
+.combat-panneau { flex: 1; min-height: 0; overflow-y: auto; padding: 14px; border: 1px solid var(--bordure); border-radius: var(--rayon-panneau); background: var(--surface-panneau); }
 .combat-panneau-tete { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
 .combat-panneau-titre { display: flex; flex-direction: column; min-width: 0; }
-.combat-panneau-titre strong { font-size: 16px; }
+.combat-panneau-titre strong { font-size: 17px; }
 .combat-panneau-titre span { color: var(--texte-doux); font-size: 12px; }
-.combat-panneau-tete .combat-bouton { min-height: 36px; padding: 4px 12px; font-size: 12px; }
-.combat-panneau-haut { display: flex; gap: 12px; margin-bottom: 12px; }
-.combat-panneau-carte { flex: 0 0 112px; align-self: flex-start; padding: 0; border: 0; border-radius: 8px; background: none; cursor: zoom-in; }
-.combat-panneau-infos { min-width: 0; font-size: 12px; }
+.combat-panneau-aide-titre { display: block; margin-bottom: 8px; font-size: 17px; }
+.combat-panneau-haut { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 12px; }
+.combat-panneau-carte { width: min(250px, 100%); padding: 0; border: 0; border-radius: 10px; background: none; cursor: zoom-in; }
+.combat-panneau-infos { align-self: stretch; min-width: 0; font-size: 12px; }
 .combat-panneau-infos p { margin: 0 0 6px; }
 .combat-panneau-talent { color: var(--texte-doux); }
 .combat-panneau-vide { margin: 0; color: var(--texte-doux); font-size: 13px; }
 .combat-actions { display: flex; flex-direction: column; gap: 8px; }
 .combat-action {
-  display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 8px 12px; border: 1px solid var(--bordure-forte); border-radius: 12px;
+  display: flex; align-items: center; gap: 10px; min-height: 50px; padding: 8px 12px; border: 1px solid var(--bordure-forte); border-radius: 12px;
   background: var(--surface-pastille); color: var(--texte); text-align: left; cursor: pointer; transition: transform 150ms ease, opacity 150ms ease;
 }
 .combat-action:hover:not(:disabled) { transform: translateY(-1px); }
-.combat-action.attaque:not(:disabled) { border-color: var(--baisse); }
+.combat-action.attaque:not(:disabled) { border-color: var(--baisse); background: color-mix(in srgb, var(--baisse) 10%, var(--surface-pastille)); }
 .combat-action.jouer { border-color: var(--hausse); }
 .combat-action-texte { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .combat-action-texte strong { font-size: 14px; }
@@ -175,52 +243,140 @@
 .combat-cout-icone { width: 20px; height: 20px; margin-right: -4px; }
 .combat-cout-icone:last-child { margin-right: 0; }
 
-.combat-journal { padding: 10px 14px; border: 1px solid var(--bordure); border-radius: var(--rayon-panneau); background: var(--surface-panneau); font-size: 12px; }
-.combat-journal summary { min-height: 28px; color: var(--texte-doux); font-weight: 600; cursor: pointer; }
-.combat-journal ol { max-height: 220px; margin: 8px 0 0; padding-left: 18px; overflow-y: auto; color: var(--texte-doux); }
-.combat-journal li { margin-bottom: 4px; }
+/* ----- Journal ----- */
+.combat-journal { min-height: 0; display: flex; flex-direction: column; padding: 10px 14px; border: 1px solid var(--bordure); border-radius: var(--rayon-panneau); background: var(--surface-panneau); font-size: 12px; }
+.combat-gauche .combat-journal[open] { flex: 1; }
+.combat-journal summary { min-height: 30px; color: var(--texte-doux); font-weight: 600; cursor: pointer; }
+.combat-journal ol { flex: 1; min-height: 0; max-height: 100%; margin: 8px 0 0; padding-left: 18px; overflow-y: auto; color: var(--texte-doux); }
+.combat-journal li { margin-bottom: 5px; }
+.combat-journal li.toi { color: var(--texte-clair); }
 .combat-journal p { margin: 8px 0 0; color: var(--texte-doux); }
 
-/* ----- Barre de commande ----- */
-.combat-commande {
-  position: sticky; bottom: 0; z-index: 6; display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px;
-  margin: 0 -16px; padding: 10px 16px; border-top: 1px solid var(--bordure); background: var(--fond);
+/* ----- Commandes ----- */
+.combat-commande { flex: none; display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 1px solid var(--bordure); border-radius: var(--rayon-panneau); background: var(--surface-panneau); }
+.combat-commande .combat-annonce { margin: 0; }
+.combat-consigne { margin: 0; color: var(--texte-doux); font-size: 13px; }
+.combat-commande-boutons { display: flex; flex-direction: column; gap: 8px; }
+.combat-commande .combat-bouton { width: 100%; gap: 8px; }
+.combat-bouton.attaque { border-color: var(--baisse); background: color-mix(in srgb, var(--baisse) 14%, var(--surface-pastille)); }
+.combat-bouton.fin-tour { min-height: 54px; font-size: 16px; }
+
+/* ----- Fin de partie ----- */
+.combat-fin {
+  position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 16px;
+  background: color-mix(in srgb, var(--graphite) 72%, transparent); animation: combat-fin 500ms ease-out both;
 }
-.combat-commande .combat-annonce { flex-basis: 100%; margin: 0; }
-.combat-consigne { flex: 1 1 220px; margin: 0; color: var(--texte-doux); font-size: 13px; }
+.combat-fin-boite { display: flex; flex-direction: column; align-items: center; gap: 10px; width: min(460px, 100%); padding: 30px 24px; border: 1px solid var(--bordure-forte); border-radius: var(--rayon-panneau); background: var(--surface-panneau); text-align: center; animation: combat-fin-boite 600ms cubic-bezier(.2,.8,.2,1) both; animation-delay: inherit; }
+.combat-fin h2 { margin: 0; font-size: clamp(40px, 7vw, 64px); letter-spacing: -0.03em; }
+.combat-fin.victoire h2 { color: var(--carte-or-texte); }
+.combat-fin.defaite h2 { color: var(--texte-doux); }
+.combat-fin-score { margin: 0; font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.combat-fin-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 10px; }
+@keyframes combat-fin { from { opacity: 0; } to { opacity: 1; } }
+@keyframes combat-fin-boite { from { opacity: 0; transform: translateY(30px) scale(.9); } to { opacity: 1; transform: none; } }
 
 /* ----- Carte en grand ----- */
-.combat-inspection { width: min(360px, calc(100vw - 32px)); padding: 18px; border: 1px solid var(--bordure-forte); border-radius: var(--rayon-panneau); background: var(--surface-panneau); color: var(--texte); text-align: center; }
+.combat-inspection { width: min(380px, calc(100vw - 32px)); padding: 18px; border: 1px solid var(--bordure-forte); border-radius: var(--rayon-panneau); background: var(--surface-panneau); color: var(--texte); text-align: center; }
 .combat-inspection::backdrop { background: var(--carte-scene-fond); opacity: 0.8; }
 .combat-inspection h2 { margin-bottom: 12px; font-size: 18px; }
-.combat-inspection-carte { width: min(290px, 100%); margin: 0 auto 14px; }
+.combat-inspection-carte { width: min(310px, 100%); margin: 0 auto 14px; }
 
-@media (max-width: 900px) {
+/* ====================================================================================================
+   Effets (calque au-dessus de tout, sans pointeur) — src/ui/combat-animations.ts
+   ==================================================================================================== */
+.combat-fx { position: fixed; inset: 0; z-index: 60; pointer-events: none; overflow: hidden; }
+.combat-fantome { position: fixed; z-index: 2; }
+.combat-fantome > * { display: block; width: 100%; height: 100%; margin: 0; }
+.combat-fantome > .combat-carte-main, .combat-fantome > .combat-unite { opacity: 1; transform: none; box-shadow: none; outline: none; }
+.combat-voile { position: fixed; inset: 0; z-index: 1; background: var(--graphite); opacity: 0; }
+.combat-nombre {
+  position: fixed; z-index: 5; opacity: 0; font-size: clamp(36px, 6vh, 64px); font-weight: 900; line-height: 1; white-space: nowrap;
+  color: var(--baisse); text-shadow: 0 3px 0 var(--graphite), 0 0 22px color-mix(in srgb, var(--baisse) 70%, transparent);
+}
+.combat-nombre.soin { color: var(--hausse); text-shadow: 0 3px 0 var(--graphite), 0 0 22px color-mix(in srgb, var(--hausse) 70%, transparent); }
+.combat-ko {
+  position: fixed; z-index: 6; opacity: 0; font-size: clamp(44px, 8vh, 84px); font-weight: 900; letter-spacing: 0.02em; white-space: nowrap;
+  color: var(--blanc-casse); text-shadow: 0 4px 0 var(--baisse), 0 0 30px color-mix(in srgb, var(--baisse) 80%, transparent);
+}
+.combat-eclair { position: absolute; inset: 0; z-index: 4; border-radius: 8px; background: var(--blanc-casse); opacity: 0; pointer-events: none; }
+.combat-anneau { position: absolute; inset: -14%; z-index: 4; border-radius: 50%; border: 3px solid var(--carte-or-texte); opacity: 0; pointer-events: none; box-shadow: 0 0 30px var(--carte-or); }
+.combat-dos-mini { width: 100%; height: 100%; border: 1px solid var(--bordure-forte); border-radius: 5px; background: linear-gradient(165deg, var(--anthracite), var(--graphite)); }
+.combat-orbe-volante { display: block; width: 100%; height: 100%; border-radius: 50%; }
+.combat-banniere {
+  position: fixed; left: 50%; top: 50%; z-index: 7; opacity: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; width: 100vw; padding: 20px 0;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--graphite) 92%, transparent) 25%, color-mix(in srgb, var(--graphite) 92%, transparent) 75%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--blanc-casse) 25%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--blanc-casse) 25%, transparent);
+}
+.combat-banniere strong { font-size: clamp(30px, 5vw, 52px); font-weight: 800; letter-spacing: -0.02em; text-transform: uppercase; }
+.combat-banniere.toi strong { color: var(--hausse); }
+.combat-banniere span { color: var(--texte-doux); font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; }
+.combat-piece { position: fixed; inset: 0; z-index: 8; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; perspective: 600px; }
+.combat-piece-disque {
+  display: grid; place-items: center; width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--carte-or-texte);
+  background: radial-gradient(circle at 35% 30%, var(--carte-or-texte), var(--carte-or) 55%, var(--carte-or-fond));
+  color: var(--carte-or-fond); font-size: 48px; font-weight: 900; box-shadow: 0 16px 40px color-mix(in srgb, var(--graphite) 80%, transparent);
+}
+.combat-piece p { margin: 0; padding: 6px 18px; border-radius: 999px; background: var(--fond); font-size: 20px; font-weight: 800; letter-spacing: 0.06em; }
+
+/* ====================================================================================================
+   Écrans moyens : le journal passe sous le panneau
+   ==================================================================================================== */
+@media (min-width: 1100px) and (max-width: 1399px) {
+  .combat-jeu { grid-template-columns: minmax(0, 1fr) minmax(290px, 340px); grid-template-rows: minmax(0, 1fr) auto; }
+  .combat-tapis { grid-column: 1; grid-row: 1 / 3; }
+  .combat-droite { grid-column: 2; grid-row: 1; }
+  .combat-gauche { grid-column: 2; grid-row: 2; }
+  .combat-journal ol { max-height: 26vh; }
+}
+
+/* ====================================================================================================
+   Téléphone et tablette : une colonne, le panneau monte du bas
+   ==================================================================================================== */
+@media (max-width: 1099px) {
   .combat-page { padding: 16px 12px 40px; }
-  .combat-page.en-partie { --c-actif: 100px; --c-banc: 78px; --c-main: 76px; gap: 6px; padding-top: 8px; padding-bottom: 0; }
-  /* Une seule colonne : tapis, main, journal ; le panneau de la carte choisie monte du bas de l'écran. */
-  .combat-corps, .combat-cote { display: contents; }
+  .combat-page.en-partie { height: auto; min-height: 100dvh; overflow: visible; gap: 6px; padding: 8px 10px 0; }
+  .combat-jeu, .combat-gauche, .combat-droite { display: contents; }
   .combat-barre { order: 0; }
-  .combat-tapis { order: 1; gap: 2px; padding: 8px 6px; }
-  .combat-main { order: 2; }
+  .combat-tapis { order: 1; container-type: normal; padding: 8px 4px 0; gap: 2px; }
+  .combat-tapis > * { --c-actif: min(25vw, 100px); --c-banc: min(20vw, 80px); --c-main: min(17vw, 74px); }
+  /* Le banc adverse est plus petit : on le lit moins souvent. */
+  .combat-camp.ia .combat-case.banc { width: min(16vw, 64px); }
+  .combat-camp.ia .combat-banc { gap: 8px; }
   .combat-journal { order: 3; }
-  .combat-commande { order: 4; margin: 0 -12px; padding: 8px 12px; }
-  .combat-camp { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 6px 4px; }
-  .combat-banc { gap: 10px; }
-  .combat-bandeau { font-size: 11px; gap: 4px 8px; }
+  .combat-commande { order: 4; position: sticky; bottom: 0; z-index: 6; margin: 0 -10px; border-radius: 0; border-width: 1px 0 0; background: var(--fond); }
+  .combat-commande-boutons { flex-direction: row; flex-wrap: wrap; }
+  .combat-commande .combat-bouton { flex: 1 1 auto; width: auto; padding: 8px 12px; font-size: 13px; }
+  .combat-bouton.fin-tour { min-height: 48px; font-size: 14px; }
+  .combat-consigne { font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .combat-commande { padding: 8px 10px; gap: 6px; }
+  .combat-dernier { font-size: 11px; }
+
+  .combat-camp { grid-template-columns: 1fr auto 1fr; column-gap: 8px; padding: 4px 2px; }
+  .combat-camp.ia { grid-template-areas: "bandeau bandeau bandeau" "banc banc banc" ". actif zone"; }
+  .combat-camp.toi { grid-template-areas: "zone actif ." "banc banc banc" "bandeau bandeau bandeau"; }
+  .combat-camp.ia .combat-zone { justify-self: start; }
+  .combat-camp.toi .combat-zone { justify-self: end; }
+  .combat-zone { width: auto; gap: 4px; }
+  .combat-orbe { width: 44px; height: 44px; }
+  .combat-orbe-icone { width: 34px; height: 34px; }
+  .combat-pile { width: 28px; }
+  .combat-pile b { font-size: 10px; }
+  .combat-pv { top: -6px; right: -6px; padding: 2px 6px 5px; }
   .combat-pv b { font-size: 12px; }
-  .combat-pv { top: -5px; right: -5px; padding: 1px 5px 4px; }
-  .combat-energie-attachee { width: 18px; height: 18px; }
   .combat-attacher { min-height: 30px; margin-left: -24px; }
+  .combat-camp.toi .combat-ligne-actif { padding-bottom: 16px; }
   .combat-attacher-icone { width: 22px; height: 22px; }
-  .combat-main-cartes { padding-top: 12px; }
+  .combat-main-cartes { padding-top: 16px; }
+  .combat-carte-main:hover { transform: translateY(-6px); }
+  .combat-carte-main.choisie { transform: translateY(-14px) scale(1.06); }
+
   .combat-panneau { display: none; }
   .combat-panneau.ouvert {
-    position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: block; max-height: 72vh; overflow-y: auto;
-    border-radius: var(--rayon-panneau) var(--rayon-panneau) 0 0; border-color: var(--bordure-forte); animation: combat-panneau 200ms ease both;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; display: block; max-height: 74vh; overflow-y: auto;
+    border-radius: var(--rayon-panneau) var(--rayon-panneau) 0 0; border-color: var(--bordure-forte); animation: combat-panneau 220ms ease both;
   }
-  .combat-commande .combat-bouton { flex: 1 1 auto; padding: 8px 12px; font-size: 13px; }
-  .combat-consigne { flex-basis: 100%; font-size: 12px; }
+  .combat-panneau.ouvert .combat-panneau-haut { flex-direction: row; align-items: flex-start; }
+  .combat-panneau.ouvert .combat-panneau-carte { flex: 0 0 112px; }
   .combat-defis { grid-template-columns: 1fr; }
   .combat-deck { flex-basis: 160px; }
 }

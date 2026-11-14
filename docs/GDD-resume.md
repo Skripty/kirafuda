@@ -118,6 +118,7 @@ L’extension Lancement sort en **vagues** qui rejoignent le même booster à le
 - Cartes Soutien (`src/data/soutiens.json`) : Objets (autant que voulu), Soutien (un par tour), Terrain (un seul en jeu).
 - Cartes Soutien dans le jeu (tâche 29) : elles appartiennent à l’extension Lancement (`"soutiens": "soutiens.json"` dans `extensions.json`), numérotées « S01/20 » à part des personnages. Un booster les tire avec les personnages de même rareté, à chances égales (Objets ♦, Soutiens ♦♦, Terrains ♦♦♦) ; le draft ne tire que des personnages. Elles se voient dans la Collection (section « Cartes Soutien »), s’échangent en boutique au prix de leur rareté, n’ont ni cote ni revente, et ne comptent ni pour une série ni pour un élément dans les quêtes. Image : `public/cartes/sou-xxx/illustration.webp`, sinon un visuel de remplacement.
 - Decks de 20 cartes, au moins 1 Base, 2 exemplaires maximum par personnage et par carte Soutien, 1 à 3 éléments d'énergie ; on ne joue que ses cartes, sauf les decks de départ.
+- Deck automatique (constructeur de decks) : le joueur choisit un type (élément) ou une série ; le deck est construit avec ses meilleures cartes possédées de ce type (Bases et Héros d’abord, Éveillés seulement avec un Base de leur série), puis complété par des cartes Soutien. Un deck commencé peut aussi être complété automatiquement. Aucun hasard : même collection, même deck.
 - La rareté ne change rien en combat (règle 5). Combat entre joueurs : plus tard.
 
 ## Hors version 1

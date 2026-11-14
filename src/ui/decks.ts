@@ -3,7 +3,8 @@
 // (toucher une carte l'ajoute). Tout est enregistré à chaque geste (src/core/combat/decks-joueur.ts pour les règles).
 import './decks.css';
 import type { Bibliotheque } from '../core/combat/etat';
-import { elementsDe } from '../core/combat/decks';
+import { elementsDe, seriesDe } from '../core/combat/decks';
+import { completerDeck, construireDeckAuto, nomDeckAuto, personnagesParElement, type CritereDeck } from '../core/combat/deck-auto';
 import { exemplairesParPersonnage, MAX_DECKS_JOUEUR, validerDeckPossede } from '../core/combat/decks-joueur';
 import type { DeckEnregistre, ElementId, Extension, Personnage, Sauvegarde } from '../core/types';
 import { ELEMENTS } from '../core/regles';
@@ -93,6 +94,60 @@ export function creerEcranDecks(options: OptionsDecks): HTMLElement {
     afficher();
   }
 
+  /** Deck automatique : construit à partir de la collection autour d'un type ou d'une série, puis ouvert. */
+  function creerDeckAuto(critere: CritereDeck): void {
+    if (sauvegarde.decks.length >= MAX_DECKS_JOUEUR) return;
+    const r = construireDeckAuto(critere, bib, possedes);
+    if (!r) return;
+    const id = creerId();
+    const premier = r.deck.cartes.find((c) => carteBase.has(c));
+    const deck: DeckEnregistre = { id, nom: nomDeckAuto(critere), couverture: premier ? carteBase.get(premier)! : '', cartes: r.deck.cartes, elements: r.deck.elements };
+    dialogue.close();
+    if (ecrire({ ...sauvegarde, decks: [...sauvegarde.decks, deck] })) {
+      editionId = id;
+      annonce = r.manque > 0
+        ? `Ta collection ne suffit pas encore : il manque ${r.manque} carte${r.manque > 1 ? 's' : ''}. Ouvre des boosters ou complète avec d’autres cartes.`
+        : '';
+    }
+    afficher();
+  }
+
+  /** Choix du type (ou de la série) d'un deck automatique. */
+  function choisirDeckAuto(): void {
+    const parElement = personnagesParElement(bib, possedes);
+    const contenu = el('div', 'decks-auto');
+    const titre = el('h2', undefined, 'Deck automatique');
+    titre.id = 'decks-auto-titre';
+    dialogue.setAttribute('aria-labelledby', titre.id);
+    contenu.append(titre, el('p', 'decks-inspection-detail', 'Choisis un type : le deck est construit avec tes meilleures cartes de ce type, puis complété par des cartes Soutien. Tu pourras le modifier ensuite.'));
+    const types = el('div', 'decks-auto-types');
+    for (const e of (Object.keys(ELEMENTS) as ElementId[])) {
+      const n = parElement.get(e);
+      const b = bouton('', 'decks-auto-type', () => creerDeckAuto({ element: e }));
+      b.disabled = !n || n.posables === 0;
+      b.setAttribute('aria-label', `Deck ${ELEMENTS[e].nom}, ${n?.total ?? 0} personnage${(n?.total ?? 0) > 1 ? 's' : ''} possédé${(n?.total ?? 0) > 1 ? 's' : ''}`);
+      b.append(iconeElement(e, 'decks-auto-icone', null), el('strong', undefined, ELEMENTS[e].nom),
+        el('span', undefined, !n ? 'Aucune carte' : n.posables === 0 ? 'Aucun Base' : `${n.total} perso${n.total > 1 ? 's' : ''}`));
+      types.append(b);
+    }
+    const parSerie = el('label', 'decks-auto-serie');
+    const select = el('select');
+    const vide = el('option', undefined, 'Ou par série…');
+    vide.value = '';
+    select.append(vide);
+    for (const s of seriesDe(bib)) {
+      if (!personnages.some((p) => p.serie === s && p.type !== 'eveille')) continue;
+      const o = el('option', undefined, s);
+      o.value = s;
+      select.append(o);
+    }
+    select.addEventListener('change', () => { if (select.value) creerDeckAuto({ serie: select.value }); });
+    parSerie.append(select);
+    contenu.append(types, parSerie, bouton('Annuler', 'decks-bouton', () => dialogue.close()));
+    dialogue.replaceChildren(contenu);
+    if (!dialogue.open) dialogue.showModal();
+  }
+
   function copierDeck(id: string): void {
     const source = sauvegarde.decks.find((d) => d.id === id);
     if (!source || sauvegarde.decks.length >= MAX_DECKS_JOUEUR) return;
@@ -179,10 +234,14 @@ export function creerEcranDecks(options: OptionsDecks): HTMLElement {
       grille.append(tuile);
     }
     if (sauvegarde.decks.length < MAX_DECKS_JOUEUR) {
+      const auto = bouton('', 'decks-tuile decks-nouveau decks-nouveau-auto', choisirDeckAuto);
+      auto.disabled = personnages.length === 0;
+      auto.append(el('span', 'decks-nouveau-plus', '✦'), el('strong', undefined, 'Deck automatique'),
+        el('span', undefined, personnages.length ? 'Choisis un type, le deck se construit seul' : 'Ouvre des boosters pour obtenir des cartes'));
       const nouveau = bouton('', 'decks-tuile decks-nouveau', creerDeck);
       nouveau.append(el('span', 'decks-nouveau-plus', '+'), el('strong', undefined, 'Nouveau deck'),
         el('span', undefined, sauvegarde.decks.length ? 'Pars de zéro' : 'Crée ton premier deck'));
-      grille.append(nouveau);
+      grille.append(auto, nouveau);
     }
     const combat = el('a', 'decks-bouton decks-lien-combat', 'Aller au combat');
     combat.href = '#/combat';
@@ -350,6 +409,14 @@ export function creerEcranDecks(options: OptionsDecks): HTMLElement {
         b.append(iconeElement(e, 'decks-energie-icone', null), el('span', undefined, ELEMENTS[e].nom));
         energies.append(b);
       }
+      const completer = bouton('Compléter automatiquement', 'decks-mini decks-completer', () => {
+        const r = completerDeck(deck(), bib, possedes);
+        modifierDeck(id, (x) => ({ ...x, cartes: r.deck.cartes, elements: r.deck.elements,
+          couverture: x.couverture || (r.deck.cartes.map((c) => carteBase.get(c)).find((c) => !!c) ?? '') }));
+        annonce = r.manque > 0 ? `Il manque encore ${r.manque} carte${r.manque > 1 ? 's' : ''} : ta collection ne suffit pas.` : '';
+        majDeck();
+      });
+      completer.disabled = possedees.size === 0;
       energies.append(bouton('Suggérer', 'decks-mini', () => {
         const persos = deck().cartes.map((c) => bib.personnages.get(c)).filter((p): p is Personnage => !!p);
         if (!persos.length) return;
@@ -373,7 +440,12 @@ export function creerEcranDecks(options: OptionsDecks): HTMLElement {
       const erreurs = erreursDe(d);
       etat.className = erreurs.length ? 'decks-validation incomplet' : 'decks-validation pret';
       etat.replaceChildren(el('strong', undefined, erreurs.length ? 'Deck à compléter' : 'Deck prêt pour le combat'));
-      if (erreurs.length) { const ul = el('ul'); for (const e of erreurs) ul.append(el('li', undefined, e)); etat.append(ul); }
+      if (erreurs.length) {
+        const ul = el('ul');
+        for (const e of erreurs) ul.append(el('li', undefined, e));
+        etat.append(ul);
+        if (d.cartes.length < TAILLE_DECK) etat.append(completer);
+      }
       else if (sauvegarde.deckSelectionne !== id) etat.append(bouton('Utiliser en combat', 'decks-mini', () => { ecrire({ ...sauvegarde, deckSelectionne: id }); majDeck(); }));
       else etat.append(el('span', undefined, 'C’est le deck utilisé en combat.'));
       if (annonce) etat.append(el('p', 'decks-annonce', annonce));
@@ -397,6 +469,7 @@ export function creerEcranDecks(options: OptionsDecks): HTMLElement {
   function afficher(): void {
     racine.replaceChildren();
     const deck = editionId ? sauvegarde.decks.find((d) => d.id === editionId) : undefined;
+    racine.classList.toggle('edition', !!deck);
     if (deck) afficherEditeur(deck);
     else { editionId = null; afficherListe(); }
     if (annonce && !deck) { const alerte = el('p', 'decks-annonce', annonce); alerte.setAttribute('role', 'status'); racine.prepend(alerte); }
