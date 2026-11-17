@@ -129,7 +129,7 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
       tuileSoutien.setAttribute('aria-label', `${e.soutien.nom}, carte ${TYPES_SOUTIEN[e.soutien.type].nom}, ${FINITIONS[e.soutien.finition].nom}, `
         + `${possedee ? pluriel(e.exemplaires, 'exemplaire') : 'non possédée'} : inspecter`);
       tuileSoutien.addEventListener('click', () => inspecterSoutien(e));
-      const visuel = creerCarteSoutien(e.soutien, extension, { interactive: false });
+      const visuel = creerCarteSoutien(e.soutien, extension, { animations: 'survol' });
       visuel.style.setProperty('--carte-largeur', '100%');
       tuileSoutien.append(visuel, el('span', 'col-tuile-legende', possedee ? `×${e.exemplaires}` : 'Non possédée'));
       li.append(tuileSoutien);
@@ -191,7 +191,6 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
     const cadreVisuel = el('div', `col-inspection-visuel${possedee ? '' : ' manquante'}`);
     cadreVisuel.append(visuel);
     if (!possedee) cadreVisuel.append(el('span', 'col-badge-manquante', 'Non possédée'));
-    visuel.style.setProperty('--carte-pivot', '10deg'); // pivot horizontal seulement
 
     const infos = el('p', 'col-inspection-infos',
       `${numeroCarte(carte.numero, extension.total)}${carte.secrete ? ' · carte secrète' : ''} · ${libelleFinition(carte.finition)} · ${personnage.serie} · ${possedee ? pluriel(entree.exemplaires, 'exemplaire') : 'non possédée'}`);
@@ -233,7 +232,7 @@ export function creerCollection(sauvegarde: Sauvegarde, extension: Extension, po
     b.setAttribute('aria-label', `${entree.personnage.nom}, ${numero}, ${FINITIONS[entree.carte.finition].nom}, `
       + `${possedee ? pluriel(entree.exemplaires, 'exemplaire') : 'non possédée'} : inspecter`);
     // Toutes les cartes sont visibles ; une carte non possédée est grisée (la mention reste écrite).
-    const visuel = creerCarte(entree.carte, extension, { interactive: false });
+    const visuel = creerCarte(entree.carte, extension, { animations: 'survol' });
     visuel.style.setProperty('--carte-largeur', '100%');
     const legende = el('span', 'col-tuile-legende', possedee ? `×${entree.exemplaires}` : 'Non possédée');
     const t = tendanceCote(popularite, entree.carte);

@@ -23,7 +23,8 @@ npm run deployer-fonctions  # régénère et déploie les fonctions serveur du c
 | `docs/TACHES.md` | Les 14 tâches de la version 1, dans l'ordre, avec le texte à donner à Codex |
 | `docs/DEPLOIEMENT.md` | Mise en ligne sur Cloudflare Pages et cycle de mise à jour (admin en local → `git push`) |
 | `docs/SUPABASE.md` | Comptes en ligne : projet Supabase, connexion Discord, adresses de redirection, variables `.env` et Cloudflare |
-| `docs/reference/atelier-des-cartes.html` | Rendu de référence des cartes et des finitions |
+| `docs/design/cartes-reference.dc.html` | Maquette validée des cartes, du ♦ au ♛ (tâche 31, `docs/design/TACHE-31-cartes.md`) |
+| `docs/reference/atelier-des-cartes.html` | Ancien rendu de référence des cartes (remplacé par la maquette de la tâche 31) |
 | `src/data/extension-lancement.json` | Les 100 personnages (série, rang, élément, PV, attaques) et les 140 cartes (une rareté fixe chacune) |
 | `src/data/booster-lancement.json` | Tables de tirage du booster |
 | `src/data/fiches-combat.json` | Fiches de combat des personnages (type, PV, Repli, talent, attaques), recopiées dans les extensions par `npm run fiches` |

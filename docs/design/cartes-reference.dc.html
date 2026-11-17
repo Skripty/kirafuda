@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Cartes détaillées par rareté</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&amp;family=Oswald:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+@keyframes holo{0%{background-position:0% 0%}100%{background-position:100% 100%}}
+@keyframes reflet{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes scint{0%,100%{opacity:.15}50%{opacity:1}}
+@keyframes scint2{0%,100%{opacity:1}50%{opacity:.15}}
+@keyframes monte{0%{transform:translateY(14px);opacity:0}30%{opacity:1}100%{transform:translateY(-70px);opacity:0}}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+.holo{animation:holo 6s ease-in-out infinite alternate}
+.reflet{animation:reflet 3.2s ease-in-out infinite alternate}
+.scint{animation:scint 2.6s ease-in-out infinite}
+.scint2{animation:scint2 3.1s ease-in-out infinite}
+.monte{animation:monte 3.6s ease-out infinite}
+.pulse{animation:pulse 2.4s ease-in-out infinite}
+.bande{-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.carte{transition:transform .45s cubic-bezier(.2,.8,.2,1);transform-style:preserve-3d}
+.carte:hover{transform:perspective(1100px) rotateX(5deg) rotateY(-10deg) scale(1.03)}
+.carte .eclat{opacity:0;transition:opacity .4s}
+.profond{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+.carte:hover .profond{transform:scale(1.1) translate(-8px,-6px)}
+.carte:hover .eclat{opacity:1}
+@media (prefers-reduced-motion: reduce){.holo,.reflet,.scint,.scint2,.monte,.pulse{animation:none}.carte,.carte:hover{transform:none}}
+</style>
+</helmet>
+<div style="width: 1560px; box-sizing: border-box; padding: 64px 72px 80px; background: radial-gradient(50% 30% at 50% 8%, rgba(108,203,255,0.06) 0%, transparent 70%), #121316; color: #F2F2F0; font-family: Poppins, system-ui, sans-serif; display: flex; flex-direction: column; gap: 48px;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 40px;">
+    <div>
+      <div style="font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #8B8F98;">Kirafuda · version ornée</div>
+      <h1 style="margin: 6px 0 0; font-size: 36px; font-weight: 700; letter-spacing: -0.02em;">Cartes détaillées, du ♦ au ♛</h1>
+    </div>
+    <p style="margin: 0; max-width: 640px; font-size: 14px; line-height: 1.6; color: #B4B7BE;">Décor peint par élément (flammes, vagues, éclairs, lune…), cadre perlé avec gemme de rareté, plaque de nom en métal et médaillon d'élément, bannière à queue d'aronde, motif japonais asanoha, grain, holo craquelé. Survole une carte : elle s'incline et un éclat passe.</p>
+  </div>
+
+  <sc-for list="{{sections}}" as="sec" hint-placeholder-count="2">
+  <div style="display: flex; flex-direction: column; gap: 28px; padding-top: 32px; border-top: 1px solid #24262B;">
+  <div>
+    <h2 style="margin: 0; font-size: 22px; font-weight: 700;">{{sec.titre}}</h2>
+    <p style="margin: 6px 0 0; font-size: 14px; line-height: 1.6; color: #B4B7BE;">{{sec.texte}}</p>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(4, 320px); justify-content: space-between; row-gap: 52px;">
+    <sc-for list="{{sec.cartes}}" as="c" hint-placeholder-count="8">
+      <div style="display: flex; flex-direction: column; gap: 16px;">
+        <div class="carte" style="position: relative; width: 320px; height: 448px;">
+          <sc-if value="{{c.halo}}" hint-placeholder-val="{{ false }}">
+            <div class="pulse" aria-hidden="true" style="position: absolute; inset: 0; border-radius: 17px; box-shadow: {{c.haloOmbre}};"></div>
+          </sc-if>
+          <!-- cadre -->
+          <div class="{{c.cadreAnim}}" style="position: absolute; inset: 0; box-sizing: border-box; padding: 10px; border-radius: 17px; background: {{c.cadre}}; background-size: {{c.cadreTaille}}; box-shadow: 0 24px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -2px 0 rgba(0,0,0,0.4), inset 0 0 0 1px rgba(0,0,0,0.5);">
+            <!-- face -->
+            <div style="position: relative; width: 100%; height: 100%; border-radius: 9px; overflow: hidden; background: {{c.face}}; color: {{c.texte}}; box-shadow: 0 0 0 1px rgba(0,0,0,0.55);">
+              <div aria-hidden="true" style="position: absolute; inset: 0; background: {{c.motif}}; opacity: {{c.motifOpacite}};"></div>
+
+              <!-- illustration -->
+              <div class="{{c.artClasse}}" style="position: absolute; {{c.artPos}}; overflow: hidden; border-radius: {{c.artRayon}}; background: {{c.scene}}; background-size: cover; background-position: {{c.scenePos}}; box-shadow: {{c.artBord}};">
+                <sc-for list="{{c.artFx}}" as="o" hint-placeholder-count="0">
+                  <div class="{{o.k}}" aria-hidden="true" style="position: absolute; inset: 0; {{o.s}}"></div>
+                </sc-for>
+              </div>
+
+              <!-- type + relève -->
+              <div style="position: absolute; left: 8px; right: 8px; top: 6px; display: flex; align-items: center; gap: 6px; height: 14px;">
+                <span style="font-size: 7.5px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 10px 2px 7px; background: {{c.typeFond}}; color: {{c.typeTexte}}; clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 0 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);">{{c.type}}</span>
+                <span style="font-size: 7.5px; font-weight: 500; font-style: italic; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0,0,0,0.6);">{{c.releve}}</span>
+              </div>
+
+              <!-- plaque de nom -->
+              <div style="position: absolute; left: 6px; right: 20px; top: 22px; height: 32px; clip-path: polygon(7px 0, 100% 0, 100% 100%, 7px 100%, 0 50%); background: {{c.plaqueFond}}; box-shadow: inset 0 1px 0 rgba(255,255,255,0.55), inset 0 -1px 0 rgba(0,0,0,0.45), inset 0 0 0 1px rgba(0,0,0,0.25);">
+                <div aria-hidden="true" style="position: absolute; inset: 0; background: {{c.bruit}}; opacity: 0.35; mix-blend-mode: overlay;"></div>
+                <div style="position: absolute; inset: 0; display: flex; align-items: center; gap: 5px; padding: 0 24px 0 13px; color: {{c.plaqueTexte}};">
+                  <span style="flex: 1; min-width: 0; font-size: 17px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: {{c.nomOmbre}};">{{c.nom}}</span>
+                  <span style="font-size: 8px; font-weight: 800; opacity: 0.8;">PV</span>
+                  <span style="font-family: Oswald, sans-serif; font-size: 25px; font-weight: 700; line-height: 1; text-shadow: {{c.nomOmbre}};">{{c.pv}}</span>
+                </div>
+              </div>
+              <!-- médaillon d'élément -->
+              <div style="position: absolute; right: 5px; top: 18px; width: 40px; height: 40px; border-radius: 50%; background: {{c.medFond}}; box-shadow: 0 3px 8px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.7); display: grid; place-items: center;">
+                <div style="width: 31px; height: 31px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, {{c.accent}}66, #0d0e12 75%); box-shadow: inset 0 2px 5px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,0,0,0.5); display: grid; place-items: center;">
+                  <img src="{{c.icone}}" alt="{{c.elementNom}}" style="width: 25px; height: 25px; filter: drop-shadow(0 0 4px {{c.accent}});">
+                </div>
+              </div>
+
+              <!-- bannière -->
+              <div style="position: absolute; left: 30px; right: 30px; top: {{c.banniereHaut}}px; height: 17px; clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 50%, 100% 100%, 0 100%, 8px 50%); background: {{c.banniereFond}}; display: {{c.banniereAff}}; align-items: center; justify-content: center; gap: 6px; font-size: 7.2px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: {{c.banniereTexte}}; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.35);">
+                <span style="opacity: 0.6;">◆</span><span>{{c.infos}}</span><span style="opacity: 0.6;">◆</span>
+              </div>
+
+              <!-- panneau -->
+              <div style="position: absolute; left: 8px; right: 8px; bottom: 8px; top: {{c.panneauHaut}}px; padding: 7px 8px 5px; border-radius: 8px; background: {{c.panneau}}; box-shadow: {{c.panneauBord}}; backdrop-filter: {{c.panneauFlou}}; -webkit-backdrop-filter: {{c.panneauFlou}}; display: flex; flex-direction: column; gap: 5px; overflow: hidden;">
+                <sc-if value="{{c.aTalent}}" hint-placeholder-val="{{ true }}">
+                  <div style="position: relative; padding: 5px 7px 5px; border-radius: 6px; background: {{c.talentBoite}}; box-shadow: inset 0 0 0 1px {{c.talentBord}};">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <span style="font-size: 7px; font-weight: 800; letter-spacing: 0.12em; padding: 2px 9px 2px 6px; background: {{c.talentFond}}; color: #ffffff; clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 50%, calc(100% - 5px) 100%, 0 100%);">TALENT</span>
+                      <span style="font-size: 11px; font-weight: 800; color: {{c.talentNom}};">{{c.talent}}</span>
+                    </div>
+                    <div style="font-size: 8.2px; line-height: 1.35; opacity: 0.88; margin-top: 2px;">{{c.talentTexte}}</div>
+                  </div>
+                </sc-if>
+                <sc-for list="{{c.attaques}}" as="a" hint-placeholder-count="2">
+                  <div style="padding: 3px 5px 3px 4px; border-radius: 6px; background: {{c.attFond}}; box-shadow: inset 0 0 0 1px {{c.attBord}};">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <div style="display: flex; gap: 2px; min-width: 52px;">
+                        <sc-for list="{{a.cout}}" as="e" hint-placeholder-count="2">
+                          <span style="width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; background: radial-gradient(circle at 50% 40%, #2a2c33, #0b0c0f); box-shadow: inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.25);">
+                            <sc-if value="{{e.img}}" hint-placeholder-val="{{ true }}"><img src="{{e.src}}" alt="{{e.nom}}" style="width: 14px; height: 14px;"></sc-if>
+                            <sc-if value="{{e.q}}" hint-placeholder-val="{{ false }}"><span aria-label="énergie quelconque" style="width: 13px; height: 13px; border-radius: 50%; display: grid; place-items: center; font-size: 7px; font-weight: 800; color: #F2F2F0; background: radial-gradient(circle at 35% 30%, #C3C7CE, #5E636B);">◇</span></sc-if>
+                          </span>
+                        </sc-for>
+                      </div>
+                      <span style="flex: 1; font-size: 12px; font-weight: 800; letter-spacing: -0.01em;">{{a.nom}}</span>
+                      <span style="font-family: Oswald, sans-serif; font-size: 22px; font-weight: 700; line-height: 1; text-shadow: {{c.degatsOmbre}};">{{a.degats}}</span>
+                    </div>
+                    <sc-if value="{{a.aEffet}}" hint-placeholder-val="{{ false }}"><div style="font-size: 8.2px; line-height: 1.3; opacity: 0.85; padding: 1px 0 1px 58px;">{{a.effet}}</div></sc-if>
+                  </div>
+                </sc-for>
+                <div style="flex: 1;"></div>
+                <div style="display: grid; grid-template-columns: 1.15fr 0.85fr 1.1fr; gap: 4px; font-size: 6.3px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;">
+                  <div style="display: flex; align-items: center; gap: 3px; padding: 2px 5px; border-radius: 4px; background: {{c.pastille}};">Faiblesse <img src="{{c.faibleIcone}}" alt="{{c.faibleNom}}" style="width: 12px; height: 12px;"><span style="font-size: 8.5px; letter-spacing: 0;">+20</span></div>
+                  <div style="display: flex; align-items: center; gap: 3px; padding: 2px 5px; border-radius: 4px; background: {{c.pastille}};">Repli <span style="font-size: 8.5px; letter-spacing: 1px;">{{c.repli}}</span></div>
+                  <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; padding: 2px 5px; border-radius: 4px; background: {{c.pastille}};"><span style="font-size: 8.5px; letter-spacing: 0; color: {{c.symboleCouleur}};">{{c.symbole}}</span><svg width="10" height="10" viewBox="0 0 512 512" aria-hidden="true"><path d="M60 32h89.6v448H60zM172 256h100.8L452 480H351.2z" fill="currentColor"></path><path d="M172 256 351.2 32H452L272.8 256z" fill="#6CCBFF"></path></svg><span style="font-size: 7.5px; letter-spacing: 0;">{{c.num}}</span></div>
+                </div>
+                <div style="display: flex; align-items: baseline; gap: 8px; font-size: 7.2px; line-height: 1.25;">
+                  <span style="flex: 1; font-style: italic; opacity: 0.7;">« {{c.ambiance}} »</span>
+                  <span style="font-size: 5.8px; opacity: 0.45; white-space: nowrap;">Illus. {{c.illus}} · ©Kirafuda</span>
+                </div>
+              </div>
+
+              <sc-for list="{{c.faceFx}}" as="o" hint-placeholder-count="0">
+                <div class="{{o.k}}" aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; {{o.s}}"></div>
+              </sc-for>
+              <sc-if value="{{c.particules}}" hint-placeholder-val="{{ false }}">
+                <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none;">
+                  <span class="monte" style="position: absolute; left: 18%; top: 46%; width: 4px; height: 4px; border-radius: 50%; background: {{c.particule}}; box-shadow: 0 0 9px {{c.particule}};"></span>
+                  <span class="monte" style="position: absolute; left: 58%; top: 40%; width: 3px; height: 3px; border-radius: 50%; background: {{c.particule}}; box-shadow: 0 0 9px {{c.particule}}; animation-delay: 0.9s;"></span>
+                  <span class="monte" style="position: absolute; left: 82%; top: 50%; width: 5px; height: 5px; border-radius: 50%; background: {{c.particule}}; box-shadow: 0 0 11px {{c.particule}}; animation-delay: 1.8s;"></span>
+                  <span class="monte" style="position: absolute; left: 34%; top: 32%; width: 3px; height: 3px; border-radius: 50%; background: {{c.particule}}; box-shadow: 0 0 9px {{c.particule}}; animation-delay: 2.6s;"></span>
+                  <span class="monte" style="position: absolute; left: 70%; top: 28%; width: 4px; height: 4px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 9px #ffffff; animation-delay: 1.3s;"></span>
+                  <span class="monte" style="position: absolute; left: 10%; top: 30%; width: 3px; height: 3px; border-radius: 50%; background: #ffffff; box-shadow: 0 0 9px #ffffff; animation-delay: 2.1s;"></span>
+                </div>
+              </sc-if>
+              <div class="eclat" aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; background: linear-gradient(125deg, transparent 30%, rgba(255,255,255,0.28) 45%, rgba(255,255,255,0.05) 55%, transparent 70%); mix-blend-mode: soft-light;"></div>
+            </div>
+          </div>
+          <!-- ornements du cadre (filets, perles, coins, gemme, crochets) -->
+          <div aria-hidden="true" style="position: absolute; inset: 0; pointer-events: none; background: {{c.ornements}}; background-size: 320px 448px;"></div>
+          <sc-if value="{{c.reflet}}" hint-placeholder-val="{{ false }}">
+            <div class="bande reflet" aria-hidden="true" style="position: absolute; inset: 0; box-sizing: border-box; padding: 10px; border-radius: 17px; background: linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.85) 50%, transparent 58%); background-size: 300% 300%; pointer-events: none;"></div>
+          </sc-if>
+        </div>
+        <div>
+          <div style="font-size: 15px; font-weight: 600;">{{c.symbole}} {{c.rarete}}</div>
+          <div style="font-size: 12.5px; line-height: 1.5; color: #8B8F98; margin-top: 3px;">{{c.legende}}</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+  </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1560,"height":2700}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var I = {
+      feu: '/_blob/b0eec2c82d60154a6f6aa02cab6eb1d4', eau: '/_blob/76558734e9eaf3f6064cedde71aa018e', foudre: '/_blob/365ed5ed62c0af4ce3101803a7d15cf4',
+      terre: '/_blob/2ab9ff6bc6030e269ad50e7697ed371e', vent: '/_blob/611861abf2419fe42b545d78f5037d1e', glace: '/_blob/0f31101cdff1b9bddf7f5ddeda3bcee2',
+      lumiere: '/_blob/ad84b3ebf1adf066ab8ece257a73848c', tenebres: '/_blob/8687b7e581a7d9b274317f20ec41c26f', neutre: '/_blob/817f44925913373b4af30ccd6ef6466f'
+    };
+    var NOM = { feu: 'Feu', eau: 'Eau', foudre: 'Foudre', terre: 'Terre', vent: 'Vent', glace: 'Glace', lumiere: 'Lumière', tenebres: 'Ténèbres', neutre: 'Neutre' };
+    var COUL = { feu: '#F06A3F', eau: '#3D8FE8', foudre: '#E8B923', terre: '#C08443', vent: '#2FB98E', glace: '#4FBFDB', lumiere: '#E9D9A6', tenebres: '#8B6FE0', neutre: '#9A958A' };
+    var SOMBRE = { feu: '#2a0b06', eau: '#04152b', foudre: '#11152a', terre: '#1f1308', vent: '#06201a', glace: '#071d2b', lumiere: '#2a220e', tenebres: '#0e0820', neutre: '#18181a' };
+    var CLAIR = { feu: '#FFD27A', eau: '#A6E6FF', foudre: '#FFF5B0', terre: '#F2C98A', vent: '#BDF7DD', glace: '#E9FCFF', lumiere: '#FFFFFF', tenebres: '#DCCBFF', neutre: '#ECE8DE' };
+    var FAIBLE = { feu: 'eau', eau: 'foudre', foudre: 'terre', terre: 'vent', vent: 'glace', glace: 'feu', lumiere: 'tenebres', tenebres: 'lumiere', neutre: 'neutre' };
+
+    var url = function (svg) { return "url('data:image/svg+xml," + encodeURIComponent(svg) + "')"; };
+    var alea = function (g) { return function () { g = (g * 16807) % 2147483647; return g / 2147483647; }; };
+    var f1 = function (n) { return Math.round(n * 10) / 10; };
+
+    // ---------- motifs ----------
+    var asanoha = function (coul, ep) {
+      var h = 51.96, L = [[0, 0], [30, 0], [15, 26], [-15, 26], [45, 26], [0, h], [30, h]];
+      var T = [[0, 1, 2], [2, 5, 6], [0, 3, 2], [3, 5, 2], [1, 2, 4], [2, 6, 4]];
+      var d = '';
+      T.forEach(function (t) {
+        var p = t.map(function (i) { return L[i]; });
+        var gx = (p[0][0] + p[1][0] + p[2][0]) / 3, gy = (p[0][1] + p[1][1] + p[2][1]) / 3;
+        d += 'M' + p[0][0] + ' ' + p[0][1] + 'L' + p[1][0] + ' ' + p[1][1] + 'L' + p[2][0] + ' ' + p[2][1] + 'Z';
+        p.forEach(function (q) { d += 'M' + f1(gx) + ' ' + f1(gy) + 'L' + q[0] + ' ' + q[1]; });
+      });
+      return url('<svg xmlns="http://www.w3.org/2000/svg" width="30" height="51.96"><path d="' + d + '" fill="none" stroke="' + coul + '" stroke-width="' + ep + '"/></svg>') + ' 0 0 / 30px 51.96px';
+    };
+    var hishi = function (coul) {
+      return url('<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"><path d="M9 0L18 9L9 18L0 9Z M9 4.5L13.5 9L9 13.5L4.5 9Z" fill="none" stroke="' + coul + '" stroke-width="0.7"/></svg>') + ' 0 0 / 18px 18px';
+    };
+    var bruit = url('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.6 0 0 0 -0.1"/></filter><rect width="160" height="160" filter="url(#n)"/></svg>') + ' 0 0 / 160px 160px';
+    var craquele = url('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="428"><filter id="c"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="3" seed="4"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  10 0 0 0 -5"/></filter><rect width="300" height="428" filter="url(#c)"/></svg>');
+    var etincelles = function (graine, n, coul) {
+      var r = alea(graine), d = '';
+      for (var i = 0; i < n; i++) {
+        var x = f1(r() * 300), y = f1(r() * 428), s = f1(2 + r() * 5);
+        d += '<path transform="translate(' + x + ' ' + y + ')" d="M0 -' + s + 'Q0 0 ' + s + ' 0Q0 0 0 ' + s + 'Q0 0 -' + s + ' 0Q0 0 0 -' + s + 'Z" fill="' + coul + '"/>';
+      }
+      return url('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="428">' + d + '</svg>') + ' 0 0 / 100% 100%';
+    };
+
+    // ---------- décor peint par élément ----------
+    var scene = function (el, W, H, o) {
+      var r = alea(o.graine || 11);
+      var a = o.a || COUL[el], d = o.d || SOMBRE[el], l = o.l || CLAIR[el];
+      var cx = W / 2, cy = o.plein ? H * 0.3 : H * 0.42, hor = o.plein ? H * 0.5 : H * 0.74;
+      var s = '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '">';
+      s += '<defs><linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + a + '" stop-opacity="0"/><stop offset="1" stop-color="' + a + '" stop-opacity="0.55"/></linearGradient>';
+      s += '<radialGradient id="lueur"><stop offset="0" stop-color="' + l + '" stop-opacity="0.95"/><stop offset="0.35" stop-color="' + a + '" stop-opacity="0.55"/><stop offset="1" stop-color="' + a + '" stop-opacity="0"/></radialGradient>';
+      s += '<linearGradient id="flamme" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="' + a + '"/><stop offset="0.6" stop-color="' + l + '"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></linearGradient>';
+      s += '<radialGradient id="vign" cx="0.5" cy="0.45" r="0.75"><stop offset="0.55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity="0.7"/></radialGradient>';
+      s += '<filter id="f3"><feGaussianBlur stdDeviation="3"/></filter><filter id="f8"><feGaussianBlur stdDeviation="8"/></filter></defs>';
+      s += '<rect width="' + W + '" height="' + H + '" fill="' + d + '"/><rect width="' + W + '" height="' + H + '" fill="url(#ciel)"/>';
+      // étoiles
+      for (var i = 0; i < 40; i++) s += '<circle cx="' + f1(r() * W) + '" cy="' + f1(r() * hor) + '" r="' + f1(0.3 + r() * 0.9) + '" fill="#fff" opacity="' + f1(0.2 + r() * 0.6) + '"/>';
+      // rayons
+      var nb = o.rayons ? 22 : 34;
+      for (i = 0; i < nb; i++) {
+        var an = (i / nb) * Math.PI * 2 + r() * 0.1, an2 = an + (o.rayons ? 0.08 : 0.012), R1 = W * 0.18, R2 = W * 1.4;
+        if (o.rayons) s += '<path d="M' + f1(cx + Math.cos(an) * R1) + ' ' + f1(cy + Math.sin(an) * R1) + 'L' + f1(cx + Math.cos(an) * R2) + ' ' + f1(cy + Math.sin(an) * R2) + 'L' + f1(cx + Math.cos(an2) * R2) + ' ' + f1(cy + Math.sin(an2) * R2) + 'Z" fill="' + l + '" opacity="' + f1(0.05 + r() * 0.08) + '"/>';
+        else s += '<line x1="' + f1(cx + Math.cos(an) * W * 0.32) + '" y1="' + f1(cy + Math.sin(an) * W * 0.32) + '" x2="' + f1(cx + Math.cos(an) * R2) + '" y2="' + f1(cy + Math.sin(an) * R2) + '" stroke="' + l + '" stroke-width="' + f1(0.4 + r() * 1.4) + '" opacity="' + f1(0.05 + r() * 0.12) + '"/>';
+      }
+      s += '<circle cx="' + cx + '" cy="' + f1(cy) + '" r="' + f1(W * 0.62) + '" fill="url(#lueur)"/>';
+      // relief
+      var crete = function (base, amp, pas, coul, op) {
+        var p = 'M-10 ' + H;
+        for (var x = -10; x <= W + 10; x += pas) p += 'L' + x + ' ' + f1(base - r() * amp);
+        return '<path d="' + p + 'L' + (W + 10) + ' ' + H + 'Z" fill="' + coul + '" opacity="' + op + '"/>';
+      };
+      s += crete(hor - 6, 46, 18, a, 0.28) + crete(hor + 12, 26, 12, d, 0.9);
+      // effets d'élément
+      var fx = '', av = '';
+      if (el === 'feu') {
+        for (i = 0; i < 12; i++) {
+          var x = r() * W, hf = H * (0.22 + r() * 0.38), w = 9 + r() * 18, y = H + 4, flm = '<path d="M' + f1(x - w) + ' ' + y + 'C' + f1(x - w) + ' ' + f1(y - hf * 0.5) + ' ' + f1(x - w * 0.2) + ' ' + f1(y - hf * 0.6) + ' ' + f1(x + (r() - 0.5) * 10) + ' ' + f1(y - hf) + 'C' + f1(x + w * 0.3) + ' ' + f1(y - hf * 0.55) + ' ' + f1(x + w) + ' ' + f1(y - hf * 0.4) + ' ' + f1(x + w) + ' ' + y + 'Z" fill="url(#flamme)" opacity="' + f1(0.45 + r() * 0.45) + '"/>';
+          if (i < 9) fx += flm; else av += flm.replace('opacity="', 'filter="url(#f3)" opacity="');
+        }
+        for (i = 0; i < 26; i++) av += '<circle cx="' + f1(r() * W) + '" cy="' + f1(r() * H) + '" r="' + f1(0.6 + r() * 1.6) + '" fill="' + l + '" opacity="' + f1(0.4 + r() * 0.6) + '"/>';
+      } else if (el === 'eau') {
+        for (var k = 0; k < 4; k++) {
+          var y0 = hor + k * 13, p = 'M-10 ' + f1(y0), ph = r() * 6;
+          for (x = -10; x <= W + 10; x += 6) p += 'L' + x + ' ' + f1(y0 + Math.sin(x / 16 + ph + k) * (4 + k));
+          fx += '<path d="' + p + 'L' + (W + 10) + ' ' + H + 'L-10 ' + H + 'Z" fill="' + a + '" opacity="' + f1(0.25 + k * 0.15) + '"/><path d="' + p + '" fill="none" stroke="' + l + '" stroke-width="1" opacity="0.55"/>';
+        }
+        for (i = 0; i < 16; i++) av += '<circle cx="' + f1(r() * W) + '" cy="' + f1(r() * H) + '" r="' + f1(1 + r() * 3) + '" fill="none" stroke="' + l + '" stroke-width="0.7" opacity="' + f1(0.3 + r() * 0.5) + '"/>';
+      } else if (el === 'foudre') {
+        for (i = 0; i < 5; i++) s += '<ellipse cx="' + f1(r() * W) + '" cy="' + f1(r() * H * 0.15) + '" rx="' + f1(40 + r() * 50) + '" ry="' + f1(14 + r() * 12) + '" fill="#000" opacity="0.4" filter="url(#f8)"/>';
+        for (i = 0; i < 5; i++) {
+          x = r() * W; var yb = 0, pb = 'M' + f1(x) + ' 0';
+          while (yb < hor) { yb += 10 + r() * 18; x += (r() - 0.5) * 30; pb += 'L' + f1(x) + ' ' + f1(yb); }
+          fx += '<path d="' + pb + '" fill="none" stroke="' + a + '" stroke-width="6" opacity="0.5" filter="url(#f3)"/><path d="' + pb + '" fill="none" stroke="' + l + '" stroke-width="1.5" stroke-linejoin="round"/>';
+        }
+      } else if (el === 'tenebres') {
+        var mx = W * 0.8, my = H * (o.plein ? 0.12 : 0.2), mr = W * 0.09;
+        s += '<circle cx="' + f1(mx) + '" cy="' + f1(my) + '" r="' + f1(mr * 1.8) + '" fill="' + l + '" opacity="0.15" filter="url(#f8)"/><circle cx="' + f1(mx) + '" cy="' + f1(my) + '" r="' + f1(mr) + '" fill="' + l + '"/><circle cx="' + f1(mx - mr * 0.45) + '" cy="' + f1(my - mr * 0.2) + '" r="' + f1(mr * 0.9) + '" fill="' + d + '"/>';
+        for (i = 0; i < 9; i++) {
+          x = r() * W;
+          fx += '<path d="M' + f1(x) + ' ' + H + 'C' + f1(x + (r() - 0.5) * 80) + ' ' + f1(H * 0.7) + ' ' + f1(x + (r() - 0.5) * 80) + ' ' + f1(H * 0.5) + ' ' + f1(x + (r() - 0.5) * 60) + ' ' + f1(H * (0.25 + r() * 0.3)) + '" fill="none" stroke="' + a + '" stroke-width="' + f1(1.5 + r() * 4) + '" stroke-linecap="round" opacity="' + f1(0.35 + r() * 0.4) + '"' + (i % 3 === 0 ? ' filter="url(#f3)"' : '') + '/>';
+        }
+        for (i = 0; i < 5; i++) fx += '<ellipse cx="' + f1(r() * W) + '" cy="' + f1(hor + r() * 30) + '" rx="' + f1(50 + r() * 50) + '" ry="12" fill="' + a + '" opacity="0.22" filter="url(#f8)"/>';
+      } else if (el === 'lumiere') {
+        s += '<circle cx="' + cx + '" cy="' + f1(cy - H * 0.06) + '" r="' + f1(W * 0.16) + '" fill="#fff" opacity="0.9" filter="url(#f3)"/>';
+        for (i = 0; i < 18; i++) av += '<circle cx="' + f1(r() * W) + '" cy="' + f1(r() * H) + '" r="' + f1(1 + r() * 3.5) + '" fill="#fff" opacity="' + f1(0.3 + r() * 0.6) + '"' + (i % 2 ? ' filter="url(#f3)"' : '') + '/>';
+      } else if (el === 'vent') {
+        for (i = 0; i < 7; i++) {
+          x = r() * W; var y1 = r() * H, rr = 10 + r() * 22;
+          fx += '<path d="M' + f1(x - 60) + ' ' + f1(y1 + rr) + 'C' + f1(x - 20) + ' ' + f1(y1 + rr) + ' ' + f1(x + rr) + ' ' + f1(y1 + rr) + ' ' + f1(x + rr) + ' ' + f1(y1) + 'A' + f1(rr) + ' ' + f1(rr) + ' 0 1 0 ' + f1(x) + ' ' + f1(y1 - rr) + 'A' + f1(rr * 0.5) + ' ' + f1(rr * 0.5) + ' 0 1 0 ' + f1(x + rr * 0.3) + ' ' + f1(y1) + '" fill="none" stroke="' + l + '" stroke-width="1.4" stroke-linecap="round" opacity="' + f1(0.3 + r() * 0.4) + '"/>';
+        }
+        for (i = 0; i < 14; i++) av += '<ellipse transform="translate(' + f1(r() * W) + ' ' + f1(r() * H) + ') rotate(' + Math.round(r() * 180) + ')" rx="4" ry="1.6" fill="' + a + '" opacity="' + f1(0.5 + r() * 0.5) + '"/>';
+      } else if (el === 'glace') {
+        for (i = 0; i < 10; i++) {
+          x = r() * W; var hg = H * (0.2 + r() * 0.35), wg = 6 + r() * 10;
+          fx += '<path d="M' + f1(x - wg) + ' ' + H + 'L' + f1(x - wg * 0.6) + ' ' + f1(H - hg * 0.7) + 'L' + f1(x) + ' ' + f1(H - hg) + 'L' + f1(x + wg * 0.6) + ' ' + f1(H - hg * 0.7) + 'L' + f1(x + wg) + ' ' + H + 'Z" fill="' + l + '" opacity="0.28" stroke="' + l + '" stroke-width="0.6"/>';
+        }
+        for (i = 0; i < 30; i++) av += '<circle cx="' + f1(r() * W) + '" cy="' + f1(r() * H) + '" r="' + f1(0.5 + r() * 1.4) + '" fill="#fff" opacity="' + f1(0.4 + r() * 0.6) + '"/>';
+      } else if (el === 'terre') {
+        for (i = 0; i < 9; i++) {
+          x = r() * W; var yr = r() * hor, sr = 4 + r() * 10, pr = 'M';
+          for (var j = 0; j < 6; j++) { var ag = j / 6 * Math.PI * 2; pr += f1(x + Math.cos(ag) * sr * (0.7 + r() * 0.5)) + ' ' + f1(yr + Math.sin(ag) * sr * (0.7 + r() * 0.5)) + (j < 5 ? 'L' : 'Z'); }
+          fx += '<path d="' + pr + '" fill="' + d + '" stroke="' + l + '" stroke-width="0.6" opacity="0.85"/>';
+        }
+      }
+      s += fx;
+      // aura + silhouette générique
+      var by = o.plein ? H * 0.56 : H + 4, sc = o.plein ? 1.0 : H / 230;
+      s += '<ellipse cx="' + cx + '" cy="' + f1(by - 95 * sc) + '" rx="' + f1(120 * sc) + '" ry="' + f1(110 * sc) + '" fill="none" stroke="' + a + '" stroke-width="10" opacity="0.35" filter="url(#f8)"/>';
+      s += '<ellipse cx="' + cx + '" cy="' + f1(by - 95 * sc) + '" rx="' + f1(96 * sc) + '" ry="' + f1(118 * sc) + '" fill="none" stroke="' + l + '" stroke-width="1" opacity="0.35"/>';
+      var corps = 'M-100 0C-95 -50 -70 -80 -38 -92L-18 -100L0 -78L18 -100L38 -92C70 -80 95 -50 100 0Z M-14 -100L-12 -120L12 -120L14 -100Z M0 -179A30 34 0 1 1 0 -111A30 34 0 1 1 0 -179Z M-34 -138L-48 -158L-32 -160L-42 -190L-16 -176L-6 -204L8 -180L28 -198L26 -170L48 -178L34 -150L40 -128L30 -140L28 -160L-28 -160L-30 -136Z M-38 -92L-26 -60L-18 -100Z M38 -92L26 -60L18 -100Z';
+      var t = 'translate(' + cx + ' ' + f1(by) + ') scale(' + f1(sc * 100) / 100 + ')';
+      s += '<path transform="' + t + '" d="' + corps + '" fill="none" stroke="' + (o.contour || a) + '" stroke-width="' + f1(7 / sc) + '" stroke-linejoin="round" opacity="0.8" filter="url(#f3)"/>';
+      s += '<path transform="' + t + '" d="' + corps + '" fill="' + (o.ombre || '#0a0b0f') + '" fill-opacity="0.92" stroke="' + l + '" stroke-width="' + f1(1.2 / sc) + '" stroke-opacity="0.65" stroke-linejoin="round"/>';
+      s += av;
+      s += '<rect width="' + W + '" height="' + H + '" fill="url(#vign)"/></svg>';
+      return url(s);
+    };
+
+    // ---------- ornements du cadre ----------
+    var ornements = function (o) {
+      var c = o.filet, s = '<svg xmlns="http://www.w3.org/2000/svg" width="320" height="448" viewBox="0 0 320 448">';
+      s += '<defs><radialGradient id="g" cx="0.35" cy="0.3"><stop offset="0" stop-color="#ffffff"/><stop offset="0.25" stop-color="' + o.gemme + '"/><stop offset="1" stop-color="' + o.gemme2 + '"/></radialGradient><linearGradient id="m" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="0.5" stop-color="' + o.monture + '"/><stop offset="1" stop-color="#3a3d44"/></linearGradient></defs>';
+      s += '<rect x="4.5" y="4.5" width="311" height="439" rx="12.5" fill="none" stroke="' + c + '" stroke-width="0.9"/>';
+      s += '<rect x="7.5" y="7.5" width="305" height="433" rx="9.5" fill="none" stroke="' + c + '" stroke-width="2.2" stroke-dasharray="0 8" stroke-linecap="round" opacity="0.75"/>';
+      var coin = 'M4.5 36L4.5 17Q4.5 4.5 17 4.5L36 4.5';
+      [[0, 0, 1, 1], [320, 0, -1, 1], [0, 448, 1, -1], [320, 448, -1, -1]].forEach(function (q) {
+        s += '<path transform="translate(' + q[0] + ' ' + q[1] + ') scale(' + q[2] + ' ' + q[3] + ')" d="' + coin + '" fill="none" stroke="' + c + '" stroke-width="2.6" stroke-linecap="round"/>';
+        s += '<path transform="translate(' + q[0] + ' ' + q[1] + ') scale(' + q[2] + ' ' + q[3] + ')" d="M36 1.5L39 4.5L36 7.5L33 4.5Z M1.5 36L4.5 33L7.5 36L4.5 39Z" fill="' + c + '"/>';
+      });
+      // crête haute et losanges latéraux
+      s += '<path d="M128 5H150 M170 5H192" stroke="' + c + '" stroke-width="2" stroke-linecap="round"/><path d="M160 0.5L165 5L160 9.5L155 5Z" fill="url(#m)" stroke="' + c + '" stroke-width="0.6"/>';
+      s += '<path d="M1.5 224L5 220L8.5 224L5 228Z M311.5 224L315 220L318.5 224L315 228Z" fill="' + c + '"/>';
+      // gemme de rareté
+      s += '<path d="M120 443H146 M174 443H200" stroke="' + c + '" stroke-width="2" stroke-linecap="round"/>';
+      s += '<circle cx="160" cy="442" r="9" fill="url(#m)" stroke="rgba(0,0,0,0.6)" stroke-width="0.8"/><circle cx="160" cy="442" r="5.6" fill="url(#g)"/><ellipse cx="158" cy="439.6" rx="2" ry="1.2" fill="#fff" opacity="0.85"/>';
+      if (o.fenetre) {
+        var x0 = 20, y0 = 64, x1 = 300, y1 = 236;
+        s += '<path d="M' + x0 + ' ' + (y0 + 14) + 'V' + y0 + 'H' + (x0 + 14) + ' M' + (x1 - 14) + ' ' + y0 + 'H' + x1 + 'V' + (y0 + 14) + ' M' + x0 + ' ' + (y1 - 14) + 'V' + y1 + 'H' + (x0 + 14) + ' M' + (x1 - 14) + ' ' + y1 + 'H' + x1 + 'V' + (y1 - 14) + '" fill="none" stroke="' + c + '" stroke-width="1.6"/>';
+        s += '<path d="M160 ' + (y0 - 3) + 'L163 ' + y0 + 'L160 ' + (y0 + 3) + 'L157 ' + y0 + 'Z" fill="' + c + '"/>';
+      }
+      return url(s + '</svg>');
+    };
+
+    var cout = function (s) { return s.split(' ').map(function (x) { return x === 'q' ? { q: true, img: false } : { q: false, img: true, src: I[x], nom: NOM[x] }; }); };
+    var atk = function (nom, c, d, e) { return { nom: nom, cout: cout(c), degats: d, effet: e || '', aEffet: !!e }; };
+
+    var holoBande = { pastel: 'linear-gradient(115deg, #CFE7F7, #E9D9FB, #D7F2E6, #FBE3EF, #CFE7F7)', vif: 'linear-gradient(115deg, #9FD3F5, #C8A8F5, #A9E9C9, #F5B8D3, #9FD3F5)', kira: 'linear-gradient(115deg, #FF5FC8, #6CCBFF, #A9F26A, #FFE27A, #FF5FC8)' };
+    var guilloche = 'repeating-linear-gradient(45deg, rgba(255,255,255,0.35) 0 1px, transparent 1px 4px), repeating-linear-gradient(-45deg, rgba(0,0,0,0.12) 0 1px, transparent 1px 4px)';
+    var brosse = 'repeating-linear-gradient(90deg, rgba(255,255,255,0.07) 0 1px, transparent 1px 3px)';
+    var M = {
+      graphite: brosse + ', linear-gradient(160deg, #50535B 0%, #24262B 55%, #3A3D44 100%)',
+      acier: brosse + ', linear-gradient(160deg, #7A7F89 0%, #353840 50%, #636771 100%)',
+      argent: guilloche + ', linear-gradient(135deg, #EEF0F3 0%, #A3A8B1 22%, #F7F8FA 45%, #8D929B 68%, #E3E6EA 100%)',
+      or: guilloche + ', linear-gradient(135deg, #FFF4C8 0%, #C9962B 24%, #FFEBA6 46%, #A47215 70%, #F6D97C 100%)'
+    };
+    var plaque = {
+      sombre: 'linear-gradient(180deg, #4A4E57 0%, #2A2D33 55%, #1D1F24 100%)',
+      acier: 'linear-gradient(180deg, #8A8F99 0%, #4A4E57 50%, #2E3137 100%)',
+      argent: 'linear-gradient(180deg, #FFFFFF 0%, #D9DCE1 40%, #9EA3AC 100%)',
+      verre: 'linear-gradient(180deg, rgba(255,255,255,0.32), rgba(255,255,255,0.10))',
+      or: 'linear-gradient(180deg, #FFF6D2 0%, #F0CF74 45%, #B8862B 100%)'
+    };
+    var med = { sombre: 'linear-gradient(145deg, #9AA0AA, #2E3137)', argent: 'linear-gradient(145deg, #FFFFFF, #8D929B)', or: 'linear-gradient(145deg, #FFF4C8, #9C6B12)', holo: 'conic-gradient(from 30deg, #FF5FC8, #6CCBFF, #A9F26A, #FFE27A, #FF5FC8)' };
+    var poussiere = (function () {
+      var r = alea(97), d = '';
+      for (var i = 0; i < 110; i++) {
+        var x = f1(r() * 300), y = f1(r() * 428), t = r();
+        var col = ['#ffffff', '#FFB3E6', '#B3E5FF', '#D9FFB3', '#FFF0B3'][Math.floor(r() * 5)];
+        if (t < 0.12) { var k = f1(2 + r() * 3); d += '<path transform="translate(' + x + ' ' + y + ')" d="M0 -' + k + 'Q0 0 ' + k + ' 0Q0 0 0 ' + k + 'Q0 0 -' + k + ' 0Q0 0 0 -' + k + 'Z" fill="' + col + '"/>'; }
+        else d += '<circle cx="' + x + '" cy="' + y + '" r="' + f1(0.3 + t * t * 1.4) + '" fill="' + col + '" opacity="' + f1(0.35 + r() * 0.65) + '"/>';
+      }
+      return url('<svg xmlns="http://www.w3.org/2000/svg" width="300" height="428"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="3" seed="8"/><feColorMatrix values="1.4 0 0 0 0  0 0.6 0 0 0.1  0 0 1.6 0 0  0 0 0 0 0.22"/></filter><rect width="300" height="428" filter="url(#n)"/>' + d + '</svg>') + ' 0 0 / 100% 100%';
+    })();
+    var cosmos = 'background: ' + poussiere + ', linear-gradient(120deg, transparent 10%, rgba(255,95,200,0.38) 28%, rgba(255,226,122,0.3) 40%, rgba(108,203,255,0.4) 52%, rgba(169,242,106,0.34) 66%, transparent 88%) 0 0 / 260% 260%; mix-blend-mode: color-dodge;';
+    var stries = 'background: repeating-linear-gradient(115deg, rgba(255,255,255,0) 0 14px, rgba(255,255,255,0.09) 14px 16px), linear-gradient(120deg, transparent 20%, rgba(255,95,200,0.22) 35%, rgba(108,203,255,0.24) 50%, rgba(169,242,106,0.22) 65%, transparent 80%) 0 0 / 260% 260%; mix-blend-mode: screen;';
+    var glace = function (op) { return 'background: linear-gradient(120deg, #FF5FC8, #6CCBFF, #A9F26A, #FFE27A, #FF5FC8) 0 0 / 260% 260%; -webkit-mask: ' + craquele + ' 0 0 / 100% 100%; mask: ' + craquele + ' 0 0 / 100% 100%; mix-blend-mode: color-dodge; opacity: ' + op + ';'; };
+    var holoFilm = 'background: linear-gradient(120deg, transparent 15%, rgba(255,95,200,0.45) 32%, rgba(108,203,255,0.45) 48%, rgba(169,242,106,0.4) 64%, transparent 82%) 0 0 / 260% 260%; mix-blend-mode: color-dodge;';
+    var orMono = 'background: linear-gradient(135deg, #FFE9A8 0%, #B8862B 40%, #FFF1C2 60%, #9C6B12 100%); mix-blend-mode: color;';
+
+    var fondFace = function (a, d) { return 'radial-gradient(120% 50% at 0% 0%, ' + a + '55 0%, transparent 60%), radial-gradient(100% 45% at 100% 100%, ' + a + '3a 0%, transparent 70%), linear-gradient(180deg, ' + d + ' 0%, #111216 100%)'; };
+
+    var carte = function (p, o) {
+      var e = p.el, a = COUL[e];
+      var c = {
+        nom: p.nom, pv: p.pv, type: p.type, releve: p.releve || '', icone: I[e], elementNom: NOM[e], accent: a,
+        talent: p.talent ? p.talent[0] : '', talentTexte: p.talent ? p.talent[1] : '', aTalent: !!p.talent,
+        attaques: p.attaques, repli: p.repli, faibleIcone: I[FAIBLE[e]], faibleNom: NOM[FAIBLE[e]], symbole: p.symbole, rarete: p.rarete, num: p.num,
+        infos: p.infos, ambiance: p.ambiance, illus: p.illus,
+        cadre: M.graphite, cadreTaille: 'auto, 100% 100%', cadreAnim: '',
+        face: fondFace(a, SOMBRE[e]), texte: '#F2F2F0', motif: hishi('rgba(255,255,255,0.5)') + ', ' + bruit, motifOpacite: 0.07,
+        scene: scene(e, 292, 172, { graine: p.graine }),
+        artPos: 'left: 10px; right: 10px; top: 54px; height: 172px', artRayon: '5px', scenePos: 'center', artClasse: '',
+        artBord: '0 0 0 2px #9A9FA8, 0 0 0 3.5px rgba(0,0,0,0.7), 0 10px 18px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(255,255,255,0.18)',
+        artFx: [], faceFx: [],
+        typeFond: 'linear-gradient(180deg, #E4E6EA, #8B8F98)', typeTexte: '#121316',
+        plaqueFond: plaque.sombre, plaqueTexte: '#F2F2F0', nomOmbre: '0 1px 0 rgba(0,0,0,0.7)', medFond: med.sombre, bruit: bruit, banniereAff: 'flex',
+        banniereHaut: 232, banniereFond: 'linear-gradient(180deg, #5B5F68, #2B2E34)', banniereTexte: '#E4E6EA',
+        panneau: 'linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.3))', panneauBord: 'inset 0 0 0 1px rgba(255,255,255,0.08)', panneauFlou: 'none', panneauHaut: 254,
+        talentBoite: 'linear-gradient(90deg, ' + a + '30, ' + a + '0d)', talentBord: a + '55', talentFond: '#C2453A', talentNom: CLAIR[e],
+        attFond: 'rgba(255,255,255,0.04)', attBord: 'rgba(255,255,255,0.07)', degatsOmbre: '0 0 10px ' + a + '99, 0 1px 0 rgba(0,0,0,0.6)',
+        pastille: 'rgba(0,0,0,0.3)', symboleCouleur: 'inherit',
+        orn: { filet: 'rgba(255,255,255,0.35)', gemme: '#B4B7BE', gemme2: '#4A4D55', monture: '#8B8F98', fenetre: true },
+        halo: false, haloOmbre: '', reflet: false, particules: false, particule: '#ffffff', legende: ''
+      };
+      for (var k in o) c[k] = o[k];
+      c.ornements = ornements(c.orn);
+      return c;
+    };
+    var plein = function (p, o) {
+      var a = COUL[p.el];
+      var base = {
+        scene: scene(p.el, 300, 428, { plein: true, rayons: true, graine: p.graine }),
+        artPos: 'inset: 0', artRayon: '0', artBord: 'none', motifOpacite: 0,
+        plaqueFond: 'transparent', plaqueTexte: '#ffffff', nomOmbre: '0 2px 8px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,0.8)',
+        banniereAff: 'none', banniereHaut: 0,
+        panneauHaut: 268, panneau: 'transparent', panneauBord: 'none', panneauFlou: 'none',
+        talentBoite: 'rgba(0,0,0,0.28)', talentBord: 'rgba(255,255,255,0.14)',
+        attFond: 'transparent', attBord: 'transparent', pastille: 'rgba(0,0,0,0.35)', degatsOmbre: '0 2px 8px rgba(0,0,0,0.9)',
+        voile: 'linear-gradient(180deg, rgba(0,0,0,0.55) 0%, transparent 16%, transparent 52%, rgba(6,6,10,0.78) 72%, rgba(6,6,10,0.92) 100%)'
+      };
+      for (var k in o) base[k] = o[k];
+      base.artFx = (base.artFx || []).concat([{ k: '', s: 'background: ' + base.voile + ';' }]);
+      return carte(p, base);
+    };
+
+    var P = {
+      himeno: { nom: 'Himeno', pv: 70, el: 'vent', graine: 5, type: 'Base', symbole: '♦', rarete: 'Commune', num: '022/124', repli: '◇', infos: 'N°022 · Chainsaw Man · Rang C', illus: 'Rin Asaka', ambiance: 'Elle a toujours un œil sur la fin de l\'histoire.',
+        attaques: [atk('Démon Fantôme', 'q', 20, 'L\'actif adverse ne peut pas se replier au prochain tour.')] },
+      giyu: { nom: 'Giyu Tomioka', pv: 100, el: 'eau', graine: 9, type: 'Base', symbole: '♦♦', rarete: 'Peu commune', num: '037/124', repli: '◇◇', infos: 'N°037 · Demon Slayer · Rang B', illus: 'Kaito Mibu', ambiance: 'Le calme avant la lame.', talent: ['Calme plat', 'La première attaque qu\'il subit à chaque tour adverse fait 30 dégâts de moins.'],
+        attaques: [atk('Onzième forme', 'eau q q', 50)] },
+      denji: { nom: 'Denji', pv: 130, el: 'feu', graine: 21, type: 'Éveillé', releve: '↱ Relève : Chainsaw Man', symbole: '♦♦♦', rarete: 'Holo', num: '017/124', repli: '◇', infos: 'N°017 · Chainsaw Man · Rang A', illus: 'Rin Asaka', ambiance: 'Un rêve simple, une tronçonneuse bruyante.', talent: ['Pochita', 'Une fois par partie, s\'il devait être mis K.-O. : face, il reste à 10 PV.'],
+        attaques: [atk('Tronçonneuse', 'feu q', 40), atk('Chainsaw Man', 'feu feu q q', 120, 'Denji subit 20 dégâts.')] },
+      jinwoo: { nom: 'Sung Jin-Woo', pv: 170, el: 'tenebres', graine: 33, type: 'Éveillé', releve: '↱ Relève : Solo Leveling', symbole: '♦♦♦♦', rarete: 'Holo intégrale', num: '041/124', repli: '◇◇', infos: 'N°041 · Solo Leveling · Rang S', illus: 'Hana Ozu', ambiance: 'L\'ombre se relève toujours.', talent: ['Arise', 'Une fois par tour, remets sur ton banc un Base de Solo Leveling de ta défausse, avec 30 PV.'],
+        attaques: [atk('Dague de Kamish', 'tenebres q', 50), atk('Monarque des Ombres', 'tenebres tenebres q q', 100, '+10 par personnage sur ton banc.')] },
+      itadori: { nom: 'Yuji Itadori', pv: 130, el: 'foudre', graine: 44, type: 'Éveillé', releve: '↱ Relève : Jujutsu Kaisen', symbole: '★', rarete: 'Pleine illustration', num: '128/124', repli: '◇', infos: 'Jujutsu Kaisen · Rang A', illus: 'Kaito Mibu', ambiance: 'Le coup part, l\'écho suit.',
+        attaques: [atk('Poing divergent', 'foudre', 30, 'Au tour suivant, la cible subit encore 30.'), atk('Black Flash', 'foudre foudre q', 80, 'Pile : +60.')] },
+      sukuna: { nom: 'Ryomen Sukuna', pv: 140, el: 'feu', graine: 57, type: 'Éveillé', releve: '↱ Relève : Jujutsu Kaisen', symbole: '★★', rarete: 'Illustration alternative', num: '156/124', repli: '◇◇', infos: 'Jujutsu Kaisen · Rang A', illus: 'Hana Ozu', ambiance: 'Le roi n\'attend pas son tour.', talent: ['Roi des fléaux', 'Peut relever Itadori au tour même où Itadori est entré.'],
+        attaques: [atk('Démantèlement', 'feu q', 50, 'À un personnage du banc adverse.'), atk('Sanctuaire malveillant', 'feu feu feu', 50, 'À chaque adversaire.')] },
+      gojo: { nom: 'Satoru Gojo', pv: 170, el: 'lumiere', graine: 63, type: 'Éveillé', releve: '↱ Relève : Jujutsu Kaisen', symbole: '★★★', rarete: 'Immersive animée', num: '166/124', repli: '◇◇', infos: 'Jujutsu Kaisen · Rang S', illus: 'Studio Kira', ambiance: 'Rien ne l\'atteint vraiment.', talent: ['Infini', 'Avec 2 énergies ou plus, il subit 30 dégâts de moins.'],
+        attaques: [atk('Bleu', 'lumiere', 30, 'L\'adversaire met un personnage de son banc en actif.'), atk('Violet creux', 'lumiere lumiere lumiere q', 180, 'Défausse toutes ses énergies.')] },
+      itachi: { nom: 'Itachi Uchiha', pv: 160, el: 'tenebres', graine: 71, type: 'Éveillé', releve: '↱ Relève : Naruto', symbole: '♛', rarete: 'Couronne', num: '171/124', repli: '◇◇', infos: 'Naruto · Rang S', illus: 'Studio Kira', ambiance: 'Ce que tu vois n\'est qu\'une illusion.', talent: ['Genjutsu des corbeaux', 'Le personnage qui entre par Relève chez l\'adversaire est Étourdi.'],
+        attaques: [atk('Tsukuyomi', 'tenebres q', 40, 'La cible est Étourdie.'), atk('Susano\'o : Totsuka', 'tenebres tenebres q q', 150, 'Défausse 2 énergies d\'Itachi.')] }
+    };
+
+    var IMG = "url('/_blob/a4c061507790793d73696b1343b8dad8')";
+    var construire = function (img) {
+    var ombre = P.jinwoo;
+    var q = function (p) {
+      if (!img) return p;
+      var n = {}; for (var k in ombre) n[k] = ombre[k];
+      ['symbole', 'rarete', 'num', 'graine'].forEach(function (k) { n[k] = p[k]; });
+      n.infos = /^N°/.test(p.infos) ? 'N°' + p.num.slice(0, 3) + ' · Solo Leveling · Rang S' : 'Solo Leveling · Rang S';
+      return n;
+    };
+    var liste = [
+      carte(q(P.himeno), { legende: 'Graphite brossé, filet perlé, losanges hishi et grain en fond, décor du vent peint derrière le personnage.' }),
+      carte(q(P.giyu), { cadre: M.acier, plaqueFond: plaque.acier, medFond: med.argent, motif: asanoha(COUL.eau, 0.6) + ', ' + bruit, motifOpacite: 0.12,
+        artBord: '0 0 0 2px ' + COUL.eau + ', 0 0 0 3.5px rgba(0,0,0,0.7), 0 0 20px ' + COUL.eau + '66, inset 0 0 0 1px rgba(255,255,255,0.2)',
+        orn: { filet: COUL.eau, gemme: '#7FC4FF', gemme2: '#0B3D7A', monture: '#C9CDD3', fenetre: true }, legende: 'Acier, filet et gemme à la couleur de l\'élément, motif asanoha, fenêtre éclairée.' }),
+      carte(q(P.denji), { cadre: M.acier, plaqueFond: plaque.argent, plaqueTexte: '#121316', nomOmbre: '0 1px 0 rgba(255,255,255,0.7)', medFond: med.argent, motif: asanoha(COUL.feu, 0.6) + ', ' + bruit, motifOpacite: 0.12,
+        artBord: '0 0 0 2px #E4E6EA, 0 0 0 3.5px rgba(0,0,0,0.7), 0 0 22px ' + COUL.feu + '77',
+        artFx: [{ k: 'holo', s: cosmos }, { k: 'scint', s: 'background: ' + etincelles(3, 14, '#ffffff') + ';' }],
+        banniereFond: 'linear-gradient(180deg, #F4F6F8, #A9AEB7)', banniereTexte: '#121316',
+        orn: { filet: '#FFB08A', gemme: '#FF8A5C', gemme2: '#7A1E08', monture: '#D7D9DE', fenetre: true }, legende: 'Holo cosmos animé et étincelles sur l\'illustration, plaque et bannière argent.' }),
+      carte(q(P.jinwoo), { cadre: M.argent, cadreTaille: 'auto, auto, 100% 100%', plaqueFond: plaque.argent, plaqueTexte: '#121316', nomOmbre: '0 1px 0 rgba(255,255,255,0.7)', medFond: med.holo,
+        typeFond: 'linear-gradient(180deg, #FFF0BE, #C9962B)', motif: asanoha('#C8A8F5', 0.7) + ', ' + bruit, motifOpacite: 0.18,
+        artBord: '0 0 0 2px #F4F6F8, 0 0 0 3.5px rgba(0,0,0,0.65), 0 0 26px rgba(139,111,224,0.65)',
+        artFx: [{ k: 'holo', s: cosmos }], faceFx: [{ k: 'holo', s: stries }, { k: 'holo', s: glace(0.35) }],
+        banniereFond: 'linear-gradient(180deg, #F4F6F8, #A9AEB7)', banniereTexte: '#121316',
+        orn: { filet: 'rgba(40,30,70,0.55)', gemme: '#C8A8F5', gemme2: '#2A1660', monture: '#ffffff', fenetre: true }, legende: 'Argent guilloché, holo craquelé + stries sur toute la carte, médaillon arc-en-ciel.' }),
+      plein(q(P.itadori), { cadre: guilloche + ', ' + holoBande.pastel, cadreTaille: 'auto, auto, 100% 100%', medFond: med.argent,
+        artFx: [], faceFx: [],
+        orn: { filet: 'rgba(255,255,255,0.9)', gemme: '#FFE27A', gemme2: '#8A6A00', monture: '#ffffff', fenetre: false }, legende: 'Sobre : l\'illustration seule en plein cadre, aucun holo sur l\'image, cadre pastel fixe.' }),
+      plein(q(P.sukuna), { cadre: guilloche + ', ' + holoBande.vif, cadreTaille: 'auto, auto, 300% 300%', cadreAnim: 'holo', medFond: med.holo,
+        scene: scene('feu', 300, 428, { plein: true, rayons: true, graine: 57, a: '#E0455A', d: '#1a0509', l: '#FFB3B3', contour: '#FF4D4D', ombre: '#14060a' }),
+        artFx: [{ k: 'holo', s: glace(0.6) }, { k: 'holo', s: holoFilm + ' opacity: 0.3;' }],
+        faceFx: [{ k: 'scint', s: 'background: ' + etincelles(9, 10, '#ffffff') + ';' }],
+        panneauBord: 'inset 0 0 0 1px rgba(255,140,160,0.5), 0 8px 20px rgba(0,0,0,0.4)',
+        orn: { filet: 'rgba(255,255,255,0.9)', gemme: '#FF6A7A', gemme2: '#5A0012', monture: '#ffffff', fenetre: false }, legende: 'Autre illustration, plus mise en scène. Holo craquelé bien visible, cadre holo vif animé, médaillon arc-en-ciel.' }),
+      plein(q(P.gojo), { cadre: guilloche + ', ' + holoBande.kira, cadreTaille: 'auto, auto, 300% 300%', cadreAnim: 'holo', reflet: true, artClasse: 'profond', medFond: med.holo,
+        scene: scene('lumiere', 300, 428, { plein: true, rayons: true, graine: 63, a: '#6CCBFF', d: '#060c1c', l: '#ffffff', contour: '#9FE0FF' }),
+        artFx: [{ k: 'holo', s: cosmos }, { k: 'holo', s: glace(0.4) }],
+        faceFx: [{ k: 'scint', s: 'background: ' + etincelles(12, 20, '#ffffff') + ';' }, { k: 'scint2', s: 'background: ' + etincelles(13, 16, '#9FE0FF') + ';' }, { k: 'holo', s: holoFilm + ' opacity: 0.45;' }],
+        particules: true, particule: '#6CCBFF', halo: true, haloOmbre: '0 0 30px rgba(108,203,255,0.65), 0 0 56px rgba(255,95,200,0.35)',
+        panneauBord: 'inset 0 0 0 1px rgba(160,220,255,0.55), 0 8px 20px rgba(0,0,0,0.4)',
+        orn: { filet: 'rgba(255,255,255,0.95)', gemme: '#9FE0FF', gemme2: '#0B4F8A', monture: '#ffffff', fenetre: false }, legende: 'Tout est animé : étoiles, craquelé, étincelles, particules, reflet, halo. Au survol, l\'image bouge en profondeur.' }),
+      plein(q(P.itachi), { cadre: M.or, cadreTaille: 'auto, auto, 100% 100%', reflet: true, artClasse: 'profond', medFond: med.or,
+        scene: scene('tenebres', 300, 428, { plein: true, rayons: true, graine: 71, a: '#C9962B', d: '#2a1c04', l: '#FFF1C2', contour: '#FFE9A8', ombre: '#2a1a02' }),
+        motif: asanoha('#FFF1C2', 0.8), motifOpacite: 0,
+        artFx: [{ k: '', s: 'background: ' + asanoha('rgba(255,241,194,0.5)', 0.7) + '; mix-blend-mode: overlay;' }],
+        faceFx: [{ k: '', s: orMono + ' opacity: 0.35;' }, { k: 'scint', s: 'background: ' + etincelles(17, 22, '#FFF6D2') + ';' }],
+        texte: '#FFF4D6', plaqueTexte: '#FFF1C2', typeFond: 'linear-gradient(180deg, #FFF0BE, #C9962B)', typeTexte: '#2E2108',
+        voile: 'linear-gradient(180deg, rgba(40,26,0,0.6) 0%, transparent 16%, transparent 52%, rgba(30,20,2,0.8) 72%, rgba(24,16,0,0.94) 100%)',
+        talentBoite: 'rgba(40,26,0,0.4)', talentBord: 'rgba(246,217,124,0.45)', talentFond: '#B8862B', talentNom: '#FFE9A8',
+        pastille: 'rgba(40,26,0,0.5)', symboleCouleur: '#F6D97C', degatsOmbre: '0 0 10px rgba(246,217,124,0.7), 0 2px 6px rgba(0,0,0,0.9)',
+        halo: true, haloOmbre: '0 0 32px rgba(246,217,124,0.65)',
+        orn: { filet: 'rgba(90,60,0,0.6)', gemme: '#FF5A5A', gemme2: '#5A0000', monture: '#FFF1C2', fenetre: false }, legende: 'Comme l\'immersive, mais tout en or : asanoha gravé, gemme rubis, halo doré.' })
+    ];
+    if (img) liste.forEach(function (c) { c.scene = IMG; c.scenePos = c.artPos === 'inset: 0' ? 'center 20%' : 'center 28%'; c.legende = ''; });
+    return liste;
+    };
+    return { sections: [
+      { titre: 'Avec ton illustration', texte: 'La même image dans chaque traitement de rareté, pour comparer.', cartes: construire(true) },
+      { titre: 'Avec un décor généré', texte: 'Décor peint par élément, en attendant les vraies illustrations.', cartes: construire(false) }
+    ] };
+  }
+}
+</script>
+</body>
+</html>

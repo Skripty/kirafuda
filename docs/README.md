@@ -18,7 +18,8 @@ npm run typecheck  # vérification TypeScript
 | `AGENTS.md` | Règles pour Codex (à lire avant toute tâche) |
 | `docs/GDD-resume.md` | Règles du jeu nécessaires à la version 1 |
 | `docs/TACHES.md` | Les 20 tâches de la version 1, dans l'ordre, avec le texte à donner à Codex |
-| `docs/reference/atelier-des-cartes.html` | Rendu de référence des cartes et des finitions |
+| `docs/design/cartes-reference.dc.html` | Maquette validée des cartes, du ♦ au ♛ (tâche 31, `docs/design/TACHE-31-cartes.md`) |
+| `docs/reference/atelier-des-cartes.html` | Ancien rendu de référence des cartes (remplacé par la maquette de la tâche 31) |
 | `src/data/extension-lancement.json` | Les 100 personnages (série, rang, élément, PV, attaques) et les 140 cartes |
 | `src/data/booster-lancement.json` | Tables de tirage du booster |
 | `src/data/fiches-combat.json` | Fiches de combat des personnages (type, PV, Repli, talent, attaques), recopiées dans les extensions par `npm run fiches` |

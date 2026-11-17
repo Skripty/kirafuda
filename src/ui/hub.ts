@@ -298,7 +298,7 @@ export function creerHub(o: OptionsHub): HTMLElement {
     const mini = el('div', 'acc-mini-cartes');
     const extDerniere = extension;
     for (const t of derniere.cartes) {
-      const v = creerCarteDuJeu(t.carteId, extDerniere, { interactive: false });
+      const v = creerCarteDuJeu(t.carteId, extDerniere);
       if (!v) continue;
       v.style.setProperty('--carte-largeur', '140px');
       mini.append(v);

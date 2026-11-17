@@ -34,7 +34,7 @@ L’extension Lancement sort en **vagues** qui rejoignent le même booster à le
 - Holo intégrale (♦♦♦♦) : mise en page fenêtre, cadre argenté, film holo sur toute la carte (fond, cadre, illustration).
 - Couronne : toute la carte en monochrome doré.
 - Images : une par carte, `public/cartes/<id-carte>/illustration.webp` (★★★ : animation WebP en plus, facultative). Repli : une carte secrète sans image reprend l’image de la carte de base du même personnage, puis un visuel de remplacement.
-- Effets des cartes ★ (de plus en plus riches) : ★ film irisé qui suit le pointeur ; ★★ le même film, des paillettes qui scintillent et un éclat de lumière qui traverse la carte ; ★★★ film animé, profondeur, particules et reflet continu sur le cadre ; ♛ monochrome doré.
+- Apparence des cartes (tâche 31, maquette `docs/design/cartes-reference.dc.html`) : cadre orné (filets, perles, coins, gemme de rareté), étiquette Base / Héros / Éveillé et « ↱ Relève : série », plaque de nom avec les PV, médaillon d’élément, encart Talent, attaques (coûts dans des creux ronds), barre Faiblesse +20 / Repli / rareté et numéro. ♦ à ♦♦♦♦ : illustration dans une fenêtre ; ♦ graphite brossé, ♦♦ acier aux couleurs de l’élément, ♦♦♦ holo cosmos et étincelles sur l’illustration, ♦♦♦♦ argent guilloché, stries et holo craquelé sur toute la carte. ★ et plus : pleine illustration, texte posé sur l’image ; ★ sobre (cadre holo pastel), ★★ holo craquelé et cadre holo animé, ★★★ tout animé (étincelles, particules, reflet, halo, profondeur au survol), ♛ comme ★★★ mais tout en or. Survol : la carte s’incline et un éclat passe. Les cartes Soutien utilisent le même composant.
 
 ## Données de combat (voir `docs/COMBAT.md`)
 

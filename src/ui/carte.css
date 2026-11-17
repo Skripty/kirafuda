@@ -1,289 +1,482 @@
-/* Rendu d'une carte, repris de docs/reference/atelier-des-cartes.html.
-   Toutes les mesures sont en --u (1/260 de la largeur de la carte) : la carte garde ses
-   proportions à toutes les tailles. Animations : transform et opacity uniquement. */
+/* Cartes ornées, du ♦ au ♛ (tâche 31). Spécification : docs/design/cartes-reference.dc.html.
+   Toutes les mesures sont celles de la maquette (carte de 320 × 448) multipliées par --u, 1/320 de la largeur de la
+   carte : la carte s'affiche à n'importe quelle taille (--carte-largeur, 260 px par défaut).
+   Animations : transform et opacity uniquement. Les fonds holo qui « glissent » dans la maquette (background-position)
+   sont ici des calques plus grands que la carte, déplacés par transform, dans un parent qui les coupe.
+   Les SVG (ornements, trames, grain, craquelé, poussière, étincelles, décor de repli) viennent de carte-motifs.ts,
+   sous forme de variables --svg-… posées une seule fois par élément et par rareté. */
 
 .carte {
-  container-type: inline-size;
+  container: carte / inline-size;
+  position: relative;
   width: var(--carte-largeur, 260px);
   max-width: 100%;
-  touch-action: pan-y;
-  --x: 0; /* position du pointeur, de -1 (gauche) à 1 (droite) */
-}
-
-.carte-corps {
-  --u: calc(100cqw / 260);
-  position: relative;
-  width: 100%;
-  aspect-ratio: 5 / 7;
-  border-radius: calc(13 * var(--u));
-  overflow: hidden;
-  background: var(--carte-papier);
-  border: calc(7 * var(--u)) solid var(--carte-bord);
-  color: var(--carte-encre);
-  font-family: var(--police-carte);
-  font-size: calc(14 * var(--u));
+  aspect-ratio: 320 / 448;
+  --u: calc(100cqw / 320);
+  font-family: var(--police);
   line-height: 1.2;
+  color: var(--blanc-casse);
   user-select: none;
-  transform: perspective(900px) rotateY(calc(var(--x) * var(--carte-pivot, 8deg)));
-  transition: transform 0.15s;
+  touch-action: pan-y;
+
+  /* Ombres (noir) et lumières (blanc), en jetons */
+  --n25: color-mix(in srgb, var(--carte-noir) 25%, transparent);
+  --n30: color-mix(in srgb, var(--carte-noir) 30%, transparent);
+  --n35: color-mix(in srgb, var(--carte-noir) 35%, transparent);
+  --n40: color-mix(in srgb, var(--carte-noir) 40%, transparent);
+  --n45: color-mix(in srgb, var(--carte-noir) 45%, transparent);
+  --n50: color-mix(in srgb, var(--carte-noir) 50%, transparent);
+  --n55: color-mix(in srgb, var(--carte-noir) 55%, transparent);
+  --n60: color-mix(in srgb, var(--carte-noir) 60%, transparent);
+  --n65: color-mix(in srgb, var(--carte-noir) 65%, transparent);
+  --n70: color-mix(in srgb, var(--carte-noir) 70%, transparent);
+  --n80: color-mix(in srgb, var(--carte-noir) 80%, transparent);
+  --n90: color-mix(in srgb, var(--carte-noir) 90%, transparent);
+  --b4: color-mix(in srgb, var(--carte-clair) 4%, transparent);
+  --b7: color-mix(in srgb, var(--carte-clair) 7%, transparent);
+  --b8: color-mix(in srgb, var(--carte-clair) 8%, transparent);
+  --b14: color-mix(in srgb, var(--carte-clair) 14%, transparent);
+  --b18: color-mix(in srgb, var(--carte-clair) 18%, transparent);
+  --b20: color-mix(in srgb, var(--carte-clair) 20%, transparent);
+  --b25: color-mix(in srgb, var(--carte-clair) 25%, transparent);
+  --b35: color-mix(in srgb, var(--carte-clair) 35%, transparent);
+  --b50: color-mix(in srgb, var(--carte-clair) 50%, transparent);
+  --b55: color-mix(in srgb, var(--carte-clair) 55%, transparent);
+  --b60: color-mix(in srgb, var(--carte-clair) 60%, transparent);
+  --b70: color-mix(in srgb, var(--carte-clair) 70%, transparent);
+  --brosse: repeating-linear-gradient(90deg, var(--b7) 0 var(--u), transparent var(--u) calc(3 * var(--u)));
+  --guilloche: repeating-linear-gradient(45deg, var(--b35) 0 var(--u), transparent var(--u) calc(4 * var(--u))),
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--carte-noir) 12%, transparent) 0 var(--u), transparent var(--u) calc(4 * var(--u)));
+
+  /* ♦ Commune (valeurs par défaut) */
+  --a: var(--carte-el-neutre);
+  --a-sombre: var(--carte-el-neutre-sombre);
+  --a-clair: var(--carte-el-neutre-clair);
+  --k-cadre: var(--carte-metal-graphite);
+  --k-cadre-motif: var(--brosse);
+  --k-face: radial-gradient(120% 50% at 0% 0%, color-mix(in srgb, var(--a) 33%, transparent) 0%, transparent 60%),
+    radial-gradient(100% 45% at 100% 100%, color-mix(in srgb, var(--a) 23%, transparent) 0%, transparent 70%),
+    linear-gradient(180deg, var(--a-sombre) 0%, var(--carte-face-fond) 100%);
+  --k-texte: var(--blanc-casse);
+  --k-trame-taille: calc(18 * var(--u)) calc(18 * var(--u));
+  --k-motif-op: 0.07;
+  --k-art-bord: 0 0 0 calc(2 * var(--u)) var(--carte-fenetre-acier), 0 0 0 calc(3.5 * var(--u)) var(--n70),
+    0 calc(10 * var(--u)) calc(18 * var(--u)) var(--n55);
+  --k-type-fond: var(--carte-etiquette-acier);
+  --k-type-texte: var(--graphite);
+  --k-plaque-fond: var(--carte-plaque-sombre);
+  --k-plaque-texte: var(--blanc-casse);
+  --k-nom-ombre: 0 1px 0 var(--n70);
+  --k-med-fond: var(--carte-medaillon-sombre);
+  --k-banniere-fond: var(--carte-banniere-sombre);
+  --k-banniere-texte: var(--carte-texte-acier);
+  --k-panneau: linear-gradient(180deg, color-mix(in srgb, var(--carte-noir) 18%, transparent), var(--n30));
+  --k-panneau-bord: inset 0 0 0 1px var(--b8);
+  --k-talent-boite: linear-gradient(90deg, color-mix(in srgb, var(--a) 19%, transparent), color-mix(in srgb, var(--a) 5%, transparent));
+  --k-talent-bord: color-mix(in srgb, var(--a) 33%, transparent);
+  --k-talent-fond: var(--carte-talent-rouge);
+  --k-talent-nom: var(--a-clair);
+  --k-att-fond: var(--b4);
+  --k-att-bord: var(--b7);
+  --k-degats-ombre: 0 0 calc(10 * var(--u)) color-mix(in srgb, var(--a) 60%, transparent), 0 1px 0 var(--n60);
+  --k-pastille: var(--n30);
+  --k-symbole: inherit;
+  --k-particule: var(--carte-halo-bleu);
 }
 
-/* ---------- Fenêtre d'illustration (~43 % de la carte) ---------- */
+/* ---------- Couleurs de l'élément ---------- */
+.carte.el-feu { --a: var(--carte-el-feu); --a-sombre: var(--carte-el-feu-sombre); --a-clair: var(--carte-el-feu-clair); }
+.carte.el-eau { --a: var(--carte-el-eau); --a-sombre: var(--carte-el-eau-sombre); --a-clair: var(--carte-el-eau-clair); }
+.carte.el-foudre { --a: var(--carte-el-foudre); --a-sombre: var(--carte-el-foudre-sombre); --a-clair: var(--carte-el-foudre-clair); }
+.carte.el-terre { --a: var(--carte-el-terre); --a-sombre: var(--carte-el-terre-sombre); --a-clair: var(--carte-el-terre-clair); }
+.carte.el-vent { --a: var(--carte-el-vent); --a-sombre: var(--carte-el-vent-sombre); --a-clair: var(--carte-el-vent-clair); }
+.carte.el-glace { --a: var(--carte-el-glace); --a-sombre: var(--carte-el-glace-sombre); --a-clair: var(--carte-el-glace-clair); }
+.carte.el-lumiere { --a: var(--carte-el-lumiere); --a-sombre: var(--carte-el-lumiere-sombre); --a-clair: var(--carte-el-lumiere-clair); }
+.carte.el-tenebres { --a: var(--carte-el-tenebres); --a-sombre: var(--carte-el-tenebres-sombre); --a-clair: var(--carte-el-tenebres-clair); }
+.carte.el-neutre { --a: var(--carte-el-neutre); --a-sombre: var(--carte-el-neutre-sombre); --a-clair: var(--carte-el-neutre-clair); }
+
+/* ---------- Raretés à fenêtre ---------- */
+/* ♦♦ Peu commune : acier ; filet, gemme et contour de la fenêtre à la couleur de l'élément. */
+.carte.r-peu-commune {
+  --k-cadre: var(--carte-metal-acier);
+  --k-plaque-fond: var(--carte-plaque-acier);
+  --k-med-fond: var(--carte-medaillon-argent);
+  --k-trame-taille: calc(30 * var(--u)) calc(51.96 * var(--u));
+  --k-motif-op: 0.12;
+  --k-art-bord: 0 0 0 calc(2 * var(--u)) var(--a), 0 0 0 calc(3.5 * var(--u)) var(--n70),
+    0 0 calc(20 * var(--u)) color-mix(in srgb, var(--a) 40%, transparent);
+}
+/* ♦♦♦ Holo : holo cosmos et étincelles sur l'illustration ; plaque et bannière argent. */
+.carte.r-holo {
+  --k-cadre: var(--carte-metal-acier);
+  --k-plaque-fond: var(--carte-plaque-argent);
+  --k-plaque-texte: var(--graphite);
+  --k-nom-ombre: 0 1px 0 var(--b70);
+  --k-med-fond: var(--carte-medaillon-argent);
+  --k-trame-taille: calc(30 * var(--u)) calc(51.96 * var(--u));
+  --k-motif-op: 0.12;
+  --k-art-bord: 0 0 0 calc(2 * var(--u)) var(--carte-fenetre-argent), 0 0 0 calc(3.5 * var(--u)) var(--n70),
+    0 0 calc(22 * var(--u)) color-mix(in srgb, var(--a) 47%, transparent);
+  --k-banniere-fond: var(--carte-banniere-argent);
+  --k-banniere-texte: var(--graphite);
+}
+/* ♦♦♦♦ Holo intégrale : argent guilloché, stries holo et holo craquelé sur toute la carte, médaillon arc-en-ciel. */
+.carte.r-holo-integrale {
+  --k-cadre: var(--carte-metal-argent);
+  --k-cadre-motif: var(--guilloche);
+  --k-plaque-fond: var(--carte-plaque-argent);
+  --k-plaque-texte: var(--graphite);
+  --k-nom-ombre: 0 1px 0 var(--b70);
+  --k-med-fond: var(--carte-medaillon-holo);
+  --k-type-fond: var(--carte-etiquette-or);
+  --k-trame-taille: calc(30 * var(--u)) calc(51.96 * var(--u));
+  --k-motif-op: 0.18;
+  --k-art-bord: 0 0 0 calc(2 * var(--u)) var(--carte-fenetre-blanc), 0 0 0 calc(3.5 * var(--u)) var(--n65),
+    0 0 calc(26 * var(--u)) color-mix(in srgb, var(--a) 65%, transparent);
+  --k-banniere-fond: var(--carte-banniere-argent);
+  --k-banniere-texte: var(--graphite);
+}
+
+/* ---------- Raretés pleine illustration : ni plaque, ni bannière, ni panneau opaque ---------- */
+.carte.pleine {
+  --k-cadre-motif: var(--guilloche);
+  --k-motif-op: 0;
+  --k-plaque-fond: transparent;
+  --k-plaque-texte: var(--carte-clair);
+  --k-nom-ombre: 0 calc(2 * var(--u)) calc(8 * var(--u)) var(--n90), 0 0 calc(2 * var(--u)) var(--n80);
+  --k-panneau: transparent;
+  --k-panneau-bord: none;
+  --k-talent-boite: color-mix(in srgb, var(--carte-noir) 28%, transparent);
+  --k-talent-bord: var(--b14);
+  --k-att-fond: transparent;
+  --k-att-bord: transparent;
+  --k-pastille: var(--n35);
+  --k-degats-ombre: 0 calc(2 * var(--u)) calc(8 * var(--u)) var(--n90);
+  --k-voile: var(--carte-voile);
+}
+/* ★ Pleine illustration : sobre ; cadre holo pastel fixe, aucun holo ni étincelle sur l'image. */
+.carte.r-pleine { --k-cadre: var(--carte-cadre-pleine); --k-med-fond: var(--carte-medaillon-argent); }
+/* ★★ Illustration alternative : cadre holo vif animé, médaillon arc-en-ciel, holo craquelé bien visible. */
+.carte.r-alternative {
+  --k-cadre-holo: var(--carte-cadre-alternative);
+  --k-med-fond: var(--carte-medaillon-holo);
+  --k-panneau-bord: inset 0 0 0 1px color-mix(in srgb, var(--a-clair) 50%, transparent), 0 calc(8 * var(--u)) calc(20 * var(--u)) var(--n40);
+}
+/* ★★★ Immersive animée : tout est animé. */
+.carte.r-immersive {
+  --k-cadre-holo: var(--carte-cadre-immersive);
+  --k-med-fond: var(--carte-medaillon-holo);
+  --k-panneau-bord: inset 0 0 0 1px color-mix(in srgb, var(--carte-halo-bleu) 55%, var(--carte-clair)), 0 calc(8 * var(--u)) calc(20 * var(--u)) var(--n40);
+  --k-halo: 0 0 calc(30 * var(--u)) color-mix(in srgb, var(--carte-halo-bleu) 65%, transparent),
+    0 0 calc(56 * var(--u)) color-mix(in srgb, var(--carte-halo-rose) 35%, transparent);
+}
+/* ♛ Couronne : comme l'immersive, mais tout en or. */
+.carte.r-couronne {
+  --k-cadre: var(--carte-metal-or);
+  --k-med-fond: var(--carte-medaillon-or);
+  --k-texte: var(--carte-or-encre);
+  --k-plaque-texte: var(--carte-or-nom);
+  --k-type-fond: var(--carte-etiquette-or);
+  --k-type-texte: var(--carte-or-sombre);
+  --k-voile: var(--carte-voile-or);
+  --k-talent-boite: color-mix(in srgb, var(--carte-or-brun) 40%, transparent);
+  --k-talent-bord: color-mix(in srgb, var(--carte-or-symbole) 45%, transparent);
+  --k-talent-fond: var(--carte-talent-or);
+  --k-talent-nom: var(--carte-or-pale);
+  --k-pastille: color-mix(in srgb, var(--carte-or-brun) 50%, transparent);
+  --k-symbole: var(--carte-or-symbole);
+  --k-degats-ombre: 0 0 calc(10 * var(--u)) color-mix(in srgb, var(--carte-or-symbole) 70%, transparent), 0 calc(2 * var(--u)) calc(6 * var(--u)) var(--n90);
+  --k-halo: 0 0 calc(32 * var(--u)) color-mix(in srgb, var(--carte-or-symbole) 65%, transparent);
+}
+
+/* ====================================================================================================
+   Structure
+   ==================================================================================================== */
+.carte-volume { position: absolute; inset: 0; transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+.carte-halo { position: absolute; inset: 0; border-radius: calc(17 * var(--u)); box-shadow: var(--k-halo); opacity: 0.6; pointer-events: none; }
+
+/* Cadre de 10 : métal (brossé ou guilloché) ou bande holo ; ★★ et ★★★ : la bande holo glisse (calque 300 %). */
+.carte-cadre {
+  position: absolute; inset: 0; overflow: hidden; border-radius: calc(17 * var(--u));
+  background: var(--k-cadre);
+  box-shadow: 0 calc(24 * var(--u)) calc(50 * var(--u)) var(--n60), inset 0 1px 0 var(--b60), inset 0 -2px 0 var(--n40), inset 0 0 0 1px var(--n50);
+}
+.carte-cadre::after { content: ''; position: absolute; inset: 0; background: var(--k-cadre-motif); pointer-events: none; }
+.carte-cadre-holo { position: absolute; top: 0; left: 0; width: 300%; height: 300%; background: var(--k-cadre-holo); }
+
+/* Face : tout ce qui est imprimé sur la carte, coupé par ses coins arrondis (rien ne déborde du cadre). */
+.carte-face {
+  position: absolute; inset: calc(10 * var(--u)); overflow: hidden; border-radius: calc(9 * var(--u)); isolation: isolate;
+  background: var(--k-face); color: var(--k-texte); box-shadow: 0 0 0 1px var(--n55);
+}
+.carte-motif {
+  position: absolute; inset: 0; opacity: var(--k-motif-op); pointer-events: none;
+  background: var(--svg-trame) 0 0 / var(--k-trame-taille), var(--svg-bruit) 0 0 / calc(160 * var(--u)) calc(160 * var(--u));
+}
+
+/* Illustration : fenêtre (♦ à ♦♦♦♦) ou toute la carte (★ et plus). Sous l'image, le décor de repli. */
 .carte-art {
-  position: absolute;
-  left: calc(9 * var(--u));
-  right: calc(9 * var(--u));
-  top: calc(38 * var(--u));
-  height: 43%;
-  overflow: hidden;
-  border: calc(2 * var(--u)) solid var(--carte-cadre);
-  background: var(--carte-fenetre);
+  position: absolute; left: calc(10 * var(--u)); right: calc(10 * var(--u)); top: calc(54 * var(--u)); height: calc(172 * var(--u));
+  overflow: hidden; border-radius: calc(5 * var(--u)); isolation: isolate;
+  background: var(--svg-scene, linear-gradient(180deg, var(--a-sombre), var(--carte-face-fond))) center / cover;
+  box-shadow: var(--k-art-bord);
 }
-.carte-calque { position: absolute; inset: 0; }
-.carte-calque img.couvre {
-  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+.carte.fenetre .carte-art::after {
+  content: ''; position: absolute; inset: 0; z-index: 3; border-radius: inherit; pointer-events: none; box-shadow: inset 0 0 0 1px var(--b18);
 }
+.carte.pleine .carte-art { inset: 0; height: auto; border-radius: 0; box-shadow: none; }
+.carte-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* Repli d'une carte Soutien sans image : le symbole de son type. */
+.carte-glyphe { position: absolute; inset: 0; display: grid; place-items: center; }
+.carte-glyphe svg { width: 42%; height: 42%; fill: none; stroke: color-mix(in srgb, var(--carte-clair) 45%, transparent); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.carte-voile { position: absolute; inset: 0; z-index: 2; background: var(--k-voile); pointer-events: none; }
+.carte-art.profond { transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
 
-/* Scène aux couleurs de l'élément, visible derrière le visuel de remplacement quand l'image manque. */
-.carte-scene {
-  position: absolute;
-  inset: 0;
-  background:
-    repeating-conic-gradient(from 0deg at 50% 60%, color-mix(in srgb, var(--carte-clair) 18%, transparent) 0 3deg, transparent 3deg 9deg),
-    radial-gradient(circle, color-mix(in srgb, var(--carte-clair) 19%, transparent) 1px, transparent 1.4px) 0 0 / calc(6 * var(--u)) calc(6 * var(--u)),
-    radial-gradient(circle at 50% 60%, color-mix(in srgb, var(--carte-clair) 80%, transparent), var(--aff) 55%, var(--carte-scene-fond));
-}
-
-/* Visuel de remplacement quand aucune image n'existe. */
-.carte-remplacement {
-  position: absolute; inset: 0;
-  display: flex; align-items: flex-end; justify-content: center;
-}
-.carte-remplacement svg { height: 88%; fill: var(--carte-ombre); }
-.carte-remplacement span {
-  position: absolute; top: calc(8 * var(--u)); left: 0; right: 0;
-  text-align: center; font-family: var(--police); font-size: calc(11 * var(--u));
-  color: color-mix(in srgb, var(--carte-clair) 85%, transparent);
-}
-
-/* ---------- Textes ---------- */
-.carte-entete {
-  position: absolute;
-  left: calc(9 * var(--u)); right: calc(9 * var(--u)); top: calc(8 * var(--u));
-  height: calc(26 * var(--u));
+/* Type (Base / Héros / Éveillé, ou Objet / Soutien / Terrain) et « ↱ Relève : série » */
+.carte-type-ligne {
+  position: absolute; z-index: 3; left: calc(8 * var(--u)); right: calc(8 * var(--u)); top: calc(6 * var(--u)); height: calc(14 * var(--u));
   display: flex; align-items: center; gap: calc(6 * var(--u));
-  z-index: 3;
 }
+.carte-type {
+  flex: none; padding: calc(2 * var(--u)) calc(10 * var(--u)) calc(2 * var(--u)) calc(7 * var(--u));
+  font-size: calc(7.5 * var(--u)); font-weight: 800; letter-spacing: 0.1em; line-height: 1.2; text-transform: uppercase;
+  background: var(--k-type-fond); color: var(--k-type-texte); box-shadow: inset 0 1px 0 var(--b60);
+  clip-path: polygon(0 0, calc(100% - 6 * var(--u)) 0, 100% 50%, calc(100% - 6 * var(--u)) 100%, 0 100%);
+}
+.carte-releve {
+  min-width: 0; font-size: calc(7.5 * var(--u)); font-weight: 500; font-style: italic; opacity: 0.85;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px var(--n60);
+}
+
+/* Plaque de nom, avec les PV */
+.carte-plaque {
+  position: absolute; z-index: 3; left: calc(6 * var(--u)); right: calc(20 * var(--u)); top: calc(22 * var(--u)); height: calc(32 * var(--u));
+  clip-path: polygon(calc(7 * var(--u)) 0, 100% 0, 100% 100%, calc(7 * var(--u)) 100%, 0 50%);
+  background: var(--k-plaque-fond);
+  box-shadow: inset 0 1px 0 var(--b55), inset 0 -1px 0 var(--n45), inset 0 0 0 1px var(--n25);
+}
+.carte.fenetre .carte-plaque::before {
+  content: ''; position: absolute; inset: 0; opacity: 0.35; mix-blend-mode: overlay;
+  background: var(--svg-bruit) 0 0 / calc(160 * var(--u)) calc(160 * var(--u));
+}
+.carte.pleine .carte-plaque { box-shadow: none; }
+.carte.soutien .carte-plaque { right: calc(6 * var(--u)); }
+.carte-plaque-contenu {
+  position: absolute; inset: 0; display: flex; align-items: center; gap: calc(5 * var(--u));
+  padding: 0 calc(24 * var(--u)) 0 calc(13 * var(--u)); color: var(--k-plaque-texte);
+}
+.carte.soutien .carte-plaque-contenu { padding-right: calc(13 * var(--u)); }
 .carte-nom {
-  flex: 1; font-size: calc(19 * var(--u)); font-weight: 700; line-height: 1;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  flex: 1; min-width: 0; font-size: calc(17 * var(--u)); font-weight: 800; letter-spacing: -0.01em; line-height: 1.15;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: var(--k-nom-ombre);
 }
-.carte-pv { font-size: calc(13 * var(--u)); font-weight: 600; }
-/* Icône de l'élément (public/elements) : ronde, fond transparent. */
-.carte-element {
-  display: block; flex: none;
-  width: calc(24 * var(--u)); height: calc(24 * var(--u)); border-radius: 50%;
-  box-shadow: 0 0 0 calc(1.5 * var(--u)) color-mix(in srgb, var(--carte-clair) 33%, transparent);
-}
+.carte-pv-libelle { font-size: calc(8 * var(--u)); font-weight: 800; opacity: 0.8; }
+.carte-pv { font-family: var(--police-chiffres); font-size: calc(25 * var(--u)); font-weight: 700; line-height: 1; text-shadow: var(--k-nom-ombre); }
 
-.carte-texte {
-  position: absolute;
-  left: calc(9 * var(--u)); right: calc(9 * var(--u)); bottom: calc(8 * var(--u));
-  top: calc(43% + 46 * var(--u));
-  display: flex; flex-direction: column; gap: calc(4 * var(--u));
-  z-index: 3;
+/* Médaillon d'élément rond, en relief */
+.carte-medaillon {
+  position: absolute; z-index: 3; right: calc(5 * var(--u)); top: calc(18 * var(--u)); width: calc(40 * var(--u)); height: calc(40 * var(--u));
+  display: grid; place-items: center; border-radius: 50%; background: var(--k-med-fond);
+  box-shadow: 0 calc(3 * var(--u)) calc(8 * var(--u)) var(--n55), inset 0 1px 0 var(--b70);
 }
-.carte-faible { display: inline-flex; align-items: center; gap: calc(3 * var(--u)); }
-.carte-faible-icone { display: block; flex: none; width: calc(12 * var(--u)); height: calc(12 * var(--u)); border-radius: 50%; }
-.carte-pied {
-  margin-top: auto;
-  display: flex; justify-content: space-between; gap: calc(6 * var(--u));
-  font-size: calc(12.5 * var(--u)); opacity: 0.85; white-space: nowrap;
+.carte-medaillon-creux {
+  width: calc(31 * var(--u)); height: calc(31 * var(--u)); display: grid; place-items: center; border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--a) 40%, transparent), var(--carte-medaillon-creux) 75%);
+  box-shadow: inset 0 calc(2 * var(--u)) calc(5 * var(--u)) var(--n70), 0 0 0 1px var(--n50);
 }
+.carte-medaillon-icone { display: block; width: calc(25 * var(--u)); height: calc(25 * var(--u)); filter: drop-shadow(0 0 calc(4 * var(--u)) var(--a)); }
 
-/* ---------- Films irisés (déplacés par transform, jamais par background-position) ---------- */
-.carte-film {
-  position: absolute; top: 0; bottom: 0; left: -100%; width: 300%;
-  pointer-events: none; opacity: 0; mix-blend-mode: color-dodge;
-  transform: translateX(calc(var(--x) * -16%));
+/* Bannière d'infos (n°, série, rang), à queue d'aronde */
+.carte-banniere {
+  position: absolute; z-index: 3; left: calc(30 * var(--u)); right: calc(30 * var(--u)); top: calc(232 * var(--u)); height: calc(17 * var(--u));
+  display: flex; align-items: center; justify-content: center; gap: calc(6 * var(--u)); padding: 0 calc(10 * var(--u));
+  clip-path: polygon(0 0, 100% 0, calc(100% - 8 * var(--u)) 50%, 100% 100%, 0 100%, calc(8 * var(--u)) 50%);
+  background: var(--k-banniere-fond); color: var(--k-banniere-texte);
+  font-size: calc(7.2 * var(--u)); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap;
+  box-shadow: inset 0 1px 0 var(--b50), inset 0 -1px 0 var(--n35);
 }
-.carte-film::before { content: ''; position: absolute; inset: 0; }
-.carte-film.holo { z-index: 2; }
-.carte-film.holo::before { background: var(--carte-film-holo); }
-.carte-film.foil { z-index: 4; }
-.carte-film.foil::before { background: var(--carte-film-foil); }
+.carte-banniere > span:not([aria-hidden]) { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.carte-banniere > span[aria-hidden] { flex: none; opacity: 0.6; }
 
-/* ---------- Finitions ---------- */
-.carte.f-holo .carte-corps { border-color: var(--carte-bord-holo); }
-.carte.f-holo .carte-film.holo { opacity: 1; }
+/* Panneau du texte : talent, attaques, barre du bas */
+.carte-panneau {
+  position: absolute; z-index: 3; left: calc(8 * var(--u)); right: calc(8 * var(--u)); bottom: calc(8 * var(--u)); top: calc(254 * var(--u));
+  display: flex; flex-direction: column; gap: calc(5 * var(--u)); overflow: hidden;
+  padding: calc(7 * var(--u)) calc(8 * var(--u)) calc(5 * var(--u)); border-radius: calc(8 * var(--u));
+  background: var(--k-panneau); box-shadow: var(--k-panneau-bord);
+}
+.carte.pleine .carte-panneau { top: calc(268 * var(--u)); }
+.carte.pleine .carte-panneau,
+.carte.pleine .carte-type-ligne { text-shadow: 0 1px calc(3 * var(--u)) var(--n80); }
 
-/* Holo intégrale : mise en page fenêtre, cadre argenté, film holo sur toute la carte
-   (fond, cadre et illustration), sous les textes pour qu'ils restent lisibles.
-   La couche déborde de la largeur du cadre : la carte ne rogne donc pas son contenu ici. */
-.carte.f-holo-integrale .carte-corps {
-  overflow: visible;
-  border-color: var(--carte-bord-integrale);
-  background: var(--carte-papier-integrale);
+.carte-talent {
+  flex: none; padding: calc(5 * var(--u)) calc(7 * var(--u)); border-radius: calc(6 * var(--u));
+  background: var(--k-talent-boite); box-shadow: inset 0 0 0 1px var(--k-talent-bord);
 }
-.carte.f-holo-integrale .carte-film.holo { opacity: 1; }
-.carte.f-holo-integrale .carte-film.foil { display: none; }
-.carte-integrale {
-  position: absolute;
-  inset: calc(-7 * var(--u)); /* recouvre aussi le cadre */
-  border-radius: calc(13 * var(--u));
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 2;
+.carte-talent-tete { display: flex; align-items: center; gap: calc(6 * var(--u)); min-width: 0; }
+.carte-talent-etiquette {
+  flex: none; padding: calc(2 * var(--u)) calc(9 * var(--u)) calc(2 * var(--u)) calc(6 * var(--u));
+  font-size: calc(7 * var(--u)); font-weight: 800; letter-spacing: 0.12em; line-height: 1.2; text-transform: uppercase; text-shadow: none;
+  background: var(--k-talent-fond); color: var(--carte-clair);
+  clip-path: polygon(0 0, calc(100% - 5 * var(--u)) 0, 100% 50%, calc(100% - 5 * var(--u)) 100%, 0 100%);
 }
-.carte-integrale .carte-film { opacity: 1; mix-blend-mode: color-dodge; }
-.carte-integrale .carte-film::before { background: var(--carte-film-holo); }
+.carte-talent-nom { min-width: 0; font-size: calc(11 * var(--u)); font-weight: 800; color: var(--k-talent-nom); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.carte-talent-texte { margin-top: calc(2 * var(--u)); font-size: calc(8.2 * var(--u) * var(--densite, 1)); line-height: 1.35; opacity: 0.88; }
 
-/* Pleine carte (★ et plus) : illustration sur toute la carte, textes sur panneaux translucides. */
-.carte.pleine-carte .carte-art { left: 0; right: 0; top: 0; height: 100%; border: none; }
-.carte.pleine-carte .carte-entete {
-  left: calc(6 * var(--u)); right: calc(6 * var(--u)); top: calc(6 * var(--u));
-  padding: 0 calc(8 * var(--u)); border-radius: calc(8 * var(--u));
-  background: var(--carte-panneau-haut); color: var(--carte-clair);
+.carte-attaque {
+  flex: none; padding: calc(3 * var(--u)) calc(5 * var(--u)) calc(3 * var(--u)) calc(4 * var(--u)); border-radius: calc(6 * var(--u));
+  background: var(--k-att-fond); box-shadow: inset 0 0 0 1px var(--k-att-bord);
 }
-.carte.pleine-carte .carte-texte {
-  top: auto; height: 44%;
-  left: calc(6 * var(--u)); right: calc(6 * var(--u)); bottom: calc(6 * var(--u));
-  padding: calc(8 * var(--u)); border-radius: calc(8 * var(--u));
-  background: var(--carte-panneau); color: var(--carte-clair);
+.carte-attaque-ligne { display: flex; align-items: center; gap: calc(6 * var(--u)); }
+/* Coût : des creux ronds (◇ gris pour l'énergie quelconque) ; la colonne a la largeur du plus long coût de la carte. */
+.carte-cout { flex: none; display: flex; gap: calc(2 * var(--u)); min-width: calc((18 * var(--cout-max, 3) - 2) * var(--u)); }
+.carte-creux {
+  flex: none; width: calc(16 * var(--u)); height: calc(16 * var(--u)); display: grid; place-items: center; border-radius: 50%;
+  background: var(--carte-creux); box-shadow: inset 0 1px 2px var(--n80), 0 1px 0 var(--b25);
 }
-.carte.pleine-carte .carte-remplacement span { top: calc(40 * var(--u)); }
+.carte-creux img { display: block; width: calc(14 * var(--u)); height: calc(14 * var(--u)); }
+.carte-quelconque {
+  width: calc(13 * var(--u)); height: calc(13 * var(--u)); display: grid; place-items: center; border-radius: 50%;
+  background: var(--carte-quelconque); color: var(--blanc-casse); font-size: calc(7 * var(--u)); font-weight: 800; line-height: 1; text-shadow: none;
+}
+.carte-attaque-nom { flex: 1; min-width: 0; font-size: calc(12 * var(--u)); font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.carte-degats { flex: none; font-family: var(--police-chiffres); font-size: calc(22 * var(--u)); font-weight: 700; line-height: 1; text-shadow: var(--k-degats-ombre); }
+.carte-effet {
+  padding: calc(1 * var(--u)) 0 calc(1 * var(--u)) calc((18 * var(--cout-max, 3) + 4) * var(--u));
+  font-size: calc(8.2 * var(--u) * var(--densite, 1)); line-height: 1.3; opacity: 0.85;
+}
+.carte-espace { flex: 1; }
 
-/* ★ à ★★★ : bande du cadre en dégradé holo. Épaisseur, coins et dimensions inchangés : la bande reste la bordure
-   de .carte-corps (7 u), seule sa couleur change. Rien ne déborde sur l'illustration :
-   - sous l'illustration, la bordure de .carte-corps montre le dégradé assombri par le trait (rgba 0 0 0 .35) ;
-   - par-dessus, .carte-bande (même boîte, bordure de 7 u − 1 px, masquée pour ne garder que cette bordure)
-     montre le dégradé pur et le liseré clair du bord extérieur. Il reste donc 1 px de trait sombre contre l'image.
-     Bordures arrondies au pixel de la même façon : l'écart vaut toujours exactement 1 px.
-   - ★★★ : .carte-reflet, même masque, reflet blanc qui passe en continu (coupé en animations réduites). */
-.carte.f-pleine { --carte-cadre-bande: var(--carte-cadre-pleine); }
-.carte.f-alternative { --carte-cadre-bande: var(--carte-cadre-alternative); }
-.carte.f-immersive { --carte-cadre-bande: var(--carte-cadre-immersive); }
-.carte.f-pleine, .carte.f-alternative, .carte.f-immersive { position: relative; }
-.carte.f-pleine .carte-corps,
-.carte.f-alternative .carte-corps,
-.carte.f-immersive .carte-corps {
-  border-color: transparent;
-  background: linear-gradient(var(--carte-cadre-trait), var(--carte-cadre-trait)) border-box, var(--carte-cadre-bande) border-box;
+/* Barre du bas : Faiblesse +20, Repli, symbole de rareté + K + numéro */
+.carte-bas {
+  flex: none; display: grid; grid-template-columns: 1.15fr 0.85fr 1.1fr; gap: calc(4 * var(--u));
+  font-size: calc(6.3 * var(--u)); font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
 }
-.carte-bande,
+.carte-bas > span {
+  min-width: 0; display: flex; align-items: center; gap: calc(3 * var(--u)); overflow: hidden; white-space: nowrap;
+  padding: calc(2 * var(--u)) calc(5 * var(--u)); border-radius: calc(4 * var(--u)); background: var(--k-pastille);
+}
+.carte-bas img { display: block; flex: none; width: calc(12 * var(--u)); height: calc(12 * var(--u)); }
+.carte-bas .valeur { font-size: calc(8.5 * var(--u)); letter-spacing: 0; }
+.carte-bas .valeur.repli { letter-spacing: 1px; }
+.carte-bas-regle { grid-column: 1 / 3; text-transform: none; letter-spacing: 0.02em; font-weight: 600; font-style: italic; }
+.carte-bas-rarete { grid-column: 3; justify-content: flex-end; gap: calc(4 * var(--u)) !important; }
+.carte-symbole { font-size: calc(8.5 * var(--u)); letter-spacing: 0; color: var(--k-symbole); }
+.carte-k { display: block; flex: none; width: calc(10 * var(--u)); height: calc(10 * var(--u)); }
+.carte-k .tige { fill: currentColor; }
+.carte-k .branche { fill: var(--carte-k-branche); }
+.carte-num { font-size: calc(7.5 * var(--u)); letter-spacing: 0; }
+
+/* ====================================================================================================
+   Effets (holo, étincelles, particules, reflet, halo, éclat)
+   ==================================================================================================== */
+.fx { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.fx > i { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.fx > i.mobile { width: 260%; height: 260%; }
+/* Holo cosmos : poussière d'étoiles irrégulière et nébuleuse arc-en-ciel qui glisse. */
+.fx-cosmos { mix-blend-mode: color-dodge; z-index: 1; }
+.fx-cosmos > .poussiere { background: var(--svg-poussiere) 0 0 / 100% 100%; }
+.fx-cosmos > .mobile { background: var(--carte-holo-cosmos); }
+/* Holo craquelé : arc-en-ciel vu à travers des taches nettes. */
+.fx-glace {
+  z-index: 1; opacity: var(--op, 0.4); mix-blend-mode: color-dodge;
+  -webkit-mask: var(--svg-craquele) 0 0 / 100% 100%; mask: var(--svg-craquele) 0 0 / 100% 100%;
+}
+.fx-glace > .mobile { background: var(--carte-holo-arc); }
+/* Film arc-en-ciel léger. */
+.fx-film { z-index: 1; opacity: var(--op, 0.3); mix-blend-mode: color-dodge; }
+.fx-film > .mobile { background: var(--carte-holo-film); }
+/* Stries holo (♦♦♦♦). */
+/* Les holos de la face passent sous le texte (lisible) ; seules les étincelles restent au-dessus. */
+.fx-stries { z-index: 2; mix-blend-mode: screen; }
+.fx-stries > .lignes { background: repeating-linear-gradient(115deg, transparent 0 calc(14 * var(--u)), var(--carte-holo-strie) calc(14 * var(--u)) calc(16 * var(--u))); }
+.fx-stries > .mobile { background: var(--carte-holo-stries); }
+.carte-face > .fx-glace { z-index: 2; }
+.carte-face > .fx-film { z-index: 2; }
+/* Étincelles (deux couches qui scintillent à contretemps). */
+.fx-etincelles { z-index: 4; opacity: 0.6; }
+.fx-etincelles.e1 { background: var(--svg-etincelles-1) 0 0 / 100% 100%; }
+.fx-etincelles.e2 { background: var(--svg-etincelles-2) 0 0 / 100% 100%; }
+.carte-art > .fx-etincelles { z-index: 1; }
+/* Couronne : asanoha gravé sur l'image, teinte or sur toute la face. */
+.fx-trame-or { z-index: 1; mix-blend-mode: overlay; background: var(--svg-trame) 0 0 / calc(30 * var(--u)) calc(51.96 * var(--u)); }
+.fx-or { z-index: 2; opacity: 0.35; mix-blend-mode: color; background: var(--carte-or-mono); }
+
+/* Particules qui montent (★★★) */
+.carte-particules { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.carte-particules > i {
+  position: absolute; width: calc(4 * var(--u)); height: calc(4 * var(--u)); border-radius: 50%; opacity: 0;
+  background: var(--k-particule); box-shadow: 0 0 calc(9 * var(--u)) var(--k-particule);
+}
+.carte-particules > i:nth-child(1) { left: 18%; top: 46%; }
+.carte-particules > i:nth-child(2) { left: 58%; top: 40%; width: calc(3 * var(--u)); height: calc(3 * var(--u)); animation-delay: 0.9s; }
+.carte-particules > i:nth-child(3) { left: 82%; top: 50%; width: calc(5 * var(--u)); height: calc(5 * var(--u)); box-shadow: 0 0 calc(11 * var(--u)) var(--k-particule); animation-delay: 1.8s; }
+.carte-particules > i:nth-child(4) { left: 34%; top: 32%; width: calc(3 * var(--u)); height: calc(3 * var(--u)); animation-delay: 2.6s; }
+.carte-particules > i:nth-child(5) { left: 70%; top: 28%; --k-particule: var(--carte-clair); animation-delay: 1.3s; }
+.carte-particules > i:nth-child(6) { left: 10%; top: 30%; width: calc(3 * var(--u)); height: calc(3 * var(--u)); --k-particule: var(--carte-clair); animation-delay: 2.1s; }
+
+/* Ornements du cadre : filets, perles, coins, losanges, gemme, crochets (SVG à 320 × 448). */
+.carte-ornements { position: absolute; inset: 0; pointer-events: none; background: var(--svg-ornements) 0 0 / 100% 100% no-repeat; }
+
+/* Reflet qui passe dans la bande du cadre (★★★, ♛) : masque en anneau, calque 300 % déplacé. */
 .carte-reflet {
-  --u: calc(100cqw / 260);
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  border-radius: calc(13 * var(--u));
-  border: calc(7 * var(--u) - 1px) solid transparent;
-  /* Seule la bordure reste visible (le contenu, c'est-à-dire l'illustration, est exclu du masque). */
-  -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0) border-box;
+  position: absolute; inset: 0; padding: calc(10 * var(--u)); border-radius: calc(17 * var(--u)); pointer-events: none;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) padding-box exclude, linear-gradient(#000 0 0) border-box;
-  /* Suit le pivot de la carte (même transformation que .carte-corps). */
-  transform: perspective(900px) rotateY(calc(var(--x) * var(--carte-pivot, 8deg)));
-  transition: transform 0.15s;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
 }
-.carte-bande {
-  background: var(--carte-cadre-bande) border-box;
-  outline: 1px solid var(--carte-cadre-liseret);
-  outline-offset: -1px;
-}
-.carte-reflet {
-  z-index: 2;
-  --bord-reflet: calc(7 * var(--u) - 1px);
-}
-/* Cadre du reflet : toute la carte (bordure comprise), coupe le film pour qu'il n'élargisse jamais la page. */
-.carte-reflet-cadre {
-  position: absolute;
-  inset: calc(-1 * var(--bord-reflet));
-  overflow: hidden;
-}
-/* Calque enfant trois fois plus large que la carte, déplacé par transform (jamais par background-position) :
-   même rendu qu'un fond de 300 % qui glisse de 0 % à 100 %. Le masque du parent ne le laisse voir que dans la bande. */
-.carte-reflet-film {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 300%;
-  background: var(--carte-cadre-reflet);
-  animation: carte-reflet 1.6s ease-in-out infinite alternate; /* aller-retour en 3,2 s */
-}
-@keyframes carte-reflet {
-  from { transform: translateX(0); }
-  to { transform: translateX(calc(-200% / 3)); }
-}
-/* Effets des cartes ★, de plus en plus riches :
-   ★   film irisé qui suit le pointeur ;
-   ★★  le même film, des paillettes qui scintillent et un éclat de lumière qui traverse la carte ;
-   ★★★ film animé, profondeur, particules et reflet continu sur le cadre. */
-.carte.f-pleine .carte-film.foil,
-.carte.f-alternative .carte-film.foil,
-.carte.f-immersive .carte-film.foil { opacity: 1; }
+.carte-reflet > span { position: absolute; inset: 0; overflow: hidden; }
+.carte-reflet > span > i { position: absolute; top: -100%; left: 0; width: 300%; height: 300%; background: var(--carte-cadre-reflet); }
 
-/* ★★ : paillettes (deux trames de points décalées, fondues en color-dodge), déplacées par transform avec le pointeur. */
-.carte-paillettes {
-  position: absolute; inset: -8%; z-index: 2; pointer-events: none; mix-blend-mode: color-dodge;
-  background:
-    radial-gradient(circle, var(--blanc-casse) 0 calc(0.7 * var(--u)), transparent calc(1.3 * var(--u))) 0 0 / calc(11 * var(--u)) calc(13 * var(--u)),
-    radial-gradient(circle, var(--carte-particule) 0 calc(0.6 * var(--u)), transparent calc(1.2 * var(--u))) calc(5 * var(--u)) calc(7 * var(--u)) / calc(17 * var(--u)) calc(15 * var(--u));
-  transform: translateX(calc(var(--x) * 5%));
-  animation: carte-paillettes 2.2s ease-in-out infinite alternate;
-}
-@keyframes carte-paillettes { from { opacity: 0.25; } to { opacity: 0.75; } }
-/* ★★ : éclat de lumière, une fois toutes les 4,5 s. */
-.carte-eclat { position: absolute; inset: 0; z-index: 4; overflow: hidden; pointer-events: none; }
-.carte-eclat i {
-  position: absolute; top: -20%; bottom: -20%; left: 0; width: 36%;
-  background: linear-gradient(105deg, transparent, color-mix(in srgb, var(--blanc-casse) 60%, transparent) 50%, transparent);
-  transform: translateX(-130%) skewX(-14deg);
-  animation: carte-eclat 4.5s ease-in-out infinite;
-}
-@keyframes carte-eclat {
-  0%, 62% { transform: translateX(-130%) skewX(-14deg); }
-  88%, 100% { transform: translateX(400%) skewX(-14deg); }
+/* Éclat du survol */
+.carte-eclat {
+  position: absolute; top: 0; bottom: 0; left: -40%; width: 180%; z-index: 6; pointer-events: none;
+  background: var(--carte-eclat); mix-blend-mode: soft-light; opacity: 0; transform: translateX(-12%);
+  transition: opacity 0.4s, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Immersive : l'illustration glisse légèrement avec le pointeur (profondeur), film animé, particules. */
-.carte.f-immersive .carte-calque.fond { transform: translateX(calc(var(--x) * -10 * var(--u))) scale(1.06); }
-.carte.f-immersive .carte-film.foil::before { animation: carte-film 5s ease-in-out infinite alternate; }
-@keyframes carte-film {
-  from { transform: translateX(-12%); }
-  to { transform: translateX(12%); }
+/* ====================================================================================================
+   Survol (la carte, ou le bouton qui la porte) : inclinaison 3D, éclat ; ★★★ et ♛ : l'image passe en profondeur
+   ==================================================================================================== */
+:is(.carte.vivante:hover, button:hover > .carte.vivante, a:hover > .carte.vivante) > .carte-volume {
+  transform: perspective(1100px) rotateX(5deg) rotateY(-10deg) scale(1.03);
+}
+:is(.carte.vivante:hover, button:hover > .carte.vivante, a:hover > .carte.vivante) .carte-eclat { opacity: 1; transform: translateX(12%); }
+:is(.carte.vivante:hover, button:hover > .carte.vivante, a:hover > .carte.vivante) .carte-art.profond {
+  transform: scale(1.1) translate(calc(-8 * var(--u)), calc(-6 * var(--u)));
 }
 
-.carte-particules { position: absolute; inset: 0; pointer-events: none; z-index: 5; overflow: hidden; }
-.carte-particule {
-  position: absolute; top: 100%; left: var(--px); width: 0; height: 100%;
-  animation: carte-monte var(--duree) linear var(--delai) infinite;
-}
-.carte-particule i {
-  position: absolute; top: 0; left: 0;
-  width: calc(var(--taille) * var(--u)); height: calc(var(--taille) * var(--u));
-  border-radius: 50%; background: var(--carte-particule);
-  animation: carte-scintille 1.6s ease-in-out var(--delai) infinite alternate;
-}
-@keyframes carte-monte { to { transform: translateY(-110%); } }
-@keyframes carte-scintille { from { opacity: 0; } to { opacity: 1; } }
+/* ====================================================================================================
+   Animations (classe « a ») : en pause dans les grilles, sauf la carte survolée
+   ==================================================================================================== */
+.carte-cadre-holo.a { animation: carte-glisse-300 6s ease-in-out infinite alternate; }
+.fx > i.mobile.a { animation: carte-glisse-260 6s ease-in-out infinite alternate; }
+.carte-reflet i.a { animation: carte-reflet 3.2s ease-in-out infinite alternate; }
+.fx-etincelles.a { animation: carte-scint 2.6s ease-in-out infinite; }
+.fx-etincelles.a.e2 { animation: carte-scint2 3.1s ease-in-out infinite; }
+.carte-particules > i.a { animation-name: carte-monte; animation-duration: 3.6s; animation-timing-function: ease-out; animation-iteration-count: infinite; }
+.carte-halo.a { animation: carte-pulse 2.4s ease-in-out infinite; }
+@keyframes carte-glisse-300 { from { transform: translate(0, 0); } to { transform: translate(-66.667%, -66.667%); } }
+@keyframes carte-glisse-260 { from { transform: translate(0, 0); } to { transform: translate(-61.538%, -61.538%); } }
+@keyframes carte-reflet { from { transform: translateX(-66.667%); } to { transform: translateX(0); } }
+@keyframes carte-scint { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
+@keyframes carte-scint2 { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
+@keyframes carte-monte { 0% { transform: translateY(calc(14 * var(--u))); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(calc(-70 * var(--u))); opacity: 0; } }
+@keyframes carte-pulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
 
-/* Couronne : toute la carte en monochrome doré. */
-.carte.f-couronne .carte-corps { border-color: var(--carte-or); background: var(--carte-or-fond); }
-.carte.f-couronne .carte-art { filter: sepia(1) saturate(2.4) hue-rotate(-10deg) brightness(1.05); }
-.carte.f-couronne .carte-entete,
-.carte.f-couronne .carte-texte { background: var(--carte-or-panneau); color: var(--carte-or-texte); }
-.carte.f-couronne .carte-film.foil { opacity: 1; filter: sepia(1) saturate(3); }
+.carte.survol:not(:hover) .a { animation-play-state: paused; }
+:is(button, a):hover > .carte.survol .a { animation-play-state: running; }
+
+/* ====================================================================================================
+   Petite taille : les effets restent, les textes d'effet trop petits pour être lus disparaissent
+   ==================================================================================================== */
+@container carte (max-width: 210px) {
+  .carte-effet, .carte-talent-texte, .carte-ambiance { display: none; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .carte-corps, .carte-calque, .carte-film { transition: none !important; transform: none !important; }
-  .carte-film::before, .carte-particule, .carte-particule i { animation: none !important; }
+  .carte .a { animation: none !important; }
   .carte-particules { display: none; }
-  .carte-bande { transition: none !important; transform: none !important; }
-  .carte-reflet { display: none; }
-  .carte-reflet-film { animation: none !important; }
-  .carte-paillettes { animation: none !important; transform: none !important; opacity: 0.5; }
-  .carte-eclat { display: none; }
+  .carte-volume, .carte-art.profond, .carte-eclat { transition: none !important; transform: none !important; }
 }

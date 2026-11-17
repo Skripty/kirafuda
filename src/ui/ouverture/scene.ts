@@ -191,7 +191,6 @@ export function lancerOuverture(conteneur: HTMLElement, o: OptionsOuverture): vo
     const face = creerCarteDuJeu(t.carteId, o.extension);
     if (!face) return;
     face.style.setProperty('--carte-largeur', '100%');
-    face.style.setProperty('--carte-pivot', '10deg'); // pivot horizontal ±10°
     rectos[i]!.append(face);
   }
 

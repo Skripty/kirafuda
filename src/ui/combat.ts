@@ -271,7 +271,7 @@ export function creerEcranCombat(options: OptionsCombat): HTMLElement {
     const distinctes = [...new Set(cartes.filter((id) => bib.personnages.has(id)))].slice(0, 3);
     distinctes.forEach((id, i) => {
       const c = el('span', `combat-eventail-carte pos-${i}`);
-      c.append(visuels.visuel(id));
+      c.append(visuels.visuel(id, { interactive: false }));
       groupe.append(c);
     });
     return groupe;
@@ -493,7 +493,7 @@ export function creerEcranCombat(options: OptionsCombat): HTMLElement {
     defausse.dataset.anim = `pile:defausse:${index}`;
     defausse.setAttribute('aria-label', `Défausse : ${J.defausse.length} carte${J.defausse.length > 1 ? 's' : ''}`);
     const dessus = J.defausse[J.defausse.length - 1];
-    if (dessus) { const v = el('div', 'combat-pile-face'); v.append(visuels.visuel(idDe(partie, dessus))); defausse.append(v); }
+    if (dessus) { const v = el('div', 'combat-pile-face'); v.append(visuels.visuel(idDe(partie, dessus), { interactive: false })); defausse.append(v); }
     else defausse.append(el('div', 'combat-pile-vide'));
     defausse.append(el('b', undefined, String(J.defausse.length)));
     piles.append(deck, defausse);
@@ -988,7 +988,7 @@ export function creerEcranCombat(options: OptionsCombat): HTMLElement {
   function inspecter(id: string): void {
     const dialogue = el('dialog', 'combat-inspection');
     const carte = el('div', 'combat-inspection-carte');
-    carte.append(visuels.visuel(id, true));
+    carte.append(visuels.visuel(id));
     const titre = el('h2', undefined, visuels.nom(id));
     titre.id = 'combat-inspection-titre';
     dialogue.setAttribute('aria-labelledby', titre.id);

@@ -178,7 +178,7 @@ export function creerDraft(o: OptionsDraft): HTMLElement {
 
   function vignette(index: number): HTMLElement {
     const t = draft.cartes[index]!;
-    const v = creerCarte(idx.carte(t.carteId)!, extensionDe(t.carteId), { interactive: false });
+    const v = creerCarte(idx.carte(t.carteId)!, extensionDe(t.carteId), { animations: 'survol' });
     v.style.setProperty('--carte-largeur', '100%');
     return v;
   }

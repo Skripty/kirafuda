@@ -161,7 +161,7 @@ export function creerClassement(o: OptionsClassement): HTMLElement {
           const item = el('li');
           const trouvee = o.carteDe(id);
           if (trouvee) {
-            const v = creerCarte(trouvee.carte, trouvee.extension, { interactive: false });
+            const v = creerCarte(trouvee.carte, trouvee.extension, { animations: 'survol' });
             v.style.setProperty('--carte-largeur', '100%');
             v.setAttribute('aria-label', `${trouvee.extension.personnages.find((p) => p.id === trouvee.carte.personnage)?.nom ?? id}, ${FINITIONS[trouvee.carte.finition].nom}`);
             item.append(v);

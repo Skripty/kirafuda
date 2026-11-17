@@ -283,3 +283,8 @@ Règles : `docs/COMBAT.md`. Données : `src/data/fiches-combat.json` (132 fiches
 
 **À dire à Claude Code**
 > Fais uniquement cette tâche, puis arrête-toi. Ajoute la vague 3 de Lancement : les 8 personnages marqués `nouveau` dans `src/data/fiches-combat.json` (Kakashi, Sakura, Gaara, Rock Lee pour Naruto ; Sanji, Nami, Usopp, Chopper pour One Piece), une carte de base chacun, avec des ids définitifs dans la suite de Renforts et une date de sortie le jour de la mise en ligne du combat. Calendrier de sortie comme pour Renforts. Admin : les 8 cartes apparaissent pour leurs images. Simulation de combat relancée pour Naruto et One Piece. `npm run typecheck` et `npm test` sans erreur.
+
+## 31. Nouveau design des cartes (8 raretés)
+
+**À dire à Claude Code**
+> Lis AGENTS.md et docs/design/TACHE-31-cartes.md, puis fais la tâche 31. La maquette est docs/design/cartes-reference.dc.html : sers-t’en comme spécification, ne copie pas son format. À la fin, commit.

@@ -51,7 +51,7 @@ supabase/functions/   fichiers déployés, GÉNÉRÉS par `npm run fonctions` (n
 ## Interface
 
 - Identité **Graphite** : utiliser uniquement les variables de `src/styles/tokens.css`. Le dégradé holo est réservé au K du logo et aux effets des cartes rares.
-- Exception voulue (2026-11-12) : **le booster et les cartes sont colorés**. Le sachet est illustré (nuit violette, trois personnages du booster, dessiné en canvas dans `src/ui/booster3d/webgl.ts`) ; chaque carte de base porte la couleur de son élément sur son cadre et son fond, et le cadre monte en éclat avec la rareté. Les écrans du jeu restent en Graphite.
+- Exception voulue (2026-11-12) : **le booster et les cartes sont colorés**. Le sachet est illustré (nuit violette, trois personnages du booster, dessiné en canvas dans `src/ui/booster3d/webgl.ts`) ; les cartes suivent la maquette `docs/design/cartes-reference.dc.html` (couleurs par élément, métaux, holo par rareté), avec leurs propres jetons dans `tokens.css`. Les écrans du jeu restent en Graphite.
 - Animations uniquement avec `transform` et `opacity`. Respecter `prefers-reduced-motion`.
 - Tout geste de glissé a un équivalent par bouton. Le symbole de rareté est toujours écrit, jamais indiqué par la seule couleur.
 - Doit fonctionner sur téléphone (largeur 375 px) et ordinateur.
@@ -59,4 +59,4 @@ supabase/functions/   fichiers déployés, GÉNÉRÉS par `npm run fonctions` (n
 
 ## Référence visuelle
 
-`docs/reference/atelier-des-cartes.html` contient le rendu des cartes validé (mise en page, finitions, holo, couronne, immersive). Reprends sa logique de rendu dans `src/ui`, en TypeScript, sans copier son code de sauvegarde.
+`docs/design/cartes-reference.dc.html` est la maquette validée des cartes (tâche 31, `docs/design/TACHE-31-cartes.md`) : cadre orné, plaque de nom, médaillon d’élément, bannière, encart Talent, et le traitement de chacune des 8 raretés. C’est une spécification : elle est réimplémentée dans un seul composant, `src/ui/carte.ts` (styles `carte.css`, motifs SVG `carte-motifs.ts`), utilisé partout ; ne pas copier son format. L’ancienne référence `docs/reference/atelier-des-cartes.html` n’est plus suivie.

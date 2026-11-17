@@ -20,7 +20,7 @@ export function creerResultats(ouverture: Ouverture, extension: Extension, onTer
   const liste = document.createElement('ul');
   liste.className = 'ouv-grille';
   for (const tiree of ouverture.cartes) {
-    const visuel = creerCarteDuJeu(tiree.carteId, extension, { interactive: false });
+    const visuel = creerCarteDuJeu(tiree.carteId, extension);
     if (!visuel) continue;
     const f = FINITIONS[tiree.finition];
     const li = document.createElement('li');

@@ -16,22 +16,8 @@
   --rayon: 12px;
   color-scheme: dark;
 
-  /* Carte : objet physique, mêmes couleurs quel que soit le thème (Atelier des cartes). */
-  --police-carte: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-  --carte-papier: #f4efe1;
-  --carte-encre: #2a2410;
-  --carte-bord: #d8cd98;
-  --carte-cadre: #8a7d4a;
-  --carte-fenetre: #6e7fa8;
-  --carte-trait: #00000022;
-  --carte-ombre: #00000055;
+  /* Carte : objet physique, mêmes couleurs quel que soit le thème. */
   --carte-clair: #ffffff;
-  --carte-panneau: #0b0b14b8;
-  --carte-panneau-haut: #0b0b1480;
-  --carte-trait-clair: #ffffff30;
-  --carte-bord-holo: #cfc6e8;
-  --carte-bord-integrale: #c3c9d2;   /* cadre argenté */
-  --carte-papier-integrale: #eef0f3;
   /* Couleurs des 9 éléments, relevées sur leurs icônes (public/elements) ; mêmes valeurs que src/core/regles.ts. */
   --element-feu: #CE2F18;
   --element-eau: #1764DA;
@@ -46,14 +32,10 @@
   --carte-cadre-pleine: linear-gradient(115deg, #CFE7F7, #E9D9FB, #D7F2E6, #FBE3EF, #CFE7F7);
   --carte-cadre-alternative: linear-gradient(115deg, #9FD3F5, #C8A8F5, #A9E9C9, #F5B8D3, #9FD3F5);
   --carte-cadre-immersive: linear-gradient(115deg, #FF5FC8, #6CCBFF, #A9F26A, #FFE27A, #FF5FC8);
-  --carte-cadre-liseret: rgba(255, 255, 255, 0.55);   /* bord extérieur du cadre */
-  --carte-cadre-trait: rgba(0, 0, 0, 0.35);           /* trait autour de l'illustration */
   --carte-cadre-reflet: linear-gradient(115deg, transparent 42%, rgba(255, 255, 255, 0.85) 50%, transparent 58%);
   --carte-or: #e6c25a;
   --carte-or-fond: #2a2410;
-  --carte-or-panneau: #2a2410d0;
   --carte-or-texte: #ffe08a;
-  --carte-particule: #ffe8cd;
   --carte-scene-fond: #1a1530;
   /* Interface (maquettes docs/reference/refonte/) */
   --surface-panneau: #1a1b1f;
@@ -85,22 +67,84 @@
   --booster3d-ombre: radial-gradient(closest-side, rgba(0, 0, 0, 0.62), transparent);
   --booster3d-epaisseur: #0b0c0e;
 
-  /* Cartes de base ♦ à ♦♦♦♦ (maquette Carte.dc.html) : fond sombre teinté par l'élément */
-  --carte-base-fond: #16171b;
-  --carte-base-attenue: #9a9ea7;
-  --carte-base-illu-haut: #26282e;
-  --carte-base-illu-bas: #141518;
-  --carte-cadre-commune: linear-gradient(160deg, #3a3d44 0%, #23252a 100%);
-  --carte-cadre-peu-commune: linear-gradient(160deg, #4b4f58 0%, #2a2c31 100%);
-  --carte-cadre-holo: linear-gradient(160deg, #50545e 0%, #2a2c31 100%);
-  --carte-cadre-integrale: linear-gradient(135deg, #eef0f3 0%, #a3a8b1 22%, #f7f8fa 45%, #8d929b 68%, #e3e6ea 100%);
-  --carte-film-base-illu: linear-gradient(120deg, transparent 15%, rgba(255, 95, 200, 0.45) 32%, rgba(108, 203, 255, 0.45) 48%, rgba(169, 242, 106, 0.4) 64%, transparent 82%);
-  --carte-film-base-total: linear-gradient(125deg, transparent 10%, rgba(255, 95, 200, 0.28) 30%, rgba(108, 203, 255, 0.3) 46%, rgba(169, 242, 106, 0.26) 62%, transparent 85%);
-
-  /* Films irisés des cartes rares (seul autre usage autorisé d'un dégradé holo). */
-  --carte-film-holo: repeating-linear-gradient(115deg, #ff3c8a40 0%, #ffd23c40 8%, #3cffb040 16%, #3c8aff40 24%, #c23cff40 32%, #ff3c8a40 40%);
-  --carte-film-foil: repeating-linear-gradient(60deg, #ffffff00 0 6px, #ffffff30 6px 7px),
-    repeating-linear-gradient(115deg, #ff3c8a33 0%, #ffd23c33 10%, #3cffb033 20%, #3c8aff33 30%, #ff3c8a33 40%);
+  /* ---------- Cartes ornées, du ♦ au ♛ (tâche 31, docs/design/cartes-reference.dc.html) ---------- */
+  --police-chiffres: 'Oswald', 'Arial Narrow', sans-serif;
+  --carte-noir: #000000;
+  /* Par élément : accent, fond sombre, reflet clair (décor, filets, lueurs). */
+  --carte-el-feu: #F06A3F;      --carte-el-feu-sombre: #2A0B06;      --carte-el-feu-clair: #FFD27A;
+  --carte-el-eau: #3D8FE8;      --carte-el-eau-sombre: #04152B;      --carte-el-eau-clair: #A6E6FF;
+  --carte-el-foudre: #E8B923;   --carte-el-foudre-sombre: #11152A;   --carte-el-foudre-clair: #FFF5B0;
+  --carte-el-terre: #C08443;    --carte-el-terre-sombre: #1F1308;    --carte-el-terre-clair: #F2C98A;
+  --carte-el-vent: #2FB98E;     --carte-el-vent-sombre: #06201A;     --carte-el-vent-clair: #BDF7DD;
+  --carte-el-glace: #4FBFDB;    --carte-el-glace-sombre: #071D2B;    --carte-el-glace-clair: #E9FCFF;
+  --carte-el-lumiere: #E9D9A6;  --carte-el-lumiere-sombre: #2A220E;  --carte-el-lumiere-clair: #FFFFFF;
+  --carte-el-tenebres: #8B6FE0; --carte-el-tenebres-sombre: #0E0820; --carte-el-tenebres-clair: #DCCBFF;
+  --carte-el-neutre: #9A958A;   --carte-el-neutre-sombre: #18181A;   --carte-el-neutre-clair: #ECE8DE;
+  --carte-face-fond: #111216;
+  /* Métaux du cadre (brossé, guilloché) */
+  --carte-metal-graphite: linear-gradient(160deg, #50535B 0%, #24262B 55%, #3A3D44 100%);
+  --carte-metal-acier: linear-gradient(160deg, #7A7F89 0%, #353840 50%, #636771 100%);
+  --carte-metal-argent: linear-gradient(135deg, #EEF0F3 0%, #A3A8B1 22%, #F7F8FA 45%, #8D929B 68%, #E3E6EA 100%);
+  --carte-metal-or: linear-gradient(135deg, #FFF4C8 0%, #C9962B 24%, #FFEBA6 46%, #A47215 70%, #F6D97C 100%);
+  /* Plaques, médaillons, bannières, étiquettes */
+  --carte-plaque-sombre: linear-gradient(180deg, #4A4E57 0%, #2A2D33 55%, #1D1F24 100%);
+  --carte-plaque-acier: linear-gradient(180deg, #8A8F99 0%, #4A4E57 50%, #2E3137 100%);
+  --carte-plaque-argent: linear-gradient(180deg, #FFFFFF 0%, #D9DCE1 40%, #9EA3AC 100%);
+  --carte-medaillon-sombre: linear-gradient(145deg, #9AA0AA, #2E3137);
+  --carte-medaillon-argent: linear-gradient(145deg, #FFFFFF, #8D929B);
+  --carte-medaillon-or: linear-gradient(145deg, #FFF4C8, #9C6B12);
+  --carte-medaillon-holo: conic-gradient(from 30deg, #FF5FC8, #6CCBFF, #A9F26A, #FFE27A, #FF5FC8);
+  --carte-medaillon-creux: #0D0E12;
+  --carte-banniere-sombre: linear-gradient(180deg, #5B5F68, #2B2E34);
+  --carte-banniere-argent: linear-gradient(180deg, #F4F6F8, #A9AEB7);
+  --carte-etiquette-acier: linear-gradient(180deg, #E4E6EA, #8B8F98);
+  --carte-etiquette-or: linear-gradient(180deg, #FFF0BE, #C9962B);
+  --carte-texte-acier: #E4E6EA;
+  --carte-talent-rouge: #C2453A;
+  --carte-talent-or: #B8862B;
+  --carte-creux: radial-gradient(circle at 50% 40%, #2A2C33, #0B0C0F);
+  --carte-quelconque: radial-gradient(circle at 35% 30%, #C3C7CE, #5E636B);
+  --carte-k-branche: #6CCBFF;
+  /* Contours de la fenêtre d'illustration */
+  --carte-fenetre-acier: #9A9FA8;
+  --carte-fenetre-argent: #E4E6EA;
+  --carte-fenetre-blanc: #F4F6F8;
+  /* Holo : cosmos, stries, craquelé (arc), film, monochrome or ; voiles ; éclat du survol ; halos */
+  --carte-holo-cosmos: linear-gradient(120deg, transparent 10%, rgba(255, 95, 200, 0.38) 28%, rgba(255, 226, 122, 0.3) 40%, rgba(108, 203, 255, 0.4) 52%, rgba(169, 242, 106, 0.34) 66%, transparent 88%);
+  --carte-holo-stries: linear-gradient(120deg, transparent 20%, rgba(255, 95, 200, 0.22) 35%, rgba(108, 203, 255, 0.24) 50%, rgba(169, 242, 106, 0.22) 65%, transparent 80%);
+  --carte-holo-strie: rgba(255, 255, 255, 0.09);
+  --carte-holo-arc: linear-gradient(120deg, #FF5FC8, #6CCBFF, #A9F26A, #FFE27A, #FF5FC8);
+  --carte-holo-film: linear-gradient(120deg, transparent 15%, rgba(255, 95, 200, 0.45) 32%, rgba(108, 203, 255, 0.45) 48%, rgba(169, 242, 106, 0.4) 64%, transparent 82%);
+  --carte-or-mono: linear-gradient(135deg, #FFE9A8 0%, #B8862B 40%, #FFF1C2 60%, #9C6B12 100%);
+  --carte-voile: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, transparent 16%, transparent 52%, rgba(6, 6, 10, 0.78) 72%, rgba(6, 6, 10, 0.92) 100%);
+  --carte-voile-or: linear-gradient(180deg, rgba(40, 26, 0, 0.6) 0%, transparent 16%, transparent 52%, rgba(30, 20, 2, 0.8) 72%, rgba(24, 16, 0, 0.94) 100%);
+  --carte-eclat: linear-gradient(125deg, transparent 30%, rgba(255, 255, 255, 0.28) 45%, rgba(255, 255, 255, 0.05) 55%, transparent 70%);
+  --carte-halo-bleu: #6CCBFF;
+  --carte-halo-rose: #FF5FC8;
+  /* Couronne : textes et reflets or */
+  --carte-or-encre: #FFF4D6;
+  --carte-or-nom: #FFF1C2;
+  --carte-or-pale: #FFE9A8;
+  --carte-or-symbole: #F6D97C;
+  --carte-or-sombre: #2E2108;
+  --carte-or-brun: #281A00;
+  /* Ornements du cadre (dessinés en SVG) : filet, gemme (éclat, fond), monture */
+  --carte-filet-graphite: rgba(255, 255, 255, 0.35);
+  --carte-filet-argent: rgba(40, 30, 70, 0.55);
+  --carte-filet-holo: rgba(255, 255, 255, 0.9);
+  --carte-filet-or: rgba(90, 60, 0, 0.6);
+  --carte-gemme-graphite: #B4B7BE;   --carte-gemme-graphite-fond: #4A4D55;
+  --carte-gemme-pleine: #FFE27A;     --carte-gemme-pleine-fond: #8A6A00;
+  --carte-gemme-alternative: #FF6A7A; --carte-gemme-alternative-fond: #5A0012;
+  --carte-gemme-immersive: #9FE0FF;  --carte-gemme-immersive-fond: #0B4F8A;
+  --carte-gemme-couronne: #FF5A5A;   --carte-gemme-couronne-fond: #5A0000;
+  --carte-monture-graphite: #8B8F98;
+  --carte-monture-acier: #C9CDD3;
+  --carte-monture-holo: #D7D9DE;
+  --carte-monture-ombre: #3A3D44;
+  --carte-scene-silhouette: #0A0B0F;
+  /* Poussière d'étoiles du holo cosmos */
+  --carte-poussiere-1: #FFFFFF; --carte-poussiere-2: #FFB3E6; --carte-poussiere-3: #B3E5FF; --carte-poussiere-4: #D9FFB3; --carte-poussiere-5: #FFF0B3;
 }
 
 * { box-sizing: border-box; }

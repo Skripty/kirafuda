@@ -169,7 +169,7 @@ export function creerEcranDecks(options: OptionsDecks): HTMLElement {
     const s = bib.soutiens.get(id);
     const contenu = el('div', 'decks-inspection-contenu');
     const carte = el('div', 'decks-inspection-carte');
-    carte.append(visuels.visuel(id, true));
+    carte.append(visuels.visuel(id));
     const titre = el('h2', undefined, visuels.nom(id));
     titre.id = 'decks-inspection-titre';
     dialogue.setAttribute('aria-labelledby', titre.id);
@@ -210,7 +210,7 @@ export function creerEcranDecks(options: OptionsDecks): HTMLElement {
       if (!montrees.length) eventail.append(el('span', 'decks-eventail-vide', 'Deck vide'));
       montrees.forEach((id, i) => {
         const carte = el('span', `decks-eventail-carte pos-${montrees.length - 1 - i}`);
-        carte.append(visuels.visuel(id));
+        carte.append(visuels.visuel(id, { interactive: false }));
         eventail.append(carte);
       });
       const infos = el('span', 'decks-tuile-infos');
@@ -342,7 +342,7 @@ export function creerEcranDecks(options: OptionsDecks): HTMLElement {
     function tuile(carte: string, sousTitre: string): HTMLElement {
       const racineTuile = el('div', 'decks-carte');
       const ajout = bouton('', 'decks-carte-ajout', () => ajouter(carte));
-      ajout.append(visuels.visuel(carte));
+      ajout.append(visuels.visuel(carte, { animations: 'survol' }));
       const badge = el('span', 'decks-carte-badge');
       const moins = bouton('−', 'decks-carte-moins', () => retirer(carte));
       moins.setAttribute('aria-label', `Retirer un exemplaire de ${visuels.nom(carte)}`);
@@ -433,7 +433,7 @@ export function creerEcranDecks(options: OptionsDecks): HTMLElement {
         const b = bouton('', 'decks-emplacement', () => retirer(carte));
         b.setAttribute('aria-label', `Retirer ${visuels.nom(carte)} du deck`);
         b.title = `${visuels.nom(carte)} — toucher pour retirer`;
-        b.append(visuels.visuel(carte));
+        b.append(visuels.visuel(carte, { interactive: false, animations: 'survol' }));
         emplacements.append(b);
       }
 

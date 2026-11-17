@@ -2,12 +2,12 @@
 // de base, une carte Soutien (« sou-onigiri ») par sa propre mise en page. Sert aux écrans Decks et Combat.
 import type { Bibliotheque } from '../core/combat/etat';
 import type { Carte, CarteSoutien, Extension } from '../core/types';
-import { creerCarte } from './carte';
+import { creerCarte, type OptionsCarte } from './carte';
 import { creerCarteSoutien } from './carte-soutien';
 
 export interface VisuelsCombat {
   /** La carte, à la largeur donnée par --carte-largeur (100 % de son conteneur par défaut). */
-  visuel(id: string, interactive?: boolean): HTMLElement;
+  visuel(id: string, options?: OptionsCarte): HTMLElement;
   /** Nom affiché de la carte. */
   nom(id: string): string;
 }
@@ -24,11 +24,11 @@ export function creerVisuelsCombat(bib: Bibliotheque, extensions: Extension[]): 
   const nom = (id: string): string => bib.personnages.get(id)?.nom ?? bib.soutiens.get(id)?.nom ?? 'Carte';
   return {
     nom,
-    visuel(id, interactive = false) {
+    visuel(id, options = {}) {
       const p = personnages.get(id);
       const s = p ? undefined : soutiens.get(id);
-      const visuel = p ? creerCarte(p.carte, p.extension, { interactive })
-        : s ? creerCarteSoutien(s.soutien, s.extension, { interactive })
+      const visuel = p ? creerCarte(p.carte, p.extension, options)
+        : s ? creerCarteSoutien(s.soutien, s.extension, options)
           : null;
       if (visuel) { visuel.style.setProperty('--carte-largeur', '100%'); return visuel; }
       // Une carte n'est jamais vide (règle 7) : à défaut de visuel, son nom.
